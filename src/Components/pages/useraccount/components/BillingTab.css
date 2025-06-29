@@ -1,0 +1,489 @@
+.content-section {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.current-plan {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #e5e7eb;
+}
+
+.plan-icon {
+  font-size: 2em;
+  color: #8236fc;
+  margin-right: 20px;
+}
+
+.plans-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin: 30px 0;
+  perspective: 1000px;
+}
+
+.pricing-card {
+  background: #ffffff;
+  border: 1px solid rgba(130, 54, 252, 0.2);
+  border-radius: 16px;
+  padding: 32px;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8236fc, #b085ff);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(130, 54, 252, 0.15);
+  border-color: rgba(130, 54, 252, 0.4);
+}
+
+.pricing-card:hover::before {
+  opacity: 1;
+}
+
+.pricing-card.popular {
+  border: 2px solid #8236fc;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(130, 54, 252, 0.2);
+}
+
+.popular-badge {
+  position: absolute;
+  top: 16px;
+  right: -32px;
+  background: linear-gradient(90deg, #8236fc, #b085ff);
+  color: white;
+  padding: 8px 40px;
+  font-size: 0.85em;
+  font-weight: 600;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 10px rgba(130, 54, 252, 0.3);
+}
+
+.pricing-card h3 {
+  font-size: 1.8em;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.pricing-card p {
+  color: #666;
+  font-size: 1.1em;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.price-info {
+  margin: 32px 0;
+  text-align: center;
+  position: relative;
+}
+
+.current-price {
+  font-size: 3.2em;
+  color: #1a1a1a;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.currency {
+  font-size: 0.4em;
+  font-weight: 600;
+  color: #666;
+}
+
+.period {
+  font-size: 0.35em;
+  color: #666;
+  font-weight: normal;
+}
+
+.choose-plan {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #8236fc, #b085ff);
+  color: white;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.choose-plan::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #b085ff, #8236fc);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.choose-plan:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(130, 54, 252, 0.2);
+}
+
+.choose-plan:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.choose-plan:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.features-list {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  color: #4a4a4a;
+  font-size: 1.05em;
+  transition: transform 0.2s ease;
+}
+
+.feature-item:hover {
+  transform: translateX(4px);
+}
+
+.feature-item svg {
+  color: #8236fc;
+  margin-right: 12px;
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .plans-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0 16px;
+  }
+
+  .pricing-card {
+    padding: 24px;
+  }
+
+  .current-price {
+    font-size: 2.8em;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .pricing-card {
+    background: #ffffff;
+    border-color: rgba(87, 36, 169, 0.547);
+  }
+
+  .pricing-card h3 {
+    color: rgba(88, 38, 167, 0.837);
+  }
+
+  .pricing-card p {
+    color: #262626cd;
+  }
+
+  .current-price {
+    color: #ffffff;
+  }
+
+  .feature-item {
+    color: #6a6a6a;
+  }
+
+  .pricing-card.popular {
+    background: linear-gradient(145deg, #1a1a1a, #222222);
+  }
+
+  .current-plan {
+    background: #ffffff;
+  }
+
+  .current-plan-features {
+    background: #fffdfd;
+  }
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border-left: 4px solid #d32f2f;
+}
+
+.success-message {
+  background: #e6ffe6;
+  color: #27ae60;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.current-plan-features {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s ease-in-out infinite;
+  margin: 50px auto;
+  display: block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading skeleton styles */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+.loading-text {
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.loading-icon {
+  width: 40px;
+  height: 40px;
+  background: #e0e0e0;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Adjust existing styles for loading state */
+.pricing-card.loading {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.feature-item.loading {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.current-plan.loading {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.plan-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #3fff6c;
+}
+
+.plan-status.free {
+  color: #6c757d;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  position: relative;
+}
+
+.status-dot::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.5;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+.current-plan-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: #28a745;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.section-icon {
+  margin-right: 12px;
+  color: #8236fc;
+}
+
+.features-list.highlight .feature-item {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(130, 54, 252, 0.05);
+  margin: 8px 0;
+}
+
+.features-list.highlight .feature-item:hover {
+  background: rgba(130, 54, 252, 0.1);
+  transform: translateX(8px);
+}
+
+.feature-icon {
+  transition: transform 0.2s ease;
+}
+
+.feature-item:hover .feature-icon {
+  transform: scale(1.2);
+}
+
+.feature-text {
+  transition: transform 0.2s ease;
+}
+
+.button-text {
+  position: relative;
+  z-index: 1;
+}
+
+.plan-icon.pulse {
+  animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .features-list.highlight .feature-item {
+    background: rgba(130, 54, 252, 0.1);
+  }
+
+  .features-list.highlight .feature-item:hover {
+    background: rgba(130, 54, 252, 0.15);
+  }
+
+  .plan-status {
+    color: #4cd964;
+  }
+
+  .plan-status.free {
+    color: #e7e7e7;
+  }
+
+  .current-plan-marker {
+    color: #4cd964;
+  }
+}

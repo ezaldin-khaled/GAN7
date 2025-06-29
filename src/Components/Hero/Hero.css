@@ -1,0 +1,48 @@
+.hero{
+    width: 100%;
+    min-height: 100vh;
+    background:  url('../../assets/ewew/GAN 1.png');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.hero-txt{
+    text-align: center;
+    max-width: 800px;
+    margin-top: 160px;
+}
+
+.hero-txt h1{
+    font-size: 60px;
+    font-weight: 600;
+}
+
+.hero-txt p{
+    max-width: 700px;
+    margin: 10px auto 20px;
+    list-style: 1.4;
+}
+
+/* media query */
+@media (max-width: 850px){
+    .hero-txt h1{
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 650px){
+    .hero-txt h1{
+        font-size: 30px;
+        max-width: 400px;
+        margin: auto;
+    }
+    .hero-txt p{
+        font-size: 14px;
+        margin: 15px auto 30px;
+    }
+}

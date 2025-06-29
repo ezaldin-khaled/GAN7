@@ -1,0 +1,219 @@
+.profile-score-section {
+    background: #f7f5f0;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 16px 0;
+    border: 1px solid rgba(139, 90, 43, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.score-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.score-overview {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.score-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #8b5a2b, #5c4033);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fdfbf7;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(139, 90, 43, 0.2);
+}
+
+.score-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.score-max {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.score-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.score-title {
+    color: #1a0f0a;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.score-subtitle {
+    color: #5c4033;
+    font-size: 14px;
+    margin: 0;
+}
+
+.score-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.score-tips-btn,
+.score-dropdown-btn {
+    background: #fdfbf7;
+    border: 1px solid rgba(139, 90, 43, 0.2);
+    color: #5c4033;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.score-tips-btn:hover,
+.score-dropdown-btn:hover {
+    background: rgba(139, 90, 43, 0.1);
+    transform: translateY(-2px);
+}
+
+.score-tips-btn .icon,
+.score-dropdown-btn .icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+.score-dropdown-btn.active .icon {
+    transform: rotate(180deg);
+}
+
+.score-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.score-details.active {
+    max-height: 1000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.score-card {
+    background: #fdfbf7;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(139, 90, 43, 0.1);
+    transition: all 0.3s ease;
+}
+
+.score-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.score-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.score-card-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(139, 90, 43, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5c4033;
+}
+
+.score-card-title {
+    color: #1a0f0a;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.score-card-value {
+    color: #1a0f0a;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.score-card-description {
+    color: #5c4033;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.improvement-tip {
+    background: rgba(139, 90, 43, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    animation: fadeIn 0.3s ease-out;
+    border: 1px solid rgba(139, 90, 43, 0.1);
+}
+
+.improvement-tip .icon {
+    width: 16px;
+    height: 16px;
+    color: #5c4033;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.improvement-tip span {
+    color: #5c4033;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .score-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .score-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .score-grid {
+        grid-template-columns: 1fr;
+    }
+} 
