@@ -14,7 +14,7 @@ import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt } from 'react-icons/f
 import Loader from '../../common/Loader';
 
 // Update the axios instance and interceptors
-const API_URL = 'http://192.168.0.104:8000/';
+const API_URL = 'http://192.168.0.103:8000/';
 
 // Create an axios instance with the base URL and token handling
 const axiosInstance = axios.create({

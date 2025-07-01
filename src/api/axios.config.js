@@ -6,10 +6,10 @@ const DEFAULT_HEADERS = {
 };
 
 const api_config = axios.create({
-    baseURL: 'http://192.168.72.85:8000/api/',  // Backend server IP
+    baseURL: 'http://192.168.0.103:8000/api/',  // Backend server IP
     CSRF_TRUSTED_ORIGINS: [
         "http://192.168.0.119:3000",
-        "http://192.168.0.104:3000"
+        "http://192.168.0.103:3000"
     ],
     timeout: 10000, // Increased timeout for debugging
     headers: DEFAULT_HEADERS

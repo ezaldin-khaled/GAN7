@@ -238,7 +238,7 @@ const AuthPage = () => {
                       onChange={(e) => setLoginRole(e.target.value)}
                       disabled={isLoading}
                     />
-                    <span>Background Job</span>
+                    <span>Production Assets Pro</span>
                   </label>
                 </div>
               </div>
@@ -681,7 +681,7 @@ const AuthPage = () => {
                         onChange={_handleRoleChange}
                         disabled={isLoading}
                       />
-                      <span>Background Job</span>
+                      <span>Production Assets Pro</span>
                     </label>
                   </div>
                 </div>

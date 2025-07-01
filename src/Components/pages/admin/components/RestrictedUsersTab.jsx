@@ -311,7 +311,7 @@ const RestrictedUsersTab = () => {
                                         onChange={(e) => setSelectedPlan(prev => ({ ...prev, type: e.target.value }))}
                                     >
                                         <option value="talent">Talent Account</option>
-                                        <option value="background">Background Account</option>
+                                        <option value="background">Production Assets Pro Account</option>
                                         <option value="band_subscription">Band Subscription</option>
                                     </select>
                                 </div>

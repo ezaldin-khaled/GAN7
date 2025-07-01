@@ -4,7 +4,7 @@ import axios from 'axios';
 import UserSummaryPopup from './UserSummaryPopup';
 import './SearchTab.css';
 
-const API_URL = 'http://192.168.0.104:8000/';
+const API_URL = 'http://192.168.0.103:8000/';
 
 // Profile type definitions
 const PROFILE_TYPES = {
@@ -212,7 +212,7 @@ const PROFILE_TYPES = {
     }
   },
   background: {
-    label: 'Background Jobs',
+    label: 'Production Assets Pro',
     filters: {
       basic: {
         title: "Basic Information",
@@ -754,7 +754,7 @@ const SearchTab = ({ onSearchResults, onViewProfile }) => {
     <div className="search-tab" role="main">
       <div className="search-header">
         {/* <div className="search-instructions">
-          <p>Select a profile type and search for users. For background job users, select "Background Jobs" from the dropdown.</p>
+          <p>Select a profile type and search for users. For production assets users, select "Production Assets Pro" from the dropdown.</p>
         </div> */}
         <div className="search-type-selector">
           <label htmlFor="profile-type" className="visually-hidden">Select Profile Type</label>
@@ -769,7 +769,7 @@ const SearchTab = ({ onSearchResults, onViewProfile }) => {
               }));
               setFilters({});
               setActiveFilters([]);
-              // Auto-search when switching to background jobs
+              // Auto-search when switching to Production Assets Pro
               if (e.target.value === 'background') {
                 setTimeout(() => performSearch(), 100);
               }

@@ -23,7 +23,7 @@ const BackgroundBillingTab = () => {
   const fetchPlans = async () => {
     try {
       const token = localStorage.getItem('access') || localStorage.getItem('token');
-      console.log('🔍 Fetching background plans with token:', token ? 'Present' : 'Missing');
+      console.log('🔍 Fetching Production Assets Pro plans with token:', token ? 'Present' : 'Missing');
       
       const response = await axios.get(`${API_URL}${PAYMENTS_ENDPOINT}plans/`, {
         headers: {
@@ -31,12 +31,12 @@ const BackgroundBillingTab = () => {
         },
       });
       
-      console.log('📥 Background plans API response:', response.data);
+      console.log('📥 Production Assets Pro plans API response:', response.data);
       console.log('📋 Plans structure:', JSON.stringify(response.data, null, 2));
       setPlans(response.data);
       setLoading(false);
     } catch (err) {
-      console.error('❌ Error fetching background plans:', err);
+      console.error('❌ Error fetching Production Assets Pro plans:', err);
       console.error('Error response:', err.response?.data);
       console.error('Error status:', err.response?.status);
       setError('Failed to load subscription plans');
@@ -54,7 +54,7 @@ const BackgroundBillingTab = () => {
         },
       });
       
-      console.log('📥 Background profile API response:', response.data);
+      console.log('📥 Production Assets Pro profile API response:', response.data);
       
       // Extract subscription data from profile response
       const subscriptionStatus = response.data.subscription_status;
@@ -74,7 +74,7 @@ const BackgroundBillingTab = () => {
         setCurrentSubscription(null);
       }
     } catch (err) {
-      console.error('❌ Error fetching current background subscription from profile:', err);
+      console.error('❌ Error fetching current Production Assets Pro subscription from profile:', err);
       // If profile endpoint doesn't exist or user has no subscription, set to null
       setCurrentSubscription(null);
     }
@@ -155,20 +155,38 @@ const BackgroundBillingTab = () => {
     }
   };
 
+  // Transform plan names for display
+  const getDisplayPlanName = (planName) => {
+    if (!planName) return '';
+    
+    const name = planName.toLowerCase();
+    if (name === 'background_jobs' || name === 'background') {
+      return 'Production Assets Pro';
+    }
+    
+    // Handle other plan name transformations if needed
+    if (name === 'back_ground_jobs') {
+      return 'Production Assets Pro';
+    }
+    
+    // Return original name with proper capitalization for other plans
+    return planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase();
+  };
+
   // Get default features based on plan type
   const getDefaultFeatures = (planName) => {
     const name = (planName || '').toLowerCase();
     if (name.includes('basic') || name.includes('starter')) {
       return [
-        'Up to 10 background items',
-        'Basic AI Background Generation',
+        'Up to 10 Production Assets Pro items',
+        'Basic AI Production Assets Generation',
         '5GB Storage',
         'Email Support'
       ];
     } else if (name.includes('pro') || name.includes('professional')) {
       return [
-        'Unlimited background items',
-        'Advanced AI Background Generation',
+        'Unlimited Production Assets Pro items',
+        'Advanced AI Production Assets Generation',
         '20GB Storage',
         'Priority Support',
         'Custom Branding'
@@ -184,8 +202,8 @@ const BackgroundBillingTab = () => {
       ];
     }
     return [
-      'Up to 5 background items',
-      'Basic AI Background Generation',
+      'Up to 5 Production Assets Pro items',
+      'Basic AI Production Assets Generation',
       '1GB Storage',
       'Community Support'
     ];
@@ -245,15 +263,15 @@ const BackgroundBillingTab = () => {
       
       if (planName.includes('basic')) {
         return [
-          'Up to 10 background items',
-          'Basic AI Background Generation',
+          'Up to 10 Production Assets Pro items',
+          'Basic AI Production Assets Generation',
           '5GB Storage',
           'Email Support'
         ];
       } else if (planName.includes('pro')) {
         return [
-          'Unlimited background items',
-          'Advanced AI Background Generation',
+          'Unlimited Production Assets Pro items',
+          'Advanced AI Production Assets Generation',
           '20GB Storage',
           'Priority Support',
           'Custom Branding'
@@ -273,8 +291,8 @@ const BackgroundBillingTab = () => {
     console.log('🆓 Using free plan features');
     // Default free plan features
     return [
-      'Up to 5 background items',
-      'Basic AI Background Generation',
+      'Up to 5 Production Assets Pro items',
+      'Basic AI Production Assets Generation',
       '1GB Storage',
       'Community Support'
     ];
@@ -283,7 +301,7 @@ const BackgroundBillingTab = () => {
   if (loading) {
     return (
       <div className="content-section">
-        <h1 className="section-title">Background Plans</h1>
+        <h1 className="section-title">Production Assets Pro Plans</h1>
         
         {/* Skeleton for current plan */}
         <div className="current-plan loading">
@@ -326,14 +344,14 @@ const BackgroundBillingTab = () => {
 
   return (
     <div className="content-section">
-      <h1 className="section-title">Background Plans</h1>
+      <h1 className="section-title">Production Assets Pro Plans</h1>
       {error && <div className="error-message">{error}</div>}
 
       {currentSubscription ? (
         <div className="current-plan">
           <FaCrown className="plan-icon pulse" />
           <div className="plan-info">
-            <h3>Current Plan: {getCurrentPlan()?.display_name || getCurrentPlan()?.name || 'Active Plan'}</h3>
+            <h3>Current Plan: {getDisplayPlanName(getCurrentPlan()?.name) || getCurrentPlan()?.display_name || 'Active Plan'}</h3>
             <div className="end-date">
               <p><strong>Valid until:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
             </div>
@@ -348,7 +366,7 @@ const BackgroundBillingTab = () => {
           <FaCrown className="plan-icon" />
           <div className="plan-info">
             <h3>Current Plan: Free</h3>
-            <p>Basic features for background providers</p>
+            <p>Basic features for Production Assets Pro providers</p>
             <div className="plan-status free">
               <span className="status-dot"></span>
               Free Plan
@@ -368,7 +386,7 @@ const BackgroundBillingTab = () => {
                 className={`pricing-card ${plan.popular ? 'popular' : ''} ${plan.premium ? 'premium' : ''}`}
               >
                 {plan.popular && <div className="popular-badge">MOST POPULAR</div>}
-                <h3>{plan.display_name || plan.name.charAt(0).toUpperCase() + plan.name.slice(1).toLowerCase()}</h3>
+                <h3>{getDisplayPlanName(plan.name)}</h3>
                 <p>{plan.description}</p>
             
                 <div className="price-info">
@@ -390,7 +408,7 @@ const BackgroundBillingTab = () => {
                   disabled={isCurrentPlan}
                 >
                   <span className="button-text">
-                    {isCurrentPlan ? 'Current Plan' : `Upgrade to ${plan.name}`}
+                    {isCurrentPlan ? 'Current Plan' : `Upgrade to ${getDisplayPlanName(plan.name)}`}
                   </span>
                 </button>
 
@@ -407,7 +425,7 @@ const BackgroundBillingTab = () => {
           })
         ) : (
           <div className="no-plans-message">
-            <p>No background plans available at the moment.</p>
+            <p>No Production Assets Pro plans available at the moment.</p>
             <p>Please contact support for more information.</p>
           </div>
         )}
@@ -416,7 +434,7 @@ const BackgroundBillingTab = () => {
       <div className="current-plan-features">
         <h3>
           <FaCrown className="section-icon" />
-          Your {getCurrentPlan()?.display_name || getCurrentPlan()?.name || 'Free'} Plan Features
+          Your {getDisplayPlanName(getCurrentPlan()?.name) || getCurrentPlan()?.display_name || 'Free'} Plan Features
         </h3>
         <div className="features-list highlight">
           {getCurrentPlanFeatures().map((feature, index) => (

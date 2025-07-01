@@ -4,7 +4,7 @@ import axios from 'axios';
 import ItemUploadForm from './ItemUploadForm';
 
 // Update to match UserAccountPage base URL
-const API_URL = 'http://192.168.0.104:8000/';
+const API_URL = 'http://192.168.0.103:8000/';
 
 const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
@@ -42,7 +42,7 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
         },
       });
       
-      console.log('📥 Background items API response:', response.data);
+      console.log('📥 Production Assets Pro items API response:', response.data);
       console.log('📋 Items structure:', JSON.stringify(response.data, null, 2));
       
       // Store original response data for filtering

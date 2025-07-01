@@ -16,7 +16,7 @@ import {
   RISK_LEVELS
 } from '../../../data/referenceData';
 
-const API_URL = 'http://192.168.0.104:8000/';
+const API_URL = 'http://192.168.0.103:8000/';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

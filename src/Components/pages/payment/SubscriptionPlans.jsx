@@ -5,7 +5,7 @@ import { stripePromise } from '../../../config/stripe';
 import PaymentForm from './PaymentForm';
 import './SubscriptionPlans.css';
 
-const API_URL = 'http://192.168.0.104:8000/api/payments/';
+const API_URL = 'http://192.168.0.103:8000/api/payments/';
 
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);

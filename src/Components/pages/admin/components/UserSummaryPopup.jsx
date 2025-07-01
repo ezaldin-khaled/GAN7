@@ -3,7 +3,7 @@ import { FaTimes, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar, FaCheckCi
 import axios from 'axios';
 import './UserSummaryPopup.css';
 
-const API_BASE_URL = 'http://192.168.0.104:8000/api';
+const API_BASE_URL = 'http://192.168.0.103:8000/api';
 
 const UserSummaryPopup = ({ user, onClose }) => {
   const [userData, setUserData] = useState(null);
@@ -25,9 +25,9 @@ const UserSummaryPopup = ({ user, onClose }) => {
         console.log('No profile_url found, trying alternative approach for background users');
         // For background users, we might need to construct the URL or use a different approach
         if ((user?.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) && user?.id) {
-          console.log('Background user detected, constructing profile URL');
+          console.log('Production Assets Pro user detected, constructing profile URL');
           // Try to construct the profile URL for background users
-          const backgroundProfileUrl = `http://192.168.0.104:8000/api/dashboard/profiles/background/${user.id}/`;
+          const backgroundProfileUrl = `http://192.168.0.103:8000/api/dashboard/profiles/background/${user.id}/`;
           console.log('Constructed background profile URL:', backgroundProfileUrl);
           
           try {
@@ -42,7 +42,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
             });
             
             setUserData(response.data);
-            console.log('Background profile data loaded:', response.data);
+            console.log('Production Assets Pro profile data loaded:', response.data);
             setLoading(false);
             return;
           } catch (err) {
@@ -80,7 +80,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
         
         // Check if this is a background user by URL pattern
         if (user.profile_url && user.profile_url.includes('background')) {
-          console.log('Background user detected by URL pattern, fetching items from API');
+          console.log('Production Assets Pro user detected by URL pattern, fetching items from API');
           
           try {
             // For background users, fetch items from the API
@@ -91,7 +91,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
               }
             });
             
-            console.log('Background items API response:', itemsResponse.data);
+            console.log('Production Assets Pro items API response:', itemsResponse.data);
             
             // Transform the items data to a flat array for display
             const allItems = [];
@@ -153,7 +153,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
         });
         
         setUserData(response.data);
-        console.log('Profile data loaded:', response.data);
+        console.log('Production Assets Pro profile data loaded:', response.data);
         console.log('Profile data structure:', {
           has_profile: !!response.data.profile,
           has_user: !!response.data.user,
@@ -227,7 +227,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
           console.log('URL includes background:', user?.profile_url?.includes('background'));
           
           if (user?.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) {
-            console.log('Background user with 500 error, using search result data as fallback');
+            console.log('Production Assets Pro user with 500 error, using search result data as fallback');
             // Use the search result data directly for background users
             if (user) {
               console.log('Using search result data for background user:', user);
@@ -345,7 +345,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
             <div className="user-badges">
               {(user.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) ? (
                 <span className="badge background-user">
-                  <FaBriefcase /> Background Job User
+                  <FaBriefcase /> Production Assets Pro User
                 </span>
               ) : (
                 <>
@@ -369,7 +369,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
           {/* Background User Specific Section */}
           {(user.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) && (
             <div className="info-section">
-              <h3>Background Job Profile</h3>
+              <h3>Production Assets Pro Profile</h3>
               <div className="info-grid">
                 {(userData.user?.first_name || userData.first_name) && (userData.user?.last_name || userData.last_name) && (
                   <div className="info-item">

@@ -200,7 +200,7 @@ export const TALENT_SPECIALIZATION_DATA = {
       { value: 'stunt_performer', label: 'Stunt Performer' },
       { value: 'body_double', label: 'Body Double' },
       { value: 'motion_capture', label: 'Motion Capture Artist' },
-      { value: 'background_actor', label: 'Background Actor' },
+      { value: 'background_actor', label: 'Production Assets Actor' },
       { value: 'specialty_performer', label: 'Specialty Performer' },
       { value: 'other', label: 'Other Physical Performer' }
     ],

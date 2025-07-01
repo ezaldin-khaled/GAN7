@@ -3,7 +3,7 @@ import { FaEnvelope, FaUser, FaPaperPlane, FaSpinner, FaUsers, FaList, FaEye, Fa
 import axios from 'axios';
 import '../AdminDashboard.css';
 
-const API_BASE_URL = 'http://192.168.0.104:8000/api';
+const API_BASE_URL = 'http://192.168.0.103:8000/api';
 
 const EmailTab = ({ selectedUser }) => {
   const [emailForm, setEmailForm] = useState({

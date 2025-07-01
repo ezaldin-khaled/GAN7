@@ -19,7 +19,7 @@ const TABS = [
   { id: 'email', label: 'Email', count: 0 },
 ];
 
-const API_BASE_URL = 'http://192.168.0.104:8000/api';
+const API_BASE_URL = 'http://192.168.0.103:8000/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -187,9 +187,9 @@ const AdminDashboard = () => {
     setShowUserPopup(true);
     console.log('Popup user set to:', user);
     
-    // Automatically switch to Shared Media tab for background job users
+    // Automatically switch to Shared Media tab for Production Assets Pro users
     if (user.profile_type === 'background' || user.profile_type === 'background_job') {
-      console.log('Background job user detected, switching to Shared Media tab');
+      console.log('Production Assets Pro user detected, switching to Shared Media tab');
       setActiveTab('shared-media');
     }
   };
