@@ -5,7 +5,7 @@ static_sites:
     github:
       repo: ezaldin-khaled/GAN7
       branch: main
-    build_command: npm install && npm run build
+    build_command: npm install && npx vite build
     output_dir: dist
     routes:
       - path: /
