@@ -4,7 +4,7 @@ import axios from 'axios';
 import UserSummaryPopup from './UserSummaryPopup';
 import './SearchTab.css';
 
-const API_URL = 'http://192.168.0.107:8000/';
+const API_URL = 'https://api.gan7club.com:8000/';
 
 // Profile type definitions
 const PROFILE_TYPES = {

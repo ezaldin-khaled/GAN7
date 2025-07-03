@@ -1,0 +1,20 @@
+name: gan-website
+static_sites:
+  - name: gan-frontend
+    source_dir: /
+    github:
+      repo: ezaldin-khaled/GAN7
+      branch: main
+    build_command: npm run build
+    output_dir: dist
+    routes:
+      - path: /
+    environment_slug: static-site
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: https://api.gan7club.com:8000
+    domains:
+      - name: gan7club.com
+      - name: www.gan7club.com 

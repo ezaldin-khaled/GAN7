@@ -1,6 +1,6 @@
 import axios from './axios';
 
-const API_URL = 'http://192.168.0.107:8000/';
+const API_URL = 'https://api.gan7club.com:8000/';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

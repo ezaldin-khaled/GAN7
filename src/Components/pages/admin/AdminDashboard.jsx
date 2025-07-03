@@ -19,7 +19,7 @@ const TABS = [
   { id: 'email', label: 'Email', count: 0 },
 ];
 
-const API_BASE_URL = 'http://192.168.0.107:8000/api';
+const API_BASE_URL = 'https://api.gan7club.com:8000/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();

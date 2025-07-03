@@ -3,7 +3,7 @@ import { FaTimes, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar, FaCheckCi
 import axios from 'axios';
 import './UserSummaryPopup.css';
 
-const API_BASE_URL = 'http://192.168.0.107:8000/api';
+const API_BASE_URL = 'https://api.gan7club.com:8000/api';
 
 const UserSummaryPopup = ({ user, onClose }) => {
   const [userData, setUserData] = useState(null);
