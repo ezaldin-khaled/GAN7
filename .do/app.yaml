@@ -5,7 +5,7 @@ static_sites:
     github:
       repo: ezaldin-khaled/GAN7
       branch: main
-    build_command: npm run build
+    build_command: npm install && npm run build
     output_dir: dist
     routes:
       - path: /
@@ -23,4 +23,7 @@ static_sites:
         value: 1.0.0
     domains:
       - name: gan7club.com
-      - name: www.gan7club.com 
+      - name: www.gan7club.com
+    # Explicitly specify this is a static site
+    run_command: ""
+    instance_count: 0 
