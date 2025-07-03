@@ -568,7 +568,7 @@ const SpecializationTab = () => {
       setLoading(true);
       setError('');
       
-      const response = await fetch('http://192.168.0.104:8000/api/profile/specializations/', {
+      const response = await fetch('http://192.168.0.107:8000/api/profile/specializations/', {
         method: 'POST',
         body: formData,
         credentials: 'include',

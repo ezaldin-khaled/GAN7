@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import logo from'../../assets/10.png'
 import menu_icon from '../../assets/menu-icon.png'
 import '../Navbar/Navbar.css'
 import { Link } from 'react-scroll';
 import UserProfilePopup from './UserProfilePopup';
 import { AuthContext } from '../context/AuthContext';
+import LanguageSwitcher from '../common/LanguageSwitcher';
 
 function Navbar() {
-
+  const { t } = useTranslation();
   const[sticky, setSticky] = useState(false)
   const { user } = useContext(AuthContext);
   const [showProfile, setShowProfile] = useState(false);
@@ -39,49 +41,52 @@ function Navbar() {
       <ul className={mobileMenu?'':'hide-mobile-menu'}>
         <li>
           {location.pathname === '/' ? (
-            <Link to="hero" smooth={true} offset={0} duration={500}>Home</Link>
+            <Link to="hero" smooth={true} offset={0} duration={500}>{t('navigation.home')}</Link>
           ) : (
             <button 
               className="nav-link-btn" 
               onClick={() => handleNavigation('hero')}
             >
-              Home
+              {t('navigation.home')}
             </button>
           )}
         </li>
         <li>
           {location.pathname === '/' ? (
-            <Link to="serv" smooth={true} offset={-280} duration={500}>Services</Link>
+            <Link to="serv" smooth={true} offset={-280} duration={500}>{t('navigation.services')}</Link>
           ) : (
             <button 
               className="nav-link-btn" 
               onClick={() => handleNavigation('serv')}
             >
-              Services
+              {t('navigation.services')}
             </button>
           )}
         </li>
         <li>
           {location.pathname === '/' ? (
-            <Link to="about" smooth={true} offset={-160} duration={500}>About Us</Link>
+            <Link to="about" smooth={true} offset={-160} duration={500}>{t('navigation.about')}</Link>
           ) : (
             <button 
               className="nav-link-btn" 
               onClick={() => handleNavigation('about')}
             >
-              About Us
+              {t('navigation.about')}
             </button>
           )}
         </li>
         <li>
-          <a href="/gallery" className="gallery-link">Gallery</a>
+          <a href="/gallery" className="gallery-link">{t('navigation.gallery')}</a>
         </li>
         {/* <li>
           <Link to="footer" smooth={true} offset={-260} duration={500}>Contact Us</Link>
         </li> */}
+        <li>
+          <LanguageSwitcher />
+        </li>
         {!user ? (
           <li>
-            <a href="/login" className="btn">Login</a>
+            <a href="/login" className="btn">{t('navigation.login')}</a>
           </li>
         ) : (
           <li>

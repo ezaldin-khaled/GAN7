@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import axios from 'axios';
 
-const API_URL = 'http://192.168.0.103:8000/'; 
+const API_URL = 'http://192.168.0.107:8000/'; 
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

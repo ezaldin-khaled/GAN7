@@ -130,7 +130,7 @@
 }
 
 .modal-content .btn:hover::before {
-    left: 100%;
+    transform: scale(1);
 }
 
 /* Animation for modal entry/exit */
@@ -172,6 +172,9 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.serv-btn{
+    margin-top: 20px;
+}
 
 .srv:hover {
     transform: translateY(-10px);
@@ -201,6 +204,7 @@
     transition: 0.5s;
 }
 .caption p{
+    margin: 10px;
     font-size: 18px;
     font-weight: 600;
     color: #fff;
@@ -240,5 +244,61 @@
     .srv{
         flex-basis: 100%;
         margin: 20px;
+    }
+}
+
+/* Modal Features Section */
+.modal-features {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.modal-features h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.feature-text {
+    color: #495057;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* Responsive adjustments for modal features */
+@media (max-width: 768px) {
+    .modal-features {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .modal-features h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .feature-text {
+        font-size: 13px;
     }
 }

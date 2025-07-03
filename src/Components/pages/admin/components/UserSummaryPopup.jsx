@@ -3,7 +3,7 @@ import { FaTimes, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar, FaCheckCi
 import axios from 'axios';
 import './UserSummaryPopup.css';
 
-const API_BASE_URL = 'http://192.168.0.103:8000/api';
+const API_BASE_URL = 'http://192.168.0.107:8000/api';
 
 const UserSummaryPopup = ({ user, onClose }) => {
   const [userData, setUserData] = useState(null);
@@ -27,7 +27,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
         if ((user?.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) && user?.id) {
           console.log('Production Assets Pro user detected, constructing profile URL');
           // Try to construct the profile URL for background users
-          const backgroundProfileUrl = `http://192.168.0.103:8000/api/dashboard/profiles/background/${user.id}/`;
+          const backgroundProfileUrl = `http://192.168.0.107:8000/api/dashboard/profiles/background/${user.id}/`;
           console.log('Constructed background profile URL:', backgroundProfileUrl);
           
           try {

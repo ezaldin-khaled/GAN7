@@ -5,7 +5,7 @@ import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import './BillingTab.css';
 
 // Update to match UserAccountPage base URL
-  const API_URL = 'http://192.168.0.104:8000/';
+  const API_URL = 'http://192.168.0.107:8000/';
 const PAYMENTS_ENDPOINT = 'api/payments/';
 
 const BackgroundBillingTab = () => {

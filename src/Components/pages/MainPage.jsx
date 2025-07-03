@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Navbar from '../Navbar/Navbar';
 import Home from '../Hero/Hero';
 import Services from '../Serv/Serv';
@@ -10,6 +11,7 @@ import Title from '../Title/Title'
 import Gallery from '../Gallery/Gallery'
 
 const MainPage = () => {
+    const { t } = useTranslation();
     const location = useLocation();
 
     useEffect(() => {
@@ -30,12 +32,12 @@ const MainPage = () => {
       <Navbar /> {/* Navbar is only on the main page */}
       <Home id="hero" /> {/* Home section */}
       <div className="container">
-      <Title subTitle = 'Our Services' title = 'What We Offer'/>
+      <Title subTitle={t('main.servicesSubtitle')} title={t('main.servicesTitle')}/>
         <Services id="serv" /> {/* Services section */}
         <About id="about" /> {/* About section */}
         {/* <Title subTitle = 'Contact Us' title = 'Get in Touch'/> */}
         {/* <Contact id="footer" /> Contact section */}
-        <Title subTitle = 'Our Gallery' title = 'the best of our work'/>
+        <Title subTitle={t('main.gallerySubtitle')} title={t('main.galleryTitle')}/>
         <Gallery id="gallery" /> {/* Gallery section */}
         <Foot/>
       </div>

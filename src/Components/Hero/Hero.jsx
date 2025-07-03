@@ -1,8 +1,11 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 import '../Hero/Hero.css'
 import dark_arrow from '../../assets/dark-arrow.png'
 
 const Hero = () => {
+    const { t } = useTranslation();
+    
     const scrollToFooter = () => {
         // Try to find the contact section or footer
         const contactSection = document.getElementById('contact') || 
@@ -27,9 +30,9 @@ const Hero = () => {
     <div className='hero container'>
         <div className="hero-txt">
             <h1>
-                Global Artist Network
+            {t('hero.title')}
             </h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque voluptatum quo exercitationem at, dolorum ipsa?</p>
+            <p>{t('hero.subtitle')}</p>
             
         </div>
     </div>

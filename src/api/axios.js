@@ -2,7 +2,7 @@ import axios from 'axios';
 import api_config from './axios.config';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://192.168.0.103:8000/',
+  baseURL: 'http://192.168.0.107:8000/',
   timeout: 25000, // Increased timeout for better reliability
   headers: {
     ...api_config.DEFAULT_HEADERS,

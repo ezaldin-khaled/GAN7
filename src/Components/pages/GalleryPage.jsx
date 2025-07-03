@@ -96,26 +96,6 @@ const GalleryPage = () => {
         <div className="gallery-header">
           <h1>Shared Media Gallery</h1>
           <p>Discover amazing talent through media shared by our admin team</p>
-          <button 
-            onClick={fetchSharedMedia}
-            disabled={loading}
-            className="refresh-btn"
-            style={{
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              padding: '10px 20px',
-              borderRadius: '25px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              marginTop: '15px',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'all 0.3s ease',
-              opacity: loading ? 0.6 : 1
-            }}
-          >
-            {loading ? 'Loading...' : '🔄 Refresh Gallery'}
-          </button>
         </div>
 
         <div className="gallery-filters">
@@ -190,21 +170,14 @@ const GalleryPage = () => {
         </div>
 
         {filteredMedia.length === 0 && !loading && !error && (
-          <div className="no-media">
-            <div className="no-media-content">
-              <h3>No Shared Media Found</h3>
-              <p>The gallery is currently empty. No media has been shared by the admin team yet.</p>
-              <div className="no-media-instructions">
-                <h4>How to add media to the gallery:</h4>
-                <ol>
-                  <li>Go to the Admin Dashboard</li>
-                  <li>Search for users in the "Hybrid Workers" tab</li>
-                  <li>Select a user and switch to the "Shared Media" tab</li>
-                  <li>Click "Share to Gallery" on any media item</li>
-                  <li>The media will then appear in this gallery</li>
-                </ol>
-              </div>
-            </div>
+          <div style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            color: 'white',
+            fontSize: '1.2rem',
+            opacity: 0.8
+          }}>
+            No media yet
           </div>
         )}
       </div>

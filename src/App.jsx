@@ -10,6 +10,8 @@ import SubscriptionPlans from './Components/pages/payment/SubscriptionPlans';
 import SubscriptionSuccess from './Components/pages/payment/SubscriptionSuccess';
 import GalleryPage from './Components/pages/GalleryPage';
 import { AuthProvider } from './Components/context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
+import './i18n'; // Initialize i18n
 
 // Component to conditionally redirect based on user type
 const AccountRouter = () => {
@@ -58,47 +60,49 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/account" element={<AccountRouter />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route 
-          path="/admin/dashboard/*" 
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboard />
-            </ProtectedAdminRoute>
-          } 
-        />
-        <Route 
-          path="/subscription" 
-          element={
-            <ProtectedRoute>
-              <SubscriptionPlans />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/subscription/success" 
-          element={
-            <ProtectedRoute>
-              <SubscriptionSuccess />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/subscription/cancel" 
-          element={
-            <ProtectedRoute>
-              <Navigate to="/subscription" replace />
-            </ProtectedRoute>
-          } 
-        />
-      </Routes>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/account" element={<AccountRouter />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin/dashboard/*" 
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            } 
+          />
+          <Route 
+            path="/subscription" 
+            element={
+              <ProtectedRoute>
+                <SubscriptionPlans />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/subscription/success" 
+            element={
+              <ProtectedRoute>
+                <SubscriptionSuccess />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/subscription/cancel" 
+            element={
+              <ProtectedRoute>
+                <Navigate to="/subscription" replace />
+              </ProtectedRoute>
+            } 
+          />
+        </Routes>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "./UserProfilePopup.css";
 
 // Update the axios instance and interceptors - same as UserAccountPage
-const API_URL = 'http://192.168.0.103:8000/';
+const API_URL = 'http://192.168.0.107:8000/';
 
 // Create an axios instance with the base URL and token handling
 const axiosInstance = axios.create({

@@ -4,7 +4,7 @@ import axios from 'axios';
 import ItemUploadForm from './ItemUploadForm';
 
 // Update to match UserAccountPage base URL
-const API_URL = 'http://192.168.0.103:8000/';
+const API_URL = 'http://192.168.0.107:8000/';
 
 const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);

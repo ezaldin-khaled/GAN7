@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import './authentication.css';
 import google_logo from '../assets/img/icon-google.svg'
 import face_logo from '../assets/img/icon-facebook.svg'
@@ -11,6 +12,7 @@ import logo from '../../../../assets/10.png';
 import { AuthContext } from '../../../context/AuthContext';
 
 const AuthPage = () => {
+  const { t } = useTranslation();
   const [loginRole, setLoginRole] = useState('talent');
   const [isLoginActive, setIsLoginActive] = useState(true);
   const [loginPasswordVisible, setLoginPasswordVisible] = useState(false);
@@ -91,7 +93,7 @@ const AuthPage = () => {
         // Also store refresh token
         localStorage.setItem('refresh', response.data.refresh);
         
-        setSuccessMessage('Login successful! Redirecting to main page...');
+        setSuccessMessage(t('auth.loginSuccess'));
         
         // Redirect to main page after a short delay
         setTimeout(() => {
@@ -106,16 +108,16 @@ const AuthPage = () => {
       // Handle different error scenarios
       if (error.response) {
         if (error.response.status === 401) {
-          setError('Invalid email or password. Please try again.');
+          setError(t('auth.invalidCredentials'));
         } else if (error.response.status === 404) {
-          setError('User not found. Please check your credentials.');
+          setError(t('auth.userNotFound'));
         } else {
-          setError(error.response.data?.message || 'Login failed. Please try again.');
+          setError(error.response.data?.message || t('auth.loginFailed'));
         }
       } else if (error.request) {
-        setError('Network error. Please check your connection and try again.');
+        setError(t('auth.networkError'));
       } else {
-        setError('An unexpected error occurred. Please try again later.');
+        setError(t('auth.unexpectedError'));
       }
     } finally {
       setIsLoading(false);
@@ -212,11 +214,11 @@ const AuthPage = () => {
           {isLoginActive ? (
             // Login form content
             <>
-              <h1 className="auth-title">Log in to your account</h1>
+              <h1 className="auth-title">{t('auth.loginTitle')}</h1>
               {error && <div className="auth-error">{error}</div>}
               
               <div className="form-group role-selection">
-                <label className="form-label">Login as</label>
+                <label className="form-label">{t('auth.loginAs')}</label>
                 <div className="role-options">
                   <label className="role-option">
                     <input
@@ -227,7 +229,7 @@ const AuthPage = () => {
                       onChange={(e) => setLoginRole(e.target.value)}
                       disabled={isLoading}
                     />
-                    <span>Talent</span>
+                    <span>{t('auth.talent')}</span>
                   </label>
                   <label className="role-option">
                     <input
@@ -238,18 +240,18 @@ const AuthPage = () => {
                       onChange={(e) => setLoginRole(e.target.value)}
                       disabled={isLoading}
                     />
-                    <span>Production Assets Pro</span>
+                    <span>{t('auth.productionAssetsPro')}</span>
                   </label>
                 </div>
               </div>
               
               <form onSubmit={handleLoginSubmit}>
                 <div className="form-group">
-                  <label htmlFor="login_email" className="form-label">Email</label>
+                  <label htmlFor="login_email" className="form-label">{t('auth.email')}</label>
                   <input
                     type="email"
                     id="login_email"
-                    placeholder="Enter your email"
+                    placeholder={t('auth.enterEmail')}
                     value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     required
@@ -257,12 +259,12 @@ const AuthPage = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="login_password" className="form-label">Password</label>
+                  <label htmlFor="login_password" className="form-label">{t('auth.password')}</label>
                   <div className="password-input-container">
                     <input
                       type={loginPasswordVisible ? "text" : "password"}
                       id="login_password"
-                      placeholder="Enter your password"
+                      placeholder={t('auth.enterPassword')}
                       value={loginData.password}
                       onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                       required
@@ -274,20 +276,20 @@ const AuthPage = () => {
                       onClick={TOGGLE_LOGIN_PASSWORD_VISIBILITY}
                       disabled={isLoading}
                     >
-                      {loginPasswordVisible ? 'Hide' : 'Show'}
+                      {loginPasswordVisible ? t('auth.hide') : t('auth.show')}
                     </button>
                   </div>
                 </div>
                 <div className="form-footer">
-                  <a href="#" className="forgot-password">Forgot your password?</a>
+                  <a href="#" className="forgot-password">{t('auth.forgotPassword')}</a>
                 </div>
                 <button type="submit" className="auth-button" disabled={isLoading}>
-                  {isLoading ? 'Logging in...' : 'Login'}
+                  {isLoading ? t('auth.loggingIn') : t('auth.login')}
                 </button>
               </form>
               
               <div className="social-login">
-                <p>Or login with</p>
+                <p>{t('auth.orLoginWith')}</p>
                 <div className="social-buttons">
                   <button className="social-btn" disabled={isLoading}>
                     <img src={google_logo} alt="Google" />
@@ -302,23 +304,23 @@ const AuthPage = () => {
               </div>
               
               <p className="auth-switch">
-                Don't have an account? 
-                <button onClick={toggleLoginRegister} disabled={isLoading}>Create Account</button>
+                {t('auth.dontHaveAccount')} 
+                <button onClick={toggleLoginRegister} disabled={isLoading}>{t('auth.createAccount')}</button>
               </p>
             </>
           ) : (
-            // Register form content remains mostly the same with loading state added
+            // Register form content
             <>
-              <h1 className="auth-title">Create new account</h1>
+              <h1 className="auth-title">{t('auth.createAccountTitle')}</h1>
               {error && <div className="auth-error">{error}</div>}
               <form onSubmit={handleRegisterSubmit}>
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="first_name" className="form-label">First Name</label>
+                    <label htmlFor="first_name" className="form-label">{t('auth.firstName')}</label>
                     <input
                       type="text"
                       id="first_name"
-                      placeholder="Enter first name"
+                      placeholder={t('auth.enterFirstName')}
                       value={registerData.first_name}
                       onChange={handleRegisterChange}
                       required
@@ -326,11 +328,11 @@ const AuthPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="last_name" className="form-label">Last Name</label>
+                    <label htmlFor="last_name" className="form-label">{t('auth.lastName')}</label>
                     <input
                       type="text"
                       id="last_name"
-                      placeholder="Enter last name"
+                      placeholder={t('auth.enterLastName')}
                       value={registerData.last_name}
                       onChange={handleRegisterChange}
                       required
@@ -340,11 +342,11 @@ const AuthPage = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="email" className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label">{t('auth.email')}</label>
                   <input 
                     type="email" 
                     id="email"
-                    placeholder="Enter your email"
+                    placeholder={t('auth.enterEmail')}
                     value={registerData.email}
                     onChange={handleRegisterChange}
                     required 
@@ -353,12 +355,12 @@ const AuthPage = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="password" className="form-label">Password</label>
+                  <label htmlFor="password" className="form-label">{t('auth.password')}</label>
                   <div className="password-input-container">
                     <input 
                       type={registerPasswordVisible ? "text" : "password"} 
                       id="password"
-                      placeholder="Enter your password"
+                      placeholder={t('auth.enterPassword')}
                       value={registerData.password}
                       onChange={handleRegisterChange}
                       required 
@@ -370,13 +372,13 @@ const AuthPage = () => {
                       onClick={toggleRegisterPasswordVisibility}
                       disabled={isLoading}
                     >
-                      {registerPasswordVisible ? 'Hide' : 'Show'}
+                      {registerPasswordVisible ? t('auth.hide') : t('auth.show')}
                     </button>
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="gender" className="form-label">Gender</label>
+                  <label htmlFor="gender" className="form-label">{t('auth.gender')}</label>
                   <select 
                     id="gender" 
                     name="gender" 
@@ -385,11 +387,11 @@ const AuthPage = () => {
                     required
                     disabled={isLoading}
                   >
-                    <option value="" disabled>Select your gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                    <option value="prefer_not_to_say">Prefer not to say</option>
+                    <option value="" disabled>{t('auth.selectGender')}</option>
+                    <option value="Male">{t('auth.male')}</option>
+                    <option value="Female">{t('auth.female')}</option>
+                    <option value="Other">{t('auth.other')}</option>
+                    <option value="prefer_not_to_say">{t('auth.preferNotToSay')}</option>
                   </select>
                 </div>
 
