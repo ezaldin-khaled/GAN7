@@ -15,6 +15,12 @@ static_sites:
         value: production
       - key: VITE_API_URL
         value: https://api.gan7club.com:8000
+      - key: VITE_STRIPE_PUBLIC_KEY
+        value: pk_test_51RfHRzP623EsFG0oJiJ43PsCwsWyguGY7yoYuvMiUMMVyU019qUzMDytg7JOIx6k7EXxSOf36jTHnvbBjukMAFDy00iQcjXEOc
+      - key: VITE_APP_NAME
+        value: Gan7Club
+      - key: VITE_APP_VERSION
+        value: 1.0.0
     domains:
       - name: gan7club.com
       - name: www.gan7club.com 

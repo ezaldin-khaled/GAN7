@@ -1,0 +1,1 @@
+web: echo "Static site - no server process needed" 
