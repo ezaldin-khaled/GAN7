@@ -8,8 +8,8 @@ const DEFAULT_HEADERS = {
 const api_config = axios.create({
     baseURL: 'https://api.gan7club.com:8000/api/',  // Backend server IP
     CSRF_TRUSTED_ORIGINS: [
-        "http://192.168.0.119:3000",
-        "https://api.gan7club.com:3000"
+        "https://gan7club.com",
+        "https://www.gan7club.com"
     ],
     timeout: 10000, // Increased timeout for debugging
     headers: DEFAULT_HEADERS
