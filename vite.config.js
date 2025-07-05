@@ -21,7 +21,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'https://api.gan7club.com:8000',
+        target: process.env.VITE_API_URL || 'https://api.gan7club.com',
         changeOrigin: true,
         secure: false,
         logLevel: 'debug',

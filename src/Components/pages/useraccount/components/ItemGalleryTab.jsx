@@ -4,7 +4,7 @@ import axios from 'axios';
 import ItemUploadForm from './ItemUploadForm';
 
 // Update to match UserAccountPage base URL
-const API_URL = 'https://api.gan7club.com:8000/';
+const API_URL = 'https://api.gan7club.com/';
 
 const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);

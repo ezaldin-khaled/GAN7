@@ -3,7 +3,7 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import './PaymentForm.css';
 
-const API_URL = 'https://api.gan7club.com:8000/';
+const API_URL = 'https://api.gan7club.com/';
 
 const PaymentForm = ({ planId, onSuccess, onError }) => {
   const stripe = useStripe();

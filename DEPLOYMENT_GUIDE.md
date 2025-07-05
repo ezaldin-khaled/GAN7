@@ -95,7 +95,7 @@ DigitalOcean will automatically provision SSL certificates for your custom domai
 
 The app is configured with:
 - `NODE_ENV=production`
-- `VITE_API_URL=https://api.gan7club.com:8000`
+- `VITE_API_URL=https://api.gan7club.com`
 
 ## Step 8: Monitor Deployment
 

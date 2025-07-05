@@ -3,7 +3,7 @@ import { FaEnvelope, FaUser, FaPaperPlane, FaSpinner, FaUsers, FaList, FaEye, Fa
 import axios from 'axios';
 import '../AdminDashboard.css';
 
-const API_BASE_URL = 'https://api.gan7club.com:8000/api';
+const API_BASE_URL = 'https://api.gan7club.com/api';
 
 const EmailTab = ({ selectedUser }) => {
   const [emailForm, setEmailForm] = useState({

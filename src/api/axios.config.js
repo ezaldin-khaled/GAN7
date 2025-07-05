@@ -6,7 +6,7 @@ const DEFAULT_HEADERS = {
 };
 
 const api_config = axios.create({
-    baseURL: 'https://api.gan7club.com:8000/api/',  // Backend server IP
+    baseURL: 'https://api.gan7club.com/api/',  // Backend server IP
     CSRF_TRUSTED_ORIGINS: [
         "https://gan7club.com",
         "https://www.gan7club.com"

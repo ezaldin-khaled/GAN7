@@ -568,7 +568,7 @@ const SpecializationTab = () => {
       setLoading(true);
       setError('');
       
-      const response = await fetch('https://api.gan7club.com:8000/api/profile/specializations/', {
+      const response = await fetch('https://api.gan7club.com/api/profile/specializations/', {
         method: 'POST',
         body: formData,
         credentials: 'include',

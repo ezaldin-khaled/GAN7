@@ -78,51 +78,6 @@ src/
 ### Environment Variables
 Create a `.env` file in the root directory:
 ```env
-REACT_APP_API_URL=http://your-api-url:8000
+REACT_APP_API_URL=http://your-api-url
 REACT_APP_ENVIRONMENT=development
 ```
-
-## 📱 Features in Detail
-
-### UserProfilePopup Component
-- Enhanced profile score section with modern styling
-- Responsive design for mobile and desktop
-- Clean button alignment and positioning
-- Professional color scheme and typography
-
-### Search Functionality
-- Advanced filtering options
-- Real-time search results
-- User-friendly interface
-
-### Media Management
-- Image and video upload support
-- Gallery view with grid layout
-- File type validation
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**Khaled Ill**
-- GitHub: [@Khaled-ill](https://github.com/Khaled-ill)
-
-## 🙏 Acknowledgments
-
-- React.js community for excellent documentation
-- Modern CSS techniques and best practices
-- Open source contributors and libraries
-
----
-
-**Note**: This is a work in progress. More features and improvements are being added regularly.

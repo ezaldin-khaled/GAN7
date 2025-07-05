@@ -1,6 +1,6 @@
-import axios from './axios';
+import axios from 'axios';
 
-const API_URL = 'https://api.gan7club.com:8000/';
+const API_URL = 'https://api.gan7club.com/';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

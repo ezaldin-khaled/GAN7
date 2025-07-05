@@ -4,7 +4,7 @@ import axios from 'axios';
 import './BillingTab.css';
 
 // Update to match UserAccountPage base URL
-const API_URL = 'https://api.gan7club.com:8000/';
+const API_URL = 'https://api.gan7club.com/';
 const PAYMENTS_ENDPOINT = 'api/payments/';
 
 const BillingTab = () => {

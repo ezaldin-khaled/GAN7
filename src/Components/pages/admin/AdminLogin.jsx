@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
 
-const API_BASE_URL = 'https://api.gan7club.com:8000/api';
+const API_BASE_URL = 'https://api.gan7club.com/api';
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
