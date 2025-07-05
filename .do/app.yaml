@@ -26,4 +26,8 @@ static_sites:
       - name: www.gan7club.com
     # Explicitly specify this is a static site
     run_command: ""
-    instance_count: 0 
+    instance_count: 0
+    # Static site configuration
+    static_site_config:
+      error_document: index.html
+      index_document: index.html 
