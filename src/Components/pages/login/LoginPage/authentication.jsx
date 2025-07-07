@@ -130,111 +130,103 @@ const AuthPage = () => {
     setSuccessMessage('');
     setIsLoading(true);
     
-    // Add detailed logging
-    console.log('Registration data being sent:', registerData);
-    console.log('Registration data type:', typeof registerData);
-    console.log('Registration data keys:', Object.keys(registerData));
-    console.log('Individual field values:');
-    console.log('- first_name:', registerData.first_name);
-    console.log('- last_name:', registerData.last_name);
-    console.log('- email:', registerData.email);
-    console.log('- password:', registerData.password ? '[HIDDEN]' : 'MISSING');
-    console.log('- gender:', registerData.gender);
-    console.log('- date_of_birth:', registerData.date_of_birth);
-    console.log('- country:', registerData.country);
-    console.log('- role:', registerData.role);
-    console.log('- account_type:', registerData.account_type);
-    
-    // Validate required fields
-    const requiredFields = ['first_name', 'last_name', 'email', 'password', 'gender', 'role', 'country'];
-    const missingFields = requiredFields.filter(field => !registerData[field]);
-    
-    if (missingFields.length > 0) {
-      console.error('Missing required fields:', missingFields);
-      setError(`Missing required fields: ${missingFields.join(', ')}`);
-      setIsLoading(false);
-      return;
-    }
-    
-    // Validate date of birth
-    if (!registerData.date_of_birth) {
-      console.error('Date of birth is required');
-      setError('Please select your date of birth');
-      setIsLoading(false);
-      return;
-    }
-    
-    console.log('All required fields are present, proceeding with registration...');
-    
     try {
-      // Use axios for registration
-      console.log('Making registration request with axios...');
-      console.log('Request body:', JSON.stringify(registerData, null, 2));
-      const response = await axiosInstance.post('https://api.gan7club.com/api/register/', registerData);
-      console.log('Registration successful:', response.data);
+      // Validate all required fields
+      const requiredFields = ['first_name', 'last_name', 'email', 'password', 'gender', 'role', 'country'];
+      const missingFields = requiredFields.filter(field => !registerData[field]);
       
-      // Store tokens if provided
-      if (response.data.access) {
-        localStorage.setItem('access', response.data.access);
-        localStorage.setItem('refresh', response.data.refresh);
-        localStorage.setItem('user', JSON.stringify({
-          is_talent: response.data.is_talent,
-          is_background: response.data.is_background,
-          email_verified: response.data.email_verified
-        }));
-        
-        setSuccessMessage('Registration successful! Redirecting to your account...');
-        
-        // Redirect after a short delay to show success message
-        setTimeout(() => {
-          navigate('/account');
-        }, 1500);
-      } else {
-        // If registration is successful but requires email verification
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+      }
+      
+      // Validate date of birth
+      if (!registerData.date_of_birth) {
+        throw new Error('Please select your date of birth');
+      }
+      
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(registerData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+      
+      // Validate password strength
+      if (registerData.password.length < 8) {
+        throw new Error('Password must be at least 8 characters long');
+      }
+      
+      console.log('📝 Registration data:', {
+        first_name: registerData.first_name,
+        last_name: registerData.last_name,
+        email: registerData.email,
+        gender: registerData.gender,
+        date_of_birth: registerData.date_of_birth,
+        country: registerData.country,
+        role: registerData.role
+      });
+      
+      // Make registration request
+      const response = await axiosInstance.post('https://api.gan7club.com/api/register/', registerData);
+      
+      console.log('✅ Registration successful:', response.data);
+      
+      // Handle successful registration
+      if (response.data.success) {
         setSuccessMessage('Registration successful! Please check your email to verify your account.');
+        
+        // Clear form data
+        setRegisterData({
+          first_name: '',
+          last_name: '',
+          email: '',
+          password: '',
+          gender: '',
+          date_of_birth: '',
+          country: '',
+          role: 'talent',
+          account_type: 'talent'
+        });
         
         // Switch to login form after showing success message
         setTimeout(() => {
           setIsLoginActive(true);
         }, 3000);
+      } else {
+        throw new Error(response.data.message || 'Registration failed');
       }
-    } catch (error) {
-      console.error('Registration error:', error);
-      console.error('Registration error response:', error.response);
-      console.error('Registration error data:', error.response?.data);
-      console.error('Registration error status:', error.response?.status);
-      console.error('Registration error headers:', error.response?.headers);
       
-      // Handle different error scenarios
+    } catch (error) {
+      console.error('❌ Registration error:', error);
+      
+      // Handle different types of errors
       if (error.response) {
-        if (error.response.status === 409) {
-          setError('An account with this email already exists.');
-        } else if (error.response.status === 400) {
-          // Handle validation errors
-          const errorData = error.response.data;
-          console.log('Validation error data:', errorData);
-          console.log('Validation errors object:', errorData.errors);
-          
-          if (errorData.errors && errorData.errors.email && errorData.errors.email.includes('already exists')) {
-            setError('An account with this email already exists. Please use a different email or try logging in.');
-          } else if (typeof errorData === 'object' && !Array.isArray(errorData)) {
-            // Extract field-specific errors
-            const errorMessages = Object.entries(errorData.errors || errorData)
-              .map(([field, message]) => `${field}: ${message}`)
+        // Server responded with error status
+        const { status, data } = error.response;
+        
+        if (status === 400) {
+          // Validation errors
+          if (data.errors) {
+            const errorMessages = Object.entries(data.errors)
+              .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages[0] : messages}`)
               .join('\n');
-            setError(errorMessages || 'Please check your information and try again.');
+            setError(errorMessages);
           } else {
-            setError(errorData.detail || 'Registration failed. Please check your information.');
+            setError(data.message || 'Please check your information and try again.');
           }
+        } else if (status === 409) {
+          setError('An account with this email already exists. Please use a different email or try logging in.');
+        } else if (status === 422) {
+          setError('Invalid data provided. Please check your information.');
         } else {
-          setError(error.response.data?.message || 'Registration failed. Please try again.');
+          setError(data.message || `Registration failed (${status}). Please try again.`);
         }
       } else if (error.request) {
-        console.error('Network error - no response received:', error.request);
-        setError('Network error. Please check your connection and try again.');
+        // Network error - no response received
+        console.error('🌐 Network error:', error.request);
+        setError('Network error. Please check your internet connection and try again.');
       } else {
-        console.error('Unexpected error:', error.message);
-        setError('An unexpected error occurred. Please try again later.');
+        // Other errors (validation, etc.)
+        setError(error.message || 'An unexpected error occurred. Please try again.');
       }
     } finally {
       setIsLoading(false);
