@@ -167,17 +167,9 @@ const AuthPage = () => {
     console.log('All required fields are present, proceeding with registration...');
     
     try {
-      // Test with direct fetch first to verify backend is working
-      console.log('Testing with direct fetch...');
-      const fetchResponse = await fetch('https://api.gan7club.com/api/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData)
-      });
-      console.log('Direct fetch response status:', fetchResponse.status);
-      
-      // Now try with axios
-      console.log('Testing with axios...');
+      // Use axios for registration
+      console.log('Making registration request with axios...');
+      console.log('Request body:', JSON.stringify(registerData, null, 2));
       const response = await axiosInstance.post('https://api.gan7club.com/api/register/', registerData);
       console.log('Registration successful:', response.data);
       
@@ -215,21 +207,25 @@ const AuthPage = () => {
       
       // Handle different error scenarios
       if (error.response) {
-        if (error.response.status === 400) {
+        if (error.response.status === 409) {
+          setError('An account with this email already exists.');
+        } else if (error.response.status === 400) {
           // Handle validation errors
           const errorData = error.response.data;
           console.log('Validation error data:', errorData);
-          if (typeof errorData === 'object' && !Array.isArray(errorData)) {
+          console.log('Validation errors object:', errorData.errors);
+          
+          if (errorData.errors && errorData.errors.email && errorData.errors.email.includes('already exists')) {
+            setError('An account with this email already exists. Please use a different email or try logging in.');
+          } else if (typeof errorData === 'object' && !Array.isArray(errorData)) {
             // Extract field-specific errors
-            const errorMessages = Object.entries(errorData)
+            const errorMessages = Object.entries(errorData.errors || errorData)
               .map(([field, message]) => `${field}: ${message}`)
               .join('\n');
             setError(errorMessages || 'Please check your information and try again.');
           } else {
             setError(errorData.detail || 'Registration failed. Please check your information.');
           }
-        } else if (error.response.status === 409) {
-          setError('An account with this email already exists.');
         } else {
           setError(error.response.data?.message || 'Registration failed. Please try again.');
         }
