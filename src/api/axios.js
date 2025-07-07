@@ -2,7 +2,7 @@ import axios from 'axios';
 import api_config from './axios.config';
 
 const axiosInstance = axios.create({
-  baseURL: '/',  // Use relative URL for proxy
+  baseURL: '',  // Use empty string to avoid overriding full URLs in requests
   timeout: 30000, // Increased timeout to 30 seconds
   withCredentials: false, // Disable credentials for cross-origin requests
   headers: {
