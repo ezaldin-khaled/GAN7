@@ -16,7 +16,7 @@ const api_config = axios.create({
         "http://localhost:3000",
         "http://localhost:5173"
     ],
-    timeout: 30000, // Increased timeout for production
+    timeout: 40000, // Increased timeout for production
     headers: DEFAULT_HEADERS
 });
 

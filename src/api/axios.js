@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a clean axios instance with proper configuration
 const axiosInstance = axios.create({
-  timeout: 30000, // 30 second timeout
+  timeout: 40000, // 40 second timeout
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
