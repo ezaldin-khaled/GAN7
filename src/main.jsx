@@ -11,9 +11,9 @@ const root = createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <LanguageProvider>
-      <Router>
-        <App />
-      </Router>
+    <Router>
+      <App />
+    </Router>
     </LanguageProvider>
   </React.StrictMode>
 );

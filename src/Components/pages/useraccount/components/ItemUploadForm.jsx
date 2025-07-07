@@ -3,7 +3,7 @@ import { FaUpload, FaTimes } from 'react-icons/fa';
 import './GroupsTab.css'; // Reusing existing form styles
 import axios from 'axios';
 
-const API_URL = 'https://api.gan7club.com/';
+const API_URL = '/';
 
 // Create an axios instance with the base URL and token handling
 const axiosInstance = axios.create({

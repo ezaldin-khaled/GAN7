@@ -5,13 +5,18 @@ const DEFAULT_HEADERS = {
     'Accept': 'application/json'
 };
 
+// Use environment variable or fallback to production API
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
+
 const api_config = axios.create({
-    baseURL: 'https://api.gan7club.com/api/',  // Backend server IP
+    baseURL: `${API_BASE_URL}/api/`,  // Use environment variable
     CSRF_TRUSTED_ORIGINS: [
         "https://gan7club.com",
-        "https://www.gan7club.com"
+        "https://www.gan7club.com",
+        "http://localhost:3000",
+        "http://localhost:5173"
     ],
-    timeout: 10000, // Increased timeout for debugging
+    timeout: 30000, // Increased timeout for production
     headers: DEFAULT_HEADERS
 });
 

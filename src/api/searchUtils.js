@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.gan7club.com/';
+// Use environment variable or fallback to production API
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  timeout: 15000,
+  timeout: 30000, // Increased timeout for production
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

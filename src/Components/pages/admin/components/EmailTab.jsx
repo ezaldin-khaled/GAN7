@@ -3,7 +3,7 @@ import { FaEnvelope, FaUser, FaPaperPlane, FaSpinner, FaUsers, FaList, FaEye, Fa
 import axios from 'axios';
 import '../AdminDashboard.css';
 
-const API_BASE_URL = 'https://api.gan7club.com/api';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://api.gan7club.com'}/api`;
 
 const EmailTab = ({ selectedUser }) => {
   const [emailForm, setEmailForm] = useState({
@@ -195,9 +195,9 @@ const EmailTab = ({ selectedUser }) => {
     e.preventDefault();
     
     if (emailMode === 'single') {
-      if (!emailForm.subject.trim() || !emailForm.message.trim() || !emailForm.recipientEmail.trim()) {
-        setErrorMessage('Please fill in all required fields.');
-        return;
+    if (!emailForm.subject.trim() || !emailForm.message.trim() || !emailForm.recipientEmail.trim()) {
+      setErrorMessage('Please fill in all required fields.');
+      return;
       }
     } else {
       if (!emailForm.subject.trim() || !emailForm.message.trim() || emailForm.user_ids.length === 0) {
@@ -216,20 +216,20 @@ const EmailTab = ({ selectedUser }) => {
       if (emailMode === 'single') {
         // Single email
         const response = await axios.post(`${API_BASE_URL}/dashboard/send-email/`, {
-          recipient_email: emailForm.recipientEmail,
-          recipient_name: emailForm.recipientName,
-          subject: emailForm.subject,
-          message: emailForm.message,
-          user_id: selectedUser?.id
-        }, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        recipient_email: emailForm.recipientEmail,
+        recipient_name: emailForm.recipientName,
+        subject: emailForm.subject,
+        message: emailForm.message,
+        user_id: selectedUser?.id
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-        if (response.status === 200) {
-          setSuccessMessage('Email sent successfully!');
+      if (response.status === 200) {
+        setSuccessMessage('Email sent successfully!');
           addToRecentEmails(emailForm.recipientName, emailForm.subject, 'sent');
           clearForm();
         }
@@ -364,21 +364,21 @@ const EmailTab = ({ selectedUser }) => {
             {emailMode === 'single' ? (
               // Single email form
               <>
-                <div className="form-group">
-                  <label htmlFor="recipientEmail">
-                    <FaUser /> Recipient Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="recipientEmail"
-                    name="recipientEmail"
-                    value={emailForm.recipientEmail}
-                    onChange={handleInputChange}
-                    placeholder="user@example.com"
-                    required
+            <div className="form-group">
+              <label htmlFor="recipientEmail">
+                <FaUser /> Recipient Email *
+              </label>
+              <input
+                type="email"
+                id="recipientEmail"
+                name="recipientEmail"
+                value={emailForm.recipientEmail}
+                onChange={handleInputChange}
+                placeholder="user@example.com"
+                required
                     disabled={selectedUser}
                     className={selectedUser && emailForm.recipientEmail ? 'auto-filled' : ''}
-                  />
+              />
                   {selectedUser && emailForm.recipientEmail && (
                     <small className="form-help auto-fill-indicator">
                       ✅ Auto-filled: {emailForm.recipientEmail}
@@ -387,21 +387,21 @@ const EmailTab = ({ selectedUser }) => {
                   {selectedUser && !emailForm.recipientEmail && (
                     <small className="form-help warning">
                       ⚠️ No email found for this user
-                    </small>
-                  )}
-                </div>
+                </small>
+              )}
+            </div>
 
-                <div className="form-group">
-                  <label htmlFor="recipientName">
-                    <FaUser /> Recipient Name
-                  </label>
-                  <input
-                    type="text"
-                    id="recipientName"
-                    name="recipientName"
-                    value={emailForm.recipientName}
-                    onChange={handleInputChange}
-                    placeholder="User Name"
+            <div className="form-group">
+              <label htmlFor="recipientName">
+                <FaUser /> Recipient Name
+              </label>
+              <input
+                type="text"
+                id="recipientName"
+                name="recipientName"
+                value={emailForm.recipientName}
+                onChange={handleInputChange}
+                placeholder="User Name"
                     disabled={selectedUser}
                     className={selectedUser && emailForm.recipientName ? 'auto-filled' : ''}
                   />
@@ -439,7 +439,7 @@ const EmailTab = ({ selectedUser }) => {
                       {selectedUsers.length} user(s) will receive this email
                     </small>
                   )}
-                </div>
+            </div>
 
                 {showUserSelector && (
                   <div className="user-selector">
@@ -609,29 +609,29 @@ const EmailTab = ({ selectedUser }) => {
 
           {/* Show recent emails section only when no history data */}
           {emailHistory.length === 0 && (
-            <div className="recent-emails-section">
+        <div className="recent-emails-section">
               <h3><FaList /> Recent Emails</h3>
-              {recentEmails.length > 0 ? (
-                <div className="recent-emails-list">
-                  {recentEmails.map(email => (
-                    <div key={email.id} className="recent-email-item">
-                      <div className="email-info">
-                        <div className="email-recipient">{email.recipient}</div>
-                        <div className="email-subject">{email.subject}</div>
-                        <div className="email-time">{email.sentAt}</div>
-                      </div>
-                      <div className="email-status">
-                        <span className={`status-badge ${email.status}`}>
-                          {email.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+          {recentEmails.length > 0 ? (
+            <div className="recent-emails-list">
+              {recentEmails.map(email => (
+                <div key={email.id} className="recent-email-item">
+                  <div className="email-info">
+                    <div className="email-recipient">{email.recipient}</div>
+                    <div className="email-subject">{email.subject}</div>
+                    <div className="email-time">{email.sentAt}</div>
+                  </div>
+                  <div className="email-status">
+                    <span className={`status-badge ${email.status}`}>
+                      {email.status}
+                    </span>
+                  </div>
                 </div>
-              ) : (
-                <div className="no-emails">
-                  <FaEnvelope />
-                  <p>No emails sent yet</p>
+              ))}
+            </div>
+          ) : (
+            <div className="no-emails">
+              <FaEnvelope />
+              <p>No emails sent yet</p>
                 </div>
               )}
             </div>
@@ -642,4 +642,4 @@ const EmailTab = ({ selectedUser }) => {
   );
 };
 
-export default EmailTab;
+export default EmailTab; 

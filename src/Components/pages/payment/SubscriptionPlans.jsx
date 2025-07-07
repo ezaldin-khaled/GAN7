@@ -5,7 +5,7 @@ import { stripePromise } from '../../../config/stripe';
 import PaymentForm from './PaymentForm';
 import './SubscriptionPlans.css';
 
-const API_URL = 'https://api.gan7club.com/api/payments/';
+const API_URL = '/api/payments/';
 
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);

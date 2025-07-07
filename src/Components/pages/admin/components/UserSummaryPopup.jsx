@@ -3,7 +3,7 @@ import { FaTimes, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar, FaCheckCi
 import axios from 'axios';
 import './UserSummaryPopup.css';
 
-const API_BASE_URL = 'https://api.gan7club.com/api';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://api.gan7club.com'}/api`;
 
 const UserSummaryPopup = ({ user, onClose }) => {
   const [userData, setUserData] = useState(null);
@@ -27,7 +27,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
         if ((user?.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) && user?.id) {
           console.log('Production Assets Pro user detected, constructing profile URL');
           // Try to construct the profile URL for background users
-          const backgroundProfileUrl = `https://api.gan7club.com/api/dashboard/profiles/background/${user.id}/`;
+          const backgroundProfileUrl = `/api/dashboard/profiles/background/${user.id}/`;
           console.log('Constructed background profile URL:', backgroundProfileUrl);
           
           try {

@@ -12,28 +12,28 @@ const Footer = () => {
     const { t } = useTranslation();
     const [result, setResult] = React.useState("");
 
-    const onSubmit = async (event) => {
-        event.preventDefault();
+const onSubmit = async (event) => {
+    event.preventDefault();
         setResult(t('footer.sending'));
-        const formData = new FormData(event.target);
+    const formData = new FormData(event.target);
 
-        formData.append("access_key", "570fcacc-c5ef-49ba-be40-4732cb188ad5");
+    formData.append("access_key", "570fcacc-c5ef-49ba-be40-4732cb188ad5");
 
-        const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData
-        });
+    const response = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData
+    });
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (data.success) {
+    if (data.success) {
         setResult(t('footer.success'));
-        event.target.reset();
-        } else {
-        console.log("Error", data);
-        setResult(data.message);
-        }
-    };
+    event.target.reset();
+    } else {
+    console.log("Error", data);
+    setResult(data.message);
+    }
+};
 
     return (
     <div>

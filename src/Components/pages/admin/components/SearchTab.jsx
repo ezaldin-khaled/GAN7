@@ -4,7 +4,7 @@ import axios from 'axios';
 import UserSummaryPopup from './UserSummaryPopup';
 import './SearchTab.css';
 
-const API_URL = 'https://api.gan7club.com/';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
 
 // Profile type definitions
 const PROFILE_TYPES = {

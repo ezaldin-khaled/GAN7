@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import './SubscriptionSuccess.css';
 
-const API_URL = 'https://api.gan7club.com/';
+const API_URL = '/';
 
 const SubscriptionSuccess = () => {
   const [searchParams] = useSearchParams();

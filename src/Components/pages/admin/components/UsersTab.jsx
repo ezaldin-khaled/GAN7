@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaEdit, FaTrash, FaUserShield, FaPlus } from 'react-icons/fa';
 import axios from 'axios';
 
-const API_URL = 'https://api.gan7club.com/';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

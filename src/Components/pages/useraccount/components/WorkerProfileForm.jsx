@@ -16,7 +16,7 @@ import {
   RISK_LEVELS
 } from '../../../data/referenceData';
 
-const API_URL = 'https://api.gan7club.com/';
+const API_URL = '/';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

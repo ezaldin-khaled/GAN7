@@ -130,8 +130,55 @@ const AuthPage = () => {
     setSuccessMessage('');
     setIsLoading(true);
     
+    // Add detailed logging
+    console.log('Registration data being sent:', registerData);
+    console.log('Registration data type:', typeof registerData);
+    console.log('Registration data keys:', Object.keys(registerData));
+    console.log('Individual field values:');
+    console.log('- first_name:', registerData.first_name);
+    console.log('- last_name:', registerData.last_name);
+    console.log('- email:', registerData.email);
+    console.log('- password:', registerData.password ? '[HIDDEN]' : 'MISSING');
+    console.log('- gender:', registerData.gender);
+    console.log('- date_of_birth:', registerData.date_of_birth);
+    console.log('- country:', registerData.country);
+    console.log('- role:', registerData.role);
+    console.log('- account_type:', registerData.account_type);
+    
+    // Validate required fields
+    const requiredFields = ['first_name', 'last_name', 'email', 'password', 'gender', 'role', 'country'];
+    const missingFields = requiredFields.filter(field => !registerData[field]);
+    
+    if (missingFields.length > 0) {
+      console.error('Missing required fields:', missingFields);
+      setError(`Missing required fields: ${missingFields.join(', ')}`);
+      setIsLoading(false);
+      return;
+    }
+    
+    // Validate date of birth
+    if (!registerData.date_of_birth) {
+      console.error('Date of birth is required');
+      setError('Please select your date of birth');
+      setIsLoading(false);
+      return;
+    }
+    
+    console.log('All required fields are present, proceeding with registration...');
+    
     try {
-      const response = await axiosInstance.post('/api/register/', registerData);
+      // Test with direct fetch first to verify backend is working
+      console.log('Testing with direct fetch...');
+      const fetchResponse = await fetch('https://api.gan7club.com/api/register/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registerData)
+      });
+      console.log('Direct fetch response status:', fetchResponse.status);
+      
+      // Now try with axios
+      console.log('Testing with axios...');
+      const response = await axiosInstance.post('https://api.gan7club.com/api/register/', registerData);
       console.log('Registration successful:', response.data);
       
       // Store tokens if provided
@@ -160,13 +207,18 @@ const AuthPage = () => {
         }, 3000);
       }
     } catch (error) {
-      console.error('Registration error:', error.response?.data);
+      console.error('Registration error:', error);
+      console.error('Registration error response:', error.response);
+      console.error('Registration error data:', error.response?.data);
+      console.error('Registration error status:', error.response?.status);
+      console.error('Registration error headers:', error.response?.headers);
       
       // Handle different error scenarios
       if (error.response) {
         if (error.response.status === 400) {
           // Handle validation errors
           const errorData = error.response.data;
+          console.log('Validation error data:', errorData);
           if (typeof errorData === 'object' && !Array.isArray(errorData)) {
             // Extract field-specific errors
             const errorMessages = Object.entries(errorData)
@@ -182,8 +234,10 @@ const AuthPage = () => {
           setError(error.response.data?.message || 'Registration failed. Please try again.');
         }
       } else if (error.request) {
+        console.error('Network error - no response received:', error.request);
         setError('Network error. Please check your connection and try again.');
       } else {
+        console.error('Unexpected error:', error.message);
         setError('An unexpected error occurred. Please try again later.');
       }
     } finally {
@@ -409,6 +463,7 @@ const AuthPage = () => {
                           date_of_birth: updateDateString(registerData.birth_year, month, registerData.birth_day)
                         });
                       }}
+                      required
                       disabled={isLoading}
                       className="date-select"
                     >
@@ -438,6 +493,7 @@ const AuthPage = () => {
                           date_of_birth: updateDateString(registerData.birth_year, registerData.birth_month, day)
                         });
                       }}
+                      required
                       disabled={isLoading}
                       className="date-select"
                     >
@@ -460,6 +516,7 @@ const AuthPage = () => {
                           date_of_birth: updateDateString(year, registerData.birth_month, registerData.birth_day)
                         });
                       }}
+                      required
                       disabled={isLoading}
                       className="date-select"
                     >

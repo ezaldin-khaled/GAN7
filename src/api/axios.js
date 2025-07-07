@@ -2,13 +2,13 @@ import axios from 'axios';
 import api_config from './axios.config';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://api.gan7club.com/',
-  timeout: 25000, // Increased timeout for better reliability
+  baseURL: '/',  // Use relative URL for proxy
+  timeout: 30000, // Increased timeout to 30 seconds
+  withCredentials: false, // Disable credentials for cross-origin requests
   headers: {
-    ...api_config.DEFAULT_HEADERS,
+    'Content-Type': 'application/json',
     'Accept': 'application/json'
-  },
-  withCredentials: false // Disable credentials to prevent cookie issues
+  }
 });
 
 // Add request interceptor to include token
@@ -25,7 +25,8 @@ axiosInstance.interceptors.request.use(
       method: config.method,
       baseURL: config.baseURL,
       headers: config.headers,
-      data: config.data
+      data: config.data,
+      timeout: config.timeout
     });
     
     return config;
@@ -58,7 +59,8 @@ axiosInstance.interceptors.response.use(
       config: {
         url: error.config?.url,
         method: error.config?.method,
-        headers: error.config?.headers
+        headers: error.config?.headers,
+        timeout: error.config?.timeout
       }
     });
 

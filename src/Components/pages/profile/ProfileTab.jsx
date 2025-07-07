@@ -26,7 +26,7 @@ const ProfileTab = () => {
     // Fetch reference data when worker type changes
     const fetchReferenceData = async () => {
       try {
-        const response = await fetch(`https://api.gan7club.com/api/reference-data/?type=${workerType}`);
+        const response = await fetch(`/api/reference-data/?type=${workerType}`);
         const data = await response.json();
         setReferenceData(data);
       } catch (error) {

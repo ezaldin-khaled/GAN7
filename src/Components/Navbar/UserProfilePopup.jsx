@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "./UserProfilePopup.css";
 
 // Update the axios instance and interceptors - same as UserAccountPage
-const API_URL = 'https://api.gan7club.com/';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
 
 // Create an axios instance with the base URL and token handling
 const axiosInstance = axios.create({
