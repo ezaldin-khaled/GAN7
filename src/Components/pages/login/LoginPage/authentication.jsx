@@ -166,7 +166,7 @@ const AuthPage = () => {
       });
       
       // Make registration request
-      const response = await axiosInstance.post('https://api.gan7club.com/api/register/', registerData);
+      const response = await axiosInstance.post('/api/register/', registerData);
       
       console.log('✅ Registration successful:', response.data);
       

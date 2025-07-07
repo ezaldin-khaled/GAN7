@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Create a clean axios instance with proper configuration
 const axiosInstance = axios.create({
-  timeout: 40000, // 40 second timeout
+  baseURL: 'https://api.gan7club.com',  // Use the correct API base URL
+  timeout: 30000, // 30 second timeout
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
