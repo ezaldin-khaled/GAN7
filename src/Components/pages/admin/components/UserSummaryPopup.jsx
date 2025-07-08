@@ -301,7 +301,14 @@ const UserSummaryPopup = ({ user, onClose }) => {
             {(user.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) ? (
               // For background users, use profile_picture from root level
               userData.profile_picture ? (
-                <img src={userData.profile_picture} alt={`${userData.user?.first_name || userData.first_name || 'User'}'s profile`} />
+                <img 
+                  src={userData.profile_picture} 
+                  alt={`${userData.user?.first_name || userData.first_name || 'User'}'s profile`}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
               ) : (
                 <div className="avatar-placeholder">
                   <FaUser />
@@ -310,7 +317,14 @@ const UserSummaryPopup = ({ user, onClose }) => {
             ) : (
               // For talent users, use profile.profile_picture
               profile.profile_picture ? (
-                <img src={profile.profile_picture} alt={`${userInfo.first_name}'s profile`} />
+                <img 
+                  src={profile.profile_picture} 
+                  alt={`${userInfo.first_name}'s profile`}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
               ) : (
                 <div className="avatar-placeholder">
                   <FaUser />
