@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './UserAccountPage.css';
 import './EnhancedTabStyles.css'; // Import the enhanced styles
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import ProfileTab from './components/ProfileTab';
@@ -12,85 +12,6 @@ import SettingsTab from './components/SettingsTab';
 import SecurityTab from './components/SecurityTab';
 import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt } from 'react-icons/fa';
 import Loader from '../../common/Loader';
-
-// Update the axios instance and interceptors
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
-
-// Create an axios instance with the base URL and token handling
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
-
-// Add a request interceptor to include the token in all requests
-axiosInstance.interceptors.request.use(
-  (config) => {
-    // Changed from 'token' to 'access'
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      console.log('Using token:', token.substring(0, 15) + '...');
-    } else {
-      // If no token is found, redirect to login
-      window.location.href = '/login';
-    }
-    console.log('Making request to:', config.baseURL + config.url);
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Add response interceptor for better debugging and token refresh
-axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log('Response received:', response.status, 'Data keys:', Object.keys(response.data));
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-    
-    if (error.response?.status === 403 || error.response?.status === 401) {
-      if (!originalRequest._retry) {
-        originalRequest._retry = true;
-        
-        try {
-          const refreshToken = localStorage.getItem('refresh');
-          if (!refreshToken) {
-            throw new Error('No refresh token found');
-          }
-          
-          const response = await axios.post(`${API_URL}api/token/refresh/`, {
-            refresh: refreshToken
-          });
-          
-          const { access } = response.data;
-          localStorage.setItem('access', access);
-          
-          originalRequest.headers.Authorization = `Bearer ${access}`;
-          return axiosInstance(originalRequest);
-        } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError);
-          localStorage.removeItem('access');
-          localStorage.removeItem('refresh');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
-          return Promise.reject(refreshError);
-        }
-      }
-    }
-    
-    if (error.response) {
-      console.error('Error status:', error.response.status);
-      console.error('Error data:', error.response.data);
-    }
-    
-    return Promise.reject(error);
-  }
-);
 
 const BackgroundAccountPage = () => {
   const [activeTab, setActiveTab] = useState('profile');
