@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../api/axios';
 import './AdminLogin.css';
-
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://api.gan7club.com'}/api`;
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -34,90 +33,81 @@ const AdminLogin = () => {
         admin_login: true
       });
 
-      const response = await fetch(`${API_BASE_URL}/admin/login/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          email: credentials.email,
-          password: credentials.password,
-          admin_login: true
-        }),
+      const response = await axiosInstance.post('/admin/login/', {
+        email: credentials.email,
+        password: credentials.password,
+        admin_login: true
       });
 
-      const data = await response.json();
+      const data = response.data;
       console.log('Login response:', data);
 
-      if (response.ok) {
-        // Check for required flags
-        if (!data.is_dashboard) {
-          setError('This account is not registered as a Dashboard user');
-          return;
-        }
-        if (!data.access) {
-          setError('No access token received');
-          return;
-        }
+      // Check for required flags
+      if (!data.is_dashboard) {
+        setError('This account is not registered as a Dashboard user');
+        return;
+      }
+      if (!data.access) {
+        setError('No access token received');
+        return;
+      }
 
-        // Store tokens in localStorage
-        localStorage.setItem('access', data.access);
-        if (data.refresh) {
-          localStorage.setItem('refresh', data.refresh);
-        }
+      // Store tokens in localStorage
+      localStorage.setItem('access', data.access);
+      if (data.refresh) {
+        localStorage.setItem('refresh', data.refresh);
+      }
 
-        // Store user info
-        localStorage.setItem('user', JSON.stringify({
-          email: data.email,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          isTalent: data.is_talent,
-          isBackground: data.is_background,
-          isDashboard: data.is_dashboard,
-          isStaff: data.is_staff,
-          emailVerified: data.email_verified
-        }));
+      // Store user info
+      localStorage.setItem('user', JSON.stringify({
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        isTalent: data.is_talent,
+        isBackground: data.is_background,
+        isDashboard: data.is_dashboard,
+        isStaff: data.is_staff,
+        emailVerified: data.email_verified
+      }));
 
-        // Set admin login flag for protected routes
-        if (data.is_staff) {
-          localStorage.setItem('adminLoggedIn', 'true');
-        }
+      // Set admin login flag for protected routes
+      if (data.is_staff) {
+        localStorage.setItem('adminLoggedIn', 'true');
+      }
 
-        // Show email verification warning if needed
-        if (!data.email_verified && data.message) {
-          console.warn('Email verification warning:', data.message);
-        }
+      // Show email verification warning if needed
+      if (!data.email_verified && data.message) {
+        console.warn('Email verification warning:', data.message);
+      }
 
-        // Redirect based on user type
-        if (data.is_staff) {
-          // Admin user - go to admin dashboard
-          console.log('Admin login successful, redirecting to admin dashboard');
-          navigate('/admin/dashboard');
-        } else {
-          // Regular dashboard user - go to regular dashboard
-          console.log('Dashboard login successful, redirecting to dashboard');
-          navigate('/dashboard');
-        }
+      // Redirect based on user type
+      if (data.is_staff) {
+        // Admin user - go to admin dashboard
+        console.log('Admin login successful, redirecting to admin dashboard');
+        navigate('/admin/dashboard');
       } else {
-        // Handle different types of errors
-        if (data.detail) {
-          setError(data.detail);
-        } else if (data.message) {
-          setError(data.message);
-        } else if (data.email) {
-          setError(data.email[0]);
-        } else if (data.password) {
-          setError(data.password[0]);
-        } else if (data.non_field_errors) {
-          setError(data.non_field_errors[0]);
-        } else {
-          setError('Invalid credentials');
-        }
+        // Regular dashboard user - go to regular dashboard
+        console.log('Dashboard login successful, redirecting to dashboard');
+        navigate('/dashboard');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Failed to connect to server. Please try again.');
+      const data = err.response?.data;
+      
+      // Handle different types of errors
+      if (data?.detail) {
+        setError(data.detail);
+      } else if (data?.message) {
+        setError(data.message);
+      } else if (data?.email) {
+        setError(data.email[0]);
+      } else if (data?.password) {
+        setError(data.password[0]);
+      } else if (data?.non_field_errors) {
+        setError(data.non_field_errors[0]);
+      } else {
+        setError('Invalid credentials');
+      }
     } finally {
       setIsLoading(false);
     }

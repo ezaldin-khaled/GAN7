@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar, FaCheckCircle, FaBriefcase, FaGraduationCap, FaLanguage, FaAward, FaSpinner, FaImage, FaVideo } from 'react-icons/fa';
-import axios from 'axios';
+import axiosInstance from '../../../api/axios';
 import './UserSummaryPopup.css';
-
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://api.gan7club.com'}/api`;
 
 const UserSummaryPopup = ({ user, onClose }) => {
   const [userData, setUserData] = useState(null);
@@ -27,19 +25,14 @@ const UserSummaryPopup = ({ user, onClose }) => {
         if ((user?.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) && user?.id) {
           console.log('Production Assets Pro user detected, constructing profile URL');
           // Try to construct the profile URL for background users
-          const backgroundProfileUrl = `/api/dashboard/profiles/background/${user.id}/`;
+          const backgroundProfileUrl = `/dashboard/profiles/background/${user.id}/`;
           console.log('Constructed background profile URL:', backgroundProfileUrl);
           
           try {
             setLoading(true);
             setError(null);
             
-            const response = await axios.get(backgroundProfileUrl, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                'Accept': 'application/json'
-              } 
-            });
+            const response = await axiosInstance.get(backgroundProfileUrl);
             
             setUserData(response.data);
             console.log('Production Assets Pro profile data loaded:', response.data);
@@ -84,12 +77,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
           
           try {
             // For background users, fetch items from the API
-            const itemsResponse = await axios.get(`${API_BASE_URL}/profile/background/items/`, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                'Accept': 'application/json'
-              }
-            });
+            const itemsResponse = await axiosInstance.get('/profile/background/items/');
             
             console.log('Production Assets Pro items API response:', itemsResponse.data);
             
@@ -145,12 +133,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
         
         // Step 1: Get detailed profile info from profile_url
         console.log('Fetching profile from:', user.profile_url);
-        const response = await axios.get(user.profile_url, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access')}`,
-            'Accept': 'application/json'
-          }
-        });
+        const response = await axiosInstance.get(user.profile_url);
         
         setUserData(response.data);
         console.log('Production Assets Pro profile data loaded:', response.data);

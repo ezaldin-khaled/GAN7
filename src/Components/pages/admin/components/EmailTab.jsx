@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaUser, FaPaperPlane, FaSpinner, FaUsers, FaList, FaEye, FaHistory } from 'react-icons/fa';
-import axios from 'axios';
+import axiosInstance from '../../../api/axios';
 import '../AdminDashboard.css';
-
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://api.gan7club.com'}/api`;
 
 const EmailTab = ({ selectedUser }) => {
   const [emailForm, setEmailForm] = useState({
@@ -99,12 +97,7 @@ const EmailTab = ({ selectedUser }) => {
 
   const loadAvailableUsers = async () => {
     try {
-      const token = localStorage.getItem('access');
-      const response = await axios.get(`${API_BASE_URL}/users/list/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await axiosInstance.get('/users/list/');
       setAvailableUsers(response.data || []);
     } catch (error) {
       console.error('Error loading users:', error);
@@ -114,15 +107,10 @@ const EmailTab = ({ selectedUser }) => {
   const loadEmailHistory = async () => {
     setHistoryLoading(true);
     try {
-      const token = localStorage.getItem('access');
       console.log('Loading email history...');
-      console.log('API URL:', `${API_BASE_URL}/dashboard/email/list/`);
+      console.log('API URL:', '/dashboard/email/list/');
       
-      const response = await axios.get(`${API_BASE_URL}/dashboard/email/list/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await axiosInstance.get('/dashboard/email/list/');
       
       console.log('Email history API response:', response);
       console.log('Response status:', response.status);
@@ -215,7 +203,7 @@ const EmailTab = ({ selectedUser }) => {
       
       if (emailMode === 'single') {
         // Single email
-        const response = await axios.post(`${API_BASE_URL}/dashboard/send-email/`, {
+        const response = await axiosInstance.post('/dashboard/send-email/', {
         recipient_email: emailForm.recipientEmail,
         recipient_name: emailForm.recipientName,
         subject: emailForm.subject,
@@ -235,7 +223,7 @@ const EmailTab = ({ selectedUser }) => {
         }
       } else {
         // Bulk email
-        const response = await axios.post(`${API_BASE_URL}/dashboard/email/send/`, {
+        const response = await axiosInstance.post('/dashboard/email/send/', {
           subject: emailForm.subject,
           message: emailForm.message,
           user_ids: emailForm.user_ids,
@@ -344,7 +332,7 @@ const EmailTab = ({ selectedUser }) => {
           <button 
             className="clear-selection-btn"
             onClick={() => {
-              setSelectedUser(null);
+              // setSelectedUser(null); // This line was removed from the new_code, so it's removed here.
               setEmailForm(prev => ({
                 ...prev,
                 recipientEmail: '',

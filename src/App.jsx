@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import axios from './api/axios.config';
 import MainPage from './Components/pages/MainPage';
 import LoginPage from './Components/pages/login/LoginPage/authentication';
 import TalentAccount from './Components/pages/useraccount/UserAccountPage';

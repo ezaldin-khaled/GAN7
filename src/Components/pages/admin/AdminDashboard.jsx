@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaBell, FaUserCircle, FaSignOutAlt, FaEnvelope } from 'react-icons/fa';
+import axiosInstance from '../../api/axios';
 import UsersTab from './components/UsersTab';
 import ItemsTab from './components/ItemsTab';
 import SearchTab from './components/SearchTab';
@@ -18,8 +19,6 @@ const TABS = [
   { id: 'shared-media', label: 'Shared Media', count: 0 },
   { id: 'email', label: 'Email', count: 0 },
 ];
-
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://api.gan7club.com'}/api`;
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -66,50 +65,32 @@ const AdminDashboard = () => {
 
     try {
       // Verify token with backend
-      const response = await fetch(`${API_BASE_URL}/token/verify/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
+      const response = await axiosInstance.post('/token/verify/', { token });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.is_dashboard === true) {
-          setIsAuthenticated(true);
-        } else {
-          redirectToLogin();
-        }
+      if (response.data.is_dashboard === true) {
+        setIsAuthenticated(true);
       } else {
-        // If token is invalid, try to refresh
-        const refreshToken = localStorage.getItem('refresh');
-        if (refreshToken) {
-          const refreshResponse = await fetch(`${API_BASE_URL}/token/refresh/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify({ refresh: refreshToken }),
-          });
-
-          if (refreshResponse.ok) {
-            const refreshData = await refreshResponse.json();
-            localStorage.setItem('access', refreshData.access);
-            setIsAuthenticated(true);
-          } else {
-            redirectToLogin();
-          }
-        } else {
-          redirectToLogin();
-        }
+        redirectToLogin();
       }
     } catch (error) {
       console.error('Auth check failed:', error);
-      redirectToLogin();
+      
+      // If token is invalid, try to refresh
+      const refreshToken = localStorage.getItem('refresh');
+      if (refreshToken) {
+        try {
+          const refreshResponse = await axiosInstance.post('/token/refresh/', { 
+            refresh: refreshToken 
+          });
+          localStorage.setItem('access', refreshResponse.data.access);
+          setIsAuthenticated(true);
+        } catch (refreshError) {
+          console.error('Token refresh failed:', refreshError);
+          redirectToLogin();
+        }
+      } else {
+        redirectToLogin();
+      }
     } finally {
       setIsLoading(false);
     }
@@ -130,14 +111,8 @@ const AdminDashboard = () => {
       const token = localStorage.getItem('access');
       if (token) {
         // Call logout endpoint
-        await fetch(`${API_BASE_URL}/token/blacklist/`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ refresh: localStorage.getItem('refresh') }),
+        await axiosInstance.post('/token/blacklist/', { 
+          refresh: localStorage.getItem('refresh') 
         });
       }
     } catch (error) {
