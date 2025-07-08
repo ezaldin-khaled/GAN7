@@ -316,11 +316,22 @@ export default function UserProfilePopup({ user, onClose }) {
           <div className="profile-popup-info">
             <div className="profile-header">
               <div className="profile-header-left">
-                <img 
-                  src={user.profilePic || userData?.profile_picture || null} 
-                  className="profile-pic-small" 
-                  alt={`${userData?.firstName} ${userData?.lastName}`} 
-                />
+                {user.profilePic || userData?.profile_picture ? (
+                  <img 
+                    src={user.profilePic || userData?.profile_picture} 
+                    className="profile-pic-small" 
+                    alt={`${userData?.firstName} ${userData?.lastName}`}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                {!user.profilePic && !userData?.profile_picture && (
+                  <div className="profile-pic-placeholder">
+                    {userData?.firstName ? userData.firstName.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                )}
                 <div className="profile-header-text">
                   <h2>
                     {userData?.firstName} {userData?.lastName}

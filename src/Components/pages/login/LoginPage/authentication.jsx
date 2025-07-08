@@ -78,7 +78,7 @@ const AuthPage = () => {
           id: response.data.id,
           email: response.data.email,
           name: `${response.data.first_name} ${response.data.last_name}`,
-          profilePic: response.data.profile_picture || '/default-avatar.png', // Add default if no profile pic
+          profilePic: response.data.profile_picture || null, // Remove hardcoded default path
           is_talent: loginRole === 'talent',
           is_background: loginRole === 'background',
           email_verified: response.data.email_verified,

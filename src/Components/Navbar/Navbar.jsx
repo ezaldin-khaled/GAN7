@@ -91,7 +91,22 @@ function Navbar() {
         ) : (
           <li>
             <button className="avatar-btn" onClick={() => setShowProfile(true)}>
-              <img src={user.profilePic} alt="Profile" className="avatar-img" />
+              {user.profilePic ? (
+                <img 
+                  src={user.profilePic} 
+                  alt="Profile" 
+                  className="avatar-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              {!user.profilePic && (
+                <div className="avatar-placeholder">
+                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+              )}
             </button>
           </li>
         )}

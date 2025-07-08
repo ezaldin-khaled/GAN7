@@ -370,8 +370,7 @@ export const ManageBandModal = ({
                                 src={member.profile_picture} 
                                 alt={member.username}
                                 onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = '/assets/default-avatar.png';
+                                  e.target.style.display = 'none';
                                 }}
                               />
                             ) : (

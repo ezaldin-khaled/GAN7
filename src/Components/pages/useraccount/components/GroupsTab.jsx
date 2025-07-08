@@ -779,14 +779,19 @@ const GroupsTab = ({ userData }) => {
             bands.map(band => (
               <div key={band.id} className="band-card">
                 <div className="band-image">
-                  <img 
-                    src={band.profile_picture || '/assets/default-band.png'} 
-                    alt={band.name}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/assets/default-band.png';
-                    }}
-                  />
+                  {band.profile_picture ? (
+                    <img 
+                      src={band.profile_picture} 
+                      alt={band.name}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="band-image-placeholder">
+                      {band.name ? band.name.charAt(0).toUpperCase() : 'B'}
+                    </div>
+                  )}
                 </div>
                 <div className="band-info">
                   <h3>{band.name}</h3>
