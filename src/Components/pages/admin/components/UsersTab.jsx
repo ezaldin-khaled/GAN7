@@ -111,7 +111,21 @@ const UsersTab = () => {
                 <tr key={user.id}>
                   <td>
                     <div className="user-info">
-                      <img src={user.profile_picture || null} alt={`${user.first_name} ${user.last_name}`} />
+                      {user.profile_picture ? (
+                        <img 
+                          src={user.profile_picture} 
+                          alt={`${user.first_name} ${user.last_name}`}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      {!user.profile_picture && (
+                        <div className="user-avatar-placeholder">
+                          {user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                      )}
                       <span>{`${user.first_name} ${user.last_name}`}</span>
                     </div>
                   </td>

@@ -839,8 +839,7 @@ const GroupsTab = ({ userData }) => {
                         src={mediaItem.file_url} 
                         alt={mediaItem.name || 'Band media'}
                         onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/assets/default-media.png';
+                          e.target.style.display = 'none';
                         }}
                       />
                     ) : mediaItem.file_type === 'video' ? (

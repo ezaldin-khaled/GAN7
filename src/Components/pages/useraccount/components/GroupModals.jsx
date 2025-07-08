@@ -312,8 +312,7 @@ export const ManageBandModal = ({
                     alt={selectedBand.name} 
                     style={{ maxWidth: '100px' }}
                     onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/assets/default-band.png';
+                      e.target.style.display = 'none';
                     }}
                   />
                 </div>
