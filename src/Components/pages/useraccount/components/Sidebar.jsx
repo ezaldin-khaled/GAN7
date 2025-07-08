@@ -33,16 +33,18 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
     <div className="account-sidebar">
       <div className="profile-summary">
         <div className="profile-image-container">
-          <img 
-            src={imageSrc} 
-            alt="Profile" 
-            className={`profile-image ${isLoading ? 'loading' : ''} ${useFallback ? 'fallback' : ''}`}
-            style={{ 
-              opacity: isLoading ? 0.6 : 1,
-              transition: 'opacity 0.3s ease-in-out',
-              display: useFallback ? 'none' : 'block'
-            }}
-          />
+          {imageSrc ? (
+            <img 
+              src={imageSrc} 
+              alt="Profile" 
+              className={`profile-image ${isLoading ? 'loading' : ''} ${useFallback ? 'fallback' : ''}`}
+              style={{ 
+                opacity: isLoading ? 0.6 : 1,
+                transition: 'opacity 0.3s ease-in-out',
+                display: useFallback ? 'none' : 'block'
+              }}
+            />
+          ) : null}
           {useFallback && (
             <div className="profile-image-fallback"></div>
           )}
