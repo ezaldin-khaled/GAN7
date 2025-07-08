@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../../../api/axios';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import './BillingTab.css';
-
-// Update to match UserAccountPage base URL
-const API_URL = '/';
-const PAYMENTS_ENDPOINT = 'api/payments/';
 
 const BackgroundBillingTab = () => {
   const [plans, setPlans] = useState([]);
@@ -22,14 +18,9 @@ const BackgroundBillingTab = () => {
 
   const fetchPlans = async () => {
     try {
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
-      console.log('🔍 Fetching Production Assets Pro plans with token:', token ? 'Present' : 'Missing');
+      console.log('🔍 Fetching Production Assets Pro plans with centralized axios');
       
-      const response = await axios.get(`${API_URL}${PAYMENTS_ENDPOINT}plans/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/payments/plans/');
       
       console.log('📥 Production Assets Pro plans API response:', response.data);
       console.log('📋 Plans structure:', JSON.stringify(response.data, null, 2));
@@ -46,13 +37,8 @@ const BackgroundBillingTab = () => {
 
   const fetchCurrentSubscription = async () => {
     try {
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
       // Fetch profile data which includes subscription information
-      const response = await axios.get(`${API_URL}api/profile/background/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/profile/background/');
       
       console.log('📥 Production Assets Pro profile API response:', response.data);
       
@@ -84,42 +70,27 @@ const BackgroundBillingTab = () => {
     try {
       console.log('Plan data being sent:', plan);
       
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
-      console.log('Using token:', token ? 'Token exists' : 'No token found');
+      console.log('Using centralized axios instance');
       
       // Use uppercase plan name as per API example
       const planId = plan.name.toUpperCase();
       
       const requestData = {
         plan_id: planId,
-          success_url: `${window.location.origin}/account?tab=billing`,
-          cancel_url: `${window.location.origin}/account?tab=billing`
+        success_url: `${window.location.origin}/account?tab=billing`,
+        cancel_url: `${window.location.origin}/account?tab=billing`
       };
       
       console.log('Request data being sent:', requestData);
-      console.log('API URL:', `${API_URL}${PAYMENTS_ENDPOINT}create-checkout-session/`);
+      console.log('API URL:', '/payments/create-checkout-session/');
       
-      const authHeader = `Bearer ${token}`;
-      console.log('Auth Header:', `Bearer ${token?.substring(0, 10)}...`);
-      
-      const response = await axios.post(
-        `${API_URL}${PAYMENTS_ENDPOINT}create-checkout-session/`,
-        requestData,
-        {
-          headers: {
-            'Authorization': authHeader,
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          withCredentials: true
-        }
-      );
+      const response = await axiosInstance.post('/payments/create-checkout-session/', requestData);
 
       console.log('Checkout response:', response.data);
       
       if (response.data && response.data.url) {
         sessionStorage.setItem('pendingSubscription', planId);
-      window.location.href = response.data.url;
+        window.location.href = response.data.url;
       } else {
         setError('Checkout response missing redirect URL');
         console.error('Missing URL in response:', response.data);

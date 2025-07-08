@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import axiosInstance from '../../../api/axios';
 import './PaymentForm.css';
-
-const API_URL = '/';
 
 const PaymentForm = ({ planId, onSuccess, onError }) => {
   const stripe = useStripe();
@@ -22,15 +20,7 @@ const PaymentForm = ({ planId, onSuccess, onError }) => {
 
     try {
       // Create payment intent on the server
-      const { data: clientSecret } = await axios.post(
-        `${API_URL}api/payments/create-payment-intent/`,
-        { planId },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`,
-          },
-        }
-      );
+      const { data: clientSecret } = await axiosInstance.post('/payments/create-payment-intent/', { planId });
 
       // Confirm the payment with Stripe
       const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(

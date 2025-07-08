@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import axiosInstance from '../../../api/axios';
 import { stripePromise } from '../../../config/stripe';
 import PaymentForm from './PaymentForm';
 import './SubscriptionPlans.css';
-
-const API_URL = '/api/payments/';
 
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);
@@ -23,11 +21,7 @@ const SubscriptionPlans = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await axios.get(`${API_URL}plans/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access')}`,
-        },
-      });
+      const response = await axiosInstance.get('/payments/plans/');
       setPlans(response.data);
       setLoading(false);
     } catch (err) {
@@ -39,11 +33,7 @@ const SubscriptionPlans = () => {
 
   const fetchCurrentSubscription = async () => {
     try {
-      const response = await axios.get(`${API_URL}subscriptions/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access')}`,
-        },
-      });
+      const response = await axiosInstance.get('/payments/subscriptions/');
       if (response.data.length > 0) {
         setCurrentSubscription(response.data[0]);
       }
@@ -65,19 +55,11 @@ const SubscriptionPlans = () => {
 
   const handleCheckout = async (plan) => {
     try {
-      const response = await axios.post(
-        `${API_URL}create-checkout-session/`,
-        {
-          plan_id: plan.id,
-          success_url: `${window.location.origin}/subscription/success`,
-          cancel_url: `${window.location.origin}/subscription/cancel`
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post('/payments/create-checkout-session/', {
+        plan_id: plan.id,
+        success_url: `${window.location.origin}/subscription/success`,
+        cancel_url: `${window.location.origin}/subscription/cancel`
+      });
 
       window.location.href = response.data.url;
     } catch (err) {
@@ -88,19 +70,11 @@ const SubscriptionPlans = () => {
 
   const handlePaymentSuccess = async (paymentIntent) => {
     try {
-      await axios.post(
-        `${API_URL}subscriptions/`,
-        {
-          plan_id: selectedPlan.id,
-          payment_intent_id: paymentIntent.id,
-          is_upgrade: currentSubscription !== null
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`,
-          },
-        }
-      );
+      await axiosInstance.post('/payments/subscriptions/', {
+        plan_id: selectedPlan.id,
+        payment_intent_id: paymentIntent.id,
+        is_upgrade: currentSubscription !== null
+      });
 
       setSuccess('Subscription activated successfully!');
       setShowPaymentModal(false);

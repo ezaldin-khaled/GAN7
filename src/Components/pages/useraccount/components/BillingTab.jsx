@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
-import axios from 'axios';
+import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
-
-// Update to match UserAccountPage base URL
-const API_URL = '/';
-const PAYMENTS_ENDPOINT = 'api/payments/';
 
 const BillingTab = () => {
   const [plans, setPlans] = useState([]);
@@ -28,12 +24,7 @@ const BillingTab = () => {
 
   const fetchPlans = async () => {
     try {
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}${PAYMENTS_ENDPOINT}plans/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/payments/plans/');
       console.log('Plans received from API:', response.data);
       setPlans(response.data);
       setLoading(false);
@@ -46,12 +37,7 @@ const BillingTab = () => {
 
   const fetchCurrentSubscription = async () => {
     try {
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}${PAYMENTS_ENDPOINT}subscriptions/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/payments/subscriptions/');
       console.log('Current subscription data:', response.data);
       if (response.data.length > 0) {
         setCurrentSubscription(response.data[0]);
@@ -66,12 +52,7 @@ const BillingTab = () => {
   const fetchUserData = async () => {
     try {
       setUserDataLoading(true);
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}api/profile/talent/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/profile/talent/');
       console.log('User data received:', response.data);
       setUserData(response.data);
     } catch (err) {
@@ -92,8 +73,7 @@ const BillingTab = () => {
       // Log the plan data that is being sent
       console.log('Plan data being sent:', plan);
       
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
-      console.log('Using token:', token ? 'Token exists' : 'No token found');
+      console.log('Using centralized axios instance');
       
       // Use uppercase plan name as per API example
       const planId = plan.name.toUpperCase();
@@ -105,24 +85,9 @@ const BillingTab = () => {
       };
       
       console.log('Request data being sent:', requestData);
-      console.log('API URL:', `${API_URL}${PAYMENTS_ENDPOINT}create-checkout-session/`);
+      console.log('API URL:', '/payments/create-checkout-session/');
       
-      // Use Bearer authentication format (matching UserAccountPage)
-      const authHeader = `Bearer ${token}`;
-      console.log('Auth Header:', `Bearer ${token?.substring(0, 10)}...`);
-      
-      const response = await axios.post(
-        `${API_URL}${PAYMENTS_ENDPOINT}create-checkout-session/`,
-        requestData,
-        {
-          headers: {
-            'Authorization': authHeader,
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          withCredentials: true
-        }
-      );
+      const response = await axiosInstance.post('/payments/create-checkout-session/', requestData);
 
       console.log('Checkout response:', response.data);
       

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../../api/axios';
 import './SubscriptionSuccess.css';
-
-const API_URL = '/';
 
 const SubscriptionSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -20,15 +18,8 @@ const SubscriptionSuccess = () => {
     }
 
     const verifySubscription = async () => {
-      try {d
-        const response = await axios.get(
-          `${API_URL}api/payments/subscriptions/${sessionId}/status/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('access')}`,
-            },
-          }
-        );
+      try {
+        const response = await axiosInstance.get(`/payments/subscriptions/${sessionId}/status/`);
         setSubscriptionData(response.data);
         setLoading(false);
       } catch (err) {
