@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { axiosInstance } from '../../api/axios';
+import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import "./UserProfilePopup.css";
 

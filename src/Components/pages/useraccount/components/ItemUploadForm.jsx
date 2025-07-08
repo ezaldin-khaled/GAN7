@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaUpload, FaTimes } from 'react-icons/fa';
 import './GroupsTab.css'; // Reusing existing form styles
-import { axiosInstance } from '../../../api/axios';
+import axiosInstance from '../../../api/axios';
 
 const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
   const [formData, setFormData] = useState({

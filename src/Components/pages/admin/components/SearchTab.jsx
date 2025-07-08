@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaSort, FaTimes, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { axiosInstance } from '../../../api/axios';
+import axiosInstance from '../../../api/axios';
 import UserSummaryPopup from './UserSummaryPopup';
 import './SearchTab.css';
 

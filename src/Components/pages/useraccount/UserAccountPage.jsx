@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './UserAccountPage.css';
 import './EnhancedTabStyles.css'; // Import the enhanced styles
-import axiosInstance from '../../api/axios';
+import axiosInstance from '../../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import ProfileTab from './components/ProfileTab';

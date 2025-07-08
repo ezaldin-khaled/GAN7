@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../../../api/axios';
+import axiosInstance from '../../../../api/axios';
 import './RestrictedUsersTab.css';
 
 const SUBSCRIPTION_PLANS = {
@@ -45,7 +45,7 @@ const RestrictedUsersTab = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await axios.get('/api/dashboard/restricted-users/');
+            const response = await axiosInstance.get('/dashboard/restricted-users/');
             setUsers(response.data.users);
             setStats({
                 total_count: response.data.total_count,
@@ -79,7 +79,7 @@ const RestrictedUsersTab = () => {
         try {
             setActionLoading(true);
             setError(null);
-            const response = await axios.post('/api/dashboard/restricted-users/', {
+            const response = await axiosInstance.post('/dashboard/restricted-users/', {
                 action,
                 user_id: userId,
                 ...data

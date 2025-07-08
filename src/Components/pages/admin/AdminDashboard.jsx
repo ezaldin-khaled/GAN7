@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaBell, FaUserCircle, FaSignOutAlt, FaEnvelope } from 'react-icons/fa';
-import axiosInstance from '../../api/axios';
+import axiosInstance from '../../../api/axios';
 import UsersTab from './components/UsersTab';
 import ItemsTab from './components/ItemsTab';
 import SearchTab from './components/SearchTab';
