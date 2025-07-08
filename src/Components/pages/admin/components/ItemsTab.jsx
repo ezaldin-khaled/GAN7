@@ -1,28 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
-
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
-
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+import { axiosInstance } from '../../../api/axios';
 
 const ItemsTab = () => {
   const [items, setItems] = useState([]);

@@ -1,31 +1,4 @@
-import axios from 'axios';
-
-// Use environment variable or fallback to production API
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
-
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 30000, // Increased timeout for production
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
-});
-
-// Add request interceptor for authentication
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+import { axiosInstance } from './axios';
 
 /**
  * Get talent profiles with media included in the response

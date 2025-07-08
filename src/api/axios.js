@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+// Use environment variable or fallback to production API
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
+
 // Create a clean axios instance with proper configuration
 const axiosInstance = axios.create({
-  baseURL: 'https://api.gan7club.com',  // Use the correct API base URL
+  baseURL: `${API_BASE_URL}/api/`,  // Add /api/ suffix to match the correct API structure
   timeout: 30000, // 30 second timeout
   headers: {
     'Content-Type': 'application/json',

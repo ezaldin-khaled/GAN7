@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { axiosInstance } from '../../../api/axios';
 import {
   PRIMARY_CATEGORIES,
   EXPERIENCE_LEVEL,
@@ -15,28 +15,6 @@ import {
   FITNESS_LEVELS,
   RISK_LEVELS
 } from '../../../data/referenceData';
-
-const API_URL = '/';
-
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
-
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
 const WorkerProfileForm = ({ onClose, onSubmit }) => {
   const [activeTab, setActiveTab] = useState('visual'); // visual, expressive, hybrid

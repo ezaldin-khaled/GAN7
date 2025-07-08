@@ -1,31 +1,7 @@
 import React, { useState } from 'react';
 import { FaUpload, FaTimes } from 'react-icons/fa';
 import './GroupsTab.css'; // Reusing existing form styles
-import axios from 'axios';
-
-const API_URL = '/';
-
-// Create an axios instance with the base URL and token handling
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'multipart/form-data',
-  }
-});
-
-// Add a request interceptor to include the token in all requests
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+import { axiosInstance } from '../../../api/axios';
 
 const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
   const [formData, setFormData] = useState({

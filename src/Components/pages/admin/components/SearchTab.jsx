@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaSort, FaTimes, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import axios from 'axios';
+import { axiosInstance } from '../../../api/axios';
 import UserSummaryPopup from './UserSummaryPopup';
 import './SearchTab.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
-
-// Profile type definitions
 const PROFILE_TYPES = {
   talent: {
     label: 'Talent Profiles',
@@ -409,74 +406,6 @@ const PROFILE_TYPES = {
     }
   }
 };
-
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
-});
-
-// Add request interceptor for authentication
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for handling auth errors
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    // If the error is 403 and we haven't tried to refresh the token yet
-    if (error.response?.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        // Try to refresh the token
-        const refreshToken = localStorage.getItem('refresh');
-        if (refreshToken) {
-          const response = await axios.post(`${API_URL}api/token/refresh/`, {
-            refresh: refreshToken
-          }, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Access-Control-Allow-Origin': '*'
-            }
-          });
-
-          if (response.data.access) {
-            localStorage.setItem('access', response.data.access);
-            
-            // Retry the original request with new token
-            originalRequest.headers.Authorization = `Bearer ${response.data.access}`;
-            return axiosInstance(originalRequest);
-          }
-        }
-      } catch (refreshError) {
-        // If refresh fails, redirect to login
-        localStorage.removeItem('access');
-        localStorage.removeItem('refresh');
-        window.location.href = '/login';
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 const SearchTab = ({ onSearchResults, onViewProfile }) => {
   // Search state
