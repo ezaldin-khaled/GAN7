@@ -253,6 +253,18 @@ body {
   opacity: 0.6;
 }
 
+.profile-image-fallback {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+  border: 3px solid white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
 .image-loading-indicator {
   position: absolute;
   top: 50%;

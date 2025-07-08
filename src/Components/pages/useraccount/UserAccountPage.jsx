@@ -172,11 +172,8 @@ const UserAccountPage = () => {
           bio: response.data.aboutyou || ''
         });
         
-        // Set profile image with fallback to a local asset instead of placeholder.com
-        setProfileImage(
-          response.data.profile_picture || 
-          '/assets/default-profile.png'  // Use a local asset as fallback
-        );
+        // Set profile image from API response only
+        setProfileImage(response.data.profile_picture || null);
         
         setLoading(false);
       } catch (err) {
@@ -267,7 +264,7 @@ const UserAccountPage = () => {
           bio: response.data.profile.aboutyou
         });
 
-        setProfileImage(response.data.profile.profile_picture || '/assets/default-profile.png');
+        setProfileImage(response.data.profile.profile_picture || null);
         setSuccessMessage(response.data.message || 'Profile updated successfully!');
       }
       

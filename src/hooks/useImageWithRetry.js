@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
-const useImageWithRetry = (imageUrl, fallbackUrl = '/assets/default-profile.png', maxRetries = 5) => {
-  const [imageSrc, setImageSrc] = useState(imageUrl || fallbackUrl);
+const useImageWithRetry = (imageUrl, maxRetries = 5) => {
+  const [imageSrc, setImageSrc] = useState(imageUrl);
   const [isLoading, setIsLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
+  const [useFallback, setUseFallback] = useState(false);
 
   useEffect(() => {
     if (!imageUrl) {
-      setImageSrc(fallbackUrl);
+      setImageSrc(null);
+      setUseFallback(true);
       setIsLoading(false);
       return;
     }
@@ -26,6 +28,7 @@ const useImageWithRetry = (imageUrl, fallbackUrl = '/assets/default-profile.png'
           setImageSrc(url);
           setIsLoading(false);
           setRetryCount(0);
+          setUseFallback(false);
         }
       };
 
@@ -43,9 +46,10 @@ const useImageWithRetry = (imageUrl, fallbackUrl = '/assets/default-profile.png'
               }
             }, delay);
           } else {
-            // Max retries reached, use fallback
+            // Max retries reached, use solid color fallback
             console.error(`Failed to load image after ${maxRetries} attempts: ${url}`);
-            setImageSrc(fallbackUrl);
+            setImageSrc(null);
+            setUseFallback(true);
             setIsLoading(false);
             setRetryCount(0);
           }
@@ -63,9 +67,9 @@ const useImageWithRetry = (imageUrl, fallbackUrl = '/assets/default-profile.png'
         clearTimeout(retryTimeout);
       }
     };
-  }, [imageUrl, fallbackUrl, maxRetries]);
+  }, [imageUrl, maxRetries]);
 
-  return { imageSrc, isLoading, retryCount };
+  return { imageSrc, isLoading, retryCount, useFallback };
 };
 
 export default useImageWithRetry; 

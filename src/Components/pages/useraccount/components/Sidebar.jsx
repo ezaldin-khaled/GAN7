@@ -24,9 +24,8 @@ const backgroundMenuItems = [
 
 const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handleProfileImageChange, handleLogout, menuItems = defaultMenuItems, isBackground = false }) => {
   // Use the retry hook for profile image loading
-  const { imageSrc, isLoading, retryCount } = useImageWithRetry(
+  const { imageSrc, isLoading, retryCount, useFallback } = useImageWithRetry(
     profileImage, 
-    '/assets/default-profile.png', 
     5 // 5 retries
   );
 
@@ -37,12 +36,16 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
           <img 
             src={imageSrc} 
             alt="Profile" 
-            className={`profile-image ${isLoading ? 'loading' : ''}`}
+            className={`profile-image ${isLoading ? 'loading' : ''} ${useFallback ? 'fallback' : ''}`}
             style={{ 
               opacity: isLoading ? 0.6 : 1,
-              transition: 'opacity 0.3s ease-in-out'
+              transition: 'opacity 0.3s ease-in-out',
+              display: useFallback ? 'none' : 'block'
             }}
           />
+          {useFallback && (
+            <div className="profile-image-fallback"></div>
+          )}
           {isLoading && retryCount > 0 && (
             <div className="image-loading-indicator">
               Retrying... ({retryCount}/5)
