@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Use environment variable or fallback to production API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
+// Temporarily hardcode the correct URL to bypass env var caching issue
+const API_BASE_URL = 'https://api.gan7club.com';
 
 // Debug logging to see what's happening
 console.log('🔧 Axios Configuration Debug:');
