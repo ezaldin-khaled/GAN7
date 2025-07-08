@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaUser, FaPaperPlane, FaSpinner, FaUsers, FaList, FaEye, FaHistory } from 'react-icons/fa';
-import axiosInstance from '../../../api/axios';
+import axiosInstance from '../../../../api/axios';
 import '../AdminDashboard.css';
 
 const EmailTab = ({ selectedUser }) => {

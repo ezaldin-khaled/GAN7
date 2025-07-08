@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar, FaCheckCircle, FaBriefcase, FaGraduationCap, FaLanguage, FaAward, FaSpinner, FaImage, FaVideo } from 'react-icons/fa';
-import axiosInstance from '../../../api/axios';
+import axiosInstance from '../../../../api/axios';
 import './UserSummaryPopup.css';
 
 const UserSummaryPopup = ({ user, onClose }) => {

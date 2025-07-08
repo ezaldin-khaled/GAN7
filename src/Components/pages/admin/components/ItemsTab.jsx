@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
-import axiosInstance from '../../../api/axios';
+import axiosInstance from '../../../../api/axios';
 
 const ItemsTab = () => {
   const [items, setItems] = useState([]);
