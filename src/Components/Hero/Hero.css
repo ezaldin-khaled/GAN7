@@ -1,7 +1,7 @@
 .hero{
     width: 100%;
     min-height: 100vh;
-    background:  url('../../assets/ewew/GAN 1.png');
+    background: url('../../assets/ewew/optimized/hero-mobile.webp');
     background-size: cover;
     background-position: center;
     color: #fff;
@@ -9,6 +9,32 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 30px;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0.8;
+}
+
+.hero.image-loaded {
+    opacity: 1;
+}
+
+/* Responsive background images for better performance */
+@media (min-width: 768px) {
+    .hero {
+        background-image: url('../../assets/ewew/optimized/hero-tablet.webp');
+    }
+}
+
+@media (min-width: 1920px) {
+    .hero {
+        background-image: url('../../assets/ewew/optimized/hero-desktop.webp');
+    }
+}
+
+/* Fallback for browsers that don't support WebP */
+@supports not (background-image: url('../../assets/ewew/optimized/hero-mobile.webp')) {
+    .hero {
+        background-image: url('../../assets/ewew/GAN 1.png');
+    }
 }
 
 .hero-txt{

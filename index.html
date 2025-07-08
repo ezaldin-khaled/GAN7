@@ -6,6 +6,11 @@
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gan7Club</title>
+    
+    <!-- Preload hero images for better performance -->
+    <link rel="preload" as="image" href="/src/assets/ewew/optimized/hero-mobile.webp" media="(max-width: 767px)">
+    <link rel="preload" as="image" href="/src/assets/ewew/optimized/hero-tablet.webp" media="(min-width: 768px) and (max-width: 1919px)">
+    <link rel="preload" as="image" href="/src/assets/ewew/optimized/hero-desktop.webp" media="(min-width: 1920px)">
   </head>
   <body>
     <div id="root"></div>
