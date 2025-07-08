@@ -3,6 +3,12 @@ import axios from 'axios';
 // Use environment variable or fallback to production API
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.gan7club.com';
 
+// Debug logging to see what's happening
+console.log('🔧 Axios Configuration Debug:');
+console.log('VITE_API_URL from env:', import.meta.env.VITE_API_URL);
+console.log('API_BASE_URL resolved to:', API_BASE_URL);
+console.log('Full baseURL will be:', `${API_BASE_URL}/api/`);
+
 // Create a clean axios instance with proper configuration
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,  // Remove /api/ suffix to avoid double prefix
