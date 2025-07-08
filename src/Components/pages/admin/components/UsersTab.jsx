@@ -111,7 +111,7 @@ const UsersTab = () => {
                 <tr key={user.id}>
                   <td>
                     <div className="user-info">
-                      <img src={user.profile_picture || '/assets/default-profile.png'} alt={`${user.first_name} ${user.last_name}`} />
+                      <img src={user.profile_picture || null} alt={`${user.first_name} ${user.last_name}`} />
                       <span>{`${user.first_name} ${user.last_name}`}</span>
                     </div>
                   </td>

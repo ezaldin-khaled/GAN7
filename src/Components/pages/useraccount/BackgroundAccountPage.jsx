@@ -121,10 +121,7 @@ const BackgroundAccountPage = () => {
         });
         
         // Set profile image with fallback to a local asset
-        setProfileImage(
-          profileData.profile_picture || 
-          '/assets/default-profile.png'
-        );
+        setProfileImage(responseProfile.profile_picture || null);
         
         setLoading(false);
       } catch (err) {
@@ -224,7 +221,7 @@ const BackgroundAccountPage = () => {
           profile_score: response.data.profile_score || responseProfile.profile_score
         });
 
-        setProfileImage(responseProfile.profile_picture || '/assets/default-profile.png');
+        setProfileImage(responseProfile.profile_picture || null);
         setSuccessMessage(response.data.message || 'Profile updated successfully!');
       }
       

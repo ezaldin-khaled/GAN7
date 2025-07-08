@@ -107,7 +107,7 @@ export default function UserProfilePopup({ user, onClose }) {
           isVerified: user?.is_verified || user?.isVerified || false,
           isSubscribed: user?.is_subscribed || user?.isSubscribed || false,
           verifiedDate: user?.verified_date || user?.verifiedDate || "2 JAN, 2025",
-          profile_picture: user?.profile_picture || user?.profilePic || '/assets/default-profile.png',
+          profile_picture: user?.profile_picture || user?.profilePic || null,
           cover_photo: user?.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg'
         };
 
@@ -317,7 +317,7 @@ export default function UserProfilePopup({ user, onClose }) {
             <div className="profile-header">
               <div className="profile-header-left">
                 <img 
-                  src={user.profilePic || userData?.profile_picture || '/assets/default-profile.png'} 
+                  src={user.profilePic || userData?.profile_picture || null} 
                   className="profile-pic-small" 
                   alt={`${userData?.firstName} ${userData?.lastName}`} 
                 />
