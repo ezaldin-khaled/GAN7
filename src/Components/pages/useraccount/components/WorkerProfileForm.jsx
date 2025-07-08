@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axiosInstance from '../../../api/axios';
+import axiosInstance from '../../../../api/axios';
 import {
   PRIMARY_CATEGORIES,
   EXPERIENCE_LEVEL,
