@@ -337,6 +337,35 @@ const UserAccountPage = () => {
       }
     };
 
+  const handleDeleteMedia = async (mediaId) => {
+    if (!window.confirm('Are you sure you want to delete this media file?')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+      
+      const response = await axiosInstance.delete(`/api/profile/talent/media/${mediaId}/`);
+      
+      if (response.status === 204 || response.status === 200) {
+        // Remove the deleted media from the local state
+        setMediaFiles(prev => prev.filter(media => media.id !== mediaId));
+        setSuccessMessage('Media file deleted successfully!');
+      } else {
+        setError('Failed to delete media file. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error deleting media file:', err);
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          'Failed to delete media file. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       // Attempt to call logout endpoint if it exists
@@ -359,7 +388,7 @@ const UserAccountPage = () => {
   const renderTabContent = () => {
     const tabs = {
       profile: <ProfileTab userData={userData} handleInputChange={handleInputChange} handleSaveChanges={handleSaveChanges} loading={loading} />,
-      media: <MediaTab mediaFiles={mediaFiles} handleMediaUpload={handleMediaUpload} />,
+      media: <MediaTab mediaFiles={mediaFiles} handleMediaUpload={handleMediaUpload} handleDeleteMedia={handleDeleteMedia} />,
       billing: <BillingTab />,
       groups: <GroupsTab userData={userData} />,
       settings: <SettingsTab />,

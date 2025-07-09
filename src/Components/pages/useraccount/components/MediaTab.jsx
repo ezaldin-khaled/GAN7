@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaImage, FaTrash, FaUpload } from 'react-icons/fa';
 
-const MediaTab = ({ mediaFiles, handleMediaUpload }) => {
+const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   const handleFileChange = (e) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -44,7 +44,11 @@ const MediaTab = ({ mediaFiles, handleMediaUpload }) => {
               )}
               <div className="media-info">
                 <p>{file.title || file.name || 'Untitled'}</p>
-                <button className="delete-btn">
+                <button 
+                  className="delete-btn"
+                  onClick={() => handleDeleteMedia(file.id)}
+                  title="Delete media file"
+                >
                   <FaTrash />
                 </button>
               </div>
