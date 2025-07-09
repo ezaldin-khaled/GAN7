@@ -1027,9 +1027,11 @@ const SpecializationTab = () => {
         {workerType === 'expressive_worker' && renderExpressiveWorkerFields()}
         {workerType === 'hybrid_worker' && renderHybridWorkerFields()}
 
-        {/* Only show image and video upload sections for non-visual workers */}
+        {/* Show image upload section only for non-visual workers */}
         {workerType !== 'visual_worker' && renderImageUploadSection()}
-        {workerType !== 'visual_worker' && renderVideoUploadSection()}
+        
+        {/* Show video upload section for all worker types (about yourself video is required for all) */}
+        {renderVideoUploadSection()}
 
         {/* Show test images section only for expressive workers */}
         {workerType === 'expressive_worker' && (
@@ -1091,6 +1093,7 @@ const SpecializationTab = () => {
           className="submit-button" 
           disabled={
             loading || 
+            !uploadedVideos.about_yourself ||
             (workerType === 'expressive_worker' && 
              ['actor', 'comparse', 'host'].includes(formData.performer_type) && 
              testImages.files.length !== 4)
