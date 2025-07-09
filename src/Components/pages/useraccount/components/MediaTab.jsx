@@ -32,10 +32,31 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       file.image
     ];
     
-    const validUrl = possibleUrls.find(url => url && typeof url === 'string');
+    let validUrl = possibleUrls.find(url => url && typeof url === 'string');
     console.log('🔗 Found valid URL:', validUrl);
     
-    return validUrl;
+    // If the URL is a CDN URL that might not work, try to convert it to a relative URL
+    if (validUrl && validUrl.includes('cdn.gan7club.com')) {
+      console.log('🔗 CDN URL detected, trying to convert to relative URL');
+      
+      // Extract the path from the CDN URL
+      const urlParts = validUrl.split('cdn.gan7club.com');
+      if (urlParts.length > 1) {
+        const relativePath = urlParts[1];
+        console.log('🔗 Converted to relative path:', relativePath);
+        
+        // Try the relative URL first, then fall back to the CDN URL
+        return {
+          primary: relativePath,
+          fallback: validUrl
+        };
+      }
+    }
+    
+    return {
+      primary: validUrl,
+      fallback: null
+    };
   };
 
   // Helper function to get the correct title/name
@@ -85,33 +106,57 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
         {mediaFiles && mediaFiles.length > 0 ? (
           mediaFiles.map((file, index) => {
             console.log(`🎨 Rendering media item ${index}:`, file);
-            const mediaUrl = getMediaUrl(file);
+            const mediaUrlData = getMediaUrl(file);
             const mediaTitle = getMediaTitle(file);
             const isImageFile = isImage(file);
             
-            console.log(`🎨 Item ${index} - URL: ${mediaUrl}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
+            console.log(`🎨 Item ${index} - Primary URL: ${mediaUrlData.primary}, Fallback: ${mediaUrlData.fallback}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
             
             return (
               <div className="gallery-item" key={index}>
-                {mediaUrl ? (
+                {mediaUrlData.primary ? (
                   isImageFile ? (
                     <img 
-                      src={mediaUrl} 
+                      src={mediaUrlData.primary} 
                       alt={mediaTitle} 
                       onError={(e) => {
-                        console.log('❌ Image failed to load:', mediaUrl);
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'block';
+                        console.log('❌ Primary image failed to load:', mediaUrlData.primary);
+                        
+                        // Try fallback URL if available
+                        if (mediaUrlData.fallback) {
+                          console.log('🔄 Trying fallback URL:', mediaUrlData.fallback);
+                          e.target.src = mediaUrlData.fallback;
+                          e.target.onerror = (fallbackError) => {
+                            console.log('❌ Fallback image also failed to load:', mediaUrlData.fallback);
+                            fallbackError.target.style.display = 'none';
+                            fallbackError.target.nextSibling.style.display = 'block';
+                          };
+                        } else {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }
                       }}
                     />
                   ) : (
                     <video 
-                      src={mediaUrl} 
+                      src={mediaUrlData.primary} 
                       controls 
                       onError={(e) => {
-                        console.log('❌ Video failed to load:', mediaUrl);
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'block';
+                        console.log('❌ Primary video failed to load:', mediaUrlData.primary);
+                        
+                        // Try fallback URL if available
+                        if (mediaUrlData.fallback) {
+                          console.log('🔄 Trying fallback URL:', mediaUrlData.fallback);
+                          e.target.src = mediaUrlData.fallback;
+                          e.target.onerror = (fallbackError) => {
+                            console.log('❌ Fallback video also failed to load:', mediaUrlData.fallback);
+                            fallbackError.target.style.display = 'none';
+                            fallbackError.target.nextSibling.style.display = 'block';
+                          };
+                        } else {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }
                       }}
                     />
                   )
