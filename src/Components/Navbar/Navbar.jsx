@@ -12,7 +12,7 @@ import LanguageSwitcher from '../common/LanguageSwitcher';
 function Navbar() {
   const { t } = useTranslation();
   const[sticky, setSticky] = useState(false)
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -84,11 +84,11 @@ function Navbar() {
         <li>
           <LanguageSwitcher />
         </li>
-        {!user ? (
+        {!user && !loading ? (
           <li>
             <a href="/login" className="btn">{t('navigation.login')}</a>
           </li>
-        ) : (
+        ) : user && !loading ? (
           <li>
             <button className="avatar-btn" onClick={() => setShowProfile(true)}>
               {user.profilePic ? (
@@ -109,7 +109,7 @@ function Navbar() {
               )}
             </button>
           </li>
-        )}
+        ) : null}
       </ul>
       <FaBars className='menu-icon' onClick={toggleMenu}/>
       {showProfile && (
