@@ -259,14 +259,14 @@ const SpecializationTab = () => {
   };
 
   const isFormValid = () => {
-    // For visual workers, only check basic form fields
-    if (workerType === 'visual_worker') {
-      return formData.primary_category && formData.experience_level && formData.availability && formData.rate_range;
-    }
-    
-    // Check if about yourself video is uploaded (required for expressive and hybrid workers)
+    // Check if about yourself video is uploaded (required for all worker types)
     if (!uploadedVideos.about_yourself) {
       return false;
+    }
+    
+    // For visual workers, check basic form fields
+    if (workerType === 'visual_worker') {
+      return formData.primary_category && formData.experience_level && formData.availability && formData.rate_range;
     }
     
     // Check if required test images are uploaded for actor/comparse/host
@@ -447,22 +447,20 @@ const SpecializationTab = () => {
       formDataToSend.append('user', userId);
       formDataToSend.append('talent_id', userId);
 
-      // Add about yourself video (required for expressive and hybrid workers only)
-      if (workerType !== 'visual_worker') {
-        if (uploadedVideos.about_yourself) {
-          const aboutYourselfData = {
-            name: "About Yourself",
-            media_info: "Talk about yourself",
-            is_test_video: true,
-            is_about_yourself_video: true,
-            test_video_number: 5,
-            user_id: userId
-          };
-          formDataToSend.append('about_yourself_video', JSON.stringify(aboutYourselfData));
-          formDataToSend.append('about_video', uploadedVideos.about_yourself.file);
-        } else {
-          throw new Error('About yourself video is required for expressive and hybrid workers');
-        }
+      // Add about yourself video (required for all worker types)
+      if (uploadedVideos.about_yourself) {
+        const aboutYourselfData = {
+          name: "About Yourself",
+          media_info: "Talk about yourself",
+          is_test_video: true,
+          is_about_yourself_video: true,
+          test_video_number: 5,
+          user_id: userId
+        };
+        formDataToSend.append('about_yourself_video', JSON.stringify(aboutYourselfData));
+        formDataToSend.append('about_video', uploadedVideos.about_yourself.file);
+      } else {
+        throw new Error('About yourself video is required for all worker types');
       }
 
       // Add test videos if required
