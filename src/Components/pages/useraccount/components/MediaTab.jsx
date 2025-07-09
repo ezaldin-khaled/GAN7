@@ -40,25 +40,57 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     // Try to construct alternative URLs
     let alternativeUrls = [];
     
-    // If we have a media_file URL, try different base URLs
-    if (validUrl && validUrl.includes('cdn.gan7club.com')) {
-      console.log('🔗 CDN URL detected, trying alternative base URLs');
+    // If we have a valid URL, try different base URLs
+    if (validUrl) {
+      console.log('🔗 Processing URL:', validUrl);
       
-      // Extract the path from the CDN URL
-      const urlParts = validUrl.split('cdn.gan7club.com');
-      if (urlParts.length > 1) {
-        const mediaPath = urlParts[1];
-        console.log('🔗 Media path extracted:', mediaPath);
+      // If it's a CDN URL, try different base URLs
+      if (validUrl.includes('cdn.gan7club.com')) {
+        console.log('🔗 CDN URL detected, trying alternative base URLs');
         
-        // Try different base URLs
+        // Extract the path from the CDN URL
+        const urlParts = validUrl.split('cdn.gan7club.com');
+        if (urlParts.length > 1) {
+          const mediaPath = urlParts[1];
+          console.log('🔗 Media path extracted:', mediaPath);
+          
+          // Try different base URLs
+          alternativeUrls = [
+            mediaPath, // Relative path
+            `/media${mediaPath}`, // Media proxy path
+            `https://api.gan7club.com${mediaPath}`, // API server
+            `https://gan7club.com${mediaPath}`, // Main domain
+            validUrl // Original CDN URL as fallback
+          ];
+          
+          console.log('🔗 Alternative URLs to try:', alternativeUrls);
+        }
+      } else if (validUrl.startsWith('/')) {
+        // If it's a relative path, try different base URLs
+        console.log('🔗 Relative path detected, trying different base URLs');
         alternativeUrls = [
-          mediaPath, // Relative path
-          `https://api.gan7club.com${mediaPath}`, // API server
-          `https://gan7club.com${mediaPath}`, // Main domain
-          validUrl // Original CDN URL as fallback
+          validUrl, // Original relative path
+          `/media${validUrl}`, // Media proxy path
+          `https://api.gan7club.com${validUrl}`, // API server
+          `https://gan7club.com${validUrl}`, // Main domain
         ];
         
         console.log('🔗 Alternative URLs to try:', alternativeUrls);
+      } else if (validUrl.startsWith('http')) {
+        // If it's an absolute URL, try the media proxy version
+        console.log('🔗 Absolute URL detected, trying media proxy');
+        try {
+          const url = new URL(validUrl);
+          const mediaPath = url.pathname;
+          alternativeUrls = [
+            validUrl, // Original URL
+            `/media${mediaPath}`, // Media proxy path
+          ];
+          
+          console.log('🔗 Alternative URLs to try:', alternativeUrls);
+        } catch (e) {
+          console.log('🔗 Could not parse URL:', validUrl);
+        }
       }
     }
     
@@ -69,11 +101,54 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       alternativeUrls.unshift(apiUrl); // Add API URL as first alternative
     }
     
+    // If we have a filename, try to construct a media URL
+    if (file.name || file.filename) {
+      const filename = file.name || file.filename;
+      const mediaUrl = `/media/${filename}`;
+      console.log('🔗 Adding filename-based media URL as alternative:', mediaUrl);
+      alternativeUrls.unshift(mediaUrl);
+    }
+    
     return {
       primary: validUrl,
       fallback: null,
       alternatives: alternativeUrls
     };
+  };
+
+  // Function to create a placeholder image with file info
+  const createPlaceholderImage = (file) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 300;
+    canvas.height = 200;
+    const ctx = canvas.getContext('2d');
+    
+    // Background
+    ctx.fillStyle = '#f5f5f5';
+    ctx.fillRect(0, 0, 300, 200);
+    
+    // Border
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1, 1, 298, 198);
+    
+    // Icon
+    ctx.fillStyle = '#999';
+    ctx.font = '48px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('🖼️', 150, 80);
+    
+    // File name
+    ctx.fillStyle = '#666';
+    ctx.font = '12px Arial';
+    ctx.fillText(file.name || 'Media File', 150, 120);
+    
+    // File type
+    ctx.fillStyle = '#999';
+    ctx.font = '10px Arial';
+    ctx.fillText(file.media_type || 'image', 150, 140);
+    
+    return canvas.toDataURL();
   };
 
   // Helper function to get the correct title/name
@@ -143,9 +218,11 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                 e.target.src = nextUrl;
                 e.target.onerror = (nextError) => handleMediaError(nextError, urlIndex + 1);
               } else {
-                console.log('❌ All URLs failed, showing error placeholder');
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'block';
+                console.log('❌ All URLs failed, showing placeholder image');
+                // Create and show placeholder image
+                const placeholderUrl = createPlaceholderImage(file);
+                e.target.src = placeholderUrl;
+                e.target.onerror = null; // Prevent infinite loop
               }
             };
             
@@ -177,12 +254,6 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                     <FaImage size={48} />
                   </div>
                 )}
-                <div className="media-error" style={{ display: 'none', padding: '20px', textAlign: 'center', color: '#666' }}>
-                  <p>Media failed to load</p>
-                  <p style={{ fontSize: '12px', marginTop: '5px' }}>
-                    Tried {1 + (mediaUrlData.alternatives?.length || 0)} different URLs
-                  </p>
-                </div>
                 <div className="media-info">
                   <p>{mediaTitle}</p>
                   {file.id && (
