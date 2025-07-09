@@ -1,2 +1,1 @@
-# API Proxy Configuration
-/api/*  https://api.gan7club.com/api/:splat  200 
+/*    /index.html   200 
