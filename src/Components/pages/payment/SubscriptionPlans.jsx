@@ -26,7 +26,15 @@ const SubscriptionPlans = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching plans:', err);
-      setError('Failed to load subscription plans');
+      
+      // Handle 404 error gracefully - API endpoint might not be implemented yet
+      if (err.response?.status === 404) {
+        console.log('Payment plans API endpoint not available, using fallback plans');
+        setPlans([]); // This will trigger the fallback plans
+        setError(''); // Clear any previous errors
+      } else {
+        setError('Failed to load subscription plans');
+      }
       setLoading(false);
     }
   };

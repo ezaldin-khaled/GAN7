@@ -109,7 +109,13 @@ function Navbar() {
               )}
             </button>
           </li>
-        ) : null}
+        ) : (
+          <li>
+            <div className="navbar-loader">
+              <div className="navbar-spinner"></div>
+            </div>
+          </li>
+        )}
       </ul>
       <FaBars className='menu-icon' onClick={toggleMenu}/>
       {showProfile && (
