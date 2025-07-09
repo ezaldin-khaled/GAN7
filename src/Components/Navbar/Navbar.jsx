@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { FaBars } from 'react-icons/fa';
 import logo from'../../assets/10.png'
-import menu_icon from '../../assets/menu-icon.png'
 import '../Navbar/Navbar.css'
 import { Link } from 'react-scroll';
 import UserProfilePopup from './UserProfilePopup';
@@ -111,7 +111,7 @@ function Navbar() {
           </li>
         )}
       </ul>
-      <img src={menu_icon} alt="" className='menu-icon' onClick={toggleMenu}/>
+      <FaBars className='menu-icon' onClick={toggleMenu}/>
       {showProfile && (
         <UserProfilePopup user={user} onClose={() => setShowProfile(false)} />
       )}

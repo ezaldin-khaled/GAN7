@@ -10,9 +10,9 @@ import srv_inicon1 from '../../assets/ewew/2.png'
 import srv_inicon2 from '../../assets/ewew/1.png'
 import srv_inicon3 from '../../assets/ewew/3.png'
 
-import srv_icon_1 from '../../assets/ewew/05.png'
-import srv_icon_2 from '../../assets/ewew/icons-people.png'
-import srv_icon_3 from '../../assets/ewew/06.png'
+import srv_icon_1 from '../../assets/ewew/1.png'
+import srv_icon_2 from '../../assets/ewew/2.png'
+import srv_icon_3 from '../../assets/ewew/3.png'
 
 
 const Serv = () => {

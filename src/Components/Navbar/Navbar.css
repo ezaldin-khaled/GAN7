@@ -63,6 +63,14 @@ ul li{
 
 .menu-icon{
     display: none;
+    color: #333;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.menu-icon:hover {
+    color: #6D0098;
 }
 
 /* Avatar styles */
@@ -143,8 +151,11 @@ ul li{
     }
     .menu-icon{
         display: block;
-        width: 30px;
+        width: auto;
+        height: auto;
         cursor: pointer;
+        color: #333;
+        font-size: 24px;
     }
     .hide-mobile-menu{
         right: -200px;
