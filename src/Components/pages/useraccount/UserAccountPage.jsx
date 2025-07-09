@@ -199,8 +199,17 @@ const UserAccountPage = () => {
       const fetchMediaFiles = async () => {
         try {
           const response = await axiosInstance.get('/api/profile/talent/');
+          console.log('🔍 Full API response:', response.data);
+          console.log('📁 Media data:', response.data?.media);
+          console.log('📁 Media type:', typeof response.data?.media);
+          console.log('📁 Media length:', response.data?.media?.length);
+          
           if (response.data && response.data.media) {
+            console.log('✅ Setting media files:', response.data.media);
             setMediaFiles(response.data.media);
+          } else {
+            console.log('❌ No media data found in response');
+            setMediaFiles([]);
           }
         } catch (err) {
           console.error('Error fetching media files:', err);
