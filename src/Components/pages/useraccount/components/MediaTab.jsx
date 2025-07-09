@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaImage, FaTrash, FaUpload } from 'react-icons/fa';
+import axiosInstance from '../../../../api/axios';
 
 const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   console.log('🎨 MediaTab render - mediaFiles:', mediaFiles);
@@ -20,6 +21,7 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   // Helper function to get the correct image URL from different data structures
   const getMediaUrl = (file) => {
     console.log('🔗 Getting media URL for file:', file);
+    console.log('🔗 Full file object:', JSON.stringify(file, null, 2));
     
     // Try different possible URL field names
     const possibleUrls = [
@@ -35,27 +37,42 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     let validUrl = possibleUrls.find(url => url && typeof url === 'string');
     console.log('🔗 Found valid URL:', validUrl);
     
-    // If the URL is a CDN URL that might not work, try to convert it to a relative URL
+    // Try to construct alternative URLs
+    let alternativeUrls = [];
+    
+    // If we have a media_file URL, try different base URLs
     if (validUrl && validUrl.includes('cdn.gan7club.com')) {
-      console.log('🔗 CDN URL detected, trying to convert to relative URL');
+      console.log('🔗 CDN URL detected, trying alternative base URLs');
       
       // Extract the path from the CDN URL
       const urlParts = validUrl.split('cdn.gan7club.com');
       if (urlParts.length > 1) {
-        const relativePath = urlParts[1];
-        console.log('🔗 Converted to relative path:', relativePath);
+        const mediaPath = urlParts[1];
+        console.log('🔗 Media path extracted:', mediaPath);
         
-        // Try the relative URL first, then fall back to the CDN URL
-        return {
-          primary: relativePath,
-          fallback: validUrl
-        };
+        // Try different base URLs
+        alternativeUrls = [
+          mediaPath, // Relative path
+          `https://api.gan7club.com${mediaPath}`, // API server
+          `https://gan7club.com${mediaPath}`, // Main domain
+          validUrl // Original CDN URL as fallback
+        ];
+        
+        console.log('🔗 Alternative URLs to try:', alternativeUrls);
       }
+    }
+    
+    // If we have a file ID, try to construct a direct API URL
+    if (file.id) {
+      const apiUrl = `/api/profile/talent/media/${file.id}/`;
+      console.log('🔗 Adding API URL as alternative:', apiUrl);
+      alternativeUrls.unshift(apiUrl); // Add API URL as first alternative
     }
     
     return {
       primary: validUrl,
-      fallback: null
+      fallback: null,
+      alternatives: alternativeUrls
     };
   };
 
@@ -110,7 +127,27 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
             const mediaTitle = getMediaTitle(file);
             const isImageFile = isImage(file);
             
-            console.log(`🎨 Item ${index} - Primary URL: ${mediaUrlData.primary}, Fallback: ${mediaUrlData.fallback}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
+            console.log(`🎨 Item ${index} - Primary URL: ${mediaUrlData.primary}, Alternatives: ${mediaUrlData.alternatives?.length || 0}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
+            
+            // Create a function to handle multiple URL attempts
+            const handleMediaError = (e, urlIndex = 0) => {
+              const allUrls = [mediaUrlData.primary, ...(mediaUrlData.alternatives || [])];
+              const currentUrl = allUrls[urlIndex];
+              
+              console.log(`❌ URL ${urlIndex + 1} failed to load:`, currentUrl);
+              
+              // Try next URL if available
+              if (urlIndex + 1 < allUrls.length) {
+                const nextUrl = allUrls[urlIndex + 1];
+                console.log(`🔄 Trying URL ${urlIndex + 2}:`, nextUrl);
+                e.target.src = nextUrl;
+                e.target.onerror = (nextError) => handleMediaError(nextError, urlIndex + 1);
+              } else {
+                console.log('❌ All URLs failed, showing error placeholder');
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'block';
+              }
+            };
             
             return (
               <div className="gallery-item" key={index}>
@@ -119,45 +156,13 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                     <img 
                       src={mediaUrlData.primary} 
                       alt={mediaTitle} 
-                      onError={(e) => {
-                        console.log('❌ Primary image failed to load:', mediaUrlData.primary);
-                        
-                        // Try fallback URL if available
-                        if (mediaUrlData.fallback) {
-                          console.log('🔄 Trying fallback URL:', mediaUrlData.fallback);
-                          e.target.src = mediaUrlData.fallback;
-                          e.target.onerror = (fallbackError) => {
-                            console.log('❌ Fallback image also failed to load:', mediaUrlData.fallback);
-                            fallbackError.target.style.display = 'none';
-                            fallbackError.target.nextSibling.style.display = 'block';
-                          };
-                        } else {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'block';
-                        }
-                      }}
+                      onError={(e) => handleMediaError(e, 0)}
                     />
                   ) : (
                     <video 
                       src={mediaUrlData.primary} 
                       controls 
-                      onError={(e) => {
-                        console.log('❌ Primary video failed to load:', mediaUrlData.primary);
-                        
-                        // Try fallback URL if available
-                        if (mediaUrlData.fallback) {
-                          console.log('🔄 Trying fallback URL:', mediaUrlData.fallback);
-                          e.target.src = mediaUrlData.fallback;
-                          e.target.onerror = (fallbackError) => {
-                            console.log('❌ Fallback video also failed to load:', mediaUrlData.fallback);
-                            fallbackError.target.style.display = 'none';
-                            fallbackError.target.nextSibling.style.display = 'block';
-                          };
-                        } else {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'block';
-                        }
-                      }}
+                      onError={(e) => handleMediaError(e, 0)}
                     />
                   )
                 ) : (
@@ -174,6 +179,9 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                 )}
                 <div className="media-error" style={{ display: 'none', padding: '20px', textAlign: 'center', color: '#666' }}>
                   <p>Media failed to load</p>
+                  <p style={{ fontSize: '12px', marginTop: '5px' }}>
+                    Tried {1 + (mediaUrlData.alternatives?.length || 0)} different URLs
+                  </p>
                 </div>
                 <div className="media-info">
                   <p>{mediaTitle}</p>
