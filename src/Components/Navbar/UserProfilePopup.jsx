@@ -317,10 +317,10 @@ export default function UserProfilePopup({ user, onClose }) {
             <div className="profile-header">
               <div className="profile-header-left">
                 {user.profilePic || userData?.profile_picture ? (
-                  <img 
+                <img 
                     src={user.profilePic || userData?.profile_picture} 
-                    className="profile-pic-small" 
-                    alt={`${userData?.firstName} ${userData?.lastName}`}
+                  className="profile-pic-small" 
+                  alt={`${userData?.firstName} ${userData?.lastName}`} 
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'flex';

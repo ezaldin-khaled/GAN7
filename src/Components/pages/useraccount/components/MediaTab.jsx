@@ -18,148 +18,49 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     handleMediaUpload(formData);
   };
 
-  // Function to fetch media as blob and create blob URL
-  const fetchMediaAsBlob = async (file) => {
-    try {
-      console.log('🔄 Fetching media as blob for file:', file.id);
-      
-      // Try different API endpoints
-      const endpoints = [
-        `/api/profile/talent/media/${file.id}/`,
-        `/api/media/${file.id}/`,
-        `/api/files/${file.id}/`,
-        `/api/profile/talent/media/${file.id}/download/`
-      ];
-      
-      for (const endpoint of endpoints) {
-        try {
-          console.log('🔄 Trying endpoint:', endpoint);
-          const response = await axiosInstance.get(endpoint, {
-            responseType: 'blob',
-            headers: {
-              'Accept': '*/*'
-            }
-          });
-          
-          if (response.data) {
-            const blob = new Blob([response.data], { 
-              type: response.headers['content-type'] || 'image/jpeg' 
-            });
-            const blobUrl = URL.createObjectURL(blob);
-            console.log('✅ Created blob URL:', blobUrl);
-            return blobUrl;
-          }
-        } catch (error) {
-          console.log('❌ Endpoint failed:', endpoint, error.response?.status);
-          continue;
-        }
-      }
-      
-      console.log('❌ All blob endpoints failed');
-      return null;
-    } catch (error) {
-      console.error('❌ Failed to fetch media as blob:', error);
-      return null;
-    }
-  };
-
   // Helper function to get the correct image URL from different data structures
   const getMediaUrl = (file) => {
     console.log('🔗 Getting media URL for file:', file);
     console.log('🔗 Full file object:', JSON.stringify(file, null, 2));
     
-    // Try different possible URL field names
-    const possibleUrls = [
-      file.file_url,
-      file.url,
-      file.media_url,
-      file.image_url,
-      file.media_file,
-      file.file,
-      file.image
-    ];
+    // The media_file field contains the direct S3/CDN URL - use this as primary
+    let primaryUrl = file.media_file;
+    console.log('🔗 Found media_file URL:', primaryUrl);
     
-    let validUrl = possibleUrls.find(url => url && typeof url === 'string');
-    console.log('🔗 Found valid URL:', validUrl);
-    
-    // Try to construct alternative URLs
-    let alternativeUrls = [];
-    
-    // If we have a valid URL, try different base URLs
-    if (validUrl) {
-      console.log('🔗 Processing URL:', validUrl);
+    // If media_file is not available, try other possible URL field names
+    if (!primaryUrl) {
+      const possibleUrls = [
+        file.file_url,
+        file.url,
+        file.media_url,
+        file.image_url,
+        file.file,
+        file.image
+      ];
       
-      // If it's a CDN URL, try different base URLs
-      if (validUrl.includes('cdn.gan7club.com')) {
-        console.log('🔗 CDN URL detected, trying alternative base URLs');
-        
-        // Extract the path from the CDN URL
-        const urlParts = validUrl.split('cdn.gan7club.com');
-        if (urlParts.length > 1) {
-          const mediaPath = urlParts[1];
-          console.log('🔗 Media path extracted:', mediaPath);
-          
-          // Try different base URLs
-          alternativeUrls = [
-            mediaPath, // Relative path
-            `/media${mediaPath}`, // Media proxy path
-            `https://api.gan7club.com${mediaPath}`, // API server
-            `https://gan7club.com${mediaPath}`, // Main domain
-            validUrl // Original CDN URL as fallback
-          ];
-          
-          console.log('🔗 Alternative URLs to try:', alternativeUrls);
-        }
-      } else if (validUrl.startsWith('/')) {
-        // If it's a relative path, try different base URLs
-        console.log('🔗 Relative path detected, trying different base URLs');
-        alternativeUrls = [
-          validUrl, // Original relative path
-          `/media${validUrl}`, // Media proxy path
-          `https://api.gan7club.com${validUrl}`, // API server
-          `https://gan7club.com${validUrl}`, // Main domain
-        ];
-        
-        console.log('🔗 Alternative URLs to try:', alternativeUrls);
-      } else if (validUrl.startsWith('http')) {
-        // If it's an absolute URL, try the media proxy version
-        console.log('🔗 Absolute URL detected, trying media proxy');
-        try {
-          const url = new URL(validUrl);
-          const mediaPath = url.pathname;
-          alternativeUrls = [
-            validUrl, // Original URL
-            `/media${mediaPath}`, // Media proxy path
-          ];
-          
-          console.log('🔗 Alternative URLs to try:', alternativeUrls);
-        } catch (e) {
-          console.log('🔗 Could not parse URL:', validUrl);
-        }
-      }
+      primaryUrl = possibleUrls.find(url => url && typeof url === 'string');
+      console.log('🔗 Found fallback URL:', primaryUrl);
     }
     
-    // If we have a file ID, try to construct a direct API URL
+    // For DigitalOcean Spaces URLs, use them directly without alternatives
+    if (primaryUrl && (primaryUrl.includes('ganspace.fra1.cdn.digitaloceanspaces.com') || 
+        primaryUrl.includes('cdn.gan7club.com'))) {
+      console.log('🔗 DigitalOcean Spaces/CDN URL detected - using directly');
+      return {
+        primary: primaryUrl,
+        alternatives: []
+      };
+    }
+    
+    // For other URLs, provide minimal alternatives
+    const alternatives = [];
     if (file.id) {
-      const apiUrl = `/api/profile/talent/media/${file.id}/`;
-      console.log('🔗 Adding API URL as alternative:', apiUrl);
-      alternativeUrls.unshift(apiUrl); // Add API URL as first alternative
-    }
-    
-    // If we have a filename, try to construct a media URL (handle spaces properly)
-    if (file.name || file.filename) {
-      const filename = file.name || file.filename;
-      // Encode the filename to handle spaces and special characters
-      const encodedFilename = encodeURIComponent(filename);
-      const mediaUrl = `/media/${encodedFilename}`;
-      console.log('🔗 Adding filename-based media URL as alternative:', mediaUrl);
-      alternativeUrls.unshift(mediaUrl);
+      alternatives.push(`/api/profile/talent/media/${file.id}/`);
     }
     
     return {
-      primary: validUrl,
-      fallback: null,
-      alternatives: alternativeUrls
+      primary: primaryUrl,
+      alternatives: alternatives
     };
   };
 
@@ -179,21 +80,33 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     ctx.lineWidth = 2;
     ctx.strokeRect(1, 1, 298, 198);
     
+    // Icon based on media type
+    const isVideo = file.media_type === 'video' || file.name?.includes('.mp4') || file.name?.includes('.mov');
+    const icon = isVideo ? '🎥' : '🖼️';
+    
     // Icon
     ctx.fillStyle = '#999';
     ctx.font = '48px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('🖼️', 150, 80);
+    ctx.fillText(icon, 150, 80);
     
-    // File name
+    // File name (truncated if too long)
+    const fileName = file.name || 'Media File';
+    const truncatedName = fileName.length > 20 ? fileName.substring(0, 17) + '...' : fileName;
     ctx.fillStyle = '#666';
     ctx.font = '12px Arial';
-    ctx.fillText(file.name || 'Media File', 150, 120);
+    ctx.fillText(truncatedName, 150, 120);
     
-    // File type
+    // File type and size info
     ctx.fillStyle = '#999';
     ctx.font = '10px Arial';
-    ctx.fillText(file.media_type || 'image', 150, 140);
+    const mediaInfo = `${file.media_type || 'unknown'} • ID: ${file.id || 'N/A'}`;
+    ctx.fillText(mediaInfo, 150, 140);
+    
+    // Error message
+    ctx.fillStyle = '#ff6b6b';
+    ctx.font = '9px Arial';
+    ctx.fillText('Media unavailable', 150, 155);
     
     return canvas.toDataURL();
   };
@@ -257,25 +170,36 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
             
             console.log(`🎨 Item ${index} - Primary URL: ${mediaUrlData.primary}, Alternatives: ${mediaUrlData.alternatives?.length || 0}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
             
-            // Create a function to handle multiple URL attempts
-            const handleMediaError = (e, urlIndex = 0) => {
-              const allUrls = [mediaUrlData.primary, ...(mediaUrlData.alternatives || [])];
-              const currentUrl = allUrls[urlIndex];
+            // Create a function to handle media loading errors
+            const handleMediaError = (e) => {
+              console.log('❌ Media failed to load:', mediaUrlData.primary);
               
-              console.log(`❌ URL ${urlIndex + 1} failed to load:`, currentUrl);
-              
-              // Try next URL if available (limit to 3 attempts to avoid too many failures)
-              if (urlIndex + 1 < allUrls.length && urlIndex < 2) {
-                const nextUrl = allUrls[urlIndex + 1];
-                console.log(`🔄 Trying URL ${urlIndex + 2}:`, nextUrl);
-                e.target.src = nextUrl;
-                e.target.onerror = (nextError) => handleMediaError(nextError, urlIndex + 1);
-              } else {
-                console.log('❌ All URLs failed, showing placeholder image');
-                // Create and show placeholder image
+              // For DigitalOcean Spaces URLs, if they fail, show placeholder
+              if (mediaUrlData.primary && (mediaUrlData.primary.includes('ganspace.fra1.cdn.digitaloceanspaces.com') || 
+                  mediaUrlData.primary.includes('cdn.gan7club.com'))) {
+                console.log('❌ DigitalOcean Spaces URL failed, showing placeholder');
                 const placeholderUrl = createPlaceholderImage(file);
                 e.target.src = placeholderUrl;
                 e.target.onerror = null; // Prevent infinite loop
+                return;
+              }
+              
+              // For other URLs, try alternatives if available
+              if (mediaUrlData.alternatives && mediaUrlData.alternatives.length > 0) {
+                const nextUrl = mediaUrlData.alternatives[0];
+                console.log('🔄 Trying alternative URL:', nextUrl);
+                e.target.src = nextUrl;
+                e.target.onerror = () => {
+                  console.log('❌ Alternative URL also failed, showing placeholder');
+                  const placeholderUrl = createPlaceholderImage(file);
+                  e.target.src = placeholderUrl;
+                  e.target.onerror = null;
+                };
+              } else {
+                console.log('❌ No alternatives available, showing placeholder');
+                const placeholderUrl = createPlaceholderImage(file);
+                e.target.src = placeholderUrl;
+                e.target.onerror = null;
               }
             };
             
@@ -286,13 +210,13 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                     <img 
                       src={mediaUrlData.primary} 
                       alt={mediaTitle} 
-                      onError={(e) => handleMediaError(e, 0)}
+                      onError={handleMediaError}
                     />
                   ) : (
                     <video 
                       src={mediaUrlData.primary} 
                       controls 
-                      onError={(e) => handleMediaError(e, 0)}
+                      onError={handleMediaError}
                     />
                   )
                 ) : (
@@ -302,9 +226,23 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                     justifyContent: 'center', 
                     height: '200px', 
                     background: '#f5f5f5',
-                    color: '#666'
+                    color: '#666',
+                    flexDirection: 'column',
+                    padding: '20px',
+                    textAlign: 'center'
                   }}>
-                    <FaImage size={48} />
+                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>
+                      {file.media_type === 'video' ? '🎥' : '🖼️'}
+                    </div>
+                    <div style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '5px' }}>
+                      {file.name || 'Media File'}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#999', marginBottom: '5px' }}>
+                      {file.media_type || 'unknown'} • ID: {file.id || 'N/A'}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#ff6b6b' }}>
+                      Media unavailable
+                    </div>
                   </div>
                 )}
                 <div className="media-info">
