@@ -185,7 +185,6 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
 
   // Helper function to determine if it's an image
   const isImage = (file) => {
-    const url = getMediaUrl(file);
     const mediaType = file.media_type || file.file_type;
     
     // Check media type first
@@ -193,8 +192,15 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       return true;
     }
     
-    // Check file extension
-    if (url && url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+    // Check file extension from filename
+    const filename = file.name || file.filename;
+    if (filename && filename.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+      return true;
+    }
+    
+    // Check file extension from URL
+    const mediaUrlData = getMediaUrl(file);
+    if (mediaUrlData.primary && mediaUrlData.primary.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
       return true;
     }
     
