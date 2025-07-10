@@ -30,4 +30,14 @@ static_sites:
     # Static site configuration
     static_site_config:
       error_document: index.html
-      index_document: index.html 
+      index_document: index.html
+    # Add proxy configuration for API calls
+    proxy_config:
+      - path: /api
+        target: https://api.gan7club.com
+        change_origin: true
+        secure: true
+      - path: /media
+        target: https://api.gan7club.com
+        change_origin: true
+        secure: true 
