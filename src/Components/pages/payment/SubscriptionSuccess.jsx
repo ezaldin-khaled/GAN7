@@ -19,7 +19,7 @@ const SubscriptionSuccess = () => {
 
     const verifySubscription = async () => {
       try {
-        const response = await axiosInstance.get(`/payments/subscriptions/${sessionId}/status/`);
+        const response = await axiosInstance.get(`/api/payments/subscriptions/${sessionId}/status/`);
         setSubscriptionData(response.data);
         setLoading(false);
       } catch (err) {

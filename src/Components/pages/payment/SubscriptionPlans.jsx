@@ -78,7 +78,7 @@ const SubscriptionPlans = () => {
 
   const handlePaymentSuccess = async (paymentIntent) => {
     try {
-      await axiosInstance.post('/payments/subscriptions/', {
+      await axiosInstance.post('/api/payments/subscriptions/', {
         plan_id: selectedPlan.id,
         payment_intent_id: paymentIntent.id,
         is_upgrade: currentSubscription !== null

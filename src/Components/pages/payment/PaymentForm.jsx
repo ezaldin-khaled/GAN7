@@ -19,8 +19,17 @@ const PaymentForm = ({ planId, onSuccess, onError }) => {
     }
 
     try {
+      // Get the JWT token
+      const token = localStorage.getItem('access');
+      console.log('JWT Token available for payment intent:', !!token);
+      
       // Create payment intent on the server
-      const { data: clientSecret } = await axiosInstance.post('/payments/create-payment-intent/', { planId });
+      const { data: clientSecret } = await axiosInstance.post('/api/payments/create-payment-intent/', { planId }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
       // Confirm the payment with Stripe
       const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(

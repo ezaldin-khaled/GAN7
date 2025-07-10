@@ -92,7 +92,16 @@ const BackgroundBillingTab = () => {
       console.log('Request data being sent:', requestData);
       console.log('API URL:', '/api/payments/create-checkout-session/');
       
-      const response = await axiosInstance.post('/api/payments/create-checkout-session/', requestData);
+      // Get the JWT token
+      const token = localStorage.getItem('access');
+      console.log('JWT Token available:', !!token);
+      
+      const response = await axiosInstance.post('/api/payments/create-checkout-session/', requestData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
       console.log('Checkout response:', response.data);
       
