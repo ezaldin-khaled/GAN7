@@ -20,7 +20,7 @@ const BackgroundBillingTab = () => {
     try {
       console.log('🔍 Fetching Production Assets Pro plans with centralized axios');
       
-      const response = await axiosInstance.get('/payments/plans/');
+      const response = await axiosInstance.get('/api/payments/plans/');
       
       console.log('📥 Production Assets Pro plans API response:', response.data);
       console.log('📋 Plans structure:', JSON.stringify(response.data, null, 2));
@@ -90,9 +90,9 @@ const BackgroundBillingTab = () => {
       };
       
       console.log('Request data being sent:', requestData);
-      console.log('API URL:', '/payments/create-checkout-session/');
+      console.log('API URL:', '/api/payments/create-checkout-session/');
       
-      const response = await axiosInstance.post('/payments/create-checkout-session/', requestData);
+      const response = await axiosInstance.post('/api/payments/create-checkout-session/', requestData);
 
       console.log('Checkout response:', response.data);
       
