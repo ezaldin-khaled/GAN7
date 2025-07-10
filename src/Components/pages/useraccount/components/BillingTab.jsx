@@ -24,7 +24,7 @@ const BillingTab = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await axiosInstance.get('/payments/plans/');
+      const response = await axiosInstance.get('/api/payments/plans/');
       console.log('Plans received from API:', response.data);
       setPlans(response.data);
       setLoading(false);
@@ -45,7 +45,7 @@ const BillingTab = () => {
 
   const fetchCurrentSubscription = async () => {
     try {
-      const response = await axiosInstance.get('/payments/subscriptions/');
+      const response = await axiosInstance.get('/api/payments/subscriptions/');
       console.log('Current subscription data:', response.data);
       if (response.data.length > 0) {
         setCurrentSubscription(response.data[0]);
