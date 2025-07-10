@@ -18,9 +18,37 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     handleMediaUpload(formData);
   };
 
+  // Function to test API endpoints directly for debugging
+  const testApiEndpoint = async (fileId) => {
+    console.log('🧪 Testing API endpoint for file ID:', fileId);
+    
+    const endpoints = [
+      `/api/profile/talent/media/${fileId}/`,
+      `/api/media/${fileId}/`,
+      `/api/files/${fileId}/`
+    ];
+    
+    for (const endpoint of endpoints) {
+      try {
+        console.log('🧪 Testing endpoint:', endpoint);
+        const response = await axiosInstance.head(endpoint);
+        console.log('✅ Endpoint accessible:', endpoint, 'Status:', response.status);
+        return endpoint;
+      } catch (error) {
+        console.log('❌ Endpoint failed:', endpoint, 'Status:', error.response?.status);
+      }
+    }
+    
+    console.log('❌ All API endpoints failed');
+    return null;
+  };
+
   // Helper function to get the correct image URL from different data structures
   const getMediaUrl = (file) => {
     console.log('🔗 Getting media URL for file:', file);
+    console.log('🔗 File ID:', file.id);
+    console.log('🔗 File name:', file.name);
+    console.log('🔗 Media type:', file.media_type);
     console.log('🔗 Full file object:', JSON.stringify(file, null, 2));
     
     // The media_file field contains the direct S3/CDN URL - use this as primary
@@ -42,6 +70,24 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       console.log('🔗 Found fallback URL:', primaryUrl);
     }
     
+    // Validate the URL format
+    if (primaryUrl) {
+      console.log('🔗 URL validation:');
+      console.log('  - Is string:', typeof primaryUrl === 'string');
+      console.log('  - Is empty:', !primaryUrl);
+      console.log('  - Contains spaces:', primaryUrl.includes(' '));
+      console.log('  - Starts with http:', primaryUrl.startsWith('http'));
+      console.log('  - Contains cdn.gan7club.com:', primaryUrl.includes('cdn.gan7club.com'));
+      console.log('  - Contains ganspace:', primaryUrl.includes('ganspace'));
+      
+      // Check for URL encoding issues
+      if (primaryUrl.includes(' ')) {
+        console.log('⚠️  URL contains spaces - this might cause issues');
+        primaryUrl = encodeURI(primaryUrl);
+        console.log('🔗 URL after encoding:', primaryUrl);
+      }
+    }
+    
     // For DigitalOcean Spaces URLs, use them directly without alternatives
     if (primaryUrl && (primaryUrl.includes('ganspace.fra1.cdn.digitaloceanspaces.com') || 
         primaryUrl.includes('cdn.gan7club.com'))) {
@@ -52,10 +98,28 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       };
     }
     
-    // For other URLs, provide minimal alternatives
+    // For other URLs, provide multiple fallback options
     const alternatives = [];
+    
+    // 1. Direct API endpoint for media download
     if (file.id) {
       alternatives.push(`/api/profile/talent/media/${file.id}/`);
+    }
+    
+    // 2. Media proxy through our server
+    if (primaryUrl && primaryUrl.startsWith('http')) {
+      try {
+        const url = new URL(primaryUrl);
+        alternatives.push(`/media${url.pathname}`);
+      } catch (e) {
+        console.log('🔗 Could not parse URL for proxy:', primaryUrl);
+      }
+    }
+    
+    // 3. Alternative API endpoints
+    if (file.id) {
+      alternatives.push(`/api/media/${file.id}/`);
+      alternatives.push(`/api/files/${file.id}/`);
     }
     
     return {
@@ -170,13 +234,48 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
             
             console.log(`🎨 Item ${index} - Primary URL: ${mediaUrlData.primary}, Alternatives: ${mediaUrlData.alternatives?.length || 0}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
             
+            // Test API endpoint for debugging (only for first few items to avoid spam)
+            if (index < 3 && file.id) {
+              testApiEndpoint(file.id);
+            }
+            
             // Create a function to handle media loading errors
             const handleMediaError = (e) => {
               console.log('❌ Media failed to load:', mediaUrlData.primary);
+              console.log('❌ Error details:', e);
+              console.log('❌ Target element:', e.target);
               
-              // For DigitalOcean Spaces URLs, if they fail, show placeholder
+              // Check if it's a CORS error
+              const isCorsError = e.target.crossOrigin === 'anonymous' || 
+                                (e.target.src && e.target.src.startsWith('http') && 
+                                 !e.target.src.startsWith(window.location.origin));
+              
+              console.log('❌ Is CORS error:', isCorsError);
+              
+              // For DigitalOcean Spaces URLs, if they fail, try with CORS headers
               if (mediaUrlData.primary && (mediaUrlData.primary.includes('ganspace.fra1.cdn.digitaloceanspaces.com') || 
                   mediaUrlData.primary.includes('cdn.gan7club.com'))) {
+                
+                if (isCorsError) {
+                  console.log('🔄 CORS error detected, trying media proxy');
+                  // Try the media proxy version
+                  try {
+                    const url = new URL(mediaUrlData.primary);
+                    const proxyUrl = `/media${url.pathname}`;
+                    console.log('🔄 Trying proxy URL:', proxyUrl);
+                    e.target.src = proxyUrl;
+                    e.target.onerror = () => {
+                      console.log('❌ Proxy URL also failed, showing placeholder');
+                      const placeholderUrl = createPlaceholderImage(file);
+                      e.target.src = placeholderUrl;
+                      e.target.onerror = null;
+                    };
+                    return;
+                  } catch (parseError) {
+                    console.log('❌ Could not parse URL for proxy');
+                  }
+                }
+                
                 console.log('❌ DigitalOcean Spaces URL failed, showing placeholder');
                 const placeholderUrl = createPlaceholderImage(file);
                 e.target.src = placeholderUrl;
@@ -210,12 +309,14 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                     <img 
                       src={mediaUrlData.primary} 
                       alt={mediaTitle} 
+                      crossOrigin="anonymous"
                       onError={handleMediaError}
                     />
                   ) : (
                     <video 
                       src={mediaUrlData.primary} 
                       controls 
+                      crossOrigin="anonymous"
                       onError={handleMediaError}
                     />
                   )
