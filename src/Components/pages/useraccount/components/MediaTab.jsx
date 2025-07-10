@@ -23,22 +23,40 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     try {
       console.log('🔄 Fetching media as blob for file:', file.id);
       
-      // Try to fetch the media file as a blob
-      const response = await axiosInstance.get(`/api/profile/talent/media/${file.id}/`, {
-        responseType: 'blob',
-        headers: {
-          'Accept': '*/*'
-        }
-      });
+      // Try different API endpoints
+      const endpoints = [
+        `/api/profile/talent/media/${file.id}/`,
+        `/api/media/${file.id}/`,
+        `/api/files/${file.id}/`,
+        `/api/profile/talent/media/${file.id}/download/`
+      ];
       
-      if (response.data) {
-        const blob = new Blob([response.data], { 
-          type: response.headers['content-type'] || 'image/jpeg' 
-        });
-        const blobUrl = URL.createObjectURL(blob);
-        console.log('✅ Created blob URL:', blobUrl);
-        return blobUrl;
+      for (const endpoint of endpoints) {
+        try {
+          console.log('🔄 Trying endpoint:', endpoint);
+          const response = await axiosInstance.get(endpoint, {
+            responseType: 'blob',
+            headers: {
+              'Accept': '*/*'
+            }
+          });
+          
+          if (response.data) {
+            const blob = new Blob([response.data], { 
+              type: response.headers['content-type'] || 'image/jpeg' 
+            });
+            const blobUrl = URL.createObjectURL(blob);
+            console.log('✅ Created blob URL:', blobUrl);
+            return blobUrl;
+          }
+        } catch (error) {
+          console.log('❌ Endpoint failed:', endpoint, error.response?.status);
+          continue;
+        }
       }
+      
+      console.log('❌ All blob endpoints failed');
+      return null;
     } catch (error) {
       console.error('❌ Failed to fetch media as blob:', error);
       return null;
@@ -128,10 +146,12 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       alternativeUrls.unshift(apiUrl); // Add API URL as first alternative
     }
     
-    // If we have a filename, try to construct a media URL
+    // If we have a filename, try to construct a media URL (handle spaces properly)
     if (file.name || file.filename) {
       const filename = file.name || file.filename;
-      const mediaUrl = `/media/${filename}`;
+      // Encode the filename to handle spaces and special characters
+      const encodedFilename = encodeURIComponent(filename);
+      const mediaUrl = `/media/${encodedFilename}`;
       console.log('🔗 Adding filename-based media URL as alternative:', mediaUrl);
       alternativeUrls.unshift(mediaUrl);
     }
@@ -244,8 +264,8 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
               
               console.log(`❌ URL ${urlIndex + 1} failed to load:`, currentUrl);
               
-              // Try next URL if available
-              if (urlIndex + 1 < allUrls.length) {
+              // Try next URL if available (limit to 3 attempts to avoid too many failures)
+              if (urlIndex + 1 < allUrls.length && urlIndex < 2) {
                 const nextUrl = allUrls[urlIndex + 1];
                 console.log(`🔄 Trying URL ${urlIndex + 2}:`, nextUrl);
                 e.target.src = nextUrl;
