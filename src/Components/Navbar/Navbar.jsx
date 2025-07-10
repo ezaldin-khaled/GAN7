@@ -108,21 +108,11 @@ function Navbar() {
         </li>
         {!user && !loading ? (
           <li>
-            <button 
-              className="btn login-btn" 
-              onClick={handleLoginClick}
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              {t('navigation.login')}
-            </button>
+            <a href="/login" className="btn">{t('navigation.login')}</a>
           </li>
         ) : user && !loading ? (
           <li>
-            <button 
-              className="avatar-btn" 
-              onClick={handleAvatarClick}
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
+            <button className="avatar-btn" onClick={handleAvatarClick}>
               {user.profilePic ? (
                 <img 
                   src={user.profilePic} 
