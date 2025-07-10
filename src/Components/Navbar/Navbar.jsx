@@ -35,9 +35,34 @@ function Navbar() {
     }
   };
 
+  const handleLoginClick = () => {
+    console.log('Login button clicked');
+    navigate('/login');
+  };
+
+  const handleAvatarClick = () => {
+    console.log('Avatar clicked, user:', user);
+    if (user) {
+      setShowProfile(true);
+    } else {
+      console.log('No user data, redirecting to login');
+      navigate('/login');
+    }
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <nav className={`container ${sticky? 'dark-nav' : ''}`}>
-              <img src={logo} alt="" className='logo' onClick={() => navigate('/')} style={{cursor: 'pointer'}} />
+      <img 
+        src={logo} 
+        alt="Logo" 
+        className='logo' 
+        onClick={handleLogoClick} 
+        style={{cursor: 'pointer'}} 
+      />
       <ul className={mobileMenu?'':'hide-mobile-menu'}>
         <li>
           {location.pathname === '/' ? (
@@ -78,19 +103,26 @@ function Navbar() {
         <li>
           <a href="/gallery" className="gallery-link">{t('navigation.gallery')}</a>
         </li>
-        {/* <li>
-          <Link to="footer" smooth={true} offset={-260} duration={500}>Contact Us</Link>
-        </li> */}
         <li>
           <LanguageSwitcher />
         </li>
         {!user && !loading ? (
           <li>
-            <a href="/login" className="btn">{t('navigation.login')}</a>
+            <button 
+              className="btn login-btn" 
+              onClick={handleLoginClick}
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              {t('navigation.login')}
+            </button>
           </li>
         ) : user && !loading ? (
           <li>
-            <button className="avatar-btn" onClick={() => setShowProfile(true)}>
+            <button 
+              className="avatar-btn" 
+              onClick={handleAvatarClick}
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
               {user.profilePic ? (
                 <img 
                   src={user.profilePic} 

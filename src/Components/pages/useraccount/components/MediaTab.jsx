@@ -18,6 +18,33 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     handleMediaUpload(formData);
   };
 
+  // Function to fetch media as blob and create blob URL
+  const fetchMediaAsBlob = async (file) => {
+    try {
+      console.log('🔄 Fetching media as blob for file:', file.id);
+      
+      // Try to fetch the media file as a blob
+      const response = await axiosInstance.get(`/api/profile/talent/media/${file.id}/`, {
+        responseType: 'blob',
+        headers: {
+          'Accept': '*/*'
+        }
+      });
+      
+      if (response.data) {
+        const blob = new Blob([response.data], { 
+          type: response.headers['content-type'] || 'image/jpeg' 
+        });
+        const blobUrl = URL.createObjectURL(blob);
+        console.log('✅ Created blob URL:', blobUrl);
+        return blobUrl;
+      }
+    } catch (error) {
+      console.error('❌ Failed to fetch media as blob:', error);
+      return null;
+    }
+  };
+
   // Helper function to get the correct image URL from different data structures
   const getMediaUrl = (file) => {
     console.log('🔗 Getting media URL for file:', file);
