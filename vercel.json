@@ -7,10 +7,6 @@
     {
       "source": "/media/:path*",
       "destination": "https://api.gan7club.com/media/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ],
   "redirects": [
@@ -31,6 +27,26 @@
     },
     {
       "source": "/admin",
+      "destination": "/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/register",
+      "destination": "/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/verify-email",
+      "destination": "/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/((?!api|media|_next|favicon.ico|assets).*)",
       "destination": "/index.html",
       "permanent": false
     }
@@ -63,15 +79,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
         }
       ]
     }
