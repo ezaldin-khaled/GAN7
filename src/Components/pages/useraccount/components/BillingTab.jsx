@@ -93,9 +93,9 @@ const BillingTab = () => {
       };
       
       console.log('Request data being sent:', requestData);
-      console.log('API URL:', '/payments/create-checkout-session/');
+      console.log('API URL:', '/api/payments/create-checkout-session/');
       
-      const response = await axiosInstance.post('/payments/create-checkout-session/', requestData);
+      const response = await axiosInstance.post('/api/payments/create-checkout-session/', requestData);
 
       console.log('Checkout response:', response.data);
       

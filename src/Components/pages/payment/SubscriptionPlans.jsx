@@ -21,7 +21,7 @@ const SubscriptionPlans = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await axiosInstance.get('/payments/plans/');
+      const response = await axiosInstance.get('/api/payments/plans/');
       setPlans(response.data);
       setLoading(false);
     } catch (err) {
@@ -63,7 +63,7 @@ const SubscriptionPlans = () => {
 
   const handleCheckout = async (plan) => {
     try {
-      const response = await axiosInstance.post('/payments/create-checkout-session/', {
+      const response = await axiosInstance.post('/api/payments/create-checkout-session/', {
         plan_id: plan.id,
         success_url: `${window.location.origin}/subscription/success`,
         cancel_url: `${window.location.origin}/subscription/cancel`
