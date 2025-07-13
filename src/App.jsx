@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
 import MainPage from './Components/pages/MainPage';
 import LoginPage from './Components/pages/login/LoginPage/authentication';
 import TalentAccount from './Components/pages/useraccount/UserAccountPage';
@@ -8,15 +9,36 @@ import AdminDashboard from './Components/pages/admin/AdminDashboard';
 import SubscriptionPlans from './Components/pages/payment/SubscriptionPlans';
 import SubscriptionSuccess from './Components/pages/payment/SubscriptionSuccess';
 import GalleryPage from './Components/pages/GalleryPage';
-import { AuthProvider } from './Components/context/AuthContext';
+import { AuthContext, AuthProvider } from './Components/context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import './i18n'; // Initialize i18n
 
 // Component to conditionally redirect based on user type
 const AccountRouter = () => {
-  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  const { user, loading } = useContext(AuthContext);
   
-  if (userInfo.is_background) {
+  // Show loading state while auth is being checked
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '18px'
+      }}>
+        Loading account...
+      </div>
+    );
+  }
+  
+  // If no user is logged in, redirect to login
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  // Route based on user type
+  if (user.is_background) {
     return <BackgroundAccount />;
   }
   
