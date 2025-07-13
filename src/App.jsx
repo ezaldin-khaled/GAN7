@@ -13,6 +13,28 @@ import { AuthContext, AuthProvider } from './Components/context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import './i18n'; // Initialize i18n
 
+// Simple test component to show user data
+const SimpleAccountTest = () => {
+  const { user, loading } = useContext(AuthContext);
+  
+  return (
+    <div style={{ padding: '20px', fontFamily: 'monospace' }}>
+      <h3>Simple Account Test</h3>
+      <p>Loading: {loading ? 'true' : 'false'}</p>
+      <p>User exists: {user ? 'YES' : 'NO'}</p>
+      {user && (
+        <div>
+          <p>Name: {user.first_name} {user.last_name}</p>
+          <p>Type: {user.is_background ? 'Background' : 'Talent'}</p>
+          <p>ID: {user.id}</p>
+        </div>
+      )}
+      <p>LocalStorage user: {localStorage.getItem('user') ? 'EXISTS' : 'MISSING'}</p>
+      <p>LocalStorage token: {localStorage.getItem('access') ? 'EXISTS' : 'MISSING'}</p>
+    </div>
+  );
+};
+
 // Test component to verify AuthContext
 const AuthTest = () => {
   const { user, loading } = useContext(AuthContext);
@@ -121,6 +143,7 @@ function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/account" element={<AccountRouter />} />
           <Route path="/auth-test" element={<AuthTest />} />
+          <Route path="/simple-test" element={<SimpleAccountTest />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
             path="/admin/dashboard/*" 
