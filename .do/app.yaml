@@ -9,28 +9,6 @@ static_sites:
     output_dir: dist
     routes:
       - path: /
-      - path: /account
-      - path: /login
-      - path: /register
-      - path: /gallery
-      - path: /admin
-      - path: /verify-email
-      - path: /reset-password
-      - path: /dashboard
-      - path: /profile
-      - path: /search
-      - path: /about
-      - path: /contact
-      - path: /terms
-      - path: /privacy
-      - path: /settings
-      - path: /billing
-      - path: /subscription
-      - path: /payment
-      - path: /checkout
-      - path: /success
-      - path: /cancel
-      - path: /error
     environment_slug: static-site
     envs:
       - key: NODE_ENV
@@ -52,4 +30,41 @@ static_sites:
     # Static site configuration
     static_site_config:
       error_document: index.html
-      index_document: index.html 
+      index_document: index.html
+    # Add custom nginx configuration
+    nginx_config: |
+      server {
+          listen 80;
+          server_name _;
+          root /var/www/html;
+          index index.html;
+
+          # Handle React Router - serve index.html for all routes
+          location / {
+              try_files $uri $uri/ /index.html;
+          }
+
+          # API proxy
+          location /api/ {
+              proxy_pass https://api.gan7club.com;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+          }
+
+          # Media proxy
+          location /media/ {
+              proxy_pass https://api.gan7club.com;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+          }
+
+          # Cache static assets
+          location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+              expires 1y;
+              add_header Cache-Control "public, immutable";
+          }
+      } 
