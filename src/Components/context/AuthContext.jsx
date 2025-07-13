@@ -25,7 +25,10 @@ export const AuthProvider = ({ children }) => {
         const parsedUser = JSON.parse(userData);
         console.log('🔍 Parsed user data:', parsedUser);
         
-        // Verify token is still valid by making a test API call
+        // Set user immediately from localStorage to avoid delays
+        setUser(parsedUser);
+        
+        // Try to verify token is still valid by making a test API call
         try {
           const response = await axiosInstance.get('/api/profile/talent/');
           console.log('🔍 Token validation successful:', response.data);
@@ -41,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
           console.log('🔍 Token validation failed:', error.response?.status);
           
-          // If token is invalid, clear auth data
+          // If token is invalid (401/403), clear auth data
           if (error.response?.status === 401 || error.response?.status === 403) {
             console.log('🔍 Clearing invalid auth data');
             localStorage.removeItem('access');
@@ -49,8 +52,9 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('user');
             setUser(null);
           } else {
-            // For other errors, keep the cached user data
-            setUser(parsedUser);
+            // For other errors (network, server issues), keep the cached user data
+            console.log('🔍 Keeping cached user data due to non-auth error');
+            // User is already set from localStorage above
           }
         }
       } else {

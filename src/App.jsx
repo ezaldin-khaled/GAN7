@@ -17,8 +17,14 @@ import './i18n'; // Initialize i18n
 const AccountRouter = () => {
   const { user, loading } = useContext(AuthContext);
   
+  console.log('🔍 AccountRouter Debug:');
+  console.log('  - loading:', loading);
+  console.log('  - user:', user);
+  console.log('  - user type:', user?.is_background ? 'background' : 'talent');
+  
   // Show loading state while auth is being checked
   if (loading) {
+    console.log('🔍 AccountRouter: Still loading, showing loading state');
     return (
       <div style={{ 
         display: 'flex', 
@@ -34,14 +40,17 @@ const AccountRouter = () => {
   
   // If no user is logged in, redirect to login
   if (!user) {
+    console.log('🔍 AccountRouter: No user found, redirecting to login');
     return <Navigate to="/login" replace />;
   }
   
   // Route based on user type
   if (user.is_background) {
+    console.log('🔍 AccountRouter: Rendering BackgroundAccount');
     return <BackgroundAccount />;
   }
   
+  console.log('🔍 AccountRouter: Rendering TalentAccount');
   return <TalentAccount />;
 };
 
