@@ -1,3 +1,22 @@
-/*    /index.html   200
+# API and media proxy
 /api/*  https://api.gan7club.com/api/:splat  200
-/media/*  https://api.gan7club.com/media/:splat  200 
+/media/*  https://api.gan7club.com/media/:splat  200
+
+# Specific route redirects for better performance
+/account    /index.html   200
+/login    /index.html   200
+/register    /index.html   200
+/gallery    /index.html   200
+/admin    /index.html   200
+/verify-email    /index.html   200
+/reset-password    /index.html   200
+/dashboard    /index.html   200
+/profile    /index.html   200
+/search    /index.html   200
+/about    /index.html   200
+/contact    /index.html   200
+/terms    /index.html   200
+/privacy    /index.html   200
+
+# Catch-all for SPA routing (must be last)
+/*    /index.html   200 

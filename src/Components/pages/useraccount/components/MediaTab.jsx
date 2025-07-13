@@ -303,7 +303,7 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
             };
             
             return (
-              <div className="gallery-item" key={index}>
+            <div className="gallery-item" key={index}>
                 {mediaUrlData.primary ? (
                   isImageFile ? (
                     <img 
@@ -345,8 +345,8 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                       Media unavailable
                     </div>
                   </div>
-                )}
-                <div className="media-info">
+              )}
+              <div className="media-info">
                   <p>{mediaTitle}</p>
                   {file.id && (
                     <button 
@@ -354,8 +354,8 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
                       onClick={() => handleDeleteMedia(file.id)}
                       title="Delete media file"
                     >
-                      <FaTrash />
-                    </button>
+                  <FaTrash />
+                </button>
                   )}
                 </div>
               </div>

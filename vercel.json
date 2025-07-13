@@ -7,48 +7,10 @@
     {
       "source": "/media/:path*",
       "destination": "https://api.gan7club.com/media/:path*"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/account",
-      "destination": "/index.html",
-      "permanent": false
     },
     {
-      "source": "/login",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/gallery",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/admin",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/register",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/verify-email",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/reset-password",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/((?!api|media|_next|favicon.ico|assets).*)",
-      "destination": "/index.html",
-      "permanent": false
+      "source": "/((?!api|media|_next|favicon.ico|assets|.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
