@@ -13,14 +13,37 @@ import { AuthContext, AuthProvider } from './Components/context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import './i18n'; // Initialize i18n
 
+// Test component to verify AuthContext
+const AuthTest = () => {
+  const { user, loading } = useContext(AuthContext);
+  
+  return (
+    <div style={{ padding: '20px', fontFamily: 'monospace' }}>
+      <h3>AuthContext Test</h3>
+      <p>Loading: {loading ? 'true' : 'false'}</p>
+      <p>User: {user ? 'exists' : 'null'}</p>
+      <p>User type: {user?.is_background ? 'background' : user?.is_talent ? 'talent' : 'unknown'}</p>
+      <p>User name: {user?.first_name} {user?.last_name}</p>
+      <p>LocalStorage user: {localStorage.getItem('user') ? 'exists' : 'null'}</p>
+      <p>LocalStorage token: {localStorage.getItem('access') ? 'exists' : 'null'}</p>
+    </div>
+  );
+};
+
 // Component to conditionally redirect based on user type
 const AccountRouter = () => {
   const { user, loading } = useContext(AuthContext);
   
+  // Fallback to localStorage if AuthContext doesn't provide user data
+  const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
+  const finalUser = user || fallbackUser;
+  
   console.log('🔍 AccountRouter Debug:');
-  console.log('  - loading:', loading);
-  console.log('  - user:', user);
-  console.log('  - user type:', user?.is_background ? 'background' : 'talent');
+  console.log('  - AuthContext loading:', loading);
+  console.log('  - AuthContext user:', user);
+  console.log('  - Fallback user:', fallbackUser);
+  console.log('  - Final user:', finalUser);
+  console.log('  - User type:', finalUser?.is_background ? 'background' : 'talent');
   
   // Show loading state while auth is being checked
   if (loading) {
@@ -39,13 +62,13 @@ const AccountRouter = () => {
   }
   
   // If no user is logged in, redirect to login
-  if (!user) {
+  if (!finalUser) {
     console.log('🔍 AccountRouter: No user found, redirecting to login');
     return <Navigate to="/login" replace />;
   }
   
   // Route based on user type
-  if (user.is_background) {
+  if (finalUser.is_background) {
     console.log('🔍 AccountRouter: Rendering BackgroundAccount');
     return <BackgroundAccount />;
   }
@@ -97,6 +120,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/account" element={<AccountRouter />} />
+          <Route path="/auth-test" element={<AuthTest />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
             path="/admin/dashboard/*" 
