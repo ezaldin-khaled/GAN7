@@ -9,6 +9,28 @@ static_sites:
     output_dir: dist
     routes:
       - path: /
+      - path: /account
+      - path: /login
+      - path: /register
+      - path: /gallery
+      - path: /admin
+      - path: /verify-email
+      - path: /reset-password
+      - path: /dashboard
+      - path: /profile
+      - path: /search
+      - path: /about
+      - path: /contact
+      - path: /terms
+      - path: /privacy
+      - path: /settings
+      - path: /billing
+      - path: /subscription
+      - path: /payment
+      - path: /checkout
+      - path: /success
+      - path: /cancel
+      - path: /error
     environment_slug: static-site
     envs:
       - key: NODE_ENV
