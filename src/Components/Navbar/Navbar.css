@@ -37,6 +37,29 @@ ul li{
     color: #ddd;
 }
 
+/* Login button styles */
+.btn {
+    background: linear-gradient(135deg, #8b5a2b, #a0522d);
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #a0522d, #8b5a2b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
 /* .links li::after{
     content: '';
     position: absolute;

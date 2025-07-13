@@ -54,6 +54,53 @@ function Navbar() {
     navigate('/');
   };
 
+  // Determine what to show in the auth section
+  const renderAuthSection = () => {
+    if (loading) {
+      // Show loading spinner while fetching user data
+      return (
+        <li>
+          <div className="navbar-loader">
+            <div className="navbar-spinner"></div>
+          </div>
+        </li>
+      );
+    } else if (user) {
+      // Show avatar when user is logged in
+      return (
+        <li>
+          <button className="avatar-btn" onClick={handleAvatarClick}>
+            {user.profilePic ? (
+              <img 
+                src={user.profilePic} 
+                alt="Profile" 
+                className="avatar-img"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            {!user.profilePic && (
+              <div className="avatar-placeholder">
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+            )}
+          </button>
+        </li>
+      );
+    } else {
+      // Show login button when no user is logged in
+      return (
+        <li>
+          <button className="btn" onClick={handleLoginClick}>
+            {t('navigation.login')}
+          </button>
+        </li>
+      );
+    }
+  };
+
   return (
     <nav className={`container ${sticky? 'dark-nav' : ''}`}>
       <img 
@@ -106,38 +153,7 @@ function Navbar() {
         <li>
           <LanguageSwitcher />
         </li>
-        {!user && !loading ? (
-          <li>
-            <a href="/login" className="btn">{t('navigation.login')}</a>
-          </li>
-        ) : user && !loading ? (
-          <li>
-            <button className="avatar-btn" onClick={handleAvatarClick}>
-              {user.profilePic ? (
-                <img 
-                  src={user.profilePic} 
-                  alt="Profile" 
-                  className="avatar-img"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
-              ) : null}
-              {!user.profilePic && (
-                <div className="avatar-placeholder">
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                </div>
-              )}
-            </button>
-          </li>
-        ) : (
-          <li>
-            <div className="navbar-loader">
-              <div className="navbar-spinner"></div>
-            </div>
-          </li>
-        )}
+        {renderAuthSection()}
       </ul>
       <FaBars className='menu-icon' onClick={toggleMenu}/>
       {showProfile && (

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import axiosInstance from '../../api/axios';
 
 export const AuthContext = createContext();
 
@@ -11,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  const checkAuthStatus = () => {
+  const checkAuthStatus = async () => {
     try {
       console.log('🔍 Checking auth status...');
       const token = localStorage.getItem('access');
@@ -23,7 +24,35 @@ export const AuthProvider = ({ children }) => {
       if (token && userData) {
         const parsedUser = JSON.parse(userData);
         console.log('🔍 Parsed user data:', parsedUser);
-        setUser(parsedUser);
+        
+        // Verify token is still valid by making a test API call
+        try {
+          const response = await axiosInstance.get('/api/profile/talent/');
+          console.log('🔍 Token validation successful:', response.data);
+          
+          // Update user data with fresh data from server
+          const updatedUser = {
+            ...parsedUser,
+            ...response.data
+          };
+          
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        } catch (error) {
+          console.log('🔍 Token validation failed:', error.response?.status);
+          
+          // If token is invalid, clear auth data
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            console.log('🔍 Clearing invalid auth data');
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            localStorage.removeItem('user');
+            setUser(null);
+          } else {
+            // For other errors, keep the cached user data
+            setUser(parsedUser);
+          }
+        }
       } else {
         console.log('🔍 No valid auth data found');
         setUser(null);
