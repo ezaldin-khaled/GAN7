@@ -46,7 +46,7 @@ const BackgroundBillingTab = () => {
   const fetchCurrentSubscription = async () => {
     try {
       // Fetch profile data which includes subscription information
-      const response = await axiosInstance.get('/profile/background/');
+      const response = await axiosInstance.get('/api/profile/background/');
       
       console.log('📥 Production Assets Pro profile API response:', response.data);
       

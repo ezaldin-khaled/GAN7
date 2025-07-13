@@ -77,7 +77,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
           
           try {
             // For background users, fetch items from the API
-            const itemsResponse = await axiosInstance.get('/profile/background/items/');
+            const itemsResponse = await axiosInstance.get('/api/profile/background/items/');
             
             console.log('Production Assets Pro items API response:', itemsResponse.data);
             

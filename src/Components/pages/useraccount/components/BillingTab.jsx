@@ -60,7 +60,7 @@ const BillingTab = () => {
   const fetchUserData = async () => {
     try {
       setUserDataLoading(true);
-      const response = await axiosInstance.get('/profile/talent/');
+      const response = await axiosInstance.get('/api/profile/talent/');
       console.log('User data received:', response.data);
       setUserData(response.data);
     } catch (err) {
