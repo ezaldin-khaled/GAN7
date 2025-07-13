@@ -9,20 +9,6 @@ static_sites:
     output_dir: dist
     routes:
       - path: /
-      - path: /account
-      - path: /login
-      - path: /register
-      - path: /gallery
-      - path: /admin
-      - path: /verify-email
-      - path: /reset-password
-      - path: /dashboard
-      - path: /profile
-      - path: /search
-      - path: /about
-      - path: /contact
-      - path: /terms
-      - path: /privacy
     environment_slug: static-site
     envs:
       - key: NODE_ENV
@@ -44,14 +30,4 @@ static_sites:
     # Static site configuration
     static_site_config:
       error_document: index.html
-      index_document: index.html
-    # Add proxy configuration for API calls
-    proxy_config:
-      - path: /api
-        target: https://api.gan7club.com
-        change_origin: true
-        secure: true
-      - path: /media
-        target: https://api.gan7club.com
-        change_origin: true
-        secure: true 
+      index_document: index.html 

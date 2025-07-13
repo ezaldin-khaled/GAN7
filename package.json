@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/setup-spa.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

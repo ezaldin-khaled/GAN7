@@ -17,6 +17,16 @@
 /contact    /index.html   200
 /terms    /index.html   200
 /privacy    /index.html   200
+/settings    /index.html   200
+/billing    /index.html   200
+/subscription    /index.html   200
+/payment    /index.html   200
+/checkout    /index.html   200
+/success    /index.html   200
+/cancel    /index.html   200
+/error    /index.html   200
+/404    /index.html   200
+/500    /index.html   200
 
 # Catch-all for SPA routing (must be last)
 /*    /index.html   200 
