@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUsers, FaPlus, FaEdit, FaTrash, FaLock, FaCrown } from 'react-icons/fa';
+import { FaUsers, FaPlus, FaEdit, FaTrash, FaLock, FaCrown, FaSync } from 'react-icons/fa';
 import { CreateBandModal, ManageBandModal } from './GroupModals';
 import axiosInstance from '../../../../api/axios';
 import './GroupsTab.css';
@@ -13,6 +13,7 @@ const GroupsTab = ({ userData }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [hasBandSubscription, setHasBandSubscription] = useState(false);
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   // Add these new state variables for manage functionality
   const [showManageModal, setShowManageModal] = useState(false);
   const [selectedBand, setSelectedBand] = useState(null);
@@ -43,13 +44,37 @@ const GroupsTab = ({ userData }) => {
   const [bandScore, setBandScore] = useState(null);
 
   useEffect(() => {
-    fetchBands();
-  }, []);
+    // Check if user just completed a subscription
+    const pendingSubscription = sessionStorage.getItem('pendingSubscription');
+    const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
+    
+    if (shouldForceRefresh) {
+      console.log('Detected recent subscription, forcing refresh...');
+      sessionStorage.removeItem('pendingSubscription'); // Clear the flag
+      fetchBands(true); // Force refresh
+    } else {
+      fetchBands();
+    }
+    
+    // Add polling to check for subscription updates every 30 seconds
+    const pollInterval = setInterval(() => {
+      // Only poll if we don't have a subscription yet
+      if (!subscriptionStatus?.has_bands_subscription) {
+        console.log('Polling for subscription status update...');
+        fetchBands();
+      }
+    }, 30000);
+    
+    return () => clearInterval(pollInterval);
+  }, [subscriptionStatus?.has_bands_subscription]);
 
-  const fetchBands = async () => {
+  const fetchBands = async (forceRefresh = false) => {
     try {
       setLoading(true);
       setSubscriptionLoading(true);
+      if (forceRefresh) {
+        setRefreshing(true);
+      }
       
       // Get the authentication token
       const token = localStorage.getItem('access');
@@ -60,6 +85,7 @@ const GroupsTab = ({ userData }) => {
         setHasBandSubscription(false);
         setLoading(false);
         setSubscriptionLoading(false);
+        setRefreshing(false);
         return;
       }
       
@@ -68,7 +94,9 @@ const GroupsTab = ({ userData }) => {
       
       // Prepare headers
       const headers = {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
       };
       
       // Add is-talent header if user is a talent
@@ -78,16 +106,23 @@ const GroupsTab = ({ userData }) => {
       
       // Use the existing bands endpoint for now
       const response = await axiosInstance.get('/api/bands/', {
-        headers: headers
+        headers: headers,
+        params: forceRefresh ? { _t: Date.now() } : {} // Add timestamp to force cache refresh
       });
       
       console.log('Bands response:', response.data);
       
-      // Check if the response includes subscription_status (new combined format)
-      if (response.data.subscription_status) {
-        console.log('Found subscription_status in response:', response.data.subscription_status);
-        setSubscriptionStatus(response.data.subscription_status);
-        setHasBandSubscription(response.data.subscription_status.has_bands_subscription);
+              // Check if the response includes subscription_status (new combined format)
+        if (response.data.subscription_status) {
+          console.log('Found subscription_status in response:', response.data.subscription_status);
+          const newSubscriptionStatus = response.data.subscription_status;
+          setSubscriptionStatus(newSubscriptionStatus);
+          setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
+          
+          // Show success message if subscription was just activated
+          if (forceRefresh && newSubscriptionStatus.has_bands_subscription && !subscriptionStatus?.has_bands_subscription) {
+            setSuccess('🎉 Your Bands subscription is now active! You can now create and manage bands.');
+          }
         
         // Extract bands from the new format
         const bands = response.data.bands || [];
@@ -158,7 +193,13 @@ const GroupsTab = ({ userData }) => {
     } finally {
       setLoading(false);
       setSubscriptionLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const handleRefreshSubscription = async () => {
+    console.log('Manual refresh of subscription status...');
+    await fetchBands(true);
   };
 
   const handleCreateBand = () => {
@@ -753,9 +794,19 @@ const GroupsTab = ({ userData }) => {
             <div className="status-card">
               <div className="status-header">
                 <h3>Subscription Status</h3>
-                <span className={`status-badge ${subscriptionStatus.has_bands_subscription ? 'active' : 'inactive'}`}>
-                  {subscriptionStatus.has_bands_subscription ? 'Active' : 'Inactive'}
-                </span>
+                <div className="status-controls">
+                  <span className={`status-badge ${subscriptionStatus.has_bands_subscription ? 'active' : 'inactive'}`}>
+                    {subscriptionStatus.has_bands_subscription ? 'Active' : 'Inactive'}
+                  </span>
+                  <button 
+                    className="refresh-subscription-btn"
+                    onClick={handleRefreshSubscription}
+                    disabled={refreshing}
+                    title="Refresh subscription status"
+                  >
+                    <FaSync className={refreshing ? 'spinning' : ''} />
+                  </button>
+                </div>
               </div>
               <p className="status-message">{subscriptionStatus.message}</p>
               {subscriptionStatus.subscription && (
@@ -763,6 +814,11 @@ const GroupsTab = ({ userData }) => {
                   <p><strong>Plan:</strong> {subscriptionStatus.subscription.plan_name}</p>
                   <p><strong>Status:</strong> {subscriptionStatus.subscription.status}</p>
                   <p><strong>Expires:</strong> {new Date(subscriptionStatus.subscription.current_period_end).toLocaleDateString()}</p>
+                </div>
+              )}
+              {!subscriptionStatus.has_bands_subscription && (
+                <div className="subscription-help">
+                  <p><strong>Having trouble?</strong> If you recently subscribed to the Bands plan, try refreshing the status above or wait a few minutes for the system to update.</p>
                 </div>
               )}
             </div>
