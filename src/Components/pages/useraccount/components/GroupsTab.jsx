@@ -94,9 +94,7 @@ const GroupsTab = ({ userData }) => {
       
       // Prepare headers
       const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
+        'Authorization': `Bearer ${token}`
       };
       
       // Add is-talent header if user is a talent
@@ -105,9 +103,9 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Use the existing bands endpoint for now
-      const response = await axiosInstance.get('/api/bands/', {
-        headers: headers,
-        params: forceRefresh ? { _t: Date.now() } : {} // Add timestamp to force cache refresh
+      const url = forceRefresh ? `/api/bands/?_t=${Date.now()}` : '/api/bands/';
+      const response = await axiosInstance.get(url, {
+        headers: headers
       });
       
       console.log('Bands response:', response.data);
