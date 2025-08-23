@@ -222,3 +222,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Hide language switcher button */
+.language-switcher-button {
+  display: none !important;
+}
+
+.language-switcher {
+  display: none !important;
+}
