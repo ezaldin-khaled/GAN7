@@ -13,7 +13,6 @@ const GroupsTab = ({ userData }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [hasBandSubscription, setHasBandSubscription] = useState(false);
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   // Add these new state variables for manage functionality
   const [showManageModal, setShowManageModal] = useState(false);
   const [selectedBand, setSelectedBand] = useState(null);
@@ -47,9 +46,6 @@ const GroupsTab = ({ userData }) => {
     try {
       setLoading(true);
       setSubscriptionLoading(true);
-      if (forceRefresh) {
-        setRefreshing(true);
-      }
       
       // Get the authentication token
       const token = localStorage.getItem('access');
@@ -60,7 +56,6 @@ const GroupsTab = ({ userData }) => {
         setHasBandSubscription(false);
         setLoading(false);
         setSubscriptionLoading(false);
-        setRefreshing(false);
         return;
       }
       
@@ -91,11 +86,6 @@ const GroupsTab = ({ userData }) => {
         const newSubscriptionStatus = response.data.subscription_status;
         setSubscriptionStatus(newSubscriptionStatus);
         setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
-        
-        console.log('🔍 Subscription Status Update:');
-        console.log('- has_bands_subscription:', newSubscriptionStatus.has_bands_subscription);
-        console.log('- subscription object:', newSubscriptionStatus.subscription);
-        console.log('- message:', newSubscriptionStatus.message);
         
         // Show success message if subscription was just activated
         if (forceRefresh && newSubscriptionStatus.has_bands_subscription && !subscriptionStatus?.has_bands_subscription) {
@@ -197,7 +187,6 @@ const GroupsTab = ({ userData }) => {
     } finally {
       setLoading(false);
       setSubscriptionLoading(false);
-      setRefreshing(false);
     }
   };
 
@@ -225,92 +214,6 @@ const GroupsTab = ({ userData }) => {
     
     return () => clearInterval(pollInterval);
   }, [subscriptionStatus?.has_bands_subscription]);
-
-  // Add a new useEffect to check subscription status immediately on mount
-  useEffect(() => {
-    // Force check subscription status on component mount
-    const checkSubscriptionStatus = async () => {
-      try {
-        const token = localStorage.getItem('access');
-        if (!token) return;
-        
-        const isTalent = localStorage.getItem('is_talent') === 'true';
-        const headers = {
-          'Authorization': `Bearer ${token}`
-        };
-        
-        if (isTalent) {
-          headers['is-talent'] = 'true';
-        }
-        
-        // Make a direct call to check subscription status
-        const response = await axiosInstance.get('/api/profiles/bands/', {
-          headers: headers
-        });
-        
-        if (response.data.subscription_status) {
-          const newSubscriptionStatus = response.data.subscription_status;
-          setSubscriptionStatus(newSubscriptionStatus);
-          setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
-          
-          // If subscription is active, fetch bands immediately
-          if (newSubscriptionStatus.has_bands_subscription) {
-            fetchBands();
-          }
-        }
-      } catch (error) {
-        console.error('Error checking subscription status:', error);
-      }
-    };
-    
-    // Also check userData for subscription info
-    if (userData) {
-      console.log('Checking userData for subscription info:', userData);
-      
-      // Check various subscription indicators in userData
-      const hasSubscription = 
-        userData.band_subscription_type === 'bands' ||
-        (userData.account_type && userData.account_type.toLowerCase().includes('band')) ||
-        (userData.subscription_type && userData.subscription_type.toLowerCase().includes('band')) ||
-        (userData.subscription && userData.subscription.status === 'active');
-      
-      if (hasSubscription && !hasBandSubscription) {
-        console.log('Found subscription in userData, setting hasBandSubscription to true');
-        setHasBandSubscription(true);
-        // Force a refresh to get the latest data
-        setTimeout(() => {
-          fetchBands(true);
-        }, 1000);
-      }
-    }
-    
-    checkSubscriptionStatus();
-  }, [userData]); // Run when userData changes
-
-  const handleRefreshSubscription = async () => {
-    console.log('Manual refresh of subscription status...');
-    setRefreshing(true);
-    setSuccess(''); // Clear any existing success messages
-    
-    try {
-      // Force a complete refresh of subscription status
-      await fetchBands(true);
-      
-      // Add a small delay to ensure the state updates properly
-      setTimeout(() => {
-        if (hasBandSubscription) {
-          setSuccess('🎉 Your subscription is now active! You can now create and manage bands.');
-        } else {
-          setSuccess('Subscription status refreshed. If you recently purchased a subscription, please wait a few minutes for the system to update.');
-        }
-      }, 1000);
-    } catch (error) {
-      console.error('Error refreshing subscription:', error);
-      setSuccess('Error refreshing subscription status. Please try again.');
-    } finally {
-      setRefreshing(false);
-    }
-  };
 
   const handleCreateBand = () => {
     setShowCreateModal(true);
@@ -361,16 +264,16 @@ const GroupsTab = ({ userData }) => {
       // Check if user is a talent user
       const isTalent = localStorage.getItem('is_talent') === 'true';
       
-             // Prepare band data according to new API format
-       const bandData = {
-         name: newBand.name,
-         description: newBand.description,
-         band_type: newBand.genre || "Rock",
-         location: newBand.location || "",
-         contact_email: newBand.contact_email || "",
-         contact_phone: "",
-         website: newBand.website || ""
-       };
+      // Prepare band data according to new API format
+      const bandData = {
+        name: newBand.name,
+        description: newBand.description,
+        band_type: newBand.genre || "Rock",
+        location: newBand.location || "",
+        contact_email: newBand.contact_email || "",
+        contact_phone: "",
+        website: newBand.website || ""
+      };
       
       console.log('JSON data being sent:', bandData);
       
@@ -386,18 +289,18 @@ const GroupsTab = ({ userData }) => {
       
       console.log('Request headers:', headers);
       
-             const response = await axiosInstance.post('/api/profiles/bands/create/', bandData, {
-         headers: headers
-       });
+      const response = await axiosInstance.post('/api/profiles/bands/create/', bandData, {
+        headers: headers
+      });
       
-             console.log('Band created successfully:', response.data);
-       
-       // Check if the response indicates success
-       if (response.data.success) {
-         setSuccess(response.data.message || 'Band created successfully!');
-       } else {
-         throw new Error(response.data.error || 'Failed to create band');
-       }
+      console.log('Band created successfully:', response.data);
+      
+      // Check if the response indicates success
+      if (response.data.success) {
+        setSuccess(response.data.message || 'Band created successfully!');
+      } else {
+        throw new Error(response.data.error || 'Failed to create band');
+      }
       handleCloseModal();
       fetchBands();
     } catch (err) {
@@ -663,17 +566,17 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-             // Send the invitation code to join the band
-       const response = await axiosInstance.post('/api/profiles/bands/join-with-code/', 
-         { invitation_code: invitationCode },
-         { headers: headers }
-       );
+      // Send the invitation code to join the band
+      const response = await axiosInstance.post('/api/profiles/bands/join-with-code/', 
+        { invitation_code: invitationCode },
+        { headers: headers }
+      );
       
-             if (response.data.success) {
-         setSuccess(response.data.message || 'Successfully joined the band!');
-       } else {
-         throw new Error(response.data.error || 'Failed to join band');
-       }
+      if (response.data.success) {
+        setSuccess(response.data.message || 'Successfully joined the band!');
+      } else {
+        throw new Error(response.data.error || 'Failed to join band');
+      }
       setInvitationCode(''); // Clear the input field
       fetchBands(); // Refresh the bands list
     } catch (err) {
@@ -741,61 +644,61 @@ const GroupsTab = ({ userData }) => {
       }
       
       console.log('Request headers:', headers);
-             console.log('Making request to:', `/api/profiles/bands/${bandId}/generate-code/`);
+      console.log('Making request to:', `/api/profiles/bands/${bandId}/generate-code/`);
       
-             // Generate invitation code using the correct endpoint
-       const response = await axiosInstance.post(`/api/profiles/bands/${bandId}/generate-code/`, 
-         {}, // Empty body
-         { headers: headers }
-       );
+      // Generate invitation code using the correct endpoint
+      const response = await axiosInstance.post(`/api/profiles/bands/${bandId}/generate-code/`, 
+        {}, // Empty body
+        { headers: headers }
+      );
       
       console.log('Generate code response:', response.data);
       
-             if (response.data.success && response.data.invitation && response.data.invitation.invitation_code) {
-         setGeneratedCode(response.data.invitation.invitation_code);
-         console.log('Successfully generated code:', response.data.invitation.invitation_code);
-       } else {
-         console.error('No invitation_code in response:', response.data);
-         alert('Failed to generate invitation code. Response did not contain invitation code.');
-       }
+      if (response.data.success && response.data.invitation && response.data.invitation.invitation_code) {
+        setGeneratedCode(response.data.invitation.invitation_code);
+        console.log('Successfully generated code:', response.data.invitation.invitation_code);
+      } else {
+        console.error('No invitation_code in response:', response.data);
+        alert('Failed to generate invitation code. Response did not contain invitation code.');
+      }
     } catch (err) {
       console.error('Error generating invitation code:', err);
       console.error('Error response:', err.response);
       console.error('Error status:', err.response?.status);
       console.error('Error data:', err.response?.data);
       
-             // Display specific error message if available
-       if (err.response && err.response.data) {
-         let errorMessage = '';
-         
-         if (typeof err.response.data === 'string') {
-           errorMessage = err.response.data;
-         } else if (typeof err.response.data === 'object') {
-           if (err.response.data.error) {
-             errorMessage = err.response.data.error;
-           } else if (err.response.data.detail) {
-             errorMessage = err.response.data.detail;
-           } else if (err.response.data.message) {
-             errorMessage = err.response.data.message;
-           } else {
-             // Extract all error messages from the object
-             const errorMessages = [];
-             Object.entries(err.response.data).forEach(([key, value]) => {
-               const valueStr = Array.isArray(value) ? value.join(', ') : value;
-               errorMessages.push(`${key}: ${valueStr}`);
-             });
-             errorMessage = errorMessages.join('\n');
-           }
-         }
-         
-         if (errorMessage) {
-           alert(`Failed to generate invitation code: ${errorMessage}`);
-         } else {
-           alert(`Failed to generate invitation code. Status: ${err.response.status}`);
-         }
-       } else {
-         alert('Failed to generate invitation code. Please try again later.');
-       }
+      // Display specific error message if available
+      if (err.response && err.response.data) {
+        let errorMessage = '';
+        
+        if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        } else if (typeof err.response.data === 'object') {
+          if (err.response.data.error) {
+            errorMessage = err.response.data.error;
+          } else if (err.response.data.detail) {
+            errorMessage = err.response.data.detail;
+          } else if (err.response.data.message) {
+            errorMessage = err.response.data.message;
+          } else {
+            // Extract all error messages from the object
+            const errorMessages = [];
+            Object.entries(err.response.data).forEach(([key, value]) => {
+              const valueStr = Array.isArray(value) ? value.join(', ') : value;
+              errorMessages.push(`${key}: ${valueStr}`);
+            });
+            errorMessage = errorMessages.join('\n');
+          }
+        }
+        
+        if (errorMessage) {
+          alert(`Failed to generate invitation code: ${errorMessage}`);
+        } else {
+          alert(`Failed to generate invitation code. Status: ${err.response.status}`);
+        }
+      } else {
+        alert('Failed to generate invitation code. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -812,33 +715,6 @@ const GroupsTab = ({ userData }) => {
         <p>
           {subscriptionStatus?.message || 'You need a band subscription to access the Groups feature. Upgrade your account to create and manage bands.'}
         </p>
-        
-        {/* Add refresh button for users who just subscribed */}
-        <div className="subscription-refresh-section">
-          <p><strong>Just subscribed?</strong> Click the refresh button below to update your status:</p>
-          <button 
-            className="refresh-subscription-btn-large"
-            onClick={handleRefreshSubscription}
-            disabled={refreshing}
-          >
-            <FaSync className={refreshing ? 'spinning' : ''} />
-            {refreshing ? 'Refreshing...' : 'Refresh Subscription Status'}
-          </button>
-        </div>
-        <div className="subscription-refresh-section">
-          <p className="refresh-notice">
-            <strong>Just purchased a subscription?</strong> Click the refresh button below to update your status.
-          </p>
-          <button 
-            className="refresh-subscription-status-btn"
-            onClick={handleRefreshSubscription}
-            disabled={refreshing}
-          >
-            <FaSync className={refreshing ? 'spinning' : ''} />
-            {refreshing ? 'Checking...' : 'Refresh Subscription Status'}
-          </button>
-        </div>
-        
         <div className="subscription-features">
           <h3>What you get with Band Subscription:</h3>
           <ul>
@@ -910,11 +786,6 @@ const GroupsTab = ({ userData }) => {
     
     return (
       <div className="content-section">
-        {success && (
-          <div className="success-message-overlay">
-            <p>{success}</p>
-          </div>
-        )}
         <SubscriptionOverlay />
       </div>
     );
@@ -954,14 +825,6 @@ const GroupsTab = ({ userData }) => {
                 <span className={`status-badge ${subscriptionStatus.has_bands_subscription ? 'active' : 'inactive'}`}>
                   {subscriptionStatus.has_bands_subscription ? 'Active' : 'Inactive'}
                 </span>
-                  <button 
-                    className="refresh-subscription-btn"
-                    onClick={handleRefreshSubscription}
-                    disabled={refreshing}
-                    title="Refresh subscription status"
-                  >
-                    <FaSync className={refreshing ? 'spinning' : ''} />
-                  </button>
                 </div>
               </div>
               <p className="status-message">{subscriptionStatus.message}</p>
@@ -970,11 +833,6 @@ const GroupsTab = ({ userData }) => {
                   <p><strong>Plan:</strong> {subscriptionStatus.subscription.plan_name}</p>
                   <p><strong>Status:</strong> {subscriptionStatus.subscription.status}</p>
                   <p><strong>Expires:</strong> {new Date(subscriptionStatus.subscription.current_period_end).toLocaleDateString()}</p>
-                </div>
-              )}
-              {!subscriptionStatus.has_bands_subscription && (
-                <div className="subscription-help">
-                  <p><strong>Having trouble?</strong> If you recently subscribed to the Bands plan, try refreshing the status above or wait a few minutes for the system to update.</p>
                 </div>
               )}
             </div>
@@ -1005,14 +863,14 @@ const GroupsTab = ({ userData }) => {
                     </div>
                   )}
                 </div>
-                                 <div className="band-info">
-                   <h3>{band.name}</h3>
-                   <p>{band.description}</p>
-                   {band.band_type && <p className="band-genre">{band.band_type}</p>}
-                   {band.location && <p className="band-location">{band.location}</p>}
-                   <p className="band-members">Members: {band.members_count || 0}</p>
-                   <p className="band-score">Score: {band.profile_score || 0}</p>
-                 </div>
+                <div className="band-info">
+                  <h3>{band.name}</h3>
+                  <p>{band.description}</p>
+                  {band.band_type && <p className="band-genre">{band.band_type}</p>}
+                  {band.location && <p className="band-location">{band.location}</p>}
+                  <p className="band-members">Members: {band.members_count || 0}</p>
+                  <p className="band-score">Score: {band.profile_score || 0}</p>
+                </div>
                 <div className="band-actions">
                   <button 
                     className="manage-band-btn" 
@@ -1141,33 +999,33 @@ const GroupsTab = ({ userData }) => {
                 />
               </div>
               
-                             <div className="form-group">
-                 <label htmlFor="genre">Band Type</label>
-                 <select
-                   id="genre"
-                   name="genre"
-                   value={newBand.genre}
-                   onChange={handleInputChange}
-                   className="form-select"
-                 >
-                   <option value="">Select a band type</option>
-                   <option value="Rock">Rock</option>
-                   <option value="Pop">Pop</option>
-                   <option value="Jazz">Jazz</option>
-                   <option value="Classical">Classical</option>
-                   <option value="Electronic">Electronic</option>
-                   <option value="Folk">Folk</option>
-                   <option value="Country">Country</option>
-                   <option value="Blues">Blues</option>
-                   <option value="Hip Hop">Hip Hop</option>
-                   <option value="R&B">R&B</option>
-                   <option value="Metal">Metal</option>
-                   <option value="Punk">Punk</option>
-                   <option value="Reggae">Reggae</option>
-                   <option value="World">World Music</option>
-                   <option value="Other">Other</option>
-                 </select>
-               </div>
+              <div className="form-group">
+                <label htmlFor="genre">Band Type</label>
+                <select
+                  id="genre"
+                  name="genre"
+                  value={newBand.genre}
+                  onChange={handleInputChange}
+                  className="form-select"
+                >
+                  <option value="">Select a band type</option>
+                  <option value="Rock">Rock</option>
+                  <option value="Pop">Pop</option>
+                  <option value="Jazz">Jazz</option>
+                  <option value="Classical">Classical</option>
+                  <option value="Electronic">Electronic</option>
+                  <option value="Folk">Folk</option>
+                  <option value="Country">Country</option>
+                  <option value="Blues">Blues</option>
+                  <option value="Hip Hop">Hip Hop</option>
+                  <option value="R&B">R&B</option>
+                  <option value="Metal">Metal</option>
+                  <option value="Punk">Punk</option>
+                  <option value="Reggae">Reggae</option>
+                  <option value="World">World Music</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
               
               <div className="form-group">
                 <label htmlFor="location">Location</label>
@@ -1383,9 +1241,7 @@ const GroupsTab = ({ userData }) => {
       <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', fontSize: '12px'}}>
         Debug: Bands count: {bands ? bands.length : 0} | 
         Has subscription: {hasBandSubscription ? 'Yes' : 'No'} | 
-        Selected band: {selectedBandForCode || 'None'} |
-        Subscription Status: {subscriptionStatus ? JSON.stringify(subscriptionStatus.has_bands_subscription) : 'null'} |
-        User Data Subscription: {userData?.band_subscription_type || userData?.account_type || 'none'}
+        Selected band: {selectedBandForCode || 'None'}
       </div>
 
       {/* Band Score Display Component */}
