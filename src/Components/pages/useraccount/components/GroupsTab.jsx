@@ -5,6 +5,15 @@ import axiosInstance from '../../../../api/axios';
 import './GroupsTab.css';
 import '../EnhancedTabStyles.css'; // Import the enhanced styles
 
+// Hardcoded band types as specified in API documentation
+const BAND_TYPES = [
+    { value: 'musical', label: 'Musical Bands/Troupes' },
+    { value: 'theatrical', label: 'Theatrical Troupes' },
+    { value: 'stunt', label: 'Stunt/Performance Teams' },
+    { value: 'dance', label: 'Dance Troupes' },
+    { value: 'event', label: 'Event Squads' }
+];
+
 const GroupsTab = ({ userData }) => {
   const [bands, setBands] = useState([]);
   const [joinedBands, setJoinedBands] = useState([]);
@@ -999,23 +1008,23 @@ const GroupsTab = ({ userData }) => {
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="genre">Band Type</label>
-                <select
-                  id="genre"
-                  name="genre"
-                  value={newBand.genre}
-                  onChange={handleInputChange}
-                  className="form-select"
-                >
-                  <option value="">Select a band type</option>
-                  <option value="musical">Musical Bands/Troupes</option>
-                  <option value="theatrical">Theatrical Troupes</option>
-                  <option value="stunt">Stunt/Performance Teams</option>
-                  <option value="dance">Dance Troupes</option>
-                  <option value="event">Event Squads</option>
-                </select>
-              </div>
+                             <div className="form-group">
+                 <label htmlFor="genre">Band Type</label>
+                 <select
+                   id="genre"
+                   name="genre"
+                   value={newBand.genre}
+                   onChange={handleInputChange}
+                   className="form-select"
+                 >
+                   <option value="">Select a band type</option>
+                   {BAND_TYPES.map(type => (
+                     <option key={type.value} value={type.value}>
+                       {type.label}
+                     </option>
+                   ))}
+                 </select>
+               </div>
               
               <div className="form-group">
                 <label htmlFor="location">Location</label>
