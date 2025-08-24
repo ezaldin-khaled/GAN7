@@ -109,44 +109,112 @@
 
 .band-actions {
   display: flex;
-  padding: 10px 15px;
-  background-color: #252525;
-  border-top: 1px solid #333;
+  gap: 8px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.band-actions button {
+.manage-band-btn, .delete-group-btn, .generate-code-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 12px;
   border: none;
   border-radius: 4px;
+  cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.2s ease;
-  margin-right: 10px;
-}
-
-.band-actions button svg {
-  margin-right: 5px;
+  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .manage-band-btn {
-  background-color: #2a9d8f;
+  background-color: #8236fc;
   color: white;
 }
 
 .manage-band-btn:hover {
-  background-color: #238b7e;
+  background-color: #6a2cd9;
+}
+
+.generate-code-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.generate-code-btn:hover {
+  background-color: #218838;
+}
+
+.generate-code-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
 
 .delete-group-btn {
-  background-color: #e63946;
+  background-color: #dc3545;
   color: white;
 }
 
 .delete-group-btn:hover {
-  background-color: #d62b39;
+  background-color: #c82333;
+}
+
+/* Generated Code Container Styles */
+.generated-code-container {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(40, 167, 69, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #28a745;
+}
+
+.generated-code-container h4 {
+  margin: 0 0 10px 0;
+  color: #28a745;
+  font-size: 1rem;
+}
+
+.code-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.code {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #28a745;
+  border: 1px solid #dee2e6;
+  flex-grow: 1;
+}
+
+.copy-code-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.copy-code-btn:hover {
+  background: #218838;
+}
+
+.code-instructions {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .groups-grid {
@@ -1659,4 +1727,179 @@ form {
 
 .subscription-help strong {
   color: #856404;
+}
+
+/* Invitation Code Generator Section */
+.invitation-section.generate-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.invitation-section.generate-section h2 {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 1.5rem;
+}
+
+.invitation-section.generate-section p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.band-selector {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.band-select {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.band-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.band-select option {
+  background: #2d3748;
+  color: white;
+}
+
+.generate-code-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.generate-code-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.generate-code-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.generated-code-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.generated-code-container h4 {
+  color: white;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.code-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.code {
+  background: rgba(0, 0, 0, 0.3);
+  color: #00ff88;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  flex: 1;
+  min-width: 200px;
+}
+
+.copy-code-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.copy-code-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-1px);
+}
+
+.code-instructions {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive design for invitation section */
+@media (max-width: 768px) {
+  .band-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .band-select {
+    min-width: auto;
+  }
+  
+  .generate-code-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .code-display {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .code {
+    min-width: auto;
+    text-align: center;
+  }
+  
+  .copy-code-btn {
+    width: 100%;
+  }
 }

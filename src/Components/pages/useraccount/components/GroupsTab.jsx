@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUsers, FaPlus, FaEdit, FaTrash, FaLock, FaCrown, FaSync } from 'react-icons/fa';
+import { FaUsers, FaPlus, FaEdit, FaTrash, FaLock, FaCrown, FaSync, FaKey } from 'react-icons/fa';
 import { CreateBandModal, ManageBandModal } from './GroupModals';
 import axiosInstance from '../../../../api/axios';
 import './GroupsTab.css';
@@ -53,7 +53,7 @@ const GroupsTab = ({ userData }) => {
       sessionStorage.removeItem('pendingSubscription'); // Clear the flag
       fetchBands(true); // Force refresh
     } else {
-      fetchBands();
+    fetchBands();
     }
     
     // Add polling to check for subscription updates every 30 seconds
@@ -110,9 +110,9 @@ const GroupsTab = ({ userData }) => {
       
       console.log('Bands response:', response.data);
       
-              // Check if the response includes subscription_status (new combined format)
-        if (response.data.subscription_status) {
-          console.log('Found subscription_status in response:', response.data.subscription_status);
+      // Check if the response includes subscription_status (new combined format)
+      if (response.data.subscription_status) {
+        console.log('Found subscription_status in response:', response.data.subscription_status);
           const newSubscriptionStatus = response.data.subscription_status;
           setSubscriptionStatus(newSubscriptionStatus);
           setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
@@ -793,9 +793,9 @@ const GroupsTab = ({ userData }) => {
               <div className="status-header">
                 <h3>Subscription Status</h3>
                 <div className="status-controls">
-                  <span className={`status-badge ${subscriptionStatus.has_bands_subscription ? 'active' : 'inactive'}`}>
-                    {subscriptionStatus.has_bands_subscription ? 'Active' : 'Inactive'}
-                  </span>
+                <span className={`status-badge ${subscriptionStatus.has_bands_subscription ? 'active' : 'inactive'}`}>
+                  {subscriptionStatus.has_bands_subscription ? 'Active' : 'Inactive'}
+                </span>
                   <button 
                     className="refresh-subscription-btn"
                     onClick={handleRefreshSubscription}
@@ -864,6 +864,8 @@ const GroupsTab = ({ userData }) => {
                     <FaTrash /> Delete
                   </button>
                 </div>
+                
+
               </div>
             ))
           ) : (
@@ -1145,13 +1147,14 @@ const GroupsTab = ({ userData }) => {
               onClick={() => handleGenerateInvitationCode(selectedBandForCode)}
               disabled={loading || !selectedBandForCode}
             >
-              Generate Code
+              <FaKey /> Generate Code
             </button>
           </div>
           
-          {generatedCode && (
+          {/* Show generated code */}
+          {generatedCode && selectedBandForCode && (
             <div className="generated-code-container">
-              <h3>Invitation Code:</h3>
+              <h4>Invitation Code Generated:</h4>
               <div className="code-display">
                 <span className="code">{generatedCode}</span>
                 <button 
