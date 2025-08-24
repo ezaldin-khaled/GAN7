@@ -129,16 +129,32 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
+        console.log('Current userData:', userData);
+        console.log('All bands from API:', bands);
+        
         bands.forEach(band => {
+          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username}`);
           if (band.creator_name === userData?.username) {
+            console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
+            console.log(`❌ Band "${band.name}" does not belong to current user`);
             otherBands.push(band);
           }
         });
         
-        setBands(myBands);
-        setJoinedBands(otherBands);
+        console.log('My bands:', myBands);
+        console.log('Other bands:', otherBands);
+        
+        // If no bands are found for the current user, show all bands as a fallback
+        if (myBands.length === 0 && bands.length > 0) {
+          console.log('⚠️ No bands found for current user, showing all bands as fallback');
+          setBands(bands);
+          setJoinedBands([]);
+        } else {
+          setBands(myBands);
+          setJoinedBands(otherBands);
+        }
         
         // Set band score if available
         if (response.data.band_score) {
@@ -152,16 +168,32 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
+        console.log('Using old format - Current userData:', userData);
+        console.log('All bands from API (old format):', response.data);
+        
         response.data.forEach(band => {
+          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username}`);
           if (band.creator_name === userData?.username) {
+            console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
+            console.log(`❌ Band "${band.name}" does not belong to current user`);
             otherBands.push(band);
           }
         });
         
-        setBands(myBands);
-        setJoinedBands(otherBands);
+        console.log('My bands (old format):', myBands);
+        console.log('Other bands (old format):', otherBands);
+        
+        // If no bands are found for the current user, show all bands as a fallback
+        if (myBands.length === 0 && response.data.length > 0) {
+          console.log('⚠️ No bands found for current user (old format), showing all bands as fallback');
+          setBands(response.data);
+          setJoinedBands([]);
+        } else {
+          setBands(myBands);
+          setJoinedBands(otherBands);
+        }
         
         // Fallback to userData check for subscription
         if (userData && userData.band_subscription_type === 'bands') {
