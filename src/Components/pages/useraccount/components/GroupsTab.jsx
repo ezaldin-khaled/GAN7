@@ -1126,7 +1126,7 @@ const GroupsTab = ({ userData }) => {
       
       {/* Code Generator Card - Only for Band Creators */}
       {bands && bands.length > 0 && (
-        <div className="code-generator-card">
+        <div className="code-generator-card" style={{marginTop: '40px', marginBottom: '40px'}}>
           <div className="card-header">
             <h2>🎯 Invitation Code Generator</h2>
             <p>Generate invitation codes to invite others to join your bands</p>
@@ -1191,6 +1191,13 @@ const GroupsTab = ({ userData }) => {
           </div>
         </div>
       )}
+
+      {/* Debug info - remove this later */}
+      <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', fontSize: '12px'}}>
+        Debug: Bands count: {bands ? bands.length : 0} | 
+        Has subscription: {hasBandSubscription ? 'Yes' : 'No'} | 
+        Selected band: {selectedBandForCode || 'None'}
+      </div>
 
       {/* Band Score Display Component */}
       <BandScoreDisplay />
