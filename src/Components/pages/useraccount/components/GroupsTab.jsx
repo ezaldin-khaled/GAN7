@@ -102,28 +102,28 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      // Use the existing bands endpoint for now
-      const url = forceRefresh ? `/api/bands/?_t=${Date.now()}` : '/api/bands/';
-      const response = await axiosInstance.get(url, {
-        headers: headers
-      });
+             // Use the correct bands endpoint
+       const url = forceRefresh ? `/api/profiles/bands/?_t=${Date.now()}` : '/api/profiles/bands/';
+       const response = await axiosInstance.get(url, {
+         headers: headers
+       });
       
       console.log('Bands response:', response.data);
       
-      // Check if the response includes subscription_status (new combined format)
-      if (response.data.subscription_status) {
-        console.log('Found subscription_status in response:', response.data.subscription_status);
-          const newSubscriptionStatus = response.data.subscription_status;
-          setSubscriptionStatus(newSubscriptionStatus);
-          setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
-          
-          // Show success message if subscription was just activated
-          if (forceRefresh && newSubscriptionStatus.has_bands_subscription && !subscriptionStatus?.has_bands_subscription) {
-            setSuccess('🎉 Your Bands subscription is now active! You can now create and manage bands.');
-          }
-        
-        // Extract bands from the new format
-        const bands = response.data.bands || [];
+             // Check if the response includes subscription_status (new combined format)
+       if (response.data.subscription_status) {
+         console.log('Found subscription_status in response:', response.data.subscription_status);
+         const newSubscriptionStatus = response.data.subscription_status;
+         setSubscriptionStatus(newSubscriptionStatus);
+         setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
+         
+         // Show success message if subscription was just activated
+         if (forceRefresh && newSubscriptionStatus.has_bands_subscription && !subscriptionStatus?.has_bands_subscription) {
+           setSuccess('🎉 Your Bands subscription is now active! You can now create and manage bands.');
+         }
+         
+         // Extract bands from the new format - use results array
+         const bands = response.data.results || [];
         
         // Filter bands created by the user vs joined bands
         const myBands = [];
@@ -132,29 +132,23 @@ const GroupsTab = ({ userData }) => {
         console.log('Current userData:', userData);
         console.log('All bands from API:', bands);
         
-        bands.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username}`);
-          if (band.creator_name === userData?.username) {
-            console.log(`✅ Band "${band.name}" belongs to current user`);
-            myBands.push(band);
-          } else {
-            console.log(`❌ Band "${band.name}" does not belong to current user`);
-            otherBands.push(band);
-          }
-        });
+                 bands.forEach(band => {
+           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}, Current user: ${userData?.username}`);
+           if (band.is_creator) {
+             console.log(`✅ Band "${band.name}" belongs to current user (is_creator: true)`);
+             myBands.push(band);
+           } else {
+             console.log(`❌ Band "${band.name}" does not belong to current user (is_creator: false)`);
+             otherBands.push(band);
+           }
+         });
         
         console.log('My bands:', myBands);
         console.log('Other bands:', otherBands);
         
-        // If no bands are found for the current user, show all bands as a fallback
-        if (myBands.length === 0 && bands.length > 0) {
-          console.log('⚠️ No bands found for current user, showing all bands as fallback');
-          setBands(bands);
-          setJoinedBands([]);
-        } else {
-          setBands(myBands);
-          setJoinedBands(otherBands);
-        }
+                 // Use the bands directly since the backend now properly identifies ownership
+         setBands(bands);
+         setJoinedBands([]);
         
         // Set band score if available
         if (response.data.band_score) {
@@ -281,15 +275,16 @@ const GroupsTab = ({ userData }) => {
       // Check if user is a talent user
       const isTalent = localStorage.getItem('is_talent') === 'true';
       
-      // Prepare band data
-      const bandData = {
-        name: newBand.name,
-        description: newBand.description,
-        genre: newBand.genre || "",
-        location: newBand.location || "",
-        contact_email: newBand.contact_email || "",
-        website: newBand.website || ""
-      };
+             // Prepare band data according to new API format
+       const bandData = {
+         name: newBand.name,
+         description: newBand.description,
+         band_type: newBand.genre || "Rock",
+         location: newBand.location || "",
+         contact_email: newBand.contact_email || "",
+         contact_phone: "",
+         website: newBand.website || ""
+       };
       
       console.log('JSON data being sent:', bandData);
       
@@ -305,32 +300,18 @@ const GroupsTab = ({ userData }) => {
       
       console.log('Request headers:', headers);
       
-      const response = await axiosInstance.post('/api/bands/create/', bandData, {
-        headers: headers
-      });
+             const response = await axiosInstance.post('/api/profiles/bands/create/', bandData, {
+         headers: headers
+       });
       
-      console.log('Band created successfully:', response.data);
-      
-      // If there's an image, upload it separately
-      if (uploadedImage && response.data && response.data.id) {
-        const imageFormData = new FormData();
-        imageFormData.append('profile_picture', uploadedImage);
-        
-        const imageHeaders = {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
-        };
-        
-        if (isTalent) {
-          imageHeaders['is-talent'] = 'true';
-        }
-        
-        await axiosInstance.post(`/api/bands/${response.data.id}/update/`, imageFormData, {
-          headers: imageHeaders
-        });
-      }
-      
-      setSuccess('Band created successfully!');
+             console.log('Band created successfully:', response.data);
+       
+       // Check if the response indicates success
+       if (response.data.success) {
+         setSuccess(response.data.message || 'Band created successfully!');
+       } else {
+         throw new Error(response.data.error || 'Failed to create band');
+       }
       handleCloseModal();
       fetchBands();
     } catch (err) {
@@ -596,13 +577,17 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      // Send the invitation code to join the band - Fix the endpoint URL
-      const response = await axiosInstance.post('/api/bands/join-with-code/', 
-        { invitation_code: invitationCode },
-        { headers: headers }
-      );
+             // Send the invitation code to join the band
+       const response = await axiosInstance.post('/api/profiles/bands/join-with-code/', 
+         { invitation_code: invitationCode },
+         { headers: headers }
+       );
       
-      setSuccess(response.data.message || 'Successfully joined the band!');
+             if (response.data.success) {
+         setSuccess(response.data.message || 'Successfully joined the band!');
+       } else {
+         throw new Error(response.data.error || 'Failed to join band');
+       }
       setInvitationCode(''); // Clear the input field
       fetchBands(); // Refresh the bands list
     } catch (err) {
@@ -670,87 +655,61 @@ const GroupsTab = ({ userData }) => {
       }
       
       console.log('Request headers:', headers);
-      console.log('Making request to:', `/api/bands/${bandId}/generate-code/`);
+             console.log('Making request to:', `/api/profiles/bands/${bandId}/generate-code/`);
       
-      // Try different possible endpoints for generating invitation code
-      let response;
-      try {
-        // First try the original endpoint
-        response = await axiosInstance.post(`/api/bands/${bandId}/generate-code/`, 
-          {}, // Empty body
-          { headers: headers }
-        );
-      } catch (firstError) {
-        console.log('First endpoint failed, trying alternative endpoints...');
-        
-        try {
-          // Try alternative endpoint format
-          response = await axiosInstance.post(`/api/bands/${bandId}/invitation-code/`, 
-            {}, // Empty body
-            { headers: headers }
-          );
-        } catch (secondError) {
-          console.log('Second endpoint failed, trying with different method...');
-          
-          try {
-            // Try GET method instead of POST
-            response = await axiosInstance.get(`/api/bands/${bandId}/generate-code/`, 
-              { headers: headers }
-            );
-          } catch (thirdError) {
-            console.log('All endpoints failed, throwing original error');
-            throw firstError; // Throw the original error
-          }
-        }
-      }
+             // Generate invitation code using the correct endpoint
+       const response = await axiosInstance.post(`/api/profiles/bands/${bandId}/generate-code/`, 
+         {}, // Empty body
+         { headers: headers }
+       );
       
       console.log('Generate code response:', response.data);
       
-      if (response.data && response.data.invitation_code) {
-        setGeneratedCode(response.data.invitation_code);
-        console.log('Successfully generated code:', response.data.invitation_code);
-      } else {
-        console.error('No invitation_code in response:', response.data);
-        alert('Failed to generate invitation code. Response did not contain invitation code.');
-      }
+             if (response.data.success && response.data.invitation && response.data.invitation.invitation_code) {
+         setGeneratedCode(response.data.invitation.invitation_code);
+         console.log('Successfully generated code:', response.data.invitation.invitation_code);
+       } else {
+         console.error('No invitation_code in response:', response.data);
+         alert('Failed to generate invitation code. Response did not contain invitation code.');
+       }
     } catch (err) {
       console.error('Error generating invitation code:', err);
       console.error('Error response:', err.response);
       console.error('Error status:', err.response?.status);
       console.error('Error data:', err.response?.data);
       
-      // Display specific error message if available
-      if (err.response && err.response.data) {
-        let errorMessage = '';
-        
-        if (typeof err.response.data === 'string') {
-          errorMessage = err.response.data;
-        } else if (typeof err.response.data === 'object') {
-          if (err.response.data.detail) {
-            errorMessage = err.response.data.detail;
-          } else if (err.response.data.message) {
-            errorMessage = err.response.data.message;
-          } else if (err.response.data.error) {
-            errorMessage = err.response.data.error;
-          } else {
-            // Extract all error messages from the object
-            const errorMessages = [];
-            Object.entries(err.response.data).forEach(([key, value]) => {
-              const valueStr = Array.isArray(value) ? value.join(', ') : value;
-              errorMessages.push(`${key}: ${valueStr}`);
-            });
-            errorMessage = errorMessages.join('\n');
-          }
-        }
-        
-        if (errorMessage) {
-          alert(`Failed to generate invitation code: ${errorMessage}`);
-        } else {
-          alert(`Failed to generate invitation code. Status: ${err.response.status}`);
-        }
-      } else {
-        alert('Failed to generate invitation code. Please try again later.');
-      }
+             // Display specific error message if available
+       if (err.response && err.response.data) {
+         let errorMessage = '';
+         
+         if (typeof err.response.data === 'string') {
+           errorMessage = err.response.data;
+         } else if (typeof err.response.data === 'object') {
+           if (err.response.data.error) {
+             errorMessage = err.response.data.error;
+           } else if (err.response.data.detail) {
+             errorMessage = err.response.data.detail;
+           } else if (err.response.data.message) {
+             errorMessage = err.response.data.message;
+           } else {
+             // Extract all error messages from the object
+             const errorMessages = [];
+             Object.entries(err.response.data).forEach(([key, value]) => {
+               const valueStr = Array.isArray(value) ? value.join(', ') : value;
+               errorMessages.push(`${key}: ${valueStr}`);
+             });
+             errorMessage = errorMessages.join('\n');
+           }
+         }
+         
+         if (errorMessage) {
+           alert(`Failed to generate invitation code: ${errorMessage}`);
+         } else {
+           alert(`Failed to generate invitation code. Status: ${err.response.status}`);
+         }
+       } else {
+         alert('Failed to generate invitation code. Please try again later.');
+       }
     } finally {
       setLoading(false);
     }
@@ -921,12 +880,14 @@ const GroupsTab = ({ userData }) => {
                     </div>
                   )}
                 </div>
-                <div className="band-info">
-                  <h3>{band.name}</h3>
-                  <p>{band.description}</p>
-                  {band.genre && <p className="band-genre">{band.genre}</p>}
-                  {band.location && <p className="band-location">{band.location}</p>}
-                </div>
+                                 <div className="band-info">
+                   <h3>{band.name}</h3>
+                   <p>{band.description}</p>
+                   {band.band_type && <p className="band-genre">{band.band_type}</p>}
+                   {band.location && <p className="band-location">{band.location}</p>}
+                   <p className="band-members">Members: {band.members_count || 0}</p>
+                   <p className="band-score">Score: {band.profile_score || 0}</p>
+                 </div>
                 <div className="band-actions">
                   <button 
                     className="manage-band-btn" 
@@ -1055,23 +1016,33 @@ const GroupsTab = ({ userData }) => {
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="genre">Band Type</label>
-                <select
-                  id="genre"
-                  name="genre"
-                  value={newBand.genre}
-                  onChange={handleInputChange}
-                  className="form-select"
-                >
-                  <option value="">Select a band type</option>
-                  <option value="musical">Musical Bands/Troupes</option>
-                  <option value="theatrical">Theatrical Troupes</option>
-                  <option value="stunt">Stunt/Performance Teams</option>
-                  <option value="dance">Dance Troupes</option>
-                  <option value="event">Event Squads</option>
-                </select>
-              </div>
+                             <div className="form-group">
+                 <label htmlFor="genre">Band Type</label>
+                 <select
+                   id="genre"
+                   name="genre"
+                   value={newBand.genre}
+                   onChange={handleInputChange}
+                   className="form-select"
+                 >
+                   <option value="">Select a band type</option>
+                   <option value="Rock">Rock</option>
+                   <option value="Pop">Pop</option>
+                   <option value="Jazz">Jazz</option>
+                   <option value="Classical">Classical</option>
+                   <option value="Electronic">Electronic</option>
+                   <option value="Folk">Folk</option>
+                   <option value="Country">Country</option>
+                   <option value="Blues">Blues</option>
+                   <option value="Hip Hop">Hip Hop</option>
+                   <option value="R&B">R&B</option>
+                   <option value="Metal">Metal</option>
+                   <option value="Punk">Punk</option>
+                   <option value="Reggae">Reggae</option>
+                   <option value="World">World Music</option>
+                   <option value="Other">Other</option>
+                 </select>
+               </div>
               
               <div className="form-group">
                 <label htmlFor="location">Location</label>
