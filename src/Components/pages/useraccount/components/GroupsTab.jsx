@@ -43,31 +43,6 @@ const GroupsTab = ({ userData }) => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [bandScore, setBandScore] = useState(null);
 
-  useEffect(() => {
-    // Check if user just completed a subscription
-    const pendingSubscription = sessionStorage.getItem('pendingSubscription');
-    const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
-    
-    if (shouldForceRefresh) {
-      console.log('Detected recent subscription, forcing refresh...');
-      sessionStorage.removeItem('pendingSubscription'); // Clear the flag
-      fetchBands(true); // Force refresh
-    } else {
-    fetchBands();
-    }
-    
-    // Add polling to check for subscription updates every 30 seconds
-    const pollInterval = setInterval(() => {
-      // Only poll if we don't have a subscription yet
-      if (!subscriptionStatus?.has_bands_subscription) {
-        console.log('Polling for subscription status update...');
-        fetchBands();
-      }
-    }, 30000);
-    
-    return () => clearInterval(pollInterval);
-  }, [subscriptionStatus?.has_bands_subscription]);
-
   const fetchBands = async (forceRefresh = false) => {
     try {
       setLoading(true);
@@ -102,28 +77,33 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-             // Use the correct bands endpoint
-       const url = forceRefresh ? `/api/profiles/bands/?_t=${Date.now()}` : '/api/profiles/bands/';
-       const response = await axiosInstance.get(url, {
-         headers: headers
-       });
+      // Use the correct bands endpoint
+      const url = forceRefresh ? `/api/profiles/bands/?_t=${Date.now()}` : '/api/profiles/bands/';
+      const response = await axiosInstance.get(url, {
+        headers: headers
+      });
       
       console.log('Bands response:', response.data);
       
-             // Check if the response includes subscription_status (new combined format)
-       if (response.data.subscription_status) {
-         console.log('Found subscription_status in response:', response.data.subscription_status);
-         const newSubscriptionStatus = response.data.subscription_status;
-         setSubscriptionStatus(newSubscriptionStatus);
-         setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
-         
-         // Show success message if subscription was just activated
-         if (forceRefresh && newSubscriptionStatus.has_bands_subscription && !subscriptionStatus?.has_bands_subscription) {
-           setSuccess('🎉 Your Bands subscription is now active! You can now create and manage bands.');
-         }
-         
-         // Extract bands from the new format - use results array
-         const bands = response.data.results || [];
+      // Check if the response includes subscription_status (new combined format)
+      if (response.data.subscription_status) {
+        console.log('Found subscription_status in response:', response.data.subscription_status);
+        const newSubscriptionStatus = response.data.subscription_status;
+        setSubscriptionStatus(newSubscriptionStatus);
+        setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
+        
+        console.log('🔍 Subscription Status Update:');
+        console.log('- has_bands_subscription:', newSubscriptionStatus.has_bands_subscription);
+        console.log('- subscription object:', newSubscriptionStatus.subscription);
+        console.log('- message:', newSubscriptionStatus.message);
+        
+        // Show success message if subscription was just activated
+        if (forceRefresh && newSubscriptionStatus.has_bands_subscription && !subscriptionStatus?.has_bands_subscription) {
+          setSuccess('🎉 Your Bands subscription is now active! You can now create and manage bands.');
+        }
+        
+        // Extract bands from the new format - use results array
+        const bands = response.data.results || [];
         
         // Filter bands created by the user vs joined bands
         const myBands = [];
@@ -132,23 +112,23 @@ const GroupsTab = ({ userData }) => {
         console.log('Current userData:', userData);
         console.log('All bands from API:', bands);
         
-                 bands.forEach(band => {
-           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}, Current user: ${userData?.username}`);
-           if (band.is_creator) {
-             console.log(`✅ Band "${band.name}" belongs to current user (is_creator: true)`);
-             myBands.push(band);
-           } else {
-             console.log(`❌ Band "${band.name}" does not belong to current user (is_creator: false)`);
-             otherBands.push(band);
-           }
-         });
+        bands.forEach(band => {
+          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}, Current user: ${userData?.username}`);
+          if (band.is_creator) {
+            console.log(`✅ Band "${band.name}" belongs to current user (is_creator: true)`);
+            myBands.push(band);
+          } else {
+            console.log(`❌ Band "${band.name}" does not belong to current user (is_creator: false)`);
+            otherBands.push(band);
+          }
+        });
         
         console.log('My bands:', myBands);
         console.log('Other bands:', otherBands);
         
-                 // Use the bands directly since the backend now properly identifies ownership
-         setBands(bands);
-         setJoinedBands([]);
+        // Use the bands directly since the backend now properly identifies ownership
+        setBands(bands);
+        setJoinedBands([]);
         
         // Set band score if available
         if (response.data.band_score) {
@@ -221,9 +201,115 @@ const GroupsTab = ({ userData }) => {
     }
   };
 
+  useEffect(() => {
+    // Check if user just completed a subscription
+    const pendingSubscription = sessionStorage.getItem('pendingSubscription');
+    const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
+    
+    if (shouldForceRefresh) {
+      console.log('Detected recent subscription, forcing refresh...');
+      sessionStorage.removeItem('pendingSubscription'); // Clear the flag
+      fetchBands(true); // Force refresh
+    } else {
+      fetchBands();
+    }
+    
+    // Add polling to check for subscription updates every 30 seconds
+    const pollInterval = setInterval(() => {
+      // Only poll if we don't have a subscription yet
+      if (!subscriptionStatus?.has_bands_subscription) {
+        console.log('Polling for subscription status update...');
+        fetchBands();
+      }
+    }, 30000);
+    
+    return () => clearInterval(pollInterval);
+  }, [subscriptionStatus?.has_bands_subscription]);
+
+  // Add a new useEffect to check subscription status immediately on mount
+  useEffect(() => {
+    // Force check subscription status on component mount
+    const checkSubscriptionStatus = async () => {
+      try {
+        const token = localStorage.getItem('access');
+        if (!token) return;
+        
+        const isTalent = localStorage.getItem('is_talent') === 'true';
+        const headers = {
+          'Authorization': `Bearer ${token}`
+        };
+        
+        if (isTalent) {
+          headers['is-talent'] = 'true';
+        }
+        
+        // Make a direct call to check subscription status
+        const response = await axiosInstance.get('/api/profiles/bands/', {
+          headers: headers
+        });
+        
+        if (response.data.subscription_status) {
+          const newSubscriptionStatus = response.data.subscription_status;
+          setSubscriptionStatus(newSubscriptionStatus);
+          setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
+          
+          // If subscription is active, fetch bands immediately
+          if (newSubscriptionStatus.has_bands_subscription) {
+            fetchBands();
+          }
+        }
+      } catch (error) {
+        console.error('Error checking subscription status:', error);
+      }
+    };
+    
+    // Also check userData for subscription info
+    if (userData) {
+      console.log('Checking userData for subscription info:', userData);
+      
+      // Check various subscription indicators in userData
+      const hasSubscription = 
+        userData.band_subscription_type === 'bands' ||
+        (userData.account_type && userData.account_type.toLowerCase().includes('band')) ||
+        (userData.subscription_type && userData.subscription_type.toLowerCase().includes('band')) ||
+        (userData.subscription && userData.subscription.status === 'active');
+      
+      if (hasSubscription && !hasBandSubscription) {
+        console.log('Found subscription in userData, setting hasBandSubscription to true');
+        setHasBandSubscription(true);
+        // Force a refresh to get the latest data
+        setTimeout(() => {
+          fetchBands(true);
+        }, 1000);
+      }
+    }
+    
+    checkSubscriptionStatus();
+  }, [userData]); // Run when userData changes
+
   const handleRefreshSubscription = async () => {
     console.log('Manual refresh of subscription status...');
-    await fetchBands(true);
+    setRefreshing(true);
+    setSuccess(''); // Clear any existing success messages
+    
+    try {
+      // Force a complete refresh of subscription status
+      await fetchBands(true);
+      
+      // Add a small delay to ensure the state updates properly
+      setTimeout(() => {
+        if (hasBandSubscription) {
+          setSuccess('🎉 Your subscription is now active! You can now create and manage bands.');
+        } else {
+          setSuccess('Subscription status refreshed. If you recently purchased a subscription, please wait a few minutes for the system to update.');
+        }
+      }, 1000);
+    } catch (error) {
+      console.error('Error refreshing subscription:', error);
+      setSuccess('Error refreshing subscription status. Please try again.');
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const handleCreateBand = () => {
@@ -726,6 +812,33 @@ const GroupsTab = ({ userData }) => {
         <p>
           {subscriptionStatus?.message || 'You need a band subscription to access the Groups feature. Upgrade your account to create and manage bands.'}
         </p>
+        
+        {/* Add refresh button for users who just subscribed */}
+        <div className="subscription-refresh-section">
+          <p><strong>Just subscribed?</strong> Click the refresh button below to update your status:</p>
+          <button 
+            className="refresh-subscription-btn-large"
+            onClick={handleRefreshSubscription}
+            disabled={refreshing}
+          >
+            <FaSync className={refreshing ? 'spinning' : ''} />
+            {refreshing ? 'Refreshing...' : 'Refresh Subscription Status'}
+          </button>
+        </div>
+        <div className="subscription-refresh-section">
+          <p className="refresh-notice">
+            <strong>Just purchased a subscription?</strong> Click the refresh button below to update your status.
+          </p>
+          <button 
+            className="refresh-subscription-status-btn"
+            onClick={handleRefreshSubscription}
+            disabled={refreshing}
+          >
+            <FaSync className={refreshing ? 'spinning' : ''} />
+            {refreshing ? 'Checking...' : 'Refresh Subscription Status'}
+          </button>
+        </div>
+        
         <div className="subscription-features">
           <h3>What you get with Band Subscription:</h3>
           <ul>
@@ -788,8 +901,20 @@ const GroupsTab = ({ userData }) => {
 
   // Show subscription overlay if user doesn't have band subscription
   if (!hasBandSubscription) {
+    console.log('🔒 Groups tab locked - Debug info:');
+    console.log('- hasBandSubscription:', hasBandSubscription);
+    console.log('- subscriptionStatus:', subscriptionStatus);
+    console.log('- userData:', userData);
+    console.log('- localStorage is_talent:', localStorage.getItem('is_talent'));
+    console.log('- localStorage access token exists:', !!localStorage.getItem('access'));
+    
     return (
       <div className="content-section">
+        {success && (
+          <div className="success-message-overlay">
+            <p>{success}</p>
+          </div>
+        )}
         <SubscriptionOverlay />
       </div>
     );
@@ -1258,7 +1383,9 @@ const GroupsTab = ({ userData }) => {
       <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', fontSize: '12px'}}>
         Debug: Bands count: {bands ? bands.length : 0} | 
         Has subscription: {hasBandSubscription ? 'Yes' : 'No'} | 
-        Selected band: {selectedBandForCode || 'None'}
+        Selected band: {selectedBandForCode || 'None'} |
+        Subscription Status: {subscriptionStatus ? JSON.stringify(subscriptionStatus.has_bands_subscription) : 'null'} |
+        User Data Subscription: {userData?.band_subscription_type || userData?.account_type || 'none'}
       </div>
 
       {/* Band Score Display Component */}

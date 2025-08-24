@@ -1470,6 +1470,94 @@ form {
   transform: translateY(0);
 }
 
+/* Subscription Refresh Section Styles */
+.subscription-refresh-section {
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  border-left: 4px solid #ffc107;
+  text-align: center;
+}
+
+.refresh-notice {
+  color: #856404;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.refresh-notice strong {
+  color: #856404;
+}
+
+.refresh-subscription-status-btn {
+  background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+.refresh-subscription-status-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+  background: linear-gradient(135deg, #ffb300 0%, #ff7f00 100%);
+}
+
+.refresh-subscription-status-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.refresh-subscription-status-btn .spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Success Message Overlay Styles */
+.success-message-overlay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+  z-index: 1001;
+  max-width: 400px;
+  animation: slideInRight 0.5s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.success-message-overlay p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 /* Loading spinner for subscription check */
 .loading-spinner {
   display: inline-block;
@@ -2178,6 +2266,76 @@ form {
   }
   60% {
     transform: translateY(-5px);
+  }
+}
+
+/* New refresh button styles for subscription overlay */
+.refresh-subscription-btn-large {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: #8236fc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.refresh-subscription-btn-large:hover {
+  background-color: #6a2cd9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(130, 54, 252, 0.3);
+}
+
+.refresh-subscription-btn-large:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.subscription-refresh-section {
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: rgba(130, 54, 252, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(130, 54, 252, 0.2);
+}
+
+.subscription-refresh-section p {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 14px;
+}
+
+.success-message-overlay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
