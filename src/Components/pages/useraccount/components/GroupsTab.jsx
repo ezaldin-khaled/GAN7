@@ -646,6 +646,8 @@ const GroupsTab = ({ userData }) => {
       setLoading(true);
       setSelectedBandForCode(bandId);
       
+      console.log('Generating invitation code for band ID:', bandId);
+      
       // Get the authentication token
       const token = localStorage.getItem('access');
       if (!token) {
@@ -667,19 +669,55 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      // Generate an invitation code for the band
-      const response = await axiosInstance.post(`/api/bands/${bandId}/generate-code/`, 
-        {}, // Empty body
-        { headers: headers }
-      );
+      console.log('Request headers:', headers);
+      console.log('Making request to:', `/api/bands/${bandId}/generate-code/`);
+      
+      // Try different possible endpoints for generating invitation code
+      let response;
+      try {
+        // First try the original endpoint
+        response = await axiosInstance.post(`/api/bands/${bandId}/generate-code/`, 
+          {}, // Empty body
+          { headers: headers }
+        );
+      } catch (firstError) {
+        console.log('First endpoint failed, trying alternative endpoints...');
+        
+        try {
+          // Try alternative endpoint format
+          response = await axiosInstance.post(`/api/bands/${bandId}/invitation-code/`, 
+            {}, // Empty body
+            { headers: headers }
+          );
+        } catch (secondError) {
+          console.log('Second endpoint failed, trying with different method...');
+          
+          try {
+            // Try GET method instead of POST
+            response = await axiosInstance.get(`/api/bands/${bandId}/generate-code/`, 
+              { headers: headers }
+            );
+          } catch (thirdError) {
+            console.log('All endpoints failed, throwing original error');
+            throw firstError; // Throw the original error
+          }
+        }
+      }
+      
+      console.log('Generate code response:', response.data);
       
       if (response.data && response.data.invitation_code) {
         setGeneratedCode(response.data.invitation_code);
+        console.log('Successfully generated code:', response.data.invitation_code);
       } else {
-        alert('Failed to generate invitation code. Please try again.');
+        console.error('No invitation_code in response:', response.data);
+        alert('Failed to generate invitation code. Response did not contain invitation code.');
       }
     } catch (err) {
       console.error('Error generating invitation code:', err);
+      console.error('Error response:', err.response);
+      console.error('Error status:', err.response?.status);
+      console.error('Error data:', err.response?.data);
       
       // Display specific error message if available
       if (err.response && err.response.data) {
@@ -692,6 +730,8 @@ const GroupsTab = ({ userData }) => {
             errorMessage = err.response.data.detail;
           } else if (err.response.data.message) {
             errorMessage = err.response.data.message;
+          } else if (err.response.data.error) {
+            errorMessage = err.response.data.error;
           } else {
             // Extract all error messages from the object
             const errorMessages = [];
@@ -705,6 +745,8 @@ const GroupsTab = ({ userData }) => {
         
         if (errorMessage) {
           alert(`Failed to generate invitation code: ${errorMessage}`);
+        } else {
+          alert(`Failed to generate invitation code. Status: ${err.response.status}`);
         }
       } else {
         alert('Failed to generate invitation code. Please try again later.');
