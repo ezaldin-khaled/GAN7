@@ -42,6 +42,7 @@ const GroupsTab = ({ userData }) => {
     genre: '',
     location: '',
     contact_email: '',
+    contact_phone: '',
     website: ''
   });
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -230,14 +231,15 @@ const GroupsTab = ({ userData }) => {
 
   const handleCloseModal = () => {
     setShowCreateModal(false);
-    setNewBand({
-      name: '',
-      description: '',
-      genre: '',
-      location: '',
-      contact_email: '',
-      website: ''
-    });
+         setNewBand({
+       name: '',
+       description: '',
+       genre: '',
+       location: '',
+       contact_email: '',
+       contact_phone: '',
+       website: ''
+     });
     setUploadedImage(null);
   };
 
@@ -273,14 +275,14 @@ const GroupsTab = ({ userData }) => {
       // Check if user is a talent user
       const isTalent = localStorage.getItem('is_talent') === 'true';
       
-      // Prepare band data according to new API format
+      // Prepare band data according to exact API format
       const bandData = {
         name: newBand.name,
-        description: newBand.description,
+        description: newBand.description || "",
         band_type: newBand.genre || "musical",
         location: newBand.location || "",
         contact_email: newBand.contact_email || "",
-        contact_phone: "",
+        contact_phone: newBand.contact_phone || "+963123456789",
         website: newBand.website || ""
       };
       
@@ -1038,17 +1040,29 @@ const GroupsTab = ({ userData }) => {
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="contact_email">Contact Email</label>
-                <input
-                  type="email"
-                  id="contact_email"
-                  name="contact_email"
-                  value={newBand.contact_email}
-                  onChange={handleInputChange}
-                  placeholder="email@example.com"
-                />
-              </div>
+                             <div className="form-group">
+                 <label htmlFor="contact_email">Contact Email</label>
+                 <input
+                   type="email"
+                   id="contact_email"
+                   name="contact_email"
+                   value={newBand.contact_email}
+                   onChange={handleInputChange}
+                   placeholder="email@example.com"
+                 />
+               </div>
+               
+               <div className="form-group">
+                 <label htmlFor="contact_phone">Contact Phone</label>
+                 <input
+                   type="tel"
+                   id="contact_phone"
+                   name="contact_phone"
+                   value={newBand.contact_phone}
+                   onChange={handleInputChange}
+                   placeholder="+963123456789"
+                 />
+               </div>
               
               <div className="form-group">
                 <label htmlFor="website">Website</label>
