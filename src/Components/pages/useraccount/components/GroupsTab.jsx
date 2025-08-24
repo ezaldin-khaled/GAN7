@@ -268,7 +268,7 @@ const GroupsTab = ({ userData }) => {
       const bandData = {
         name: newBand.name,
         description: newBand.description,
-        band_type: newBand.genre || "Rock",
+        band_type: newBand.genre || "musical",
         location: newBand.location || "",
         contact_email: newBand.contact_email || "",
         contact_phone: "",
@@ -1009,21 +1009,11 @@ const GroupsTab = ({ userData }) => {
                   className="form-select"
                 >
                   <option value="">Select a band type</option>
-                  <option value="Rock">Rock</option>
-                  <option value="Pop">Pop</option>
-                  <option value="Jazz">Jazz</option>
-                  <option value="Classical">Classical</option>
-                  <option value="Electronic">Electronic</option>
-                  <option value="Folk">Folk</option>
-                  <option value="Country">Country</option>
-                  <option value="Blues">Blues</option>
-                  <option value="Hip Hop">Hip Hop</option>
-                  <option value="R&B">R&B</option>
-                  <option value="Metal">Metal</option>
-                  <option value="Punk">Punk</option>
-                  <option value="Reggae">Reggae</option>
-                  <option value="World">World Music</option>
-                  <option value="Other">Other</option>
+                  <option value="musical">Musical Bands/Troupes</option>
+                  <option value="theatrical">Theatrical Troupes</option>
+                  <option value="stunt">Stunt/Performance Teams</option>
+                  <option value="dance">Dance Troupes</option>
+                  <option value="event">Event Squads</option>
                 </select>
               </div>
               
