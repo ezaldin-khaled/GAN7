@@ -73,7 +73,7 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Use the correct bands endpoint
-      const url = forceRefresh ? `/api/profiles/bands/?_t=${Date.now()}` : '/api/profiles/bands/';
+      const url = forceRefresh ? `/api/profile/bands/?_t=${Date.now()}` : '/api/profile/bands/';
       const response = await axiosInstance.get(url, {
         headers: headers
       });
@@ -289,7 +289,7 @@ const GroupsTab = ({ userData }) => {
       
       console.log('Request headers:', headers);
       
-      const response = await axiosInstance.post('/api/profiles/bands/create/', bandData, {
+      const response = await axiosInstance.post('/api/profile/bands/create/', bandData, {
         headers: headers
       });
       
@@ -567,7 +567,7 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Send the invitation code to join the band
-      const response = await axiosInstance.post('/api/profiles/bands/join-with-code/', 
+      const response = await axiosInstance.post('/api/profile/bands/join-with-code/',
         { invitation_code: invitationCode },
         { headers: headers }
       );
@@ -644,10 +644,10 @@ const GroupsTab = ({ userData }) => {
       }
       
       console.log('Request headers:', headers);
-      console.log('Making request to:', `/api/profiles/bands/${bandId}/generate-code/`);
+      console.log('Making request to:', `/api/profile/bands/${bandId}/generate-code/`);
       
       // Generate invitation code using the correct endpoint
-      const response = await axiosInstance.post(`/api/profiles/bands/${bandId}/generate-code/`, 
+      const response = await axiosInstance.post(`/api/profile/bands/${bandId}/generate-code/`, 
         {}, // Empty body
         { headers: headers }
       );
