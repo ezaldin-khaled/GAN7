@@ -73,7 +73,7 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Use the correct bands endpoint
-      const url = forceRefresh ? `/api/bands/?_t=${Date.now()}` : '/api/bands/';
+      const url = forceRefresh ? `/api/profiles/bands/?_t=${Date.now()}` : '/api/profiles/bands/';
       const response = await axiosInstance.get(url, {
         headers: headers
       });
@@ -289,7 +289,7 @@ const GroupsTab = ({ userData }) => {
       
       console.log('Request headers:', headers);
       
-      const response = await axiosInstance.post('/api/bands/create/', bandData, {
+      const response = await axiosInstance.post('/api/profiles/bands/create/', bandData, {
         headers: headers
       });
       
@@ -441,7 +441,7 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers });
+      await axiosInstance.put(`/api/profiles/bands/${selectedBand.id}/update/`, formData, { headers });
       
       setSuccess('Band updated successfully!');
       handleCloseManageModal();
@@ -504,7 +504,7 @@ const GroupsTab = ({ userData }) => {
   const handleViewBand = async (bandId) => {
     try {
       // Update to the correct endpoint
-      const response = await axiosInstance.get(`/api/bands/${bandId}/`);
+      const response = await axiosInstance.get(`/api/profiles/bands/${bandId}/`);
       // Here you would typically navigate to a details page or open a modal
       console.log('Band details:', response.data);
     } catch (err) {
@@ -516,7 +516,7 @@ const GroupsTab = ({ userData }) => {
   const handleLeaveBand = async (bandId) => {
     try {
       // Update to the correct endpoint
-      await axiosInstance.post(`/api/bands/${bandId}/leave/`);
+      await axiosInstance.delete(`/api/profiles/bands/${bandId}/leave/`);
       setSuccess('You have left the band');
       fetchBands(); // Refresh the list after leaving
     } catch (err) {
@@ -529,7 +529,7 @@ const GroupsTab = ({ userData }) => {
     if (window.confirm('Are you sure you want to delete this band? This action cannot be undone.')) {
       try {
         // Update to the correct endpoint
-        await axiosInstance.delete(`/api/bands/${bandId}/delete/`);
+        await axiosInstance.delete(`/api/profiles/bands/${bandId}/delete/`);
         setSuccess('Band deleted successfully');
         fetchBands();
       } catch (err) {
@@ -567,7 +567,7 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Send the invitation code to join the band
-      const response = await axiosInstance.post('/api/bands/join-with-code/',
+      const response = await axiosInstance.post('/api/profiles/bands/join-with-code/',
         { invitation_code: invitationCode },
         { headers: headers }
       );
@@ -644,10 +644,10 @@ const GroupsTab = ({ userData }) => {
       }
       
       console.log('Request headers:', headers);
-      console.log('Making request to:', `/api/bands/${bandId}/generate-code/`);
+      console.log('Making request to:', `/api/profiles/bands/${bandId}/generate-code/`);
       
       // Generate invitation code using the correct endpoint
-      const response = await axiosInstance.post(`/api/bands/${bandId}/generate-code/`, 
+      const response = await axiosInstance.post(`/api/profiles/bands/${bandId}/generate-code/`, 
         {}, // Empty body
         { headers: headers }
       );
