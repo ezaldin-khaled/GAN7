@@ -1903,3 +1903,249 @@ form {
     width: 100%;
   }
 }
+
+/* Code Generator Card - Above Band Score */
+.code-generator-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 32px 0;
+  color: white;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.code-generator-card .card-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.code-generator-card .card-header h2 {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.code-generator-card .card-header p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.code-generator-card .card-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.code-generator-card .band-selector {
+  margin-bottom: 24px;
+}
+
+.code-generator-card .band-selector label {
+  display: block;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.code-generator-card .band-select {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.code-generator-card .band-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.code-generator-card .band-select option {
+  background: #2d3748;
+  color: white;
+  padding: 8px;
+}
+
+.code-generator-card .generate-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.code-generator-card .generate-code-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.code-generator-card .generate-code-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.code-generator-card .generate-code-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.code-generator-card .generated-code-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.code-generator-card .code-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.code-generator-card .code-header h4 {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.code-generator-card .code-header p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.code-generator-card .code-display {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.code-generator-card .code {
+  background: rgba(0, 0, 0, 0.4);
+  color: #00ff88;
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.code-generator-card .copy-code-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.code-generator-card .copy-code-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.code-generator-card .code-info {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid #00ff88;
+}
+
+.code-generator-card .code-instructions,
+.code-generator-card .code-expiry {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.code-generator-card .code-instructions strong,
+.code-generator-card .code-expiry strong {
+  color: #00ff88;
+}
+
+/* Responsive design for code generator card */
+@media (max-width: 768px) {
+  .code-generator-card {
+    padding: 24px 20px;
+    margin: 24px 0;
+  }
+  
+  .code-generator-card .card-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .code-generator-card .card-header p {
+    font-size: 1rem;
+  }
+  
+  .code-generator-card .code-display {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .code-generator-card .code {
+    min-width: auto;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  
+  .code-generator-card .copy-code-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .code-generator-card .generate-code-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

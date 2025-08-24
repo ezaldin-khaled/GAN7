@@ -1124,55 +1124,71 @@ const GroupsTab = ({ userData }) => {
         </div>
       )}
       
-      {/* Generate invitation code section */}
+      {/* Code Generator Card - Only for Band Creators */}
       {bands && bands.length > 0 && (
-        <div className="invitation-section generate-section">
-          <h2>Generate Invitation Code</h2>
-          <p>Create an invitation code to invite others to join your band.</p>
-          
-          <div className="band-selector">
-            <select 
-              value={selectedBandForCode || ''} 
-              onChange={(e) => setSelectedBandForCode(e.target.value)}
-              className="band-select"
-            >
-              <option value="">Select a band</option>
-              {bands.map(band => (
-                <option key={band.id} value={band.id}>{band.name}</option>
-              ))}
-            </select>
-            
-            <button 
-              className="generate-code-btn" 
-              onClick={() => handleGenerateInvitationCode(selectedBandForCode)}
-              disabled={loading || !selectedBandForCode}
-            >
-              <FaKey /> Generate Code
-            </button>
+        <div className="code-generator-card">
+          <div className="card-header">
+            <h2>🎯 Invitation Code Generator</h2>
+            <p>Generate invitation codes to invite others to join your bands</p>
           </div>
           
-          {/* Show generated code */}
-          {generatedCode && selectedBandForCode && (
-            <div className="generated-code-container">
-              <h4>Invitation Code Generated:</h4>
-              <div className="code-display">
-                <span className="code">{generatedCode}</span>
-                <button 
-                  className="copy-code-btn"
-                  onClick={() => {
-                    navigator.clipboard.writeText(generatedCode);
-                    alert('Code copied to clipboard!');
-                  }}
-                >
-                  Copy
-                </button>
-              </div>
-              <p className="code-instructions">
-                Share this code with others to invite them to your band. 
-                This code will expire after 24 hours.
-              </p>
+          <div className="card-content">
+            <div className="band-selector">
+              <label htmlFor="band-select">Select Band:</label>
+              <select 
+                id="band-select"
+                value={selectedBandForCode || ''} 
+                onChange={(e) => setSelectedBandForCode(e.target.value)}
+                className="band-select"
+              >
+                <option value="">Choose a band to generate code for</option>
+                {bands.map(band => (
+                  <option key={band.id} value={band.id}>{band.name}</option>
+                ))}
+              </select>
             </div>
-          )}
+            
+            <div className="generate-section">
+              <button 
+                className="generate-code-btn" 
+                onClick={() => handleGenerateInvitationCode(selectedBandForCode)}
+                disabled={loading || !selectedBandForCode}
+              >
+                <FaKey /> Generate Invitation Code
+              </button>
+            </div>
+            
+            {/* Show generated code */}
+            {generatedCode && selectedBandForCode && (
+              <div className="generated-code-container">
+                <div className="code-header">
+                  <h4>✅ Invitation Code Generated Successfully!</h4>
+                  <p>Share this code with others to invite them to your band</p>
+                </div>
+                <div className="code-display">
+                  <span className="code">{generatedCode}</span>
+                  <button 
+                    className="copy-code-btn"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedCode);
+                      alert('Code copied to clipboard!');
+                    }}
+                    title="Copy to clipboard"
+                  >
+                    📋 Copy
+                  </button>
+                </div>
+                <div className="code-info">
+                  <p className="code-instructions">
+                    <strong>Instructions:</strong> Share this code with others. They can use it to join your band instantly.
+                  </p>
+                  <p className="code-expiry">
+                    <strong>⏰ Expires:</strong> This code will expire after 24 hours for security.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
