@@ -88,9 +88,14 @@ const GroupsTab = ({ userData }) => {
         headers: headers
       });
       
+      console.log('=== API RESPONSE DEBUG ===');
       console.log('Bands response:', response.data);
       console.log('Response data type:', typeof response.data);
       console.log('Response data keys:', Object.keys(response.data));
+      console.log('Response data.results:', response.data.results);
+      console.log('Response data.results length:', response.data.results?.length);
+      console.log('Response data.subscription_status:', response.data.subscription_status);
+      console.log('=== END API RESPONSE DEBUG ===');
       
       // Check if the response includes subscription_status (new combined format)
       if (response.data.subscription_status) {
@@ -111,16 +116,41 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
+        console.log('=== USER DATA DEBUG ===');
         console.log('Current userData:', userData);
+        console.log('userData.username:', userData?.username);
+        console.log('userData.id:', userData?.id);
+        console.log('userData.email:', userData?.email);
+        console.log('=== END USER DATA DEBUG ===');
         console.log('All bands from API:', bands);
         
         bands.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}, Current user: ${userData?.username}`);
-          if (band.is_creator) {
-            console.log(`✅ Band "${band.name}" belongs to current user (is_creator: true)`);
+          console.log(`=== BAND DEBUG ===`);
+          console.log(`Band: ${band.name}`);
+          console.log(`Band ID: ${band.id}`);
+          console.log(`Creator name: ${band.creator_name}`);
+          console.log(`Is creator: ${band.is_creator}`);
+          console.log(`Current user: ${userData?.username}`);
+          console.log(`Creator comparison: ${band.creator_name} === ${userData?.username} = ${band.creator_name === userData?.username}`);
+          console.log(`Is_creator check: ${band.is_creator === true}`);
+          console.log(`=== END BAND DEBUG ===`);
+          
+          // Check if user is creator using multiple methods
+          const isCreatorByFlag = band.is_creator === true;
+          const isCreatorByName = band.creator_name === userData?.username;
+          const isCreatorById = band.creator_id === userData?.id;
+          
+          if (isCreatorByFlag || isCreatorByName || isCreatorById) {
+            console.log(`✅ Band "${band.name}" belongs to current user`);
+            console.log(`  - is_creator flag: ${isCreatorByFlag}`);
+            console.log(`  - creator name match: ${isCreatorByName}`);
+            console.log(`  - creator ID match: ${isCreatorById}`);
             myBands.push(band);
           } else {
-            console.log(`❌ Band "${band.name}" does not belong to current user (is_creator: false)`);
+            console.log(`❌ Band "${band.name}" does not belong to current user`);
+            console.log(`  - is_creator flag: ${isCreatorByFlag}`);
+            console.log(`  - creator name match: ${isCreatorByName}`);
+            console.log(`  - creator ID match: ${isCreatorById}`);
             otherBands.push(band);
           }
         });
@@ -130,8 +160,16 @@ const GroupsTab = ({ userData }) => {
         
         // Set only the user's bands, not all bands
         console.log('Setting bands state - myBands:', myBands.length, 'otherBands:', otherBands.length);
-        setBands(myBands);
-        setJoinedBands(otherBands);
+        
+        // Temporary fallback: if no user bands found but bands exist, show all bands for debugging
+        if (myBands.length === 0 && bands.length > 0) {
+          console.log('⚠️ TEMPORARY DEBUG: No user bands found, showing all bands for debugging');
+          setBands(bands);
+          setJoinedBands([]);
+        } else {
+          setBands(myBands);
+          setJoinedBands(otherBands);
+        }
         
         // Set band score if available
         if (response.data.band_score) {
