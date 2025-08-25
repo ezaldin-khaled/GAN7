@@ -633,7 +633,11 @@ const GroupsTab = ({ userData }) => {
         
         // Step 1: Get band data to check ownership
         console.log('📡 Getting band data...');
-        const bandResponse = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers });
+        // Use minimal headers for GET request to avoid CORS issues
+        const getHeaders = {
+          'Authorization': `Bearer ${token}`
+        };
+        const bandResponse = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers: getHeaders });
         const bandData = bandResponse.data;
         
         console.log('📋 Band name:', bandData.name);
