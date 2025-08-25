@@ -560,33 +560,74 @@ const GroupsTab = ({ userData }) => {
       console.log('🔑 Token length:', token ? token.length : 0);
       console.log('🔑 Token starts with Bearer:', token ? token.startsWith('Bearer ') : false);
       
-      // Always use FormData as the API expects multipart/form-data
-      const formData = new FormData();
-      formData.append('name', editBand.name);
-      formData.append('description', editBand.description);
-      formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
-      if (editBand.location) formData.append('location', editBand.location);
-      if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
-      if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
-      if (editBand.website) formData.append('website', editBand.website);
-      if (editImage) formData.append('profile_picture', editImage);
+      // Check if we're only removing members (no other updates)
+      const hasOtherUpdates = editImage || 
+        editBand.name !== selectedBand.name ||
+        editBand.description !== selectedBand.description ||
+        editBand.location !== selectedBand.location ||
+        editBand.contact_email !== selectedBand.contact_email ||
+        editBand.contact_phone !== selectedBand.contact_phone ||
+        editBand.website !== selectedBand.website ||
+        membersToUpdate.length > 0;
       
-      // Add member role updates if any
-      if (membersToUpdate.length > 0) {
-        formData.append('members', JSON.stringify(membersToUpdate));
-      }
+      let requestData, headers;
       
-      // Add members to remove if any
+      if (hasOtherUpdates || membersToRemove.length === 0) {
+        // Use FormData for band updates with files or other changes
+        const formData = new FormData();
+        formData.append('name', editBand.name);
+        formData.append('description', editBand.description);
+        formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
+        if (editBand.location) formData.append('location', editBand.location);
+        if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
+        if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
+        if (editBand.website) formData.append('website', editBand.website);
+        if (editImage) formData.append('profile_picture', editImage);
+        
+        // Add member role updates if any
+        if (membersToUpdate.length > 0) {
+          formData.append('members', JSON.stringify(membersToUpdate));
+        }
+        
+              // Add members to remove if any
       if (membersToRemove.length > 0) {
         console.log('Sending members to remove:', membersToRemove);
-        formData.append('members_to_remove', JSON.stringify(membersToRemove));
+        
+        // Validate that all member IDs are numbers
+        const validMemberIds = membersToRemove.filter(id => typeof id === 'number' && !isNaN(id));
+        if (validMemberIds.length !== membersToRemove.length) {
+          console.warn('⚠️ Some member IDs are not valid numbers:', membersToRemove);
+          alert('Some member IDs are invalid. Please try again.');
+          return;
+        }
+        
+        formData.append('members_to_remove', JSON.stringify(validMemberIds));
       }
-      
-      const requestData = formData;
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      };
+        
+        requestData = formData;
+        headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        };
+      } else {
+        // Use JSON for member removal only (as per API documentation)
+        
+        // Validate that all member IDs are numbers
+        const validMemberIds = membersToRemove.filter(id => typeof id === 'number' && !isNaN(id));
+        if (validMemberIds.length !== membersToRemove.length) {
+          console.warn('⚠️ Some member IDs are not valid numbers:', membersToRemove);
+          alert('Some member IDs are invalid. Please try again.');
+          return;
+        }
+        
+        requestData = {
+          members_to_remove: validMemberIds
+        };
+        headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
+      }
       
       const isTalent = localStorage.getItem('is_talent') === 'true';
       if (isTalent) {
@@ -601,11 +642,22 @@ const GroupsTab = ({ userData }) => {
       console.log('🔄 Band update - Request data:', requestData);
       console.log('🔄 Band update - Headers:', headers);
       
-      // Test authentication first with a simple GET request
+      // Test authentication and check permissions first
       try {
-        console.log('🧪 Testing authentication...');
+        console.log('🧪 Testing authentication and permissions...');
         const authTest = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers });
         console.log('✅ Authentication test passed:', authTest.status);
+        
+        // Check if user is the band creator
+        const bandData = authTest.data;
+        console.log('🎭 Band data:', bandData);
+        console.log('🎭 Is creator:', bandData.is_creator);
+        console.log('🎭 User role:', bandData.user_role);
+        
+        if (!bandData.is_creator && bandData.user_role !== 'admin') {
+          alert('Only the band creator or admin can update this band.');
+          return;
+        }
       } catch (authError) {
         console.error('❌ Authentication test failed:', authError.response?.status, authError.response?.data);
         alert('Authentication failed. Please log in again.');
@@ -615,15 +667,6 @@ const GroupsTab = ({ userData }) => {
       await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, requestData, { headers });
       
       // Show appropriate success message
-      const hasOtherUpdates = editImage || 
-        editBand.name !== selectedBand.name ||
-        editBand.description !== selectedBand.description ||
-        editBand.location !== selectedBand.location ||
-        editBand.contact_email !== selectedBand.contact_email ||
-        editBand.contact_phone !== selectedBand.contact_phone ||
-        editBand.website !== selectedBand.website ||
-        membersToUpdate.length > 0;
-        
       if (membersToRemove.length > 0 && !hasOtherUpdates) {
         setSuccess(`Successfully removed ${membersToRemove.length} member(s) from the band!`);
       } else if (membersToRemove.length > 0) {
