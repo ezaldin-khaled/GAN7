@@ -161,7 +161,7 @@ const GroupsTab = ({ userData }) => {
           
           // Check if user is creator using multiple methods
           const isCreatorByFlag = band.is_creator === true;
-          const isCreatorByName = band.creator_name === userData?.username || band.creator_name === userData?.email;
+          const isCreatorByName = band.creator_name === userData?.full_name || band.creator_name === userData?.username || band.creator_name === userData?.email;
           const isCreatorById = band.creator_id === userData?.id;
           
           if (isCreatorByFlag || isCreatorByName || isCreatorById) {
@@ -224,11 +224,11 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email}`);
+          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.full_name || userData?.username || userData?.email}`);
           
           // Check if user is creator using multiple methods
           const isCreatorByFlag = band.is_creator === true;
-          const isCreatorByName = band.creator_name === userData?.username || band.creator_name === userData?.email;
+          const isCreatorByName = band.creator_name === userData?.full_name || band.creator_name === userData?.username || band.creator_name === userData?.email;
           const isCreatorById = band.creator_id === userData?.id;
           
           if (isCreatorByFlag || isCreatorByName || isCreatorById) {
@@ -405,7 +405,7 @@ const GroupsTab = ({ userData }) => {
             ...response.data,
             is_creator: true,
             members_count: 1,
-                         creator_name: userData?.username || userData?.email || 'Current User'
+                         creator_name: userData?.full_name || userData?.username || userData?.email || 'Current User'
           };
           console.log('Adding new band to state:', newBandData);
           setBands(prevBands => {
