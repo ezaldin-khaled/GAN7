@@ -114,11 +114,13 @@ const GroupsTab = ({ userData }) => {
         console.log('All bands from API:', bands);
         
                  bands.forEach(band => {
-           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}`);
+           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}, User Full Name: ${userData?.full_name}`);
           
                      // Check if user is creator using multiple methods
            const isCreatorByFlag = band.is_creator === true;
-           const isCreatorByName = band.creator_name === userData?.username || band.creator_name === userData?.email;
+           const isCreatorByName = band.creator_name === userData?.username || 
+                                  band.creator_name === userData?.email || 
+                                  band.creator_name === userData?.full_name;
            const isCreatorById = band.creator_id === userData?.id;
           
           if (isCreatorByFlag || isCreatorByName || isCreatorById) {
@@ -162,8 +164,8 @@ const GroupsTab = ({ userData }) => {
         console.log('All bands from API (old format):', response.data);
         
                  response.data.forEach(band => {
-           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email}`);
-           if (band.creator_name === userData?.username || band.creator_name === userData?.email) {
+           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email || userData?.full_name}`);
+           if (band.creator_name === userData?.username || band.creator_name === userData?.email || band.creator_name === userData?.full_name) {
             console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
