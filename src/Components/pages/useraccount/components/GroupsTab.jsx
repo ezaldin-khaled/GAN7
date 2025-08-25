@@ -644,12 +644,12 @@ const GroupsTab = ({ userData }) => {
                   console.log('✅ Found matching user data in localStorage');
                   // Update userData to match token
                   userData = parsedStoredUser;
-                } else {
-                  console.error('❌ Stored user data also doesn\'t match token');
-                  alert('Authentication mismatch detected. Please log in again.');
-                  window.location.href = '/login';
-                  return;
-                }
+                                 } else {
+                   console.error('❌ Stored user data also doesn\'t match token');
+                   alert('Authentication mismatch detected!\n\nToken user ID: ' + payload.user_id + '\nCurrent user ID: ' + userData?.id + '\n\nThis usually happens when:\n• You logged in with different credentials\n• Your session got corrupted\n• There was a server-side issue\n\nPlease log out and log back in to fix this issue.');
+                   // Don't redirect automatically - let user choose to log out
+                   return;
+                 }
               } else {
                 console.error('❌ No stored user data found');
                 alert('Authentication data missing. Please log in again.');
