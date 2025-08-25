@@ -52,6 +52,26 @@ const GroupsTab = ({ userData }) => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [bandScore, setBandScore] = useState(null);
 
+  // Function to fetch detailed band information
+  const fetchBandDetails = async (bandId) => {
+    try {
+      const token = localStorage.getItem('access');
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+      
+      if (localStorage.getItem('is_talent') === 'true') {
+        headers['is-talent'] = 'true';
+      }
+      
+      const response = await axiosInstance.get(`/api/bands/${bandId}/`, { headers });
+      return response.data;
+    } catch (err) {
+      console.error(`Error fetching band details for ${bandId}:`, err);
+      return null;
+    }
+  };
+
   const fetchBands = async (forceRefresh = false) => {
     console.log('🔄 fetchBands called with forceRefresh:', forceRefresh);
     try {
@@ -110,18 +130,28 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
-                 console.log('User Data:', userData);
+        console.log('User Data:', userData);
         console.log('All bands from API:', bands);
         
-                 bands.forEach(band => {
-           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}, User Full Name: ${userData?.full_name}`);
+        // Fetch detailed information for each band to get accurate creator data
+        const bandsWithDetails = await Promise.all(
+          bands.map(async (band) => {
+            const detailedBand = await fetchBandDetails(band.id);
+            if (detailedBand) {
+              console.log(`Detailed band info for ${band.name}:`, detailedBand);
+              return { ...band, ...detailedBand };
+            }
+            return band;
+          })
+        );
+        
+        bandsWithDetails.forEach(band => {
+          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}`);
           
-                     // Check if user is creator using multiple methods
-           const isCreatorByFlag = band.is_creator === true;
-           const isCreatorByName = band.creator_name === userData?.username || 
-                                  band.creator_name === userData?.email || 
-                                  band.creator_name === userData?.full_name;
-           const isCreatorById = band.creator_id === userData?.id;
+          // Check if user is creator using multiple methods
+          const isCreatorByFlag = band.is_creator === true;
+          const isCreatorByName = band.creator_name === userData?.username || band.creator_name === userData?.email;
+          const isCreatorById = band.creator_id === userData?.id;
           
           if (isCreatorByFlag || isCreatorByName || isCreatorById) {
             console.log(`✅ Band "${band.name}" belongs to current user`);
@@ -148,11 +178,10 @@ const GroupsTab = ({ userData }) => {
          setBands(myBands);
          setJoinedBands(otherBands);
         
-                 // Set band score if available
-         if (response.data.band_score) {
-           console.log('Band score data:', response.data.band_score);
-           setBandScore(response.data.band_score);
-         }
+        // Set band score if available
+        if (response.data.band_score) {
+          setBandScore(response.data.band_score);
+        }
       } else {
         // Old format - just bands array
         console.log('Using old format - no subscription_status found');
@@ -165,8 +194,8 @@ const GroupsTab = ({ userData }) => {
         console.log('All bands from API (old format):', response.data);
         
                  response.data.forEach(band => {
-           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email || userData?.full_name}`);
-           if (band.creator_name === userData?.username || band.creator_name === userData?.email || band.creator_name === userData?.full_name) {
+           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email}`);
+           if (band.creator_name === userData?.username || band.creator_name === userData?.email) {
             console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
@@ -798,79 +827,35 @@ const GroupsTab = ({ userData }) => {
     </div>
   );
 
-     // Band Score Display Component
-   const BandScoreDisplay = () => {
-     if (!bandScore) return null;
-     
-     // Temporary safety check - if bandScore is not a proper object, don't render
-     if (typeof bandScore !== 'object' || bandScore === null) {
-       console.log('BandScoreDisplay - bandScore is not a proper object, skipping render');
-       return null;
-     }
-     
-     console.log('BandScoreDisplay - bandScore:', bandScore);
-     console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
-     console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
-     
-     // Safely extract values with fallbacks and handle different structures
-     let overallScore = 0;
-     let message = '';
-     let improvementTips = [];
-     
-     // Handle different possible structures
-     if (typeof bandScore === 'object' && bandScore !== null) {
-       // Try different possible score fields
-       overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
-       
-       // Try different possible message fields
-       message = bandScore.message || bandScore.details || '';
-       
-       // Try different possible improvement tips fields
-       if (bandScore.how_to_improve && Array.isArray(bandScore.how_to_improve)) {
-         improvementTips = bandScore.how_to_improve;
-       } else if (bandScore.improvement_tips && Array.isArray(bandScore.improvement_tips)) {
-         improvementTips = bandScore.improvement_tips;
-       } else if (bandScore.tips && Array.isArray(bandScore.tips)) {
-         improvementTips = bandScore.tips;
-       }
-     }
-     
-     // Ensure all values are safe for rendering
-     const safeScore = typeof overallScore === 'number' ? overallScore : 0;
-     const safeMessage = typeof message === 'string' ? message : '';
-     const safeTips = Array.isArray(improvementTips) ? improvementTips : [];
-     
-     console.log('BandScoreDisplay - safe values:', { safeScore, safeMessage, safeTips });
-     
-     return (
-       <div className="band-score-section">
-         <h2>Band Score</h2>
-         <div className="score-card">
-           <div className="score-main">
-             <span className="score-number">{safeScore}</span>
-             <span className="score-label">Overall Score</span>
-           </div>
-           <div className="score-details">
-             {safeMessage && <p className="score-message">{safeMessage}</p>}
-             {safeTips.length > 0 && (
-               <div className="improvement-tips">
-                 <h4>How to improve your score:</h4>
-                 <ul>
-                   {safeTips.map((tip, index) => {
-                     // Ensure tip is a string
-                     const safeTip = typeof tip === 'string' ? tip : 
-                                   typeof tip === 'object' ? JSON.stringify(tip) : 
-                                   String(tip);
-                     return <li key={index}>{safeTip}</li>;
-                   })}
-                 </ul>
-               </div>
-             )}
-           </div>
-         </div>
-       </div>
-     );
-   };
+  // Band Score Display Component
+  const BandScoreDisplay = () => {
+    if (!bandScore) return null;
+    
+    return (
+      <div className="band-score-section">
+        <h2>Band Score</h2>
+        <div className="score-card">
+          <div className="score-main">
+            <span className="score-number">{bandScore.overall_score}</span>
+            <span className="score-label">Overall Score</span>
+          </div>
+          <div className="score-details">
+            <p className="score-message">{bandScore.message}</p>
+            {bandScore.how_to_improve && bandScore.how_to_improve.length > 0 && (
+              <div className="improvement-tips">
+                <h4>How to improve your score:</h4>
+                <ul>
+                  {bandScore.how_to_improve.map((tip, index) => (
+                    <li key={index}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Show loading state
   if (subscriptionLoading) {
