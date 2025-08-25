@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUsers, FaPlus, FaEdit, FaTrash, FaLock, FaCrown, FaSync, FaKey } from 'react-icons/fa';
 import { CreateBandModal, ManageBandModal } from './GroupModals';
 import axiosInstance from '../../../../api/axios';
-import { AuthContext } from '../../../context/AuthContext';
 import './GroupsTab.css';
 import '../EnhancedTabStyles.css'; // Import the enhanced styles
 
@@ -16,7 +15,6 @@ const BAND_TYPES = [
 ];
 
 const GroupsTab = ({ userData }) => {
-  const { validateTokenMatch } = useContext(AuthContext);
   const [bands, setBands] = useState([]);
   const [joinedBands, setJoinedBands] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -625,11 +623,44 @@ const GroupsTab = ({ userData }) => {
       // Always add is-talent header for band operations
       headers['is-talent'] = 'true';
       
-            // Verify token matches current user using centralized validation
-      if (!validateTokenMatch()) {
-        console.error('❌ Token validation failed in GroupsTab');
-        alert('Authentication mismatch detected! Please log out and log back in to fix this issue.');
-        return;
+      // Verify token matches current user
+      if (token) {
+        try {
+          const tokenParts = token.split('.');
+          if (tokenParts.length === 3) {
+            const payload = JSON.parse(atob(tokenParts[1]));
+            if (payload.user_id !== userData?.id) {
+              console.warn('⚠️ Token user ID mismatch detected!');
+              console.warn('⚠️ Token user ID:', payload.user_id);
+              console.warn('⚠️ Current user ID:', userData?.id);
+              console.warn('⚠️ Attempting to refresh user data...');
+              
+              // Try to refresh user data from localStorage
+              const storedUser = localStorage.getItem('user');
+              if (storedUser) {
+                const parsedStoredUser = JSON.parse(storedUser);
+                console.log('🔄 Stored user data:', parsedStoredUser);
+                if (parsedStoredUser.id === payload.user_id) {
+                  console.log('✅ Found matching user data in localStorage');
+                  // Update userData to match token
+                  userData = parsedStoredUser;
+                                 } else {
+                   console.error('❌ Stored user data also doesn\'t match token');
+                   alert('Authentication mismatch detected!\n\nToken user ID: ' + payload.user_id + '\nCurrent user ID: ' + userData?.id + '\n\nThis usually happens when:\n• You logged in with different credentials\n• Your session got corrupted\n• There was a server-side issue\n\nPlease log out and log back in to fix this issue.');
+                   // Don't redirect automatically - let user choose to log out
+                   return;
+                 }
+              } else {
+                console.error('❌ No stored user data found');
+                alert('Authentication data missing. Please log in again.');
+                window.location.href = '/login';
+                return;
+              }
+            }
+          }
+        } catch (e) {
+          console.log('🔑 Could not verify token user ID (not JWT format)');
+        }
       }
       
       // Debug: Log authentication info
