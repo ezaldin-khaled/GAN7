@@ -517,7 +517,8 @@ const GroupsTab = ({ userData }) => {
   
   const handleRemoveMember = (memberId) => {
     // Add to membersToRemove array if not already there
-    // Note: memberId should be the BandMembership ID, not the user ID
+    // Note: memberId should be the BandMembership ID from the members array, not the user ID
+    // This ID is used in the API call: PUT /api/bands/{id}/update/ with members_to_remove: [memberId]
     if (!membersToRemove.includes(memberId)) {
       setMembersToRemove([...membersToRemove, memberId]);
       console.log(`Member ${memberId} marked for removal. Members to remove:`, [...membersToRemove, memberId]);
@@ -553,45 +554,76 @@ const GroupsTab = ({ userData }) => {
         return;
       }
       
-      const formData = new FormData();
-      formData.append('name', editBand.name);
-      formData.append('description', editBand.description);
-      formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
-      if (editBand.location) formData.append('location', editBand.location);
-      if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
-      if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
-      if (editBand.website) formData.append('website', editBand.website);
-      if (editImage) formData.append('profile_picture', editImage);
+      // Check if we're only removing members (no other updates)
+      const hasOtherUpdates = editImage || 
+        editBand.name !== selectedBand.name ||
+        editBand.description !== selectedBand.description ||
+        editBand.location !== selectedBand.location ||
+        editBand.contact_email !== selectedBand.contact_email ||
+        editBand.contact_phone !== selectedBand.contact_phone ||
+        editBand.website !== selectedBand.website ||
+        membersToUpdate.length > 0;
       
-      // Add member role updates if any
-      if (membersToUpdate.length > 0) {
-        formData.append('members', JSON.stringify(membersToUpdate));
+      let requestData, headers;
+      
+      if (hasOtherUpdates || membersToRemove.length === 0) {
+        // Use FormData for band updates with files or other changes
+        const formData = new FormData();
+        formData.append('name', editBand.name);
+        formData.append('description', editBand.description);
+        formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
+        if (editBand.location) formData.append('location', editBand.location);
+        if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
+        if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
+        if (editBand.website) formData.append('website', editBand.website);
+        if (editImage) formData.append('profile_picture', editImage);
+        
+        // Add member role updates if any
+        if (membersToUpdate.length > 0) {
+          formData.append('members', JSON.stringify(membersToUpdate));
+        }
+        
+        // Add members to remove if any
+        if (membersToRemove.length > 0) {
+          console.log('Sending members to remove:', membersToRemove);
+          formData.append('members_to_remove', JSON.stringify(membersToRemove));
+        }
+        
+        requestData = formData;
+        headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        };
+      } else {
+        // Use JSON for member removal only (as per API documentation)
+        requestData = {
+          members_to_remove: membersToRemove
+        };
+        headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
       }
-      
-      // Add members to remove if any
-      if (membersToRemove.length > 0) {
-        console.log('Sending members to remove:', membersToRemove);
-        formData.append('members_to_remove', JSON.stringify(membersToRemove));
-      }
-      
-      // Debug: Log all form data being sent
-      console.log('🔄 Band update - FormData contents:');
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      };
       
       if (localStorage.getItem('is_talent') === 'true') {
         headers['is-talent'] = 'true';
       }
       
-      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers });
+      // Debug: Log request data
+      console.log('🔄 Band update - Request data:', requestData);
+      console.log('🔄 Band update - Headers:', headers);
       
-      setSuccess('Band updated successfully!');
+      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, requestData, { headers });
+      
+      // Show appropriate success message
+      if (membersToRemove.length > 0 && !hasOtherUpdates) {
+        setSuccess(`Successfully removed ${membersToRemove.length} member(s) from the band!`);
+      } else if (membersToRemove.length > 0) {
+        setSuccess(`Band updated successfully! ${membersToRemove.length} member(s) removed.`);
+      } else {
+        setSuccess('Band updated successfully!');
+      }
+      
       handleCloseManageModal();
       fetchBands(); // Refresh the bands list
     } catch (err) {
@@ -601,9 +633,10 @@ const GroupsTab = ({ userData }) => {
       if (err.response && err.response.data) {
         let errorMessage = '';
         
-        if (typeof err.response.data === 'string') {
-          errorMessage = err.response.data;
-        } else if (typeof err.response.data === 'object') {
+        // Handle specific error cases based on status code
+        if (err.response.status === 403) {
+          errorMessage = 'You do not have permission to update this band. Only the creator or admin can make changes.';
+        } else if (err.response.status === 400) {
           if (err.response.data.detail) {
             errorMessage = err.response.data.detail;
           } else if (err.response.data.message) {
@@ -611,13 +644,36 @@ const GroupsTab = ({ userData }) => {
           } else if (err.response.data.error) {
             errorMessage = err.response.data.error;
           } else {
-            // Extract all error messages from the object
+            // Check for specific validation errors
             const errorMessages = [];
             Object.entries(err.response.data).forEach(([key, value]) => {
               const valueStr = Array.isArray(value) ? value.join(', ') : value;
               errorMessages.push(`${key}: ${valueStr}`);
             });
             errorMessage = errorMessages.join('\n');
+          }
+        } else if (err.response.status === 404) {
+          errorMessage = 'Band not found. It may have been deleted or you may not have access to it.';
+        } else {
+          // Handle other error types
+          if (typeof err.response.data === 'string') {
+            errorMessage = err.response.data;
+          } else if (typeof err.response.data === 'object') {
+            if (err.response.data.detail) {
+              errorMessage = err.response.data.detail;
+            } else if (err.response.data.message) {
+              errorMessage = err.response.data.message;
+            } else if (err.response.data.error) {
+              errorMessage = err.response.data.error;
+            } else {
+              // Extract all error messages from the object
+              const errorMessages = [];
+              Object.entries(err.response.data).forEach(([key, value]) => {
+                const valueStr = Array.isArray(value) ? value.join(', ') : value;
+                errorMessages.push(`${key}: ${valueStr}`);
+              });
+              errorMessage = errorMessages.join('\n');
+            }
           }
         }
         
