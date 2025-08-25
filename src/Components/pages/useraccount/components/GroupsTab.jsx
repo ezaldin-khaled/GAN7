@@ -554,56 +554,33 @@ const GroupsTab = ({ userData }) => {
         return;
       }
       
-      // Check if we're only removing members (no other updates)
-      const hasOtherUpdates = editImage || 
-        editBand.name !== selectedBand.name ||
-        editBand.description !== selectedBand.description ||
-        editBand.location !== selectedBand.location ||
-        editBand.contact_email !== selectedBand.contact_email ||
-        editBand.contact_phone !== selectedBand.contact_phone ||
-        editBand.website !== selectedBand.website ||
-        membersToUpdate.length > 0;
+      // Always use FormData as the API expects multipart/form-data
+      const formData = new FormData();
+      formData.append('name', editBand.name);
+      formData.append('description', editBand.description);
+      formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
+      if (editBand.location) formData.append('location', editBand.location);
+      if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
+      if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
+      if (editBand.website) formData.append('website', editBand.website);
+      if (editImage) formData.append('profile_picture', editImage);
       
-      let requestData, headers;
-      
-      if (hasOtherUpdates || membersToRemove.length === 0) {
-        // Use FormData for band updates with files or other changes
-        const formData = new FormData();
-        formData.append('name', editBand.name);
-        formData.append('description', editBand.description);
-        formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
-        if (editBand.location) formData.append('location', editBand.location);
-        if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
-        if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
-        if (editBand.website) formData.append('website', editBand.website);
-        if (editImage) formData.append('profile_picture', editImage);
-        
-        // Add member role updates if any
-        if (membersToUpdate.length > 0) {
-          formData.append('members', JSON.stringify(membersToUpdate));
-        }
-        
-        // Add members to remove if any
-        if (membersToRemove.length > 0) {
-          console.log('Sending members to remove:', membersToRemove);
-          formData.append('members_to_remove', JSON.stringify(membersToRemove));
-        }
-        
-        requestData = formData;
-        headers = {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        };
-      } else {
-        // Use JSON for member removal only (as per API documentation)
-        requestData = {
-          members_to_remove: membersToRemove
-        };
-        headers = {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        };
+      // Add member role updates if any
+      if (membersToUpdate.length > 0) {
+        formData.append('members', JSON.stringify(membersToUpdate));
       }
+      
+      // Add members to remove if any
+      if (membersToRemove.length > 0) {
+        console.log('Sending members to remove:', membersToRemove);
+        formData.append('members_to_remove', JSON.stringify(membersToRemove));
+      }
+      
+      const requestData = formData;
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      };
       
       if (localStorage.getItem('is_talent') === 'true') {
         headers['is-talent'] = 'true';
@@ -616,6 +593,15 @@ const GroupsTab = ({ userData }) => {
       await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, requestData, { headers });
       
       // Show appropriate success message
+      const hasOtherUpdates = editImage || 
+        editBand.name !== selectedBand.name ||
+        editBand.description !== selectedBand.description ||
+        editBand.location !== selectedBand.location ||
+        editBand.contact_email !== selectedBand.contact_email ||
+        editBand.contact_phone !== selectedBand.contact_phone ||
+        editBand.website !== selectedBand.website ||
+        membersToUpdate.length > 0;
+        
       if (membersToRemove.length > 0 && !hasOtherUpdates) {
         setSuccess(`Successfully removed ${membersToRemove.length} member(s) from the band!`);
       } else if (membersToRemove.length > 0) {
