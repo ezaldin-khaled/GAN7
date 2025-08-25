@@ -89,14 +89,7 @@ const GroupsTab = ({ userData }) => {
         headers: headers
       });
       
-      console.log('=== API RESPONSE DEBUG ===');
-      console.log('Bands response:', response.data);
-      console.log('Response data type:', typeof response.data);
-      console.log('Response data keys:', Object.keys(response.data));
-      console.log('Response data.results:', response.data.results);
-      console.log('Response data.results length:', response.data.results?.length);
-      console.log('Response data.subscription_status:', response.data.subscription_status);
-      console.log('=== END API RESPONSE DEBUG ===');
+             console.log('API Response:', response.data);
       
       // Check if the response includes subscription_status (new combined format)
       if (response.data.subscription_status) {
@@ -117,24 +110,11 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
-        console.log('=== USER DATA DEBUG ===');
-        console.log('Current userData:', userData);
-        console.log('userData.username:', userData?.username);
-        console.log('userData.id:', userData?.id);
-        console.log('userData.email:', userData?.email);
-        console.log('=== END USER DATA DEBUG ===');
+                 console.log('User Data:', userData);
         console.log('All bands from API:', bands);
         
-        bands.forEach(band => {
-          console.log(`=== BAND DEBUG ===`);
-          console.log(`Band: ${band.name}`);
-          console.log(`Band ID: ${band.id}`);
-          console.log(`Creator name: ${band.creator_name}`);
-          console.log(`Is creator: ${band.is_creator}`);
-                     console.log(`Current user: ${userData?.username || userData?.email}`);
-           console.log(`Creator comparison: ${band.creator_name} === ${userData?.username || userData?.email} = ${band.creator_name === (userData?.username || userData?.email)}`);
-          console.log(`Is_creator check: ${band.is_creator === true}`);
-          console.log(`=== END BAND DEBUG ===`);
+                 bands.forEach(band => {
+           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}`);
           
                      // Check if user is creator using multiple methods
            const isCreatorByFlag = band.is_creator === true;
@@ -162,10 +142,9 @@ const GroupsTab = ({ userData }) => {
         // Set only the user's bands, not all bands
         console.log('Setting bands state - myBands:', myBands.length, 'otherBands:', otherBands.length);
         
-        // TEMPORARY DEBUG: Always show all bands to see what's being returned
-        console.log('⚠️ TEMPORARY DEBUG: Showing all bands for debugging purposes');
-        setBands(bands);
-        setJoinedBands([]);
+                 // Set only the user's bands, not all bands
+         setBands(myBands);
+         setJoinedBands(otherBands);
         
         // Set band score if available
         if (response.data.band_score) {
