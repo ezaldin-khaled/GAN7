@@ -153,12 +153,15 @@ function Navbar() {
         {/* <li>
           <LanguageSwitcher />
         </li> */}
-        {renderAuthSection()}
-      </ul>
-      <FaBars className='menu-icon' onClick={toggleMenu}/>
+        <li>
+        <FaBars className='menu-icon' onClick={toggleMenu}/>
       {showProfile && (
         <UserProfilePopup user={user} onClose={() => setShowProfile(false)} />
       )}
+      </li>
+        {renderAuthSection()}
+      </ul>
+
     </nav>
   );
 };
