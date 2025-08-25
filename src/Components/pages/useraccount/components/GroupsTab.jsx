@@ -191,6 +191,9 @@ const GroupsTab = ({ userData }) => {
         
         // Set band score if available
         if (response.data.band_score) {
+          console.log('Band score data:', response.data.band_score);
+          console.log('Band score type:', typeof response.data.band_score);
+          console.log('Band score keys:', Object.keys(response.data.band_score));
           setBandScore(response.data.band_score);
         }
       } else {
@@ -864,22 +867,31 @@ const GroupsTab = ({ userData }) => {
   const BandScoreDisplay = () => {
     if (!bandScore) return null;
     
+    console.log('BandScoreDisplay - bandScore:', bandScore);
+    console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
+    console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
+    
+    // Add defensive programming to handle different bandScore structures
+    const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
+    const message = bandScore.message || bandScore.details || '';
+    const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || [];
+    
     return (
       <div className="band-score-section">
         <h2>Band Score</h2>
         <div className="score-card">
           <div className="score-main">
-            <span className="score-number">{bandScore.overall_score}</span>
+            <span className="score-number">{overallScore}</span>
             <span className="score-label">Overall Score</span>
           </div>
           <div className="score-details">
-            <p className="score-message">{bandScore.message}</p>
-            {bandScore.how_to_improve && bandScore.how_to_improve.length > 0 && (
+            <p className="score-message">{message}</p>
+            {improvementTips && improvementTips.length > 0 && (
               <div className="improvement-tips">
                 <h4>How to improve your score:</h4>
                 <ul>
-                  {bandScore.how_to_improve.map((tip, index) => (
-                    <li key={index}>{tip}</li>
+                  {improvementTips.map((tip, index) => (
+                    <li key={index}>{typeof tip === 'string' ? tip : JSON.stringify(tip)}</li>
                   ))}
                 </ul>
               </div>
