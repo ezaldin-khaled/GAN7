@@ -802,28 +802,67 @@ const GroupsTab = ({ userData }) => {
    const BandScoreDisplay = () => {
      if (!bandScore) return null;
      
-     // Safely extract values with fallbacks
-     const overallScore = bandScore.overall_score || bandScore.total || 0;
-     const message = bandScore.message || '';
-     const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || [];
+     // Temporary safety check - if bandScore is not a proper object, don't render
+     if (typeof bandScore !== 'object' || bandScore === null) {
+       console.log('BandScoreDisplay - bandScore is not a proper object, skipping render');
+       return null;
+     }
+     
+     console.log('BandScoreDisplay - bandScore:', bandScore);
+     console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
+     console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
+     
+     // Safely extract values with fallbacks and handle different structures
+     let overallScore = 0;
+     let message = '';
+     let improvementTips = [];
+     
+     // Handle different possible structures
+     if (typeof bandScore === 'object' && bandScore !== null) {
+       // Try different possible score fields
+       overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
+       
+       // Try different possible message fields
+       message = bandScore.message || bandScore.details || '';
+       
+       // Try different possible improvement tips fields
+       if (bandScore.how_to_improve && Array.isArray(bandScore.how_to_improve)) {
+         improvementTips = bandScore.how_to_improve;
+       } else if (bandScore.improvement_tips && Array.isArray(bandScore.improvement_tips)) {
+         improvementTips = bandScore.improvement_tips;
+       } else if (bandScore.tips && Array.isArray(bandScore.tips)) {
+         improvementTips = bandScore.tips;
+       }
+     }
+     
+     // Ensure all values are safe for rendering
+     const safeScore = typeof overallScore === 'number' ? overallScore : 0;
+     const safeMessage = typeof message === 'string' ? message : '';
+     const safeTips = Array.isArray(improvementTips) ? improvementTips : [];
+     
+     console.log('BandScoreDisplay - safe values:', { safeScore, safeMessage, safeTips });
      
      return (
        <div className="band-score-section">
          <h2>Band Score</h2>
          <div className="score-card">
            <div className="score-main">
-             <span className="score-number">{overallScore}</span>
+             <span className="score-number">{safeScore}</span>
              <span className="score-label">Overall Score</span>
            </div>
            <div className="score-details">
-             {message && <p className="score-message">{message}</p>}
-             {improvementTips.length > 0 && (
+             {safeMessage && <p className="score-message">{safeMessage}</p>}
+             {safeTips.length > 0 && (
                <div className="improvement-tips">
                  <h4>How to improve your score:</h4>
                  <ul>
-                   {improvementTips.map((tip, index) => (
-                     <li key={index}>{typeof tip === 'string' ? tip : JSON.stringify(tip)}</li>
-                   ))}
+                   {safeTips.map((tip, index) => {
+                     // Ensure tip is a string
+                     const safeTip = typeof tip === 'string' ? tip : 
+                                   typeof tip === 'object' ? JSON.stringify(tip) : 
+                                   String(tip);
+                     return <li key={index}>{safeTip}</li>;
+                   })}
                  </ul>
                </div>
              )}
