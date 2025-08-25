@@ -560,20 +560,40 @@ const GroupsTab = ({ userData }) => {
       console.log('🔑 Token length:', token ? token.length : 0);
       console.log('🔑 Token starts with Bearer:', token ? token.startsWith('Bearer ') : false);
       
-            // Always use FormData as the API expects multipart/form-data for all operations
-      const formData = new FormData();
-      formData.append('name', editBand.name);
-      formData.append('description', editBand.description);
-      formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
-      if (editBand.location) formData.append('location', editBand.location);
-      if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
-      if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
-      if (editBand.website) formData.append('website', editBand.website);
-      if (editImage) formData.append('profile_picture', editImage);
+      // Debug: Log user data for comparison
+      console.log('👤 Current userData:', userData);
+      console.log('👤 User ID from userData:', userData?.id);
+      console.log('👤 User name from userData:', userData?.full_name || userData?.username || userData?.email);
+      
+      // Try to decode token to see user info (if it's a JWT)
+      if (token) {
+        try {
+          const tokenParts = token.split('.');
+          if (tokenParts.length === 3) {
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log('🔑 Token payload:', payload);
+            console.log('🔑 User ID from token:', payload.user_id);
+            console.log('🔑 Token user vs current user:', payload.user_id === userData?.id ? '✅ MATCH' : '❌ MISMATCH');
+          }
+        } catch (e) {
+          console.log('🔑 Could not decode token (not JWT or invalid format)');
+        }
+      }
+      
+            // Prepare request data as JSON (not FormData)
+      const requestData = {
+        name: editBand.name,
+        description: editBand.description,
+        band_type: editBand.genre || selectedBand.band_type || 'musical',
+        location: editBand.location || '',
+        contact_email: editBand.contact_email || '',
+        contact_phone: editBand.contact_phone || '',
+        website: editBand.website || ''
+      };
       
       // Add member role updates if any
       if (membersToUpdate.length > 0) {
-        formData.append('members', JSON.stringify(membersToUpdate));
+        requestData.members = membersToUpdate;
       }
       
       // Add members to remove if any
@@ -588,13 +608,12 @@ const GroupsTab = ({ userData }) => {
           return;
         }
         
-        formData.append('members_to_remove', JSON.stringify(validMemberIds));
+        requestData.members_to_remove = validMemberIds;
       }
       
-      const requestData = formData;
       const headers = {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
       };
       
       // Check if user is talent user (from login response)
@@ -604,6 +623,46 @@ const GroupsTab = ({ userData }) => {
       // Always add is-talent header for band operations
       headers['is-talent'] = 'true';
       
+      // Verify token matches current user
+      if (token) {
+        try {
+          const tokenParts = token.split('.');
+          if (tokenParts.length === 3) {
+            const payload = JSON.parse(atob(tokenParts[1]));
+            if (payload.user_id !== userData?.id) {
+              console.warn('⚠️ Token user ID mismatch detected!');
+              console.warn('⚠️ Token user ID:', payload.user_id);
+              console.warn('⚠️ Current user ID:', userData?.id);
+              console.warn('⚠️ Attempting to refresh user data...');
+              
+              // Try to refresh user data from localStorage
+              const storedUser = localStorage.getItem('user');
+              if (storedUser) {
+                const parsedStoredUser = JSON.parse(storedUser);
+                console.log('🔄 Stored user data:', parsedStoredUser);
+                if (parsedStoredUser.id === payload.user_id) {
+                  console.log('✅ Found matching user data in localStorage');
+                  // Update userData to match token
+                  userData = parsedStoredUser;
+                } else {
+                  console.error('❌ Stored user data also doesn\'t match token');
+                  alert('Authentication mismatch detected. Please log in again.');
+                  window.location.href = '/login';
+                  return;
+                }
+              } else {
+                console.error('❌ No stored user data found');
+                alert('Authentication data missing. Please log in again.');
+                window.location.href = '/login';
+                return;
+              }
+            }
+          }
+        } catch (e) {
+          console.log('🔑 Could not verify token user ID (not JWT format)');
+        }
+      }
+      
       // Debug: Log authentication info
       console.log('🔑 Final headers:', headers);
       
@@ -612,17 +671,8 @@ const GroupsTab = ({ userData }) => {
       console.log('📤 URL:', `/api/bands/${selectedBand.id}/update/`);
       console.log('📤 Method: PUT');
       console.log('📤 Headers:', headers);
-      
-      if (requestData instanceof FormData) {
-        console.log('📤 Content-Type: multipart/form-data');
-        console.log('📤 FormData contents:');
-        for (let [key, value] of requestData.entries()) {
-          console.log(`  ${key}:`, value);
-        }
-      } else {
-        console.log('📤 Content-Type: application/json');
-        console.log('📤 Request body:', requestData);
-      }
+      console.log('📤 Content-Type: application/json');
+      console.log('📤 Request body:', JSON.stringify(requestData, null, 2));
       
       // Focused ownership and permission check
       try {
