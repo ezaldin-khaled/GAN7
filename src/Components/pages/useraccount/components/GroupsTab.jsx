@@ -623,67 +623,67 @@ const GroupsTab = ({ userData }) => {
         console.log('📤 Request body:', requestData);
       }
       
-      // Comprehensive debugging and validation
+      // Focused ownership and permission check
       try {
-        console.log('🧪 === COMPREHENSIVE DEBUGGING START ===');
+        console.log('🔍 === BAND OWNERSHIP CHECK ===');
         console.log('🎯 Band ID:', selectedBand.id);
         console.log('🎯 User token exists:', !!token);
         console.log('🎯 Is talent user:', isTalent);
         
-        // Step 1: Test authentication and get band data
-        console.log('📡 Step 1: Testing authentication...');
-        const authTest = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers });
-        console.log('✅ Authentication test passed:', authTest.status);
+        // Step 1: Get band data to check ownership
+        console.log('📡 Getting band data...');
+        const bandResponse = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers });
+        const bandData = bandResponse.data;
         
-        // Step 2: Check band ownership and permissions
-        const bandData = authTest.data;
-        console.log('📋 Step 2: Band ownership check...');
-        console.log('📋 Band data:', bandData);
+        console.log('📋 Band name:', bandData.name);
         console.log('📋 Is creator:', bandData.is_creator);
         console.log('📋 User role:', bandData.user_role);
-        console.log('📋 Band name:', bandData.name);
+        console.log('📋 Creator ID:', bandData.creator_id);
+        console.log('📋 Current user ID:', userData?.id);
         
-        // Step 3: Validate permissions
-        if (!bandData.is_creator && bandData.user_role !== 'admin') {
-          console.error('❌ PERMISSION DENIED: User is not creator or admin');
-          alert(`Permission denied. You are not the creator or admin of "${bandData.name}". Only the band creator or admin can update this band.`);
+        // Step 2: Check if user is the creator
+        if (!bandData.is_creator) {
+          console.error('❌ OWNERSHIP ISSUE: User is not the band creator');
+          console.error('❌ Expected: is_creator = true');
+          console.error('❌ Actual: is_creator =', bandData.is_creator);
+          alert(`You are not the creator of "${bandData.name}". Only the band creator can update this band.`);
           return;
         }
-        console.log('✅ Permission check passed');
         
-        // Step 4: Log member data for validation
+        console.log('✅ Ownership check passed - User is the band creator');
+        
+        // Step 3: Validate member IDs if removing members
         if (membersToRemove.length > 0) {
-          console.log('👥 Step 3: Member validation...');
+          console.log('👥 Validating member IDs...');
           console.log('👥 Members to remove:', membersToRemove);
-          console.log('👥 Available band members:', bandData.members);
+          console.log('👥 Available members:', bandData.members);
           
-          // Check if member IDs exist in the band
-          const validMembers = bandData.members || [];
-          const memberIds = validMembers.map(m => m.id);
-          console.log('👥 Valid member IDs in band:', memberIds);
+          const validMemberIds = bandData.members?.map(m => m.id) || [];
+          console.log('👥 Valid member IDs:', validMemberIds);
           
-          const invalidMembers = membersToRemove.filter(id => !memberIds.includes(id));
+          const invalidMembers = membersToRemove.filter(id => !validMemberIds.includes(id));
           if (invalidMembers.length > 0) {
             console.error('❌ INVALID MEMBER IDs:', invalidMembers);
             alert(`Invalid member IDs: ${invalidMembers.join(', ')}. These members are not in the band.`);
             return;
           }
+          
           console.log('✅ Member ID validation passed');
         }
         
-        console.log('🧪 === COMPREHENSIVE DEBUGGING END ===');
-      } catch (authError) {
-        console.error('❌ === AUTHENTICATION FAILURE ===');
-        console.error('❌ Status:', authError.response?.status);
-        console.error('❌ Data:', authError.response?.data);
-        console.error('❌ Headers sent:', headers);
+        console.log('🔍 === OWNERSHIP CHECK COMPLETE ===');
+      } catch (error) {
+        console.error('❌ === OWNERSHIP CHECK FAILED ===');
+        console.error('❌ Error:', error.response?.status, error.response?.data);
         
-        if (authError.response?.status === 403) {
-          alert('Access forbidden. You may not have permission to access this band or your authentication has expired.');
-        } else if (authError.response?.status === 401) {
+        if (error.response?.status === 403) {
+          alert('Access forbidden. You do not have permission to access this band.');
+        } else if (error.response?.status === 404) {
+          alert('Band not found. It may have been deleted.');
+        } else if (error.response?.status === 401) {
           alert('Authentication failed. Please log in again.');
         } else {
-          alert(`Authentication error: ${authError.response?.status || 'Unknown error'}`);
+          alert(`Error checking band ownership: ${error.response?.status || 'Unknown error'}`);
         }
         return;
       }
