@@ -379,19 +379,19 @@ export const ManageBandModal = ({
                             {member.profile_picture ? (
                               <img 
                                 src={member.profile_picture} 
-                                alt={member.username}
+                                alt={member.username || member.full_name || member.email || 'Member'}
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                 }}
                               />
                             ) : (
                               <div className="avatar-placeholder">
-                                {member.username.charAt(0).toUpperCase()}
+                                {(member.username || member.full_name || member.email || 'M').charAt(0).toUpperCase()}
                               </div>
                             )}
                           </div>
                           <div className="member-details">
-                            <span className="member-username">{member.username}</span>
+                            <span className="member-username">{member.username || member.full_name || member.email || 'Unknown Member'}</span>
                             {member.email && <span className="member-email">{member.email}</span>}
                           </div>
                         </div>
