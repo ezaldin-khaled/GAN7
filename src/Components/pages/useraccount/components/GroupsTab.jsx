@@ -475,15 +475,15 @@ const GroupsTab = ({ userData }) => {
   
   const handleManageBand = (band) => {
     setSelectedBand(band);
-          setEditBand({
-        name: band.name,
-        description: band.description,
+    setEditBand({
+      name: band.name,
+      description: band.description,
         genre: band.band_type || band.genre || '',
-        location: band.location || '',
-        contact_email: band.contact_email || '',
+      location: band.location || '',
+      contact_email: band.contact_email || '',
         contact_phone: band.contact_phone || '',
-        website: band.website || ''
-      });
+      website: band.website || ''
+    });
     // Reset member management arrays when opening modal
     setMembersToUpdate([]);
     setMembersToRemove([]);
@@ -597,13 +597,14 @@ const GroupsTab = ({ userData }) => {
         'Content-Type': 'multipart/form-data'
       };
       
+      // Check if user is talent user (from login response)
       const isTalent = localStorage.getItem('is_talent') === 'true';
-      if (isTalent) {
-        headers['is-talent'] = 'true';
-      }
+      console.log('🔑 Is talent user from localStorage:', isTalent);
+      
+      // Always add is-talent header for band operations
+      headers['is-talent'] = 'true';
       
       // Debug: Log authentication info
-      console.log('🔑 Is talent user:', isTalent);
       console.log('🔑 Final headers:', headers);
       
       // Debug: Log the actual request being sent
@@ -705,7 +706,7 @@ const GroupsTab = ({ userData }) => {
       } else if (membersToRemove.length > 0) {
         setSuccess(`Band updated successfully! ${membersToRemove.length} member(s) removed.`);
       } else {
-        setSuccess('Band updated successfully!');
+      setSuccess('Band updated successfully!');
       }
       
       handleCloseManageModal();
@@ -740,23 +741,23 @@ const GroupsTab = ({ userData }) => {
           errorMessage = 'Band not found. It may have been deleted or you may not have access to it.';
         } else {
           // Handle other error types
-          if (typeof err.response.data === 'string') {
-            errorMessage = err.response.data;
-          } else if (typeof err.response.data === 'object') {
-            if (err.response.data.detail) {
-              errorMessage = err.response.data.detail;
-            } else if (err.response.data.message) {
-              errorMessage = err.response.data.message;
-            } else if (err.response.data.error) {
-              errorMessage = err.response.data.error;
-            } else {
-              // Extract all error messages from the object
-              const errorMessages = [];
-              Object.entries(err.response.data).forEach(([key, value]) => {
-                const valueStr = Array.isArray(value) ? value.join(', ') : value;
-                errorMessages.push(`${key}: ${valueStr}`);
-              });
-              errorMessage = errorMessages.join('\n');
+        if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        } else if (typeof err.response.data === 'object') {
+          if (err.response.data.detail) {
+            errorMessage = err.response.data.detail;
+          } else if (err.response.data.message) {
+            errorMessage = err.response.data.message;
+          } else if (err.response.data.error) {
+            errorMessage = err.response.data.error;
+          } else {
+            // Extract all error messages from the object
+            const errorMessages = [];
+            Object.entries(err.response.data).forEach(([key, value]) => {
+              const valueStr = Array.isArray(value) ? value.join(', ') : value;
+              errorMessages.push(`${key}: ${valueStr}`);
+            });
+            errorMessage = errorMessages.join('\n');
             }
           }
         }
