@@ -91,6 +91,18 @@ export const CreateBandModal = ({
           </div>
           
           <div className="form-group">
+            <label htmlFor="contact_phone">Contact Phone</label>
+            <input
+              type="tel"
+              id="contact_phone"
+              name="contact_phone"
+              value={newBand.contact_phone}
+              onChange={handleInputChange}
+              placeholder="+963123456789"
+            />
+          </div>
+          
+          <div className="form-group">
             <label htmlFor="website">Website</label>
             <input
               type="url"

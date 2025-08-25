@@ -89,6 +89,8 @@ const GroupsTab = ({ userData }) => {
       });
       
       console.log('Bands response:', response.data);
+      console.log('Response data type:', typeof response.data);
+      console.log('Response data keys:', Object.keys(response.data));
       
       // Check if the response includes subscription_status (new combined format)
       if (response.data.subscription_status) {
@@ -305,15 +307,31 @@ const GroupsTab = ({ userData }) => {
       });
       
       console.log('Band created successfully:', response.data);
+      console.log('Band creation response type:', typeof response.data);
+      console.log('Band creation response keys:', Object.keys(response.data));
       
       // Check if the response indicates success
-      if (response.data.success) {
+      if (response.data.success || response.data.id) {
         setSuccess(response.data.message || 'Band created successfully!');
+        handleCloseModal();
+        
+        // If the response contains the band data, add it to the state immediately
+        if (response.data.id && response.data.name) {
+          const newBandData = {
+            ...response.data,
+            is_creator: true,
+            members_count: 1
+          };
+          setBands(prevBands => [...prevBands, newBandData]);
+        }
+        
+        // Force refresh to get the updated bands list
+        setTimeout(() => {
+          fetchBands(true);
+        }, 1000); // Increased delay to ensure the backend has processed the creation
       } else {
         throw new Error(response.data.error || 'Failed to create band');
       }
-      handleCloseModal();
-      fetchBands();
     } catch (err) {
       console.error('Error creating band:', err);
       
@@ -972,159 +990,17 @@ const GroupsTab = ({ userData }) => {
       </div>
 
       {/* Create Band Modal */}
-      {showCreateModal && (
-        <div className="modal-overlay">
-          <div className="modal-content mod-tsxt">
-            <div className="modal-header mod-tsxt">
-              <h2>Create New Band</h2>
-              {/* <button className="close-modal" onClick={handleCloseModal}>
-                <FaTimes />
-              </button> */}
-            </div>
-            
-            {/* Remove error message display */}
-            
-            <form onSubmit={handleSubmitBand}>
-              <div className="form-group">
-                <label htmlFor="name">Band Name *</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={newBand.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter band name"
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="description">Description *</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={newBand.description}
-                  onChange={handleInputChange}
-                  placeholder="Tell us about your band"
-                  required
-                />
-              </div>
-              
-                             <div className="form-group">
-                 <label htmlFor="genre">Band Type</label>
-                 <select
-                   id="genre"
-                   name="genre"
-                   value={newBand.genre}
-                   onChange={handleInputChange}
-                   className="form-select"
-                 >
-                   <option value="">Select a band type</option>
-                   {BAND_TYPES.map(type => (
-                     <option key={type.value} value={type.value}>
-                       {type.label}
-                     </option>
-                   ))}
-                 </select>
-               </div>
-              
-              <div className="form-group">
-                <label htmlFor="location">Location</label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={newBand.location}
-                  onChange={handleInputChange}
-                  placeholder="City, Country"
-                />
-              </div>
-              
-                             <div className="form-group">
-                 <label htmlFor="contact_email">Contact Email</label>
-                 <input
-                   type="email"
-                   id="contact_email"
-                   name="contact_email"
-                   value={newBand.contact_email}
-                   onChange={handleInputChange}
-                   placeholder="email@example.com"
-                 />
-               </div>
-               
-               <div className="form-group">
-                 <label htmlFor="contact_phone">Contact Phone</label>
-                 <input
-                   type="tel"
-                   id="contact_phone"
-                   name="contact_phone"
-                   value={newBand.contact_phone}
-                   onChange={handleInputChange}
-                   placeholder="+963123456789"
-                 />
-               </div>
-              
-              <div className="form-group">
-                <label htmlFor="website">Website</label>
-                <input
-                  type="url"
-                  id="website"
-                  name="website"
-                  value={newBand.website}
-                  onChange={handleInputChange}
-                  placeholder="https://yourwebsite.com"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="profile_picture">Band Image</label>
-                <div className="file-upload-container">
-                  <input
-                    type="file"
-                    id="profile_picture"
-                    name="profile_picture"
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                    className="file-input"
-                  />
-                  <label htmlFor="profile_picture" className="file-upload-label mod-tsxt">
-                    Choose Image
-                  </label>
-                  <span className="file-name">
-                    {uploadedImage ? uploadedImage.name : 'No file chosen'}
-                  </span>
-                </div>
-                {uploadedImage && (
-                  <div className="image-preview">
-                    <img src={URL.createObjectURL(uploadedImage)} alt="Preview" />
-                    <button 
-                      type="button" 
-                      className="remove-image" 
-                      onClick={() => setUploadedImage(null)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-              </div>
-              
-              <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                  Cancel
-                </button>
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? (
-                    <>
-                      <span className="spinner-small"></span>
-                      Creating...
-                    </>
-                  ) : 'Create Band'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <CreateBandModal
+        showCreateModal={showCreateModal}
+        handleCloseModal={handleCloseModal}
+        newBand={newBand}
+        handleInputChange={handleInputChange}
+        handleImageUpload={handleImageUpload}
+        uploadedImage={uploadedImage}
+        loading={loading}
+        handleSubmitBand={handleSubmitBand}
+        setUploadedImage={setUploadedImage}
+      />
 
       {/* Add ManageBandModal component here */}
       <ManageBandModal
@@ -1174,6 +1050,7 @@ const GroupsTab = ({ userData }) => {
           </div>
           
           <div className="card-content">
+            {console.log('Code generator - bands check:', bands, 'length:', bands?.length)}
             {bands && bands.length > 0 ? (
               <>
                 <div className="band-selector">
@@ -1254,7 +1131,12 @@ const GroupsTab = ({ userData }) => {
       <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', fontSize: '12px'}}>
         Debug: Bands count: {bands ? bands.length : 0} | 
         Has subscription: {hasBandSubscription ? 'Yes' : 'No'} | 
-        Selected band: {selectedBandForCode || 'None'}
+        Selected band: {selectedBandForCode || 'None'} |
+        Loading: {loading ? 'Yes' : 'No'} |
+        Subscription loading: {subscriptionLoading ? 'Yes' : 'No'}
+        {bands && bands.length > 0 && (
+          <div>Bands: {bands.map(b => b.name).join(', ')}</div>
+        )}
       </div>
 
       {/* Band Score Display Component */}
