@@ -963,12 +963,12 @@ const GroupsTab = ({ userData }) => {
                 </span>
                 </div>
               </div>
-              <p className="status-message">{subscriptionStatus.message}</p>
+              <p className="status-message">{String(subscriptionStatus.message || '')}</p>
               {subscriptionStatus.subscription && (
                 <div className="subscription-details">
-                  <p><strong>Plan:</strong> {subscriptionStatus.subscription.plan_name}</p>
-                  <p><strong>Status:</strong> {subscriptionStatus.subscription.status}</p>
-                  <p><strong>Expires:</strong> {new Date(subscriptionStatus.subscription.current_period_end).toLocaleDateString()}</p>
+                  <p><strong>Plan:</strong> {String(subscriptionStatus.subscription.plan_name || '')}</p>
+                  <p><strong>Status:</strong> {String(subscriptionStatus.subscription.status || '')}</p>
+                  <p><strong>Expires:</strong> {subscriptionStatus.subscription.current_period_end ? new Date(subscriptionStatus.subscription.current_period_end).toLocaleDateString() : 'N/A'}</p>
                 </div>
               )}
             </div>
@@ -1000,12 +1000,12 @@ const GroupsTab = ({ userData }) => {
                   )}
                 </div>
                 <div className="band-info">
-                  <h3>{band.name}</h3>
-                  <p>{band.description}</p>
-                  {band.band_type && <p className="band-genre">{band.band_type}</p>}
-                  {band.location && <p className="band-location">{band.location}</p>}
-                  <p className="band-members">Members: {band.members_count || 0}</p>
-                  <p className="band-score">Score: {band.profile_score || 0}</p>
+                  <h3>{String(band.name || '')}</h3>
+                  <p>{String(band.description || '')}</p>
+                  {band.band_type && <p className="band-genre">{String(band.band_type)}</p>}
+                  {band.location && <p className="band-location">{String(band.location)}</p>}
+                  <p className="band-members">Members: {Number(band.members_count) || 0}</p>
+                  <p className="band-score">Score: {Number(band.profile_score) || 0}</p>
                 </div>
                 <div className="band-actions">
                   <button 
@@ -1069,9 +1069,9 @@ const GroupsTab = ({ userData }) => {
                     )}
                   </div>
                   <div className="media-info">
-                    <h3>{mediaItem.name || 'Untitled'}</h3>
-                    <p>{mediaItem.description || 'No description available'}</p>
-                    <p className="media-type">{mediaItem.file_type || 'Unknown type'}</p>
+                    <h3>{String(mediaItem.name || 'Untitled')}</h3>
+                    <p>{String(mediaItem.description || 'No description available')}</p>
+                    <p className="media-type">{String(mediaItem.file_type || 'Unknown type')}</p>
                   </div>
                   <div className="media-actions">
                     <a href={mediaItem.file_url} target="_blank" rel="noopener noreferrer" className="view-media-btn">
@@ -1234,8 +1234,8 @@ const GroupsTab = ({ userData }) => {
         </div>
       )}
 
-      {/* Debug info - remove this later */}
-      <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', fontSize: '12px'}}>
+      {/* Debug info - temporarily disabled to fix React error */}
+      {/* <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', fontSize: '12px'}}>
         Debug: Bands count: {bands ? bands.length : 0} | 
         Has subscription: {hasBandSubscription ? 'Yes' : 'No'} | 
         Selected band: {selectedBandForCode || 'None'} |
@@ -1244,7 +1244,7 @@ const GroupsTab = ({ userData }) => {
         {bands && bands.length > 0 && (
           <div>Bands: {bands.map(b => b.name).join(', ')}</div>
         )}
-      </div>
+      </div> */}
 
       {/* Band Score Display Component */}
       <BandScoreDisplay />
