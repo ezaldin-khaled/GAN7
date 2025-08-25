@@ -31,6 +31,7 @@ const GroupsTab = ({ userData }) => {
     genre: '',
     location: '',
     contact_email: '',
+    contact_phone: '',
     website: ''
   });
   const [editImage, setEditImage] = useState(null);
@@ -474,14 +475,15 @@ const GroupsTab = ({ userData }) => {
   
   const handleManageBand = (band) => {
     setSelectedBand(band);
-    setEditBand({
-      name: band.name,
-      description: band.description,
-      genre: band.genre || '',
-      location: band.location || '',
-      contact_email: band.contact_email || '',
-      website: band.website || ''
-    });
+          setEditBand({
+        name: band.name,
+        description: band.description,
+        genre: band.band_type || band.genre || '',
+        location: band.location || '',
+        contact_email: band.contact_email || '',
+        contact_phone: band.contact_phone || '',
+        website: band.website || ''
+      });
     // Reset member management arrays when opening modal
     setMembersToUpdate([]);
     setMembersToRemove([]);
@@ -539,6 +541,9 @@ const GroupsTab = ({ userData }) => {
     
     if (!selectedBand) return;
     
+    console.log('🔄 Updating band:', selectedBand);
+    console.log('🔄 Edit band data:', editBand);
+    
     try {
       setLoading(true);
       
@@ -551,8 +556,10 @@ const GroupsTab = ({ userData }) => {
       const formData = new FormData();
       formData.append('name', editBand.name);
       formData.append('description', editBand.description);
+      formData.append('band_type', editBand.genre || selectedBand.band_type || 'musical');
       if (editBand.location) formData.append('location', editBand.location);
       if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
+      if (editBand.contact_phone) formData.append('contact_phone', editBand.contact_phone);
       if (editBand.website) formData.append('website', editBand.website);
       if (editImage) formData.append('profile_picture', editImage);
       
@@ -565,6 +572,12 @@ const GroupsTab = ({ userData }) => {
       if (membersToRemove.length > 0) {
         console.log('Sending members to remove:', membersToRemove);
         formData.append('members_to_remove', JSON.stringify(membersToRemove));
+      }
+      
+      // Debug: Log all form data being sent
+      console.log('🔄 Band update - FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
       }
       
       const headers = {
@@ -628,6 +641,7 @@ const GroupsTab = ({ userData }) => {
       genre: '',
       location: '',
       contact_email: '',
+      contact_phone: '',
       website: ''
     });
     setEditImage(null);
