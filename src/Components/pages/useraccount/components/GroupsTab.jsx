@@ -53,6 +53,7 @@ const GroupsTab = ({ userData }) => {
   const [bandScore, setBandScore] = useState(null);
 
   const fetchBands = async (forceRefresh = false) => {
+    console.log('🔄 fetchBands called with forceRefresh:', forceRefresh);
     try {
       setLoading(true);
       setSubscriptionLoading(true);
@@ -237,6 +238,8 @@ const GroupsTab = ({ userData }) => {
   };
 
   useEffect(() => {
+    console.log('🚀 GroupsTab useEffect triggered');
+    console.log('🚀 userData:', userData);
     // Check if user just completed a subscription
     const pendingSubscription = sessionStorage.getItem('pendingSubscription');
     const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
