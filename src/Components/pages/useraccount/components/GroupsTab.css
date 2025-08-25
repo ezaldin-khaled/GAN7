@@ -1128,6 +1128,16 @@ form {
   background-color: #d62b39;
 }
 
+.remove-member-btn.marked-for-removal {
+  background-color: #ff6b35;
+  color: white;
+  cursor: not-allowed;
+}
+
+.remove-member-btn.marked-for-removal:hover {
+  background-color: #ff6b35;
+}
+
 .creator-badge {
   background-color: #2a9d8f;
   color: white;

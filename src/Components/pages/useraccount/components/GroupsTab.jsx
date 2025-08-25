@@ -482,6 +482,9 @@ const GroupsTab = ({ userData }) => {
       contact_email: band.contact_email || '',
       website: band.website || ''
     });
+    // Reset member management arrays when opening modal
+    setMembersToUpdate([]);
+    setMembersToRemove([]);
     setShowManageModal(true);
   };
   
@@ -512,8 +515,12 @@ const GroupsTab = ({ userData }) => {
   
   const handleRemoveMember = (memberId) => {
     // Add to membersToRemove array if not already there
+    // Note: memberId should be the BandMembership ID, not the user ID
     if (!membersToRemove.includes(memberId)) {
       setMembersToRemove([...membersToRemove, memberId]);
+      console.log(`Member ${memberId} marked for removal. Members to remove:`, [...membersToRemove, memberId]);
+    } else {
+      console.log(`Member ${memberId} is already marked for removal`);
     }
   };
   
@@ -556,6 +563,7 @@ const GroupsTab = ({ userData }) => {
       
       // Add members to remove if any
       if (membersToRemove.length > 0) {
+        console.log('Sending members to remove:', membersToRemove);
         formData.append('members_to_remove', JSON.stringify(membersToRemove));
       }
       
@@ -1123,6 +1131,7 @@ const GroupsTab = ({ userData }) => {
         setEditImage={setEditImage}
         handleMemberRoleChange={handleMemberRoleChange}
         handleRemoveMember={handleRemoveMember}
+        membersToRemove={membersToRemove}
       />
 
       {/* Invitation code input section */}

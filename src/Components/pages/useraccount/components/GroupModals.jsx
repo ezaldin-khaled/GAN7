@@ -177,7 +177,8 @@ export const ManageBandModal = ({
   handleUpdateBand,
   setEditImage,
   handleMemberRoleChange,
-  handleRemoveMember
+  handleRemoveMember,
+  membersToRemove
 }) => {
   if (!showManageModal || !selectedBand) return null;
   
@@ -420,11 +421,11 @@ export const ManageBandModal = ({
                           {member.position !== "Creator" && (
                             <button 
                               type="button"
-                              className="remove-member-btn"
+                              className={`remove-member-btn ${membersToRemove?.includes(member.id) ? 'marked-for-removal' : ''}`}
                               onClick={() => handleRemoveMember(member.id)}
                               disabled={loading}
                             >
-                              Remove
+                              {membersToRemove?.includes(member.id) ? 'Marked for Removal' : 'Remove'}
                             </button>
                           )}
                         </div>
