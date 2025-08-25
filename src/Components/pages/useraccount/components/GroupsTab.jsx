@@ -161,15 +161,10 @@ const GroupsTab = ({ userData }) => {
         // Set only the user's bands, not all bands
         console.log('Setting bands state - myBands:', myBands.length, 'otherBands:', otherBands.length);
         
-        // Temporary fallback: if no user bands found but bands exist, show all bands for debugging
-        if (myBands.length === 0 && bands.length > 0) {
-          console.log('⚠️ TEMPORARY DEBUG: No user bands found, showing all bands for debugging');
-          setBands(bands);
-          setJoinedBands([]);
-        } else {
-          setBands(myBands);
-          setJoinedBands(otherBands);
-        }
+        // TEMPORARY DEBUG: Always show all bands to see what's being returned
+        console.log('⚠️ TEMPORARY DEBUG: Showing all bands for debugging purposes');
+        setBands(bands);
+        setJoinedBands([]);
         
         // Set band score if available
         if (response.data.band_score) {
