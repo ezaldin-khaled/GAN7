@@ -64,7 +64,14 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      const response = await axiosInstance.get(`/api/bands/${bandId}/`, { headers });
+      // Add timeout to prevent hanging requests
+      const response = await Promise.race([
+        axiosInstance.get(`/api/bands/${bandId}/`, { headers }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 5000)
+        )
+      ]);
+      
       return response.data;
     } catch (err) {
       console.error(`Error fetching band details for ${bandId}:`, err);
@@ -136,10 +143,14 @@ const GroupsTab = ({ userData }) => {
         // Fetch detailed information for each band to get accurate creator data
         const bandsWithDetails = await Promise.all(
           bands.map(async (band) => {
-            const detailedBand = await fetchBandDetails(band.id);
-            if (detailedBand) {
-              console.log(`Detailed band info for ${band.name}:`, detailedBand);
-              return { ...band, ...detailedBand };
+            try {
+              const detailedBand = await fetchBandDetails(band.id);
+              if (detailedBand) {
+                console.log(`Detailed band info for ${band.name}:`, detailedBand);
+                return { ...band, ...detailedBand };
+              }
+            } catch (error) {
+              console.warn(`Failed to fetch detailed info for band ${band.name}, using basic data`);
             }
             return band;
           })
@@ -193,9 +204,31 @@ const GroupsTab = ({ userData }) => {
         console.log('Using old format - Current userData:', userData);
         console.log('All bands from API (old format):', response.data);
         
-                 response.data.forEach(band => {
-           console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email}`);
-           if (band.creator_name === userData?.username || band.creator_name === userData?.email) {
+        // For old format, also fetch detailed information for each band
+        const bandsWithDetails = await Promise.all(
+          response.data.map(async (band) => {
+            try {
+              const detailedBand = await fetchBandDetails(band.id);
+              if (detailedBand) {
+                console.log(`Detailed band info for ${band.name} (old format):`, detailedBand);
+                return { ...band, ...detailedBand };
+              }
+            } catch (error) {
+              console.warn(`Failed to fetch detailed info for band ${band.name} (old format), using basic data`);
+            }
+            return band;
+          })
+        );
+        
+        bandsWithDetails.forEach(band => {
+          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.username || userData?.email}`);
+          
+          // Check if user is creator using multiple methods
+          const isCreatorByFlag = band.is_creator === true;
+          const isCreatorByName = band.creator_name === userData?.username || band.creator_name === userData?.email;
+          const isCreatorById = band.creator_id === userData?.id;
+          
+          if (isCreatorByFlag || isCreatorByName || isCreatorById) {
             console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
