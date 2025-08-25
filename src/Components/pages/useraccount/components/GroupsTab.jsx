@@ -606,29 +606,85 @@ const GroupsTab = ({ userData }) => {
       console.log('🔑 Is talent user:', isTalent);
       console.log('🔑 Final headers:', headers);
       
-      // Debug: Log request data
-      console.log('🔄 Band update - Request data:', requestData);
-      console.log('🔄 Band update - Headers:', headers);
+      // Debug: Log the actual request being sent
+      console.log('📤 === REQUEST DETAILS ===');
+      console.log('📤 URL:', `/api/bands/${selectedBand.id}/update/`);
+      console.log('📤 Method: PUT');
+      console.log('📤 Headers:', headers);
       
-      // Test authentication and check permissions first
+      if (requestData instanceof FormData) {
+        console.log('📤 Content-Type: multipart/form-data');
+        console.log('📤 FormData contents:');
+        for (let [key, value] of requestData.entries()) {
+          console.log(`  ${key}:`, value);
+        }
+      } else {
+        console.log('📤 Content-Type: application/json');
+        console.log('📤 Request body:', requestData);
+      }
+      
+      // Comprehensive debugging and validation
       try {
-        console.log('🧪 Testing authentication and permissions...');
+        console.log('🧪 === COMPREHENSIVE DEBUGGING START ===');
+        console.log('🎯 Band ID:', selectedBand.id);
+        console.log('🎯 User token exists:', !!token);
+        console.log('🎯 Is talent user:', isTalent);
+        
+        // Step 1: Test authentication and get band data
+        console.log('📡 Step 1: Testing authentication...');
         const authTest = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers });
         console.log('✅ Authentication test passed:', authTest.status);
         
-        // Check if user is the band creator
+        // Step 2: Check band ownership and permissions
         const bandData = authTest.data;
-        console.log('🎭 Band data:', bandData);
-        console.log('🎭 Is creator:', bandData.is_creator);
-        console.log('🎭 User role:', bandData.user_role);
+        console.log('📋 Step 2: Band ownership check...');
+        console.log('📋 Band data:', bandData);
+        console.log('📋 Is creator:', bandData.is_creator);
+        console.log('📋 User role:', bandData.user_role);
+        console.log('📋 Band name:', bandData.name);
         
+        // Step 3: Validate permissions
         if (!bandData.is_creator && bandData.user_role !== 'admin') {
-          alert('Only the band creator or admin can update this band.');
+          console.error('❌ PERMISSION DENIED: User is not creator or admin');
+          alert(`Permission denied. You are not the creator or admin of "${bandData.name}". Only the band creator or admin can update this band.`);
           return;
         }
+        console.log('✅ Permission check passed');
+        
+        // Step 4: Log member data for validation
+        if (membersToRemove.length > 0) {
+          console.log('👥 Step 3: Member validation...');
+          console.log('👥 Members to remove:', membersToRemove);
+          console.log('👥 Available band members:', bandData.members);
+          
+          // Check if member IDs exist in the band
+          const validMembers = bandData.members || [];
+          const memberIds = validMembers.map(m => m.id);
+          console.log('👥 Valid member IDs in band:', memberIds);
+          
+          const invalidMembers = membersToRemove.filter(id => !memberIds.includes(id));
+          if (invalidMembers.length > 0) {
+            console.error('❌ INVALID MEMBER IDs:', invalidMembers);
+            alert(`Invalid member IDs: ${invalidMembers.join(', ')}. These members are not in the band.`);
+            return;
+          }
+          console.log('✅ Member ID validation passed');
+        }
+        
+        console.log('🧪 === COMPREHENSIVE DEBUGGING END ===');
       } catch (authError) {
-        console.error('❌ Authentication test failed:', authError.response?.status, authError.response?.data);
-        alert('Authentication failed. Please log in again.');
+        console.error('❌ === AUTHENTICATION FAILURE ===');
+        console.error('❌ Status:', authError.response?.status);
+        console.error('❌ Data:', authError.response?.data);
+        console.error('❌ Headers sent:', headers);
+        
+        if (authError.response?.status === 403) {
+          alert('Access forbidden. You may not have permission to access this band or your authentication has expired.');
+        } else if (authError.response?.status === 401) {
+          alert('Authentication failed. Please log in again.');
+        } else {
+          alert(`Authentication error: ${authError.response?.status || 'Unknown error'}`);
+        }
         return;
       }
       
