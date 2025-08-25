@@ -551,8 +551,14 @@ const GroupsTab = ({ userData }) => {
       const token = localStorage.getItem('access');
       if (!token) {
         console.error('No authentication token found');
+        alert('Authentication token not found. Please log in again.');
         return;
       }
+      
+      // Debug: Log token info
+      console.log('🔑 Token exists:', !!token);
+      console.log('🔑 Token length:', token ? token.length : 0);
+      console.log('🔑 Token starts with Bearer:', token ? token.startsWith('Bearer ') : false);
       
       // Always use FormData as the API expects multipart/form-data
       const formData = new FormData();
@@ -582,13 +588,29 @@ const GroupsTab = ({ userData }) => {
         'Content-Type': 'multipart/form-data'
       };
       
-      if (localStorage.getItem('is_talent') === 'true') {
+      const isTalent = localStorage.getItem('is_talent') === 'true';
+      if (isTalent) {
         headers['is-talent'] = 'true';
       }
+      
+      // Debug: Log authentication info
+      console.log('🔑 Is talent user:', isTalent);
+      console.log('🔑 Final headers:', headers);
       
       // Debug: Log request data
       console.log('🔄 Band update - Request data:', requestData);
       console.log('🔄 Band update - Headers:', headers);
+      
+      // Test authentication first with a simple GET request
+      try {
+        console.log('🧪 Testing authentication...');
+        const authTest = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers });
+        console.log('✅ Authentication test passed:', authTest.status);
+      } catch (authError) {
+        console.error('❌ Authentication test failed:', authError.response?.status, authError.response?.data);
+        alert('Authentication failed. Please log in again.');
+        return;
+      }
       
       await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, requestData, { headers });
       
