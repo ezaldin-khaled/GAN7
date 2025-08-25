@@ -1145,7 +1145,7 @@ const GroupsTab = ({ userData }) => {
           </div>
           
           <div className="card-content">
-            {console.log('Code generator - bands check:', bands, 'length:', bands?.length)}
+            {(() => { console.log('Code generator - bands check:', bands, 'length:', bands?.length); return null; })()}
             {bands && bands.length > 0 ? (
               <>
                 <div className="band-selector">
