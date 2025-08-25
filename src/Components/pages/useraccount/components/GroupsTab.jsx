@@ -128,9 +128,10 @@ const GroupsTab = ({ userData }) => {
         console.log('My bands:', myBands);
         console.log('Other bands:', otherBands);
         
-        // Use the bands directly since the backend now properly identifies ownership
-        setBands(bands);
-        setJoinedBands([]);
+        // Set only the user's bands, not all bands
+        console.log('Setting bands state - myBands:', myBands.length, 'otherBands:', otherBands.length);
+        setBands(myBands);
+        setJoinedBands(otherBands);
         
         // Set band score if available
         if (response.data.band_score) {
@@ -320,15 +321,29 @@ const GroupsTab = ({ userData }) => {
           const newBandData = {
             ...response.data,
             is_creator: true,
-            members_count: 1
+            members_count: 1,
+            creator_name: userData?.username || 'Current User'
           };
-          setBands(prevBands => [...prevBands, newBandData]);
+          console.log('Adding new band to state:', newBandData);
+          setBands(prevBands => {
+            console.log('Previous bands:', prevBands);
+            const updatedBands = [...prevBands, newBandData];
+            console.log('Updated bands:', updatedBands);
+            return updatedBands;
+          });
+        } else {
+          // If no band data in response but creation was successful, force refresh
+          console.log('No band data in response, forcing refresh...');
+          setTimeout(() => {
+            fetchBands(true);
+          }, 1000);
         }
         
         // Force refresh to get the updated bands list
         setTimeout(() => {
+          console.log('Forcing refresh after band creation...');
           fetchBands(true);
-        }, 1000); // Increased delay to ensure the backend has processed the creation
+        }, 2000); // Increased delay to ensure the backend has processed the creation
       } else {
         throw new Error(response.data.error || 'Failed to create band');
       }
