@@ -1708,51 +1708,35 @@ const GroupsTab = ({ userData }) => {
       {/* Invitation code input section */}
       {/* Join Band Section for Unsubscribed Users */}
       {!hasBandSubscription && (
-        <div className="join-band-section" style={{
-          background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
-          padding: '24px',
-          borderRadius: '16px',
-          marginTop: '32px',
-          border: '1px solid rgba(130, 54, 252, 0.1)',
-          boxShadow: '0 4px 20px rgba(130, 54, 252, 0.08)'
-        }}>
-          <h2 style={{ color: '#1a1a1a', marginBottom: '16px' }}>🎵 Join Another Band</h2>
-          <p style={{ color: '#666', marginBottom: '20px' }}>
-            Have an invitation code? You can join bands even without a subscription!
-          </p>
-          <div className="invitation-form" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <input 
-              type="text" 
-              placeholder="Enter invitation code" 
-              value={invitationCode} 
-              onChange={(e) => setInvitationCode(e.target.value)}
-              className="invitation-input"
-              style={{
-                flex: 1,
-                padding: '12px 16px',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                fontSize: '16px'
-              }}
-            />
-            <button 
-              className="join-band-btn" 
-              onClick={handleJoinWithCode}
-              disabled={loading || !invitationCode.trim()}
-              style={{
-                padding: '12px 24px',
-                background: 'linear-gradient(135deg, #28a745, #20c997)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: '600',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              Join Band
-            </button>
+        <div className="join-band-section prominent-join-section">
+          <h2>🎵 Join Another Band</h2>
+          <p>Have an invitation code? You can join bands even without a subscription!</p>
+          <div className="join-form-container">
+            <div className="invitation-form">
+              <input 
+                type="text" 
+                placeholder="Enter your invitation code here..." 
+                value={invitationCode} 
+                onChange={(e) => setInvitationCode(e.target.value)}
+                className="invitation-input"
+              />
+              <button 
+                className="join-band-btn" 
+                onClick={handleJoinWithCode}
+                disabled={loading || !invitationCode.trim()}
+              >
+                {loading ? 'Joining...' : 'Join Band'}
+              </button>
+            </div>
+            {invitationCode && !invitationCode.trim() && (
+              <p style={{ 
+                color: '#f44336', 
+                marginTop: '8px', 
+                fontSize: '14px' 
+              }}>
+                Please enter a valid invitation code
+              </p>
+            )}
           </div>
         </div>
       )}
