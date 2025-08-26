@@ -74,22 +74,40 @@ const GroupsTab = ({ userData }) => {
         iat: new Date(tokenPayload.iat * 1000).toISOString()
       });
 
-      // Get current user info from API
-      const headers = {
-        'Authorization': `Bearer ${token}`
-      };
-      
-      if (localStorage.getItem('is_talent') === 'true') {
-        headers['is-talent'] = 'true';
+      // Use existing userData prop (should already be available)
+      if (userData) {
+        console.log('👤 Using userData prop:', userData);
+        setCurrentUser(userData);
+        setAuthError(null);
+        return true;
       }
 
-      const response = await axiosInstance.get('/api/auth/user/', { headers });
-      const userInfo = response.data;
+      // Fallback: Get user data from localStorage
+      const storedUserData = localStorage.getItem('user');
+      if (storedUserData) {
+        try {
+          const parsedUserData = JSON.parse(storedUserData);
+          console.log('👤 Using stored userData from localStorage:', parsedUserData);
+          setCurrentUser(parsedUserData);
+          setAuthError(null);
+          return true;
+        } catch (parseError) {
+          console.error('❌ Error parsing stored user data:', parseError);
+        }
+      }
+
+      // If no user data available, create minimal user object from token
+      const minimalUser = {
+        id: tokenPayload.user_id || tokenPayload.userId || tokenPayload.id,
+        username: tokenPayload.username || 'unknown',
+        email: tokenPayload.email || 'unknown@example.com'
+      };
       
-      console.log('👤 Current user info:', userInfo);
-      setCurrentUser(userInfo);
+      console.log('👤 Using minimal user data from token:', minimalUser);
+      setCurrentUser(minimalUser);
       setAuthError(null);
       return true;
+      
     } catch (error) {
       console.error('❌ Authentication validation failed:', error);
       setAuthError('Authentication failed. Please log in again.');
