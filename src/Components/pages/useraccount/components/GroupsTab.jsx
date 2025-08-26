@@ -1294,14 +1294,19 @@ const GroupsTab = ({ userData }) => {
 
   // Show subscription overlay only if user doesn't have band subscription AND has no joined bands
   // Allow unsubscribed users to join bands but require subscription for creating bands
-  if (!hasBandSubscription && (!joinedBands || joinedBands.length === 0)) {
-    console.log('🔒 Groups tab locked - Debug info:');
-    console.log('- hasBandSubscription:', hasBandSubscription);
-    console.log('- subscriptionStatus:', subscriptionStatus);
-    console.log('- userData:', userData);
-    console.log('- localStorage is_talent:', localStorage.getItem('is_talent'));
-    console.log('- localStorage access token exists:', !!localStorage.getItem('access'));
-    console.log('- joinedBands:', joinedBands);
+  const hasJoinedBands = joinedBands && joinedBands.length > 0;
+  const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands;
+  
+  console.log('🔍 Access Control Debug:');
+  console.log('- hasBandSubscription:', hasBandSubscription);
+  console.log('- hasJoinedBands:', hasJoinedBands);
+  console.log('- joinedBands array:', joinedBands);
+  console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
+  console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
+  console.log('- subscriptionStatus:', subscriptionStatus);
+  
+  if (shouldShowSubscriptionOverlay) {
+    console.log('🔒 Groups tab locked - showing subscription overlay');
     
     return (
       <div className="content-section">
@@ -1309,6 +1314,8 @@ const GroupsTab = ({ userData }) => {
       </div>
     );
   }
+  
+  console.log('✅ Groups tab unlocked - user has subscription or joined bands');
 
   return (
     <div className="content-section">
@@ -1451,6 +1458,47 @@ const GroupsTab = ({ userData }) => {
                 Please enter a valid invitation code
               </p>
             )}
+          </div>
+        </div>
+      )}
+      
+      {/* Display Joined Bands for Unsubscribed Users */}
+      {!hasBandSubscription && hasJoinedBands && (
+        <div className="joined-bands-section" style={{
+          background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+          padding: '24px',
+          borderRadius: '16px',
+          marginBottom: '24px',
+          border: '1px solid #dee2e6',
+          boxShadow: '0 4px 20px rgba(108, 117, 125, 0.08)'
+        }}>
+          <h2 style={{ color: '#495057', marginBottom: '16px', fontSize: '1.5rem' }}>
+            🎵 Your Joined Bands ({joinedBands.length})
+          </h2>
+          <div className="joined-bands-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '16px'
+          }}>
+            {joinedBands.map(band => (
+              <div key={band.id} className="joined-band-card" style={{
+                background: 'white',
+                padding: '16px',
+                borderRadius: '12px',
+                border: '1px solid #dee2e6',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}>
+                <h3 style={{ color: '#495057', marginBottom: '8px', fontSize: '1.1rem' }}>
+                  {band.name}
+                </h3>
+                <p style={{ color: '#6c757d', fontSize: '0.9rem', marginBottom: '8px' }}>
+                  {band.description || 'No description available'}
+                </p>
+                <div style={{ color: '#6c757d', fontSize: '0.8rem' }}>
+                  <strong>Type:</strong> {band.band_type || 'Not specified'}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
