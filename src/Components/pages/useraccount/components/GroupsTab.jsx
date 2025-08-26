@@ -668,6 +668,7 @@ const GroupsTab = ({ userData }) => {
         return;
       }
       
+      // Handle band update (without member removal)
       const formData = new FormData();
       formData.append('name', editBand.name);
       formData.append('description', editBand.description);
@@ -679,12 +680,6 @@ const GroupsTab = ({ userData }) => {
       // Add member role updates if any
       if (membersToUpdate.length > 0) {
         formData.append('members', JSON.stringify(membersToUpdate));
-      }
-      
-      // Add members to remove if any
-      if (membersToRemove.length > 0) {
-        console.log('📤 Sending members to remove:', membersToRemove);
-        formData.append('members_to_remove', JSON.stringify(membersToRemove));
       }
       
       const headers = {
@@ -728,8 +723,16 @@ const GroupsTab = ({ userData }) => {
           
           console.log('✅ Band updated successfully:', response.data);
           setSuccess('Band updated successfully!');
-          handleCloseManageModal();
-          fetchBands(); // Refresh the bands list
+          
+          // Handle member removal separately if needed
+          if (membersToRemove.length > 0) {
+            console.log('📤 Handling member removal separately...');
+            await handleRemoveMembers();
+          } else {
+            handleCloseManageModal();
+            fetchBands(); // Refresh the bands list
+          }
+          
           return; // Success, exit the retry loop
           
         } catch (error) {
@@ -874,8 +877,9 @@ const GroupsTab = ({ userData }) => {
           // Reset member removal state
           setMembersToRemove([]);
           
-          // Refresh band data
+          // Refresh band data and close modal
           fetchBands();
+          handleCloseManageModal();
           return; // Success, exit the retry loop
           
         } catch (error) {
