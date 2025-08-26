@@ -1961,6 +1961,10 @@
   text-shadow: 
     0 4px 8px rgba(0, 0, 0, 0.3),
     0 2px 4px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   position: relative;
   animation: titleGlow 3s ease-in-out infinite;
 }
@@ -2023,7 +2027,7 @@
   display: flex;
   gap: 20px;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   flex-wrap: wrap;
   background: rgba(255, 255, 255, 0.1);
   padding: 24px;
@@ -2092,7 +2096,8 @@
 
 .generate-section {
   text-align: center;
-  margin-bottom: 24px;
+  margin: 0;
+  padding: 0;
 }
 
 .generate-code-btn {
@@ -2116,7 +2121,6 @@
   letter-spacing: 1px;
   position: relative;
   overflow: hidden;
-  margin: 0;
 }
 
 .generate-code-btn::before {
