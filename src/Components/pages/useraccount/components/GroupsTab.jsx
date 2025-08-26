@@ -435,10 +435,32 @@ const GroupsTab = ({ userData }) => {
     });
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = (bandId, file) => {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+
+      axiosInstance.post(`/api/bands/${bandId}/upload-image/`, formData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access')}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(response => {
+        console.log('Image uploaded successfully:', response.data);
+        resolve(response.data);
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+        reject(error);
+      });
+    });
+  };
+
+  const handleEditImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setUploadedImage(file);
+      setEditImage(file);
     }
   };
 
@@ -586,11 +608,7 @@ const GroupsTab = ({ userData }) => {
     setShowManageModal(true);
   };
   
-  const handleEditImageUpload = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setEditImage(e.target.files[0]);
-    }
-  };
+
   
   // Add these state variables to your component
   const [membersToUpdate, setMembersToUpdate] = useState([]);
@@ -669,22 +687,24 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Handle band update (without member removal)
-      const formData = new FormData();
-      formData.append('name', editBand.name);
-      formData.append('description', editBand.description);
-      if (editBand.location) formData.append('location', editBand.location);
-      if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
-      if (editBand.website) formData.append('website', editBand.website);
-      if (editImage) formData.append('profile_picture', editImage);
+      const bandUpdateData = {
+        name: editBand.name,
+        description: editBand.description
+      };
+      
+      // Add optional fields only if they have values
+      if (editBand.location) bandUpdateData.location = editBand.location;
+      if (editBand.contact_email) bandUpdateData.contact_email = editBand.contact_email;
+      if (editBand.website) bandUpdateData.website = editBand.website;
       
       // Add member role updates if any
       if (membersToUpdate.length > 0) {
-        formData.append('members', JSON.stringify(membersToUpdate));
+        bandUpdateData.members = membersToUpdate;
       }
       
       const headers = {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
       };
       
       if (localStorage.getItem('is_talent') === 'true') {
@@ -697,6 +717,7 @@ const GroupsTab = ({ userData }) => {
       console.log('  - Token preview:', token ? `${token.substring(0, 20)}...` : 'No token');
       console.log('  - Is talent:', localStorage.getItem('is_talent'));
       console.log('  - Headers:', headers);
+      console.log('  - Request data:', bandUpdateData);
       
       // Add timeout and retry logic
       const timeout = 15000; // 15 seconds timeout
@@ -709,7 +730,7 @@ const GroupsTab = ({ userData }) => {
           
           // Use the correct API endpoint for band updates with timeout
           const response = await Promise.race([
-            axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { 
+            axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, bandUpdateData, { 
               headers,
               timeout: timeout,
               validateStatus: function (status) {
@@ -723,6 +744,17 @@ const GroupsTab = ({ userData }) => {
           
           console.log('✅ Band updated successfully:', response.data);
           setSuccess('Band updated successfully!');
+          
+          // Handle image upload separately if there's an image
+          if (editImage) {
+            console.log('📤 Uploading band image...');
+            try {
+              await handleImageUpload(selectedBand.id, editImage);
+            } catch (imageError) {
+              console.error('❌ Image upload failed:', imageError);
+              // Don't fail the entire operation if image upload fails
+            }
+          }
           
           // Handle member removal separately if needed
           if (membersToRemove.length > 0) {
