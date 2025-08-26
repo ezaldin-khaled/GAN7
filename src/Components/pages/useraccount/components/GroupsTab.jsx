@@ -1198,8 +1198,31 @@ const GroupsTab = ({ userData }) => {
         </div>
         <h2>Band Subscription Required</h2>
         <p>
-          {subscriptionStatus?.message || 'You need a band subscription to access the Groups feature. Upgrade your account to create and manage bands.'}
+          {subscriptionStatus?.message || 'You need a band subscription to create and manage bands, but you can still join existing bands with an invitation code.'}
         </p>
+        
+        {/* Join Band Section for Unsubscribed Users */}
+        <div className="join-band-section">
+          <h3>🎵 Join an Existing Band</h3>
+          <p>Have an invitation code? You can join bands even without a subscription!</p>
+          <div className="invitation-form">
+            <input 
+              type="text" 
+              placeholder="Enter invitation code" 
+              value={invitationCode} 
+              onChange={(e) => setInvitationCode(e.target.value)}
+              className="invitation-input"
+            />
+            <button 
+              className="join-band-btn" 
+              onClick={handleJoinWithCode}
+              disabled={loading || !invitationCode.trim()}
+            >
+              Join Band
+            </button>
+          </div>
+        </div>
+        
         <div className="subscription-features">
           <h3>What you get with Band Subscription:</h3>
           <ul>
@@ -1269,14 +1292,16 @@ const GroupsTab = ({ userData }) => {
     );
   }
 
-  // Show subscription overlay if user doesn't have band subscription
-  if (!hasBandSubscription) {
+  // Show subscription overlay only if user doesn't have band subscription AND has no joined bands
+  // Allow unsubscribed users to join bands but require subscription for creating bands
+  if (!hasBandSubscription && (!joinedBands || joinedBands.length === 0)) {
     console.log('🔒 Groups tab locked - Debug info:');
     console.log('- hasBandSubscription:', hasBandSubscription);
     console.log('- subscriptionStatus:', subscriptionStatus);
     console.log('- userData:', userData);
     console.log('- localStorage is_talent:', localStorage.getItem('is_talent'));
     console.log('- localStorage access token exists:', !!localStorage.getItem('access'));
+    console.log('- joinedBands:', joinedBands);
     
     return (
       <div className="content-section">
@@ -1288,6 +1313,38 @@ const GroupsTab = ({ userData }) => {
   return (
     <div className="content-section">
       <h1 className="section-title">Bands</h1>
+      
+      {/* Limited View for Unsubscribed Users */}
+      {!hasBandSubscription && (
+        <div className="limited-access-notice" style={{
+          background: 'linear-gradient(135deg, #ffd93d, #ffb347)',
+          color: '#333',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          marginBottom: '24px',
+          borderLeft: '4px solid #ff9500',
+          fontWeight: '500'
+        }}>
+          <strong>🎵 Limited Access Mode</strong><br/>
+          You can join bands with invitation codes, but you need a subscription to create and manage bands.
+          <button 
+            onClick={() => window.location.href = '/account?tab=billing'}
+            style={{
+              background: 'rgba(0, 0, 0, 0.1)',
+              border: 'none',
+              color: '#333',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              marginLeft: '12px',
+              cursor: 'pointer',
+              fontSize: '0.9rem',
+              fontWeight: '600'
+            }}
+          >
+            Upgrade Now
+          </button>
+        </div>
+      )}
       
       {authError && (
         <div className="error-message" style={{
@@ -1540,7 +1597,59 @@ const GroupsTab = ({ userData }) => {
       />
 
       {/* Invitation code input section */}
-      {(!bands || bands.length === 0) && (!joinedBands || joinedBands.length === 0) && (
+      {/* Join Band Section for Unsubscribed Users */}
+      {!hasBandSubscription && (
+        <div className="join-band-section" style={{
+          background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+          padding: '24px',
+          borderRadius: '16px',
+          marginTop: '32px',
+          border: '1px solid rgba(130, 54, 252, 0.1)',
+          boxShadow: '0 4px 20px rgba(130, 54, 252, 0.08)'
+        }}>
+          <h2 style={{ color: '#1a1a1a', marginBottom: '16px' }}>🎵 Join Another Band</h2>
+          <p style={{ color: '#666', marginBottom: '20px' }}>
+            Have an invitation code? You can join bands even without a subscription!
+          </p>
+          <div className="invitation-form" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <input 
+              type="text" 
+              placeholder="Enter invitation code" 
+              value={invitationCode} 
+              onChange={(e) => setInvitationCode(e.target.value)}
+              className="invitation-input"
+              style={{
+                flex: 1,
+                padding: '12px 16px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                fontSize: '16px'
+              }}
+            />
+            <button 
+              className="join-band-btn" 
+              onClick={handleJoinWithCode}
+              disabled={loading || !invitationCode.trim()}
+              style={{
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #28a745, #20c997)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '600',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Join Band
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Original join section for users with no bands */}
+      {(!bands || bands.length === 0) && (!joinedBands || joinedBands.length === 0) && hasBandSubscription && (
         <div className="invitation-section">
           <h2>Join a Band with Invitation Code</h2>
           <div className="invitation-form">
