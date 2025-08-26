@@ -1346,6 +1346,115 @@ const GroupsTab = ({ userData }) => {
         </div>
       )}
       
+      {/* Prominent Join Band Section for Unsubscribed Users */}
+      {!hasBandSubscription && (
+        <div className="prominent-join-section" style={{
+          background: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
+          padding: '32px',
+          borderRadius: '20px',
+          marginBottom: '32px',
+          border: '2px solid #2196f3',
+          boxShadow: '0 8px 32px rgba(33, 150, 243, 0.15)',
+          textAlign: 'center'
+        }}>
+          <h2 style={{ 
+            color: '#1565c0', 
+            marginBottom: '16px', 
+            fontSize: '2rem',
+            fontWeight: '700'
+          }}>
+            🎵 Join a Band
+          </h2>
+          <p style={{ 
+            color: '#424242', 
+            marginBottom: '24px', 
+            fontSize: '1.1rem',
+            lineHeight: '1.6'
+          }}>
+            Have an invitation code? Enter it below to join a band instantly!
+          </p>
+          <div className="join-form-container" style={{
+            maxWidth: '500px',
+            margin: '0 auto'
+          }}>
+            <div className="invitation-form" style={{ 
+              display: 'flex', 
+              gap: '16px', 
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'center'
+            }}>
+              <input 
+                type="text" 
+                placeholder="Enter your invitation code here..." 
+                value={invitationCode} 
+                onChange={(e) => setInvitationCode(e.target.value)}
+                className="invitation-input"
+                style={{
+                  flex: '1',
+                  minWidth: '300px',
+                  padding: '16px 20px',
+                  border: '2px solid #2196f3',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  backgroundColor: 'white',
+                  boxShadow: '0 4px 12px rgba(33, 150, 243, 0.1)',
+                  transition: 'all 0.3s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#1565c0';
+                  e.target.style.boxShadow = '0 4px 20px rgba(33, 150, 243, 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#2196f3';
+                  e.target.style.boxShadow = '0 4px 12px rgba(33, 150, 243, 0.1)';
+                }}
+              />
+              <button 
+                className="join-band-btn" 
+                onClick={handleJoinWithCode}
+                disabled={loading || !invitationCode.trim()}
+                style={{
+                  padding: '16px 32px',
+                  background: 'linear-gradient(135deg, #2196f3, #1976d2)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 4px 15px rgba(33, 150, 243, 0.3)',
+                  minWidth: '140px'
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading && invitationCode.trim()) {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 20px rgba(33, 150, 243, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(33, 150, 243, 0.3)';
+                }}
+              >
+                {loading ? 'Joining...' : 'Join Band'}
+              </button>
+            </div>
+            {invitationCode && !invitationCode.trim() && (
+              <p style={{ 
+                color: '#f44336', 
+                marginTop: '8px', 
+                fontSize: '14px' 
+              }}>
+                Please enter a valid invitation code
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+      
       {authError && (
         <div className="error-message" style={{
           background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
