@@ -696,6 +696,13 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
+      // Debug: Log authentication info
+      console.log('🔍 Band update authentication debug:');
+      console.log('  - Token exists:', !!token);
+      console.log('  - Token preview:', token ? `${token.substring(0, 20)}...` : 'No token');
+      console.log('  - Is talent:', localStorage.getItem('is_talent'));
+      console.log('  - Headers:', headers);
+      
       // Add timeout and retry logic
       const timeout = 15000; // 15 seconds timeout
       const maxRetries = 2;
@@ -707,7 +714,13 @@ const GroupsTab = ({ userData }) => {
           
           // Use the correct API endpoint for band updates with timeout
           const response = await Promise.race([
-            axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers }),
+            axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { 
+              headers,
+              timeout: timeout,
+              validateStatus: function (status) {
+                return status < 500; // Resolve only if status is less than 500
+              }
+            }),
             new Promise((_, reject) => 
               setTimeout(() => reject(new Error(`Request timeout after ${timeout}ms`)), timeout)
             )
@@ -818,10 +831,18 @@ const GroupsTab = ({ userData }) => {
         'Content-Type': 'application/json'
       };
       
-      if (localStorage.getItem('is_talent') === 'true') {
+            if (localStorage.getItem('is_talent') === 'true') {
         headers['is-talent'] = 'true';
       }
-
+      
+      // Debug: Log authentication info
+      console.log('🔍 Member removal authentication debug:');
+      console.log('  - Token exists:', !!token);
+      console.log('  - Token preview:', token ? `${token.substring(0, 20)}...` : 'No token');
+      console.log('  - Is talent:', localStorage.getItem('is_talent'));
+      console.log('  - Headers:', headers);
+      console.log('  - Members to remove:', membersToRemove);
+      
       // Add timeout and retry logic
       const timeout = 15000; // 15 seconds timeout
       const maxRetries = 2;
@@ -835,7 +856,13 @@ const GroupsTab = ({ userData }) => {
           const response = await Promise.race([
             axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, {
               members_to_remove: membersToRemove
-            }, { headers }),
+            }, { 
+              headers,
+              timeout: timeout,
+              validateStatus: function (status) {
+                return status < 500; // Resolve only if status is less than 500
+              }
+            }),
             new Promise((_, reject) => 
               setTimeout(() => reject(new Error(`Request timeout after ${timeout}ms`)), timeout)
             )
