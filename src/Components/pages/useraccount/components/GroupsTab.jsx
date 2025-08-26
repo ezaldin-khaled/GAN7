@@ -52,6 +52,74 @@ const GroupsTab = ({ userData }) => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [bandScore, setBandScore] = useState(null);
 
+  // Enhanced authentication and permission state
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authError, setAuthError] = useState(null);
+
+  // Function to validate authentication and get current user info
+  const validateAuthentication = async () => {
+    try {
+      const token = localStorage.getItem('access');
+      if (!token) {
+        console.error('❌ No authentication token found');
+        setAuthError('No authentication token found');
+        return false;
+      }
+
+      // Debug: Log token info
+      const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+      console.log('🔍 Token payload:', {
+        userId: tokenPayload.user_id || tokenPayload.userId || tokenPayload.id,
+        exp: new Date(tokenPayload.exp * 1000).toISOString(),
+        iat: new Date(tokenPayload.iat * 1000).toISOString()
+      });
+
+      // Get current user info from API
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+      
+      if (localStorage.getItem('is_talent') === 'true') {
+        headers['is-talent'] = 'true';
+      }
+
+      const response = await axiosInstance.get('/api/auth/user/', { headers });
+      const userInfo = response.data;
+      
+      console.log('👤 Current user info:', userInfo);
+      setCurrentUser(userInfo);
+      setAuthError(null);
+      return true;
+    } catch (error) {
+      console.error('❌ Authentication validation failed:', error);
+      setAuthError('Authentication failed. Please log in again.');
+      return false;
+    }
+  };
+
+  // Function to check if user is band creator
+  const isBandCreator = (band) => {
+    if (!currentUser || !band) return false;
+    
+    // Check multiple ways the API might indicate creator status
+    const isCreatorByFlag = band.is_creator === true;
+    const isCreatorById = band.creator?.id === currentUser.id || band.creator_id === currentUser.id;
+    const isCreatorByName = band.creator?.username === currentUser.username || 
+                           band.creator_name === currentUser.username ||
+                           band.creator_name === currentUser.full_name;
+    
+    console.log('🔍 Creator check for band:', band.name, {
+      currentUser: currentUser.username,
+      bandCreator: band.creator?.username || band.creator_name,
+      isCreatorByFlag,
+      isCreatorById,
+      isCreatorByName,
+      result: isCreatorByFlag || isCreatorById || isCreatorByName
+    });
+    
+    return isCreatorByFlag || isCreatorById || isCreatorByName;
+  };
+
   // Function to fetch detailed band information
   const fetchBandDetails = async (bandId) => {
     try {
@@ -72,9 +140,10 @@ const GroupsTab = ({ userData }) => {
         )
       ]);
       
+      console.log(`📋 Band details for ${bandId}:`, response.data);
       return response.data;
     } catch (err) {
-      console.error(`Error fetching band details for ${bandId}:`, err);
+      console.error(`❌ Error fetching band details for ${bandId}:`, err);
       return null;
     }
   };
@@ -85,10 +154,22 @@ const GroupsTab = ({ userData }) => {
       setLoading(true);
       setSubscriptionLoading(true);
       
+      // Validate authentication first
+      const isAuthenticated = await validateAuthentication();
+      if (!isAuthenticated) {
+        console.error('❌ Authentication validation failed');
+        setBands([]);
+        setJoinedBands([]);
+        setHasBandSubscription(false);
+        setLoading(false);
+        setSubscriptionLoading(false);
+        return;
+      }
+      
       // Get the authentication token
       const token = localStorage.getItem('access');
       if (!token) {
-        console.error('No authentication token found');
+        console.error('❌ No authentication token found');
         setBands([]);
         setJoinedBands([]);
         setHasBandSubscription(false);
@@ -157,24 +238,16 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Is Creator: ${band.is_creator}`);
+          console.log(`Band: ${band.name}, Creator: ${band.creator?.username || band.creator_name}, Is Creator: ${band.is_creator}`);
           
-          // Check if user is creator using multiple methods
-          const isCreatorByFlag = band.is_creator === true;
-          const isCreatorByName = band.creator_name === userData?.full_name || band.creator_name === userData?.username || band.creator_name === userData?.email;
-          const isCreatorById = band.creator_id === userData?.id;
+          // Use the new authentication-based creator check
+          const isCreator = isBandCreator(band);
           
-          if (isCreatorByFlag || isCreatorByName || isCreatorById) {
+          if (isCreator) {
             console.log(`✅ Band "${band.name}" belongs to current user`);
-            console.log(`  - is_creator flag: ${isCreatorByFlag}`);
-            console.log(`  - creator name match: ${isCreatorByName}`);
-            console.log(`  - creator ID match: ${isCreatorById}`);
             myBands.push(band);
           } else {
             console.log(`❌ Band "${band.name}" does not belong to current user`);
-            console.log(`  - is_creator flag: ${isCreatorByFlag}`);
-            console.log(`  - creator name match: ${isCreatorByName}`);
-            console.log(`  - creator ID match: ${isCreatorById}`);
             otherBands.push(band);
           }
         });
@@ -224,14 +297,12 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator_name}, Current user: ${userData?.full_name || userData?.username || userData?.email}`);
+          console.log(`Band: ${band.name}, Creator: ${band.creator?.username || band.creator_name}, Current user: ${currentUser?.username || currentUser?.full_name}`);
           
-          // Check if user is creator using multiple methods
-          const isCreatorByFlag = band.is_creator === true;
-          const isCreatorByName = band.creator_name === userData?.full_name || band.creator_name === userData?.username || band.creator_name === userData?.email;
-          const isCreatorById = band.creator_id === userData?.id;
+          // Use the new authentication-based creator check
+          const isCreator = isBandCreator(band);
           
-          if (isCreatorByFlag || isCreatorByName || isCreatorById) {
+          if (isCreator) {
             console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
@@ -287,17 +358,26 @@ const GroupsTab = ({ userData }) => {
   useEffect(() => {
     console.log('🚀 GroupsTab useEffect triggered');
     console.log('🚀 userData:', userData);
-    // Check if user just completed a subscription
-    const pendingSubscription = sessionStorage.getItem('pendingSubscription');
-    const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
     
-    if (shouldForceRefresh) {
-      console.log('Detected recent subscription, forcing refresh...');
-      sessionStorage.removeItem('pendingSubscription'); // Clear the flag
-      fetchBands(true); // Force refresh
-    } else {
-      fetchBands();
-    }
+    // Initialize component with authentication validation
+    const initializeComponent = async () => {
+      // Validate authentication first
+      await validateAuthentication();
+      
+      // Check if user just completed a subscription
+      const pendingSubscription = sessionStorage.getItem('pendingSubscription');
+      const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
+      
+      if (shouldForceRefresh) {
+        console.log('Detected recent subscription, forcing refresh...');
+        sessionStorage.removeItem('pendingSubscription'); // Clear the flag
+        fetchBands(true); // Force refresh
+      } else {
+        fetchBands();
+      }
+    };
+    
+    initializeComponent();
     
     // Add polling to check for subscription updates every 30 seconds
     const pollInterval = setInterval(() => {
@@ -514,13 +594,28 @@ const GroupsTab = ({ userData }) => {
   };
   
   const handleRemoveMember = (memberId) => {
+    // Validate that current user is the band creator
+    if (!selectedBand || !isBandCreator(selectedBand)) {
+      console.error('❌ Permission denied: Only band creator can remove members');
+      alert('Only the band creator can remove members.');
+      return;
+    }
+
+    // Validate that we're not trying to remove the creator
+    const memberToRemove = selectedBand.members_data?.find(member => member.id === memberId);
+    if (memberToRemove && memberToRemove.username === currentUser?.username) {
+      console.error('❌ Cannot remove band creator');
+      alert('Band creators cannot remove themselves.');
+      return;
+    }
+
     // Add to membersToRemove array if not already there
     // Note: memberId should be the BandMembership ID, not the user ID
     if (!membersToRemove.includes(memberId)) {
       setMembersToRemove([...membersToRemove, memberId]);
-      console.log(`Member ${memberId} marked for removal. Members to remove:`, [...membersToRemove, memberId]);
+      console.log(`✅ Member ${memberId} marked for removal. Members to remove:`, [...membersToRemove, memberId]);
     } else {
-      console.log(`Member ${memberId} is already marked for removal`);
+      console.log(`ℹ️ Member ${memberId} is already marked for removal`);
     }
   };
   
@@ -539,12 +634,19 @@ const GroupsTab = ({ userData }) => {
     
     if (!selectedBand) return;
     
+    // Validate that current user is the band creator
+    if (!isBandCreator(selectedBand)) {
+      console.error('❌ Permission denied: Only band creator can update band');
+      alert('Only the band creator can update band details.');
+      return;
+    }
+    
     try {
       setLoading(true);
       
       const token = localStorage.getItem('access');
       if (!token) {
-        console.error('No authentication token found');
+        console.error('❌ No authentication token found');
         return;
       }
       
@@ -563,7 +665,7 @@ const GroupsTab = ({ userData }) => {
       
       // Add members to remove if any
       if (membersToRemove.length > 0) {
-        console.log('Sending members to remove:', membersToRemove);
+        console.log('📤 Sending members to remove:', membersToRemove);
         formData.append('members_to_remove', JSON.stringify(membersToRemove));
       }
       
@@ -576,49 +678,152 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers });
+      // Use the correct API endpoint for band updates
+      await axiosInstance.patch(`/api/bands/${selectedBand.id}/`, formData, { headers });
       
       setSuccess('Band updated successfully!');
       handleCloseManageModal();
       fetchBands(); // Refresh the bands list
     } catch (err) {
-      console.error('Error updating band:', err);
+      console.error('❌ Error updating band:', err);
       
-      // Display specific error message if available
-      if (err.response && err.response.data) {
+      // Enhanced error handling based on API integration guide
+      if (err.response) {
+        const { status, data } = err.response;
         let errorMessage = '';
         
-        if (typeof err.response.data === 'string') {
-          errorMessage = err.response.data;
-        } else if (typeof err.response.data === 'object') {
-          if (err.response.data.detail) {
-            errorMessage = err.response.data.detail;
-          } else if (err.response.data.message) {
-            errorMessage = err.response.data.message;
-          } else if (err.response.data.error) {
-            errorMessage = err.response.data.error;
-          } else {
-            // Extract all error messages from the object
-            const errorMessages = [];
-            Object.entries(err.response.data).forEach(([key, value]) => {
-              const valueStr = Array.isArray(value) ? value.join(', ') : value;
-              errorMessages.push(`${key}: ${valueStr}`);
-            });
-            errorMessage = errorMessages.join('\n');
-          }
+        console.log('🔍 Error response:', { status, data });
+        
+        switch (status) {
+          case 401:
+            errorMessage = 'Authentication failed. Please log in again.';
+            break;
+          case 403:
+            errorMessage = data?.detail || data?.error || 'Permission denied. Only the band creator can update band details.';
+            break;
+          case 400:
+            if (typeof data === 'string') {
+              errorMessage = data;
+            } else if (data?.error) {
+              errorMessage = data.error;
+            } else if (data?.detail) {
+              errorMessage = data.detail;
+            } else {
+              // Extract validation errors
+              const errorMessages = [];
+              Object.entries(data).forEach(([key, value]) => {
+                const valueStr = Array.isArray(value) ? value.join(', ') : value;
+                errorMessages.push(`${key}: ${valueStr}`);
+              });
+              errorMessage = errorMessages.join('\n');
+            }
+            break;
+          default:
+            errorMessage = data?.detail || data?.error || data?.message || 'An unexpected error occurred.';
         }
         
         if (errorMessage) {
           alert(`Failed to update band: ${errorMessage}`);
         }
+      } else if (err.request) {
+        console.error('❌ Network error:', err.request);
+        alert('Network error. Please check your connection and try again.');
       } else {
-        alert('Failed to update band. Please try again later.');
+        console.error('❌ Unexpected error:', err.message);
+        alert('An unexpected error occurred. Please try again later.');
       }
     } finally {
       setLoading(false);
     }
   };
   
+  // Function to handle member removal using the correct API endpoint
+  const handleRemoveMembers = async () => {
+    if (!selectedBand || membersToRemove.length === 0) {
+      console.log('ℹ️ No members to remove');
+      return;
+    }
+
+    // Validate that current user is the band creator
+    if (!isBandCreator(selectedBand)) {
+      console.error('❌ Permission denied: Only band creator can remove members');
+      alert('Only the band creator can remove members.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      const token = localStorage.getItem('access');
+      if (!token) {
+        console.error('❌ No authentication token found');
+        return;
+      }
+
+      console.log('📤 Removing members:', membersToRemove);
+      
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      if (localStorage.getItem('is_talent') === 'true') {
+        headers['is-talent'] = 'true';
+      }
+
+      // Use the correct API endpoint for member removal
+      const response = await axiosInstance.patch(`/api/bands/${selectedBand.id}/`, {
+        members_to_remove: membersToRemove
+      }, { headers });
+
+      console.log('✅ Members removed successfully:', response.data);
+      setSuccess('Members removed successfully!');
+      
+      // Reset member removal state
+      setMembersToRemove([]);
+      
+      // Refresh band data
+      fetchBands();
+      
+    } catch (err) {
+      console.error('❌ Error removing members:', err);
+      
+      // Enhanced error handling
+      if (err.response) {
+        const { status, data } = err.response;
+        let errorMessage = '';
+        
+        console.log('🔍 Error response:', { status, data });
+        
+        switch (status) {
+          case 401:
+            errorMessage = 'Authentication failed. Please log in again.';
+            break;
+          case 403:
+            errorMessage = data?.detail || data?.error || 'Permission denied. Only the band creator can remove members.';
+            break;
+          case 400:
+            errorMessage = data?.error || data?.detail || 'Invalid request. Please check the member IDs.';
+            break;
+          default:
+            errorMessage = data?.detail || data?.error || data?.message || 'An unexpected error occurred.';
+        }
+        
+        if (errorMessage) {
+          alert(`Failed to remove members: ${errorMessage}`);
+        }
+      } else if (err.request) {
+        console.error('❌ Network error:', err.request);
+        alert('Network error. Please check your connection and try again.');
+      } else {
+        console.error('❌ Unexpected error:', err.message);
+        alert('An unexpected error occurred. Please try again later.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCloseManageModal = () => {
     setShowManageModal(false);
     setSelectedBand(null);
@@ -939,6 +1144,39 @@ const GroupsTab = ({ userData }) => {
     <div className="content-section">
       <h1 className="section-title">Bands</h1>
       
+      {authError && (
+        <div className="error-message" style={{
+          background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
+          color: 'white',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          marginBottom: '24px',
+          borderLeft: '4px solid #d63031',
+          fontWeight: '500',
+          animation: 'slideInDown 0.5s ease-out'
+        }}>
+          <strong>Authentication Error:</strong> {authError}
+          <button 
+            onClick={() => {
+              setAuthError(null);
+              validateAuthentication();
+            }}
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: 'none',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              marginLeft: '12px',
+              cursor: 'pointer',
+              fontSize: '0.9rem'
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+      
       {success && (
         <div className="success-message">
           <p>{success}</p>
@@ -946,6 +1184,25 @@ const GroupsTab = ({ userData }) => {
       )}
       
       <div className="groups-section">
+        {/* Debug Information - Remove in production */}
+        {process.env.NODE_ENV === 'development' && (
+          <div style={{
+            background: 'rgba(130, 54, 252, 0.1)',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            fontSize: '0.8rem',
+            fontFamily: 'monospace'
+          }}>
+            <strong>🔍 Debug Info:</strong><br/>
+            Current User: {currentUser?.username || 'Not loaded'}<br/>
+            User ID: {currentUser?.id || 'Not loaded'}<br/>
+            Auth Error: {authError || 'None'}<br/>
+            Bands Count: {bands?.length || 0}<br/>
+            Joined Bands Count: {joinedBands?.length || 0}
+          </div>
+        )}
+        
         <div className="groups-header">
           <h2>My Bands</h2>
           {subscriptionStatus?.can_create_band && (
@@ -1131,7 +1388,10 @@ const GroupsTab = ({ userData }) => {
         setEditImage={setEditImage}
         handleMemberRoleChange={handleMemberRoleChange}
         handleRemoveMember={handleRemoveMember}
+        handleRemoveMembers={handleRemoveMembers}
         membersToRemove={membersToRemove}
+        isCreator={selectedBand ? isBandCreator(selectedBand) : false}
+        currentUser={currentUser}
       />
 
       {/* Invitation code input section */}
