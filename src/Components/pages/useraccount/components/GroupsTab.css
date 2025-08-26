@@ -2096,31 +2096,33 @@
 
 .generate-section {
   text-align: center;
-  margin: 0;
-  padding: 0;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f0f7ff;
+  border-radius: 12px;
 }
 
 .generate-code-btn {
   background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
   color: white;
   border: none;
-  padding: 18px 36px;
-  border-radius: 16px;
+  padding: 16px 32px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 8px 24px rgba(40, 167, 69, 0.4),
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 6px 20px rgba(40, 167, 69, 0.3),
+    0 3px 10px rgba(0, 0, 0, 0.1);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .generate-code-btn::before {
@@ -2139,11 +2141,10 @@
 }
 
 .generate-code-btn:hover {
-  transform: translateY(-4px) scale(1.05);
+  transform: translateY(-2px) scale(1.02);
   box-shadow: 
-    0 16px 40px rgba(40, 167, 69, 0.5),
-    0 8px 20px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 10px 30px rgba(40, 167, 69, 0.4),
+    0 5px 15px rgba(0, 0, 0, 0.12);
   background: linear-gradient(135deg, #218838 0%, #1ea085 50%, #138496 100%);
 }
 
