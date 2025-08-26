@@ -696,17 +696,50 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
       
-      // Use the correct API endpoint for band updates
-      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers });
+      // Add timeout and retry logic
+      const timeout = 15000; // 15 seconds timeout
+      const maxRetries = 2;
+      let lastError = null;
       
-      setSuccess('Band updated successfully!');
-      handleCloseManageModal();
-      fetchBands(); // Refresh the bands list
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`🔄 Attempt ${attempt}/${maxRetries} - Updating band ${selectedBand.id}`);
+          
+          // Use the correct API endpoint for band updates with timeout
+          const response = await Promise.race([
+            axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers }),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error(`Request timeout after ${timeout}ms`)), timeout)
+            )
+          ]);
+          
+          console.log('✅ Band updated successfully:', response.data);
+          setSuccess('Band updated successfully!');
+          handleCloseManageModal();
+          fetchBands(); // Refresh the bands list
+          return; // Success, exit the retry loop
+          
+        } catch (error) {
+          lastError = error;
+          console.error(`❌ Attempt ${attempt} failed:`, error);
+          
+          if (attempt < maxRetries) {
+            console.log(`⏳ Retrying in 2 seconds...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        }
+      }
+      
+      // If we get here, all retries failed
+      throw lastError;
+      
     } catch (err) {
       console.error('❌ Error updating band:', err);
       
       // Enhanced error handling based on API integration guide
-      if (err.response) {
+      if (err.message && err.message.includes('timeout')) {
+        alert('Request timed out. The server is taking too long to respond. Please try again later.');
+      } else if (err.response) {
         const { status, data } = err.response;
         let errorMessage = '';
         
@@ -789,25 +822,56 @@ const GroupsTab = ({ userData }) => {
         headers['is-talent'] = 'true';
       }
 
-      // Use the correct API endpoint for member removal
-      const response = await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, {
-        members_to_remove: membersToRemove
-      }, { headers });
+      // Add timeout and retry logic
+      const timeout = 15000; // 15 seconds timeout
+      const maxRetries = 2;
+      let lastError = null;
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`🔄 Attempt ${attempt}/${maxRetries} - Removing members from band ${selectedBand.id}`);
+          
+          // Use the correct API endpoint for member removal with timeout
+          const response = await Promise.race([
+            axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, {
+              members_to_remove: membersToRemove
+            }, { headers }),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error(`Request timeout after ${timeout}ms`)), timeout)
+            )
+          ]);
 
-      console.log('✅ Members removed successfully:', response.data);
-      setSuccess('Members removed successfully!');
+          console.log('✅ Members removed successfully:', response.data);
+          setSuccess('Members removed successfully!');
+          
+          // Reset member removal state
+          setMembersToRemove([]);
+          
+          // Refresh band data
+          fetchBands();
+          return; // Success, exit the retry loop
+          
+        } catch (error) {
+          lastError = error;
+          console.error(`❌ Attempt ${attempt} failed:`, error);
+          
+          if (attempt < maxRetries) {
+            console.log(`⏳ Retrying in 2 seconds...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        }
+      }
       
-      // Reset member removal state
-      setMembersToRemove([]);
-      
-      // Refresh band data
-      fetchBands();
+      // If we get here, all retries failed
+      throw lastError;
       
     } catch (err) {
       console.error('❌ Error removing members:', err);
       
       // Enhanced error handling
-      if (err.response) {
+      if (err.message && err.message.includes('timeout')) {
+        alert('Request timed out. The server is taking too long to respond. Please try again later.');
+      } else if (err.response) {
         const { status, data } = err.response;
         let errorMessage = '';
         
