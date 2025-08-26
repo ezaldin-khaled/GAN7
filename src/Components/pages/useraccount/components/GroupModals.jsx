@@ -289,18 +289,6 @@ export const ManageBandModal = ({
             </div>
             
             <div className="form-group">
-              <label htmlFor="edit-contact_phone">Contact Phone</label>
-              <input
-                type="tel"
-                id="edit-contact_phone"
-                name="contact_phone"
-                value={editBand.contact_phone}
-                onChange={handleEditInputChange}
-                placeholder="+963123456789"
-              />
-            </div>
-            
-            <div className="form-group">
               <label htmlFor="edit-website">Website</label>
               <input
                 type="url"

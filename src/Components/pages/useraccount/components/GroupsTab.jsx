@@ -31,7 +31,6 @@ const GroupsTab = ({ userData }) => {
     genre: '',
     location: '',
     contact_email: '',
-    contact_phone: '',
     website: ''
   });
   const [editImage, setEditImage] = useState(null);
@@ -478,10 +477,9 @@ const GroupsTab = ({ userData }) => {
     setEditBand({
       name: band.name,
       description: band.description,
-        genre: band.band_type || band.genre || '',
+      genre: band.genre || '',
       location: band.location || '',
       contact_email: band.contact_email || '',
-        contact_phone: band.contact_phone || '',
       website: band.website || ''
     });
     // Reset member management arrays when opening modal
@@ -517,8 +515,7 @@ const GroupsTab = ({ userData }) => {
   
   const handleRemoveMember = (memberId) => {
     // Add to membersToRemove array if not already there
-    // Note: memberId should be the BandMembership ID from the members array, not the user ID
-    // This ID is used in the API call: PUT /api/bands/{id}/update/ with members_to_remove: [memberId]
+    // Note: memberId should be the BandMembership ID, not the user ID
     if (!membersToRemove.includes(memberId)) {
       setMembersToRemove([...membersToRemove, memberId]);
       console.log(`Member ${memberId} marked for removal. Members to remove:`, [...membersToRemove, memberId]);
@@ -542,227 +539,46 @@ const GroupsTab = ({ userData }) => {
     
     if (!selectedBand) return;
     
-    console.log('🔄 Updating band:', selectedBand);
-    console.log('🔄 Edit band data:', editBand);
-    
     try {
       setLoading(true);
       
       const token = localStorage.getItem('access');
       if (!token) {
         console.error('No authentication token found');
-        alert('Authentication token not found. Please log in again.');
         return;
       }
       
-      // Debug: Log token info
-      console.log('🔑 Token exists:', !!token);
-      console.log('🔑 Token length:', token ? token.length : 0);
-      console.log('🔑 Token starts with Bearer:', token ? token.startsWith('Bearer ') : false);
-      
-      // Debug: Log user data for comparison
-      console.log('👤 Current userData:', userData);
-      console.log('👤 User ID from userData:', userData?.id);
-      console.log('👤 User name from userData:', userData?.full_name || userData?.username || userData?.email);
-      
-      // Try to decode token to see user info (if it's a JWT)
-      if (token) {
-        try {
-          const tokenParts = token.split('.');
-          if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            console.log('🔑 Token payload:', payload);
-            console.log('🔑 User ID from token:', payload.user_id);
-            console.log('🔑 Token user vs current user:', payload.user_id === userData?.id ? '✅ MATCH' : '❌ MISMATCH');
-          }
-        } catch (e) {
-          console.log('🔑 Could not decode token (not JWT or invalid format)');
-        }
-      }
-      
-            // Prepare request data as JSON (not FormData)
-      const requestData = {
-        name: editBand.name,
-        description: editBand.description,
-        band_type: editBand.genre || selectedBand.band_type || 'musical',
-        location: editBand.location || '',
-        contact_email: editBand.contact_email || '',
-        contact_phone: editBand.contact_phone || '',
-        website: editBand.website || ''
-      };
+      const formData = new FormData();
+      formData.append('name', editBand.name);
+      formData.append('description', editBand.description);
+      if (editBand.location) formData.append('location', editBand.location);
+      if (editBand.contact_email) formData.append('contact_email', editBand.contact_email);
+      if (editBand.website) formData.append('website', editBand.website);
+      if (editImage) formData.append('profile_picture', editImage);
       
       // Add member role updates if any
       if (membersToUpdate.length > 0) {
-        requestData.members = membersToUpdate;
+        formData.append('members', JSON.stringify(membersToUpdate));
       }
       
       // Add members to remove if any
       if (membersToRemove.length > 0) {
         console.log('Sending members to remove:', membersToRemove);
-        
-        // Validate that all member IDs are numbers
-        const validMemberIds = membersToRemove.filter(id => typeof id === 'number' && !isNaN(id));
-        if (validMemberIds.length !== membersToRemove.length) {
-          console.warn('⚠️ Some member IDs are not valid numbers:', membersToRemove);
-          alert('Some member IDs are invalid. Please try again.');
-          return;
-        }
-        
-        requestData.members_to_remove = validMemberIds;
+        formData.append('members_to_remove', JSON.stringify(membersToRemove));
       }
       
       const headers = {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'multipart/form-data'
       };
       
-      // Check if user is talent user (from login response)
-      const isTalent = localStorage.getItem('is_talent') === 'true';
-      console.log('🔑 Is talent user from localStorage:', isTalent);
-      
-      // Always add is-talent header for band operations
-      headers['is-talent'] = 'true';
-      
-      // Verify token matches current user
-      if (token) {
-        try {
-          const tokenParts = token.split('.');
-          if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            if (payload.user_id !== userData?.id) {
-              console.warn('⚠️ Token user ID mismatch detected!');
-              console.warn('⚠️ Token user ID:', payload.user_id);
-              console.warn('⚠️ Current user ID:', userData?.id);
-              console.warn('⚠️ Attempting to refresh user data...');
-              
-              // Try to refresh user data from localStorage
-              const storedUser = localStorage.getItem('user');
-              if (storedUser) {
-                const parsedStoredUser = JSON.parse(storedUser);
-                console.log('🔄 Stored user data:', parsedStoredUser);
-                if (parsedStoredUser.id === payload.user_id) {
-                  console.log('✅ Found matching user data in localStorage');
-                  // Update userData to match token
-                  userData = parsedStoredUser;
-                                 } else {
-                   console.error('❌ Stored user data also doesn\'t match token');
-                   alert('Authentication mismatch detected!\n\nToken user ID: ' + payload.user_id + '\nCurrent user ID: ' + userData?.id + '\n\nThis usually happens when:\n• You logged in with different credentials\n• Your session got corrupted\n• There was a server-side issue\n\nPlease log out and log back in to fix this issue.');
-                   // Don't redirect automatically - let user choose to log out
-                   return;
-                 }
-              } else {
-                console.error('❌ No stored user data found');
-                alert('Authentication data missing. Please log in again.');
-                window.location.href = '/login';
-                return;
-              }
-            }
-          }
-        } catch (e) {
-          console.log('🔑 Could not verify token user ID (not JWT format)');
-        }
+      if (localStorage.getItem('is_talent') === 'true') {
+        headers['is-talent'] = 'true';
       }
       
-      // Debug: Log authentication info
-      console.log('🔑 Final headers:', headers);
+      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers });
       
-      // Debug: Log the actual request being sent
-      console.log('📤 === REQUEST DETAILS ===');
-      console.log('📤 URL:', `/api/bands/${selectedBand.id}/update/`);
-      console.log('📤 Method: PUT');
-      console.log('📤 Headers:', headers);
-      console.log('📤 Content-Type: application/json');
-      console.log('📤 Request body:', JSON.stringify(requestData, null, 2));
-      
-      // Focused ownership and permission check
-      try {
-        console.log('🔍 === BAND OWNERSHIP CHECK ===');
-        console.log('🎯 Band ID:', selectedBand.id);
-        console.log('🎯 User token exists:', !!token);
-        console.log('🎯 Is talent user:', isTalent);
-        
-        // Step 1: Get band data to check ownership
-        console.log('📡 Getting band data...');
-        // Use minimal headers for GET request to avoid CORS issues
-        const getHeaders = {
-          'Authorization': `Bearer ${token}`
-        };
-        const bandResponse = await axiosInstance.get(`/api/bands/${selectedBand.id}/`, { headers: getHeaders });
-        const bandData = bandResponse.data;
-        
-        console.log('📋 Band name:', bandData.name);
-        console.log('📋 Is creator:', bandData.is_creator);
-        console.log('📋 User role:', bandData.user_role);
-        console.log('📋 Creator ID:', bandData.creator_id);
-        console.log('📋 Current user ID:', userData?.id);
-        
-        // Step 2: Check if user is the creator
-        if (!bandData.is_creator) {
-          console.error('❌ OWNERSHIP ISSUE: User is not the band creator');
-          console.error('❌ Expected: is_creator = true');
-          console.error('❌ Actual: is_creator =', bandData.is_creator);
-          alert(`You are not the creator of "${bandData.name}". Only the band creator can update this band.`);
-          return;
-        }
-        
-        console.log('✅ Ownership check passed - User is the band creator');
-        
-        // Step 3: Validate member IDs if removing members
-        if (membersToRemove.length > 0) {
-          console.log('👥 Validating member IDs...');
-          console.log('👥 Members to remove:', membersToRemove);
-          console.log('👥 Available members:', bandData.members);
-          
-          const validMemberIds = bandData.members?.map(m => m.id) || [];
-          console.log('👥 Valid member IDs:', validMemberIds);
-          
-          const invalidMembers = membersToRemove.filter(id => !validMemberIds.includes(id));
-          if (invalidMembers.length > 0) {
-            console.error('❌ INVALID MEMBER IDs:', invalidMembers);
-            alert(`Invalid member IDs: ${invalidMembers.join(', ')}. These members are not in the band.`);
-            return;
-          }
-          
-          console.log('✅ Member ID validation passed');
-        }
-        
-        console.log('🔍 === OWNERSHIP CHECK COMPLETE ===');
-      } catch (error) {
-        console.error('❌ === OWNERSHIP CHECK FAILED ===');
-        console.error('❌ Error:', error.response?.status, error.response?.data);
-        
-        if (error.response?.status === 403) {
-          alert('Access forbidden. You do not have permission to access this band.');
-        } else if (error.response?.status === 404) {
-          alert('Band not found. It may have been deleted.');
-        } else if (error.response?.status === 401) {
-          alert('Authentication failed. Please log in again.');
-        } else {
-          alert(`Error checking band ownership: ${error.response?.status || 'Unknown error'}`);
-        }
-        return;
-      }
-      
-      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, requestData, { headers });
-      
-      // Show appropriate success message
-      const hasOtherUpdates = editImage || 
-        editBand.name !== selectedBand.name ||
-        editBand.description !== selectedBand.description ||
-        editBand.location !== selectedBand.location ||
-        editBand.contact_email !== selectedBand.contact_email ||
-        editBand.contact_phone !== selectedBand.contact_phone ||
-        editBand.website !== selectedBand.website ||
-        membersToUpdate.length > 0;
-        
-      if (membersToRemove.length > 0 && !hasOtherUpdates) {
-        setSuccess(`Successfully removed ${membersToRemove.length} member(s) from the band!`);
-      } else if (membersToRemove.length > 0) {
-        setSuccess(`Band updated successfully! ${membersToRemove.length} member(s) removed.`);
-      } else {
       setSuccess('Band updated successfully!');
-      }
-      
       handleCloseManageModal();
       fetchBands(); // Refresh the bands list
     } catch (err) {
@@ -772,29 +588,6 @@ const GroupsTab = ({ userData }) => {
       if (err.response && err.response.data) {
         let errorMessage = '';
         
-        // Handle specific error cases based on status code
-        if (err.response.status === 403) {
-          errorMessage = 'You do not have permission to update this band. Only the creator or admin can make changes.';
-        } else if (err.response.status === 400) {
-          if (err.response.data.detail) {
-            errorMessage = err.response.data.detail;
-          } else if (err.response.data.message) {
-            errorMessage = err.response.data.message;
-          } else if (err.response.data.error) {
-            errorMessage = err.response.data.error;
-          } else {
-            // Check for specific validation errors
-            const errorMessages = [];
-            Object.entries(err.response.data).forEach(([key, value]) => {
-              const valueStr = Array.isArray(value) ? value.join(', ') : value;
-              errorMessages.push(`${key}: ${valueStr}`);
-            });
-            errorMessage = errorMessages.join('\n');
-          }
-        } else if (err.response.status === 404) {
-          errorMessage = 'Band not found. It may have been deleted or you may not have access to it.';
-        } else {
-          // Handle other error types
         if (typeof err.response.data === 'string') {
           errorMessage = err.response.data;
         } else if (typeof err.response.data === 'object') {
@@ -812,7 +605,6 @@ const GroupsTab = ({ userData }) => {
               errorMessages.push(`${key}: ${valueStr}`);
             });
             errorMessage = errorMessages.join('\n');
-            }
           }
         }
         
@@ -836,7 +628,6 @@ const GroupsTab = ({ userData }) => {
       genre: '',
       location: '',
       contact_email: '',
-      contact_phone: '',
       website: ''
     });
     setEditImage(null);
