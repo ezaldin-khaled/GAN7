@@ -1343,58 +1343,60 @@
 
 /* Join Band Section in Subscription Overlay */
 .subscription-overlay-content .join-band-section {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(248, 249, 250, 0.95);
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   margin: 20px 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid #6c757d;
   backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(108, 117, 125, 0.15);
 }
 
 .subscription-overlay-content .join-band-section h3 {
-  color: white;
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  font-weight: 600;
+  color: #495057;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 .subscription-overlay-content .join-band-section p {
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 15px;
-  font-size: 0.95rem;
+  color: #6c757d;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .subscription-overlay-content .join-band-section .invitation-form {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .subscription-overlay-content .join-band-section .invitation-input {
   flex: 1;
-  min-width: 200px;
-  padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  min-width: 250px;
+  padding: 12px 16px;
+  border: 2px solid #dee2e6;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: white;
+  color: #495057;
   font-size: 14px;
-  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
 }
 
 .subscription-overlay-content .join-band-section .invitation-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: #adb5bd;
 }
 
 .subscription-overlay-content .join-band-section .invitation-input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  border-color: #495057;
+  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
 }
 
 .subscription-overlay-content .join-band-section .join-band-btn {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
   border: none;
@@ -1404,16 +1406,17 @@
   font-weight: 600;
   transition: all 0.3s ease;
   white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
 }
 
-.subscription-overlay-content .join-band-section .join-band-btn:hover {
+.subscription-overlay-content .join-band-section .join-band-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #218838, #1ea085);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
 }
 
 .subscription-overlay-content .join-band-section .join-band-btn:disabled {
-  background: rgba(255, 255, 255, 0.2);
+  background: #6c757d;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
