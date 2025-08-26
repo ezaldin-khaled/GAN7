@@ -697,7 +697,7 @@ const GroupsTab = ({ userData }) => {
       }
       
       // Use the correct API endpoint for band updates
-      await axiosInstance.patch(`/api/bands/${selectedBand.id}/`, formData, { headers });
+      await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, formData, { headers });
       
       setSuccess('Band updated successfully!');
       handleCloseManageModal();
@@ -790,7 +790,7 @@ const GroupsTab = ({ userData }) => {
       }
 
       // Use the correct API endpoint for member removal
-      const response = await axiosInstance.patch(`/api/bands/${selectedBand.id}/`, {
+      const response = await axiosInstance.put(`/api/bands/${selectedBand.id}/update/`, {
         members_to_remove: membersToRemove
       }, { headers });
 
