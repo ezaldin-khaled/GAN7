@@ -1277,11 +1277,15 @@ const GroupsTab = ({ userData }) => {
   const BandScoreDisplay = () => {
     if (!bandScore) return null;
     
+    // Ensure bandScore is an object
+    if (typeof bandScore !== 'object' || bandScore === null) {
+      console.warn('BandScoreDisplay: bandScore is not an object:', bandScore);
+      return null;
+    }
+    
     console.log('BandScoreDisplay - bandScore:', bandScore);
     console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
-    if (bandScore && typeof bandScore === 'object') {
-      console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
-    }
+    console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
     
     // Add defensive programming to handle different bandScore structures
     const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
@@ -1316,9 +1320,32 @@ const GroupsTab = ({ userData }) => {
               <div className="improvement-tips">
                 <h4>How to improve your score:</h4>
                 <ul>
-                  {improvementTips.map((tip, index) => (
-                    <li key={index}>{typeof tip === 'string' ? tip : JSON.stringify(tip)}</li>
-                  ))}
+                  {improvementTips.map((tip, index) => {
+                    // Ensure tip is always a string
+                    let tipText = '';
+                    if (typeof tip === 'string') {
+                      tipText = tip;
+                    } else if (typeof tip === 'object' && tip !== null) {
+                      // If it's an object, try to extract meaningful text
+                      if (tip.message) {
+                        tipText = String(tip.message);
+                      } else if (tip.text) {
+                        tipText = String(tip.text);
+                      } else if (tip.description) {
+                        tipText = String(tip.description);
+                      } else {
+                        // Fallback: convert to JSON string
+                        try {
+                          tipText = JSON.stringify(tip);
+                        } catch (e) {
+                          tipText = 'Improvement tip';
+                        }
+                      }
+                    } else {
+                      tipText = String(tip || 'Improvement tip');
+                    }
+                    return <li key={index}>{tipText}</li>;
+                  })}
                 </ul>
               </div>
             )}
@@ -1352,7 +1379,7 @@ const GroupsTab = ({ userData }) => {
   console.log('- isInBand (combined):', isInBand);
   console.log('- userData.is_in_band:', userData?.is_in_band);
   console.log('- subscriptionStatus.is_in_band:', subscriptionStatus?.is_in_band);
-  console.log('- joinedBands array:', joinedBands);
+  console.log('- joinedBands array:', joinedBands ? 'Array exists' : 'null/undefined');
   console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
   console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
       console.log('- subscriptionStatus:', subscriptionStatus ? 'Object exists' : 'null/undefined');
@@ -1628,7 +1655,7 @@ const GroupsTab = ({ userData }) => {
         </div>
         
         {/* Subscription Status Info */}
-        {subscriptionStatus && (
+        {subscriptionStatus && typeof subscriptionStatus === 'object' && (
           <div className="subscription-status-info">
             <div className="status-card">
               <div className="status-header">
@@ -1640,7 +1667,7 @@ const GroupsTab = ({ userData }) => {
                 </div>
               </div>
               <p className="status-message">{String(subscriptionStatus.message || '')}</p>
-              {subscriptionStatus.subscription && (
+              {subscriptionStatus.subscription && typeof subscriptionStatus.subscription === 'object' && (
                 <div className="subscription-details">
                   <p><strong>Plan:</strong> {String(subscriptionStatus.subscription.plan_name || '')}</p>
                   <p><strong>Status:</strong> {String(subscriptionStatus.subscription.status || '')}</p>
