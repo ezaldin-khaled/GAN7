@@ -18,9 +18,23 @@ function Navbar() {
   const navigate = useNavigate();
 
   useEffect(()=>{
-      window.addEventListener('scroll', ()=>{
-          window.scrollY > 200 ? setSticky(true) : setSticky(false);
-      })
+      const handleScroll = () => {
+          const scrolled = window.scrollY > 100;
+          setSticky(scrolled);
+          
+          // Add scrolled class to nav element for CSS animations
+          const nav = document.querySelector('nav');
+          if (nav) {
+              if (scrolled) {
+                  nav.classList.add('scrolled');
+              } else {
+                  nav.classList.remove('scrolled');
+              }
+          }
+      };
+      
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
   },[]);
 
   const [mobileMenu, setMobileMenu] = useState(false);

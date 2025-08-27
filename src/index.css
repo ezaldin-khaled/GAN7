@@ -1,89 +1,324 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
-*{
+/* CSS Custom Properties for Design System */
+:root {
+  /* Color Palette */
+  --primary-color: #7C3AED;
+  --primary-light: #A78BFA;
+  --primary-dark: #5B21B6;
+  --secondary-color: #F59E0B;
+  --accent-color: #10B981;
+  
+  /* Neutral Colors */
+  --white: #FFFFFF;
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+  
+  /* Semantic Colors */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+  
+  /* Typography */
+  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-secondary: 'Outfit', sans-serif;
+  --font-family-arabic: 'Cairo', sans-serif;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+  
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+  
+  /* Z-Index */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Outfit", sans-serif;
 }
-body{
-  background: #ffffff;
-  font-family: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--white);
+  font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  color: var(--gray-900);
+  overflow-x: hidden;
 }
-a{
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-secondary);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--gray-900);
+  margin-bottom: var(--space-4);
+}
+
+h1 { font-size: var(--text-5xl); }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-3xl); }
+h4 { font-size: var(--text-2xl); }
+h5 { font-size: var(--text-xl); }
+h6 { font-size: var(--text-lg); }
+
+p {
+  margin-bottom: var(--space-4);
+  color: var(--gray-600);
+  line-height: 1.7;
+}
+
+a {
   text-decoration: none;
   color: inherit;
   line-height: 1;
   cursor: pointer;
+  transition: color var(--transition-fast);
 }
 
-.container{
-  padding-left: 10%;
-  padding-right: 10%;
+a:hover {
+  color: var(--primary-color);
 }
 
-/* Components will inherit white background */
-.component {
-  background: #ffffff;
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
 }
 
-/* Only the main navbar keeps its background */
-.main-navbar {
-  background: #6D0098;
+.section {
+  padding: var(--space-20) 0;
 }
 
-.btn{
-  /* width: 170px;
-  height: 50px; */
-  background: transparent;
-  border: 2px solid #eee;
-  outline: 0;
-  border-radius: 16px;
-  cursor: pointer;
-  font-size: 1.1em;
-  color: #eee;
-  font-weight: 600;
-  padding: 14px 25px;
-  transition: 0.3s;
+/* Modern Button System */
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  min-height: 48px;
+  font-family: inherit;
 }
 
-.btn:hover{
-  background: #eee;
-  color: #6D0098;
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-slow);
 }
 
-.btn img{
-  width: 20px;
-  margin-left: 10px;
+.btn:hover::before {
+  left: 100%;
 }
 
-.btn.dark-btn{
-  background: #6D0098;
-  color: #fff;
-}
-.btn.dark-btn:hover{
-  background: #eee;
-  color: #6D0098;
+/* Primary Button */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  color: var(--white);
+  box-shadow: var(--shadow-md);
 }
 
-/* Global Checkbox Styling */
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-color);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ghost Button */
+.btn-ghost {
+  background: transparent;
+  color: var(--gray-600);
+  border-color: var(--gray-200);
+}
+
+.btn-ghost:hover {
+  background: var(--gray-50);
+  color: var(--gray-900);
+  border-color: var(--gray-300);
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  min-height: 36px;
+}
+
+.btn-lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+  min-height: 56px;
+}
+
+/* Modern Card Component */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.card-body {
+  padding: var(--space-6);
+}
+
+.card-footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+/* Modern Form Elements */
+.form-group {
+  margin-bottom: var(--space-6);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: 500;
+  color: var(--gray-700);
+  font-size: var(--text-sm);
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  transition: all var(--transition-fast);
+  background: var(--white);
+  color: var(--gray-900);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--gray-400);
+}
+
+/* Modern Checkbox */
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  border: 2px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
-  transition: all 0.2s ease;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  background-color: var(--white);
+  transition: all var(--transition-fast);
   position: relative;
   appearance: none;
   -webkit-appearance: none;
@@ -93,8 +328,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background-color: #7c2cfcc4;
-  border-color: #7c2cfcc4;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  border-color: var(--primary-color);
 }
 
 input[type="checkbox"]:checked::after {
@@ -103,20 +338,20 @@ input[type="checkbox"]:checked::after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
-  font-size: 14px;
+  color: var(--white);
+  font-size: 12px;
   font-weight: bold;
   line-height: 1;
 }
 
 input[type="checkbox"]:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(124, 44, 252, 0.25);
-  border-color: #7c2cfcc4;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  border-color: var(--primary-color);
 }
 
 input[type="checkbox"]:hover {
-  border-color: #7c2cfcc4;
+  border-color: var(--primary-color);
 }
 
 /* Checkbox label styling */
@@ -124,29 +359,128 @@ label:has(input[type="checkbox"]),
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   cursor: pointer;
-  font-size: 14px;
-  color: #333;
+  font-size: var(--text-sm);
+  color: var(--gray-700);
   font-weight: 500;
-  padding: 8px 0;
-  transition: color 0.2s ease;
+  padding: var(--space-2) 0;
+  transition: color var(--transition-fast);
 }
 
 label:has(input[type="checkbox"]):hover,
 .checkbox-label:hover {
-  color: #333;
+  color: var(--gray-900);
 }
 
-/* media query */
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
 
-@media (max-width: 1200px){
-  .container{
-    padding-left: 5%;
-    padding-right: 5%;
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+.text-primary { color: var(--primary-color); }
+.text-secondary { color: var(--secondary-color); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-error { color: var(--error); }
+.text-info { color: var(--info); }
+
+.bg-primary { background-color: var(--primary-color); }
+.bg-secondary { background-color: var(--secondary-color); }
+.bg-success { background-color: var(--success); }
+.bg-warning { background-color: var(--warning); }
+.bg-error { background-color: var(--error); }
+.bg-info { background-color: var(--info); }
+
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-2xl { box-shadow: var(--shadow-2xl); }
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  .btn{
-    padding: 14px 22px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  
+  h1 { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+  h3 { font-size: var(--text-2xl); }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  
+  .section {
+    padding: var(--space-12) 0;
+  }
+  
+  h1 { font-size: var(--text-3xl); }
+  h2 { font-size: var(--text-2xl); }
+  h3 { font-size: var(--text-xl); }
+  
+  .btn {
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-sm);
   }
 }
 
@@ -157,9 +491,7 @@ label:has(input[type="checkbox"]):hover,
 }
 
 [dir="rtl"] body {
-  font-family: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-family-arabic), var(--font-family-primary);
 }
 
 [dir="rtl"] .language-switcher {
@@ -177,11 +509,11 @@ label:has(input[type="checkbox"]):hover,
 
 /* Arabic font support */
 [lang="ar"] {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family-arabic), var(--font-family-primary);
 }
 
 [lang="ar"] h1, [lang="ar"] h2, [lang="ar"] h3, [lang="ar"] h4, [lang="ar"] h5, [lang="ar"] h6 {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family-arabic), var(--font-family-primary);
 }
 
 /* RTL specific adjustments */
@@ -218,11 +550,6 @@ label:has(input[type="checkbox"]):hover,
   flex-direction: row-reverse;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 /* Hide language switcher button */
 .language-switcher-button {
   display: none !important;
@@ -230,4 +557,29 @@ code {
 
 .language-switcher {
   display: none !important;
+}
+
+/* Code styling */
+code {
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  background: var(--gray-100);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 0.875em;
+  color: var(--primary-color);
+}
+
+pre {
+  background: var(--gray-900);
+  color: var(--gray-100);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin: var(--space-4) 0;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
 }
