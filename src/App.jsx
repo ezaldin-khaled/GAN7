@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import MainPage from './Components/pages/MainPage';
 import LoginPage from './Components/pages/login/LoginPage/authentication';
 import TalentAccount from './Components/pages/useraccount/UserAccountPage';
@@ -12,6 +12,7 @@ import GalleryPage from './Components/pages/GalleryPage';
 import { AuthContext, AuthProvider } from './Components/context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import './i18n'; // Initialize i18n
+import './utils/scrollReveal.js'; // Initialize scroll reveal utilities
 
 // Simple test component to show user data
 const SimpleAccountTest = () => {
@@ -55,6 +56,59 @@ const AuthTest = () => {
 // Component to conditionally redirect based on user type
 const AccountRouter = () => {
   const { user, loading } = useContext(AuthContext);
+  
+  // Initialize scroll reveal utilities
+  useEffect(() => {
+    // Add reveal attributes to sections after component mounts
+    const addRevealAttributes = () => {
+      // Hero section
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        hero.setAttribute('data-reveal', '');
+        hero.setAttribute('data-direction', 'up');
+      }
+
+      // About section
+      const about = document.querySelector('.about');
+      if (about) {
+        about.setAttribute('data-reveal', '');
+        about.setAttribute('data-direction', 'up');
+      }
+
+      // Services section
+      const services = document.querySelector('.serv');
+      if (services) {
+        services.setAttribute('data-reveal', '');
+        services.setAttribute('data-direction', 'up');
+      }
+
+      // Footer section
+      const footer = document.querySelector('.footer');
+      if (footer) {
+        footer.setAttribute('data-reveal', '');
+        footer.setAttribute('data-direction', 'up');
+      }
+
+      // Service cards
+      const serviceCards = document.querySelectorAll('.serv-card');
+      serviceCards.forEach((card, index) => {
+        card.setAttribute('data-reveal', '');
+        card.setAttribute('data-direction', 'up');
+        card.setAttribute('data-delay', index * 100);
+      });
+
+      // About features
+      const aboutFeatures = document.querySelectorAll('.about-feature');
+      aboutFeatures.forEach((feature, index) => {
+        feature.setAttribute('data-reveal', '');
+        feature.setAttribute('data-direction', 'up');
+        feature.setAttribute('data-delay', index * 100);
+      });
+    };
+
+    // Add attributes after a short delay to ensure DOM is ready
+    setTimeout(addRevealAttributes, 100);
+  }, []);
   
   // Fallback to localStorage if AuthContext doesn't provide user data
   const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
