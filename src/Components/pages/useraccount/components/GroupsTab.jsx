@@ -50,7 +50,6 @@ const GroupsTab = ({ userData }) => {
   const [generatedCode, setGeneratedCode] = useState('');
   const [selectedBandForCode, setSelectedBandForCode] = useState(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
-  const [bandScore, setBandScore] = useState(null);
 
   // Enhanced authentication and permission state
   const [currentUser, setCurrentUser] = useState(null);
@@ -294,13 +293,7 @@ const GroupsTab = ({ userData }) => {
          setBands(myBands);
          setJoinedBands(otherBands);
         
-        // Set band score if available
-        if (response.data.band_score) {
-          console.log('Band score data:', response.data.band_score);
-          console.log('Band score type:', typeof response.data.band_score);
-          console.log('Band score keys:', Object.keys(response.data.band_score));
-          setBandScore(response.data.band_score);
-        }
+
       } else {
         // Old format - just bands array
         console.log('Using old format - no subscription_status found');
@@ -380,7 +373,6 @@ const GroupsTab = ({ userData }) => {
       setJoinedBands([]);
       setHasBandSubscription(false);
       setSubscriptionStatus(null);
-      setBandScore(null);
     } finally {
       setLoading(false);
       setSubscriptionLoading(false);
@@ -1036,35 +1028,7 @@ const GroupsTab = ({ userData }) => {
     setShowManageModal(true);
   };
 
-  const handleViewBandScore = (band) => {
-    console.log('Viewing band score for:', band.name);
-    console.log('Band score data:', band);
-    
-    // Get score from multiple possible fields
-    const score = Number(band.profile_score || band.score || band.band_score || 0);
-    const membersCount = band.members_data ? band.members_data.length : (Number(band.members_count) || 0);
-    
-    // Create detailed score message
-    let message = `Band Score for "${band.name}":\n\n`;
-    message += `⭐ Overall Score: ${score}/100\n`;
-    message += `👥 Members: ${membersCount}\n`;
-    message += `🎵 Type: ${band.band_type || 'Not specified'}\n`;
-    message += `📍 Location: ${band.location || 'Not specified'}\n\n`;
-    
-    if (score >= 80) {
-      message += `🎉 Excellent! Your band has a high score. Keep up the great work!`;
-    } else if (score >= 60) {
-      message += `👍 Good score! Consider adding more details to improve your band's visibility.`;
-    } else if (score >= 40) {
-      message += `📈 Your band needs some improvements. Add more details, photos, and member information.`;
-    } else {
-      message += `🚀 Your band is just getting started! Add more information to boost your score.`;
-    }
-    
-    message += `\n\nThis score reflects your band's profile completeness and activity level.`;
-    
-    alert(message);
-  };
+
 
   const handleLeaveBand = async (bandId) => {
     try {
@@ -1312,52 +1276,7 @@ const GroupsTab = ({ userData }) => {
     </div>
   );
 
-  // Band Score Display Component
-  const BandScoreDisplay = () => {
-    if (!bandScore) return null;
-    
-    console.log('BandScoreDisplay - bandScore:', bandScore);
-    console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
-    console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
-    
-    // Add defensive programming to handle different bandScore structures
-    const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || bandScore.band_score || 0;
-    const message = bandScore.message || bandScore.details || bandScore.description || '';
-    const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || bandScore.tips || [];
-    
-    // Calculate total bands and average score
-    const totalBands = bands ? bands.length : 0;
-    const joinedBandsCount = joinedBands ? joinedBands.length : 0;
-    
-    return (
-      <div className="band-score-section">
-        <h2>Band Score Overview</h2>
-        <div className="score-card">
-          <div className="score-main">
-            <span className="score-number">{overallScore}</span>
-            <span className="score-label">Overall Score</span>
-          </div>
-          <div className="score-details">
-            <div className="score-stats">
-              <p><strong>Your Bands:</strong> {totalBands} created, {joinedBandsCount} joined</p>
-              <p><strong>Total Bands:</strong> {totalBands + joinedBandsCount}</p>
-            </div>
-            {message && <p className="score-message">{message}</p>}
-            {improvementTips && improvementTips.length > 0 && (
-              <div className="improvement-tips">
-                <h4>How to improve your score:</h4>
-                <ul>
-                  {improvementTips.map((tip, index) => (
-                    <li key={index}>{typeof tip === 'string' ? tip : JSON.stringify(tip)}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
+
 
   // Show loading state
   if (subscriptionLoading) {
@@ -1642,7 +1561,6 @@ const GroupsTab = ({ userData }) => {
             Auth Error: {authError || 'None'}<br/>
             Bands Count: {bands?.length || 0}<br/>
             Joined Bands Count: {joinedBands?.length || 0}<br/>
-            Band Score Data: {bandScore ? JSON.stringify(bandScore, null, 2) : 'None'}<br/>
             {bands && bands.length > 0 && (
               <div>
                 <strong>First Band Data:</strong><br/>
@@ -1718,54 +1636,7 @@ const GroupsTab = ({ userData }) => {
                   <p>{String(band.description || '')}</p>
                   {band.band_type && <p className="band-genre">{String(band.band_type)}</p>}
                   {band.location && <p className="band-location">{String(band.location)}</p>}
-                  <button 
-                    className="band-members-btn" 
-                    onClick={() => handleViewBandMembers(band)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#2196f3',
-                      cursor: 'pointer',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease',
-                      textDecoration: 'underline'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'rgba(33, 150, 243, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'transparent';
-                    }}
-                  >
-                    👥 Members: {band.members_data ? band.members_data.length : (Number(band.members_count) || 0)}
-                  </button>
-                  <button 
-                    className="band-score-btn" 
-                    onClick={() => handleViewBandScore(band)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#ff9800',
-                      cursor: 'pointer',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease',
-                      textDecoration: 'underline'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'rgba(255, 152, 0, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'transparent';
-                    }}
-                  >
-                    ⭐ Score: {Number(band.profile_score || band.score || band.band_score || 0)}
-                  </button>
+
                 </div>
                 <div className="band-actions">
                   <button 
@@ -2046,8 +1917,7 @@ const GroupsTab = ({ userData }) => {
         )}
       </div> */}
 
-      {/* Band Score Display Component */}
-      <BandScoreDisplay />
+
     </div>
   );
 };
