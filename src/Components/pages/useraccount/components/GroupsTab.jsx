@@ -68,11 +68,6 @@ const GroupsTab = ({ userData }) => {
 
       // Debug: Log token info
       const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-      console.log('🔍 Token payload:', {
-        userId: tokenPayload.user_id || tokenPayload.userId || tokenPayload.id,
-        exp: new Date(tokenPayload.exp * 1000).toISOString(),
-        iat: new Date(tokenPayload.iat * 1000).toISOString()
-      });
 
       // Use existing userData prop (should already be available)
       if (userData) {
@@ -126,14 +121,7 @@ const GroupsTab = ({ userData }) => {
                            band.creator_name === currentUser.username ||
                            band.creator_name === currentUser.full_name;
     
-    console.log('🔍 Creator check for band:', band.name, {
-      currentUser: currentUser.username,
-      bandCreator: band.creator?.username || band.creator_name,
-      isCreatorByFlag,
-      isCreatorById,
-      isCreatorByName,
-      result: isCreatorByFlag || isCreatorById || isCreatorByName
-    });
+
     
     return isCreatorByFlag || isCreatorById || isCreatorByName;
   };
@@ -158,7 +146,7 @@ const GroupsTab = ({ userData }) => {
         )
       ]);
       
-      console.log(`📋 Band details for ${bandId}:`, response.data);
+
       return response.data;
     } catch (err) {
       console.error(`❌ Error fetching band details for ${bandId}:`, err);
@@ -215,11 +203,11 @@ const GroupsTab = ({ userData }) => {
         headers: headers
       });
       
-             console.log('API Response:', response.data);
+
       
       // Check if the response includes subscription_status (new combined format)
       if (response.data.subscription_status) {
-        console.log('Found subscription_status in response:', response.data.subscription_status);
+
         const newSubscriptionStatus = response.data.subscription_status;
         setSubscriptionStatus(newSubscriptionStatus);
         setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
@@ -236,8 +224,7 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
-        console.log('User Data:', userData);
-        console.log('All bands from API:', bands);
+        
         
         // Fetch detailed information for each band to get accurate creator data
         const bandsWithDetails = await Promise.all(
@@ -245,7 +232,6 @@ const GroupsTab = ({ userData }) => {
             try {
               const detailedBand = await fetchBandDetails(band.id);
               if (detailedBand) {
-                console.log(`Detailed band info for ${band.name}:`, detailedBand);
                 return { ...band, ...detailedBand };
               }
             } catch (error) {
@@ -256,25 +242,19 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator?.username || band.creator_name}, Is Creator: ${band.is_creator}`);
+
           
           // Use the new authentication-based creator check
           const isCreator = isBandCreator(band);
           
           if (isCreator) {
-            console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
-            console.log(`❌ Band "${band.name}" does not belong to current user`);
             otherBands.push(band);
           }
         });
         
-        console.log('My bands:', myBands);
-        console.log('Other bands:', otherBands);
-        
         // Set only the user's bands, not all bands
-        console.log('Setting bands state - myBands:', myBands.length, 'otherBands:', otherBands.length);
         
                  // Set only the user's bands, not all bands
          setBands(myBands);
@@ -286,14 +266,10 @@ const GroupsTab = ({ userData }) => {
         }
       } else {
         // Old format - just bands array
-        console.log('Using old format - no subscription_status found');
         
         // Filter bands created by the user vs joined bands
         const myBands = [];
         const otherBands = [];
-        
-        console.log('Using old format - Current userData:', userData);
-        console.log('All bands from API (old format):', response.data);
         
         // For old format, also fetch detailed information for each band
         const bandsWithDetails = await Promise.all(
@@ -301,7 +277,6 @@ const GroupsTab = ({ userData }) => {
             try {
               const detailedBand = await fetchBandDetails(band.id);
               if (detailedBand) {
-                console.log(`Detailed band info for ${band.name} (old format):`, detailedBand);
                 return { ...band, ...detailedBand };
               }
             } catch (error) {
@@ -312,26 +287,18 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
-          console.log(`Band: ${band.name}, Creator: ${band.creator?.username || band.creator_name}, Current user: ${currentUser?.username || currentUser?.full_name}`);
-          
           // Use the new authentication-based creator check
           const isCreator = isBandCreator(band);
           
           if (isCreator) {
-            console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
-            console.log(`❌ Band "${band.name}" does not belong to current user`);
             otherBands.push(band);
           }
         });
         
-        console.log('My bands (old format):', myBands);
-        console.log('Other bands (old format):', otherBands);
-        
         // If no bands are found for the current user, show all bands as a fallback
         if (myBands.length === 0 && response.data.length > 0) {
-          console.log('⚠️ No bands found for current user (old format), showing all bands as fallback');
           setBands(response.data);
           setJoinedBands([]);
         } else {
