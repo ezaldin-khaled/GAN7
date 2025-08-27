@@ -1,445 +1,72 @@
-/* Modern Footer with Enhanced Design */
-.footer {
-  margin: var(--space-24) auto 0;
-  padding: var(--space-16) 0 var(--space-8);
-  background: linear-gradient(135deg, var(--gray-900), var(--gray-800));
-  color: var(--white);
-  position: relative;
-  overflow: hidden;
+.footer{
+    margin: 80px auto;
+    padding-top: 40px;
+    max-width: 90%;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
 }
 
-.footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footer-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23footer-grid)"/></svg>');
-  opacity: 0.3;
-  pointer-events: none;
+.contact-col{
+    flex-basis: 48%;
+    color: #676767;
 }
 
-.footer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+.contact-col h3{
+    color: #000f38;
+    font-weight: 500;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-/* Footer Container */
-.footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-  position: relative;
-  z-index: 2;
+.contact-col h3 img{
+    width: 35px;
+    margin-left: 10px;
 }
 
-/* Footer Grid */
-.footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: var(--space-12);
-  margin-bottom: var(--space-12);
+.contact-col p{
+    max-width: 450px;
+    list-style: 0.3;
 }
 
-/* Footer Column */
-.footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+.contact-col ul li{
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
 }
 
-.footer-col h3 {
-  color: var(--white);
-  font-weight: 700;
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--space-6);
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+.contact-col ul li img{
+    width: 25px;
+    margin-right: 10px;
 }
 
-.footer-col h3::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 40px;
-  height: 3px;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  border-radius: var(--radius-full);
+.footer form input, .footer form textarea{
+    display: block;
+    width: 100%;
+    background: #dddddd;
+    padding: 15px;
+    border: 0;
+    outline: 0;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    resize: none;
+    border-radius: 10px;
 }
 
-.footer-col h3 img {
-  width: 32px;
-  height: 32px;
-  filter: brightness(0) invert(1);
+.contact-col span{
+    display: block;
+    margin: 20px 0;
 }
 
-/* Footer Description */
-.footer-description {
-  color: var(--gray-300);
-  line-height: var(--line-height-relaxed);
-  margin-bottom: var(--space-6);
-  font-size: var(--font-size-base);
-  max-width: 400px;
-}
+/* media query */
 
-/* Footer Links */
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.footer-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  color: var(--gray-300);
-  text-decoration: none;
-  transition: all var(--transition-normal);
-  padding: var(--space-2) 0;
-  position: relative;
-}
-
-.footer-link::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  transition: width var(--transition-normal);
-}
-
-.footer-link:hover {
-  color: var(--white);
-  transform: translateX(8px);
-}
-
-.footer-link:hover::before {
-  width: 20px;
-}
-
-.footer-link img {
-  width: 20px;
-  height: 20px;
-  filter: brightness(0) invert(0.7);
-  transition: all var(--transition-normal);
-}
-
-.footer-link:hover img {
-  filter: brightness(0) invert(1);
-  transform: scale(1.1);
-}
-
-/* Footer Contact Info */
-.footer-contact {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  color: var(--gray-300);
-  transition: all var(--transition-normal);
-  padding: var(--space-2) 0;
-}
-
-.contact-item:hover {
-  color: var(--white);
-  transform: translateX(8px);
-}
-
-.contact-item img {
-  width: 20px;
-  height: 20px;
-  filter: brightness(0) invert(0.7);
-  transition: all var(--transition-normal);
-}
-
-.contact-item:hover img {
-  filter: brightness(0) invert(1);
-  transform: scale(1.1);
-}
-
-/* Footer Form */
-.footer-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.footer-form input,
-.footer-form textarea {
-  width: 100%;
-  padding: var(--space-4);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-lg);
-  color: var(--white);
-  font-size: var(--font-size-base);
-  transition: all var(--transition-normal);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.footer-form input::placeholder,
-.footer-form textarea::placeholder {
-  color: var(--gray-400);
-}
-
-.footer-form input:focus,
-.footer-form textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.footer-form textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-/* Footer Submit Button */
-.footer-submit {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: var(--white);
-  border: none;
-  padding: var(--space-4) var(--space-8);
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  position: relative;
-  overflow: hidden;
-}
-
-.footer-submit::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left var(--transition-slow);
-}
-
-.footer-submit:hover::before {
-  left: 100%;
-}
-
-.footer-submit:hover {
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-/* Social Links */
-.footer-social {
-  display: flex;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-}
-
-.social-link {
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  text-decoration: none;
-  transition: all var(--transition-normal);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.social-link:hover {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: transparent;
-}
-
-/* Footer Bottom */
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: var(--space-8);
-  margin-top: var(--space-8);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}
-
-.footer-copyright {
-  color: var(--gray-400);
-  font-size: var(--font-size-sm);
-}
-
-.footer-bottom-links {
-  display: flex;
-  gap: var(--space-6);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-bottom-link {
-  color: var(--gray-400);
-  text-decoration: none;
-  font-size: var(--font-size-sm);
-  transition: color var(--transition-normal);
-}
-
-.footer-bottom-link:hover {
-  color: var(--white);
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .footer-container {
-    padding: 0 var(--space-4);
-  }
-  
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-8);
-  }
-  
-  .footer-col:first-child {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 768px) {
-  .footer {
-    margin: var(--space-16) auto 0;
-    padding: var(--space-12) 0 var(--space-6);
-  }
-  
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
-  }
-  
-  .footer-col h3 {
-    font-size: var(--font-size-lg);
-  }
-  
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--space-4);
-  }
-  
-  .footer-bottom-links {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-container {
-    padding: 0 var(--space-3);
-  }
-  
-  .footer {
-    padding: var(--space-8) 0 var(--space-4);
-  }
-  
-  .footer-col h3 {
-    font-size: var(--font-size-base);
-  }
-  
-  .footer-description {
-    font-size: var(--font-size-sm);
-  }
-  
-  .footer-form input,
-  .footer-form textarea {
-    padding: var(--space-3);
-    font-size: var(--font-size-sm);
-  }
-  
-  .footer-submit {
-    padding: var(--space-3) var(--space-6);
-    font-size: var(--font-size-sm);
-  }
-  
-  .social-link {
-    width: 36px;
-    height: 36px;
-  }
-}
-
-/* Animation for scroll reveal */
-.footer {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all var(--transition-slow);
-}
-
-.footer.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .footer {
-    background: var(--gray-900);
-    border-top: 2px solid var(--primary-color);
-  }
-  
-  .footer-form input,
-  .footer-form textarea {
-    background: var(--gray-800);
-    border: 2px solid var(--gray-600);
-  }
-  
-  .footer-form input:focus,
-  .footer-form textarea:focus {
-    border-color: var(--primary-color);
-    background: var(--gray-700);
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .footer,
-  .footer-link,
-  .contact-item,
-  .footer-submit,
-  .social-link {
-    animation: none;
-    transition: none;
-  }
-  
-  .footer-submit::before {
-    transition: none;
-  }
+@media (max-width: 700px){
+    .footer{
+        display: block;
+    }
+    .contact-col{
+        padding: 20px;
+    }
 }
