@@ -68,6 +68,11 @@ const GroupsTab = ({ userData }) => {
 
       // Debug: Log token info
       const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+      console.log('🔍 Token payload:', {
+        userId: tokenPayload.user_id || tokenPayload.userId || tokenPayload.id,
+        exp: new Date(tokenPayload.exp * 1000).toISOString(),
+        iat: new Date(tokenPayload.iat * 1000).toISOString()
+      });
 
       // Use existing userData prop (should already be available)
       if (userData) {
@@ -121,7 +126,14 @@ const GroupsTab = ({ userData }) => {
                            band.creator_name === currentUser.username ||
                            band.creator_name === currentUser.full_name;
     
-
+    console.log('🔍 Creator check for band:', band.name, {
+      currentUser: currentUser.username,
+      bandCreator: band.creator?.username || band.creator_name,
+      isCreatorByFlag,
+      isCreatorById,
+      isCreatorByName,
+      result: isCreatorByFlag || isCreatorById || isCreatorByName
+    });
     
     return isCreatorByFlag || isCreatorById || isCreatorByName;
   };
@@ -146,7 +158,7 @@ const GroupsTab = ({ userData }) => {
         )
       ]);
       
-
+      console.log(`📋 Band details for ${bandId}:`, response.data);
       return response.data;
     } catch (err) {
       console.error(`❌ Error fetching band details for ${bandId}:`, err);
@@ -203,11 +215,11 @@ const GroupsTab = ({ userData }) => {
         headers: headers
       });
       
-
+             console.log('API Response:', response.data);
       
       // Check if the response includes subscription_status (new combined format)
       if (response.data.subscription_status) {
-
+        console.log('Found subscription_status in response:', response.data.subscription_status);
         const newSubscriptionStatus = response.data.subscription_status;
         setSubscriptionStatus(newSubscriptionStatus);
         setHasBandSubscription(newSubscriptionStatus.has_bands_subscription);
@@ -224,7 +236,8 @@ const GroupsTab = ({ userData }) => {
         const myBands = [];
         const otherBands = [];
         
-        
+        console.log('User Data:', userData);
+        console.log('All bands from API:', bands);
         
         // Fetch detailed information for each band to get accurate creator data
         const bandsWithDetails = await Promise.all(
@@ -232,6 +245,7 @@ const GroupsTab = ({ userData }) => {
             try {
               const detailedBand = await fetchBandDetails(band.id);
               if (detailedBand) {
+                console.log(`Detailed band info for ${band.name}:`, detailedBand);
                 return { ...band, ...detailedBand };
               }
             } catch (error) {
@@ -242,19 +256,25 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
-
+          console.log(`Band: ${band.name}, Creator: ${band.creator?.username || band.creator_name}, Is Creator: ${band.is_creator}`);
           
           // Use the new authentication-based creator check
           const isCreator = isBandCreator(band);
           
           if (isCreator) {
+            console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
+            console.log(`❌ Band "${band.name}" does not belong to current user`);
             otherBands.push(band);
           }
         });
         
+        console.log('My bands:', myBands);
+        console.log('Other bands:', otherBands);
+        
         // Set only the user's bands, not all bands
+        console.log('Setting bands state - myBands:', myBands.length, 'otherBands:', otherBands.length);
         
                  // Set only the user's bands, not all bands
          setBands(myBands);
@@ -262,14 +282,21 @@ const GroupsTab = ({ userData }) => {
         
         // Set band score if available
         if (response.data.band_score) {
+          console.log('Band score data:', response.data.band_score);
+          console.log('Band score type:', typeof response.data.band_score);
+          console.log('Band score keys:', Object.keys(response.data.band_score));
           setBandScore(response.data.band_score);
         }
       } else {
         // Old format - just bands array
+        console.log('Using old format - no subscription_status found');
         
         // Filter bands created by the user vs joined bands
         const myBands = [];
         const otherBands = [];
+        
+        console.log('Using old format - Current userData:', userData);
+        console.log('All bands from API (old format):', response.data);
         
         // For old format, also fetch detailed information for each band
         const bandsWithDetails = await Promise.all(
@@ -277,6 +304,7 @@ const GroupsTab = ({ userData }) => {
             try {
               const detailedBand = await fetchBandDetails(band.id);
               if (detailedBand) {
+                console.log(`Detailed band info for ${band.name} (old format):`, detailedBand);
                 return { ...band, ...detailedBand };
               }
             } catch (error) {
@@ -287,18 +315,26 @@ const GroupsTab = ({ userData }) => {
         );
         
         bandsWithDetails.forEach(band => {
+          console.log(`Band: ${band.name}, Creator: ${band.creator?.username || band.creator_name}, Current user: ${currentUser?.username || currentUser?.full_name}`);
+          
           // Use the new authentication-based creator check
           const isCreator = isBandCreator(band);
           
           if (isCreator) {
+            console.log(`✅ Band "${band.name}" belongs to current user`);
             myBands.push(band);
           } else {
+            console.log(`❌ Band "${band.name}" does not belong to current user`);
             otherBands.push(band);
           }
         });
         
+        console.log('My bands (old format):', myBands);
+        console.log('Other bands (old format):', otherBands);
+        
         // If no bands are found for the current user, show all bands as a fallback
         if (myBands.length === 0 && response.data.length > 0) {
+          console.log('⚠️ No bands found for current user (old format), showing all bands as fallback');
           setBands(response.data);
           setJoinedBands([]);
         } else {
@@ -986,7 +1022,7 @@ const GroupsTab = ({ userData }) => {
   const handleViewBandScore = (band) => {
     console.log('Viewing band score for:', band.name);
     // Show band score details in an alert or modal
-    const score = band.profile_score || band.score || band.band_score || band.overall_score || 0;
+    const score = Number(band.profile_score) || 0;
     const message = `Band Score for "${band.name}":\n\n⭐ Overall Score: ${score}/100\n\nThis score reflects your band's profile completeness and activity level.`;
     alert(message);
   };
@@ -1241,31 +1277,14 @@ const GroupsTab = ({ userData }) => {
   const BandScoreDisplay = () => {
     if (!bandScore) return null;
     
-    // Ensure bandScore is an object
-    if (typeof bandScore !== 'object' || bandScore === null) {
-      return null;
-    }
-    
-
+    console.log('BandScoreDisplay - bandScore:', bandScore);
+    console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
+    console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
     
     // Add defensive programming to handle different bandScore structures
     const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
-    
-    // Handle message - ensure it's always a string
-    let message = '';
-    if (typeof bandScore.message === 'string') {
-      message = bandScore.message;
-    } else if (typeof bandScore.details === 'string') {
-      message = bandScore.details;
-    }
-    
-    // Handle improvement tips - ensure it's always an array
-    let improvementTips = [];
-    if (Array.isArray(bandScore.how_to_improve)) {
-      improvementTips = bandScore.how_to_improve;
-    } else if (Array.isArray(bandScore.improvement_tips)) {
-      improvementTips = bandScore.improvement_tips;
-    }
+    const message = bandScore.message || bandScore.details || '';
+    const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || [];
     
     return (
       <div className="band-score-section">
@@ -1281,32 +1300,9 @@ const GroupsTab = ({ userData }) => {
               <div className="improvement-tips">
                 <h4>How to improve your score:</h4>
                 <ul>
-                  {improvementTips.map((tip, index) => {
-                    // Ensure tip is always a string
-                    let tipText = '';
-                    if (typeof tip === 'string') {
-                      tipText = tip;
-                    } else if (typeof tip === 'object' && tip !== null) {
-                      // If it's an object, try to extract meaningful text
-                      if (tip.message) {
-                        tipText = String(tip.message);
-                      } else if (tip.text) {
-                        tipText = String(tip.text);
-                      } else if (tip.description) {
-                        tipText = String(tip.description);
-                      } else {
-                        // Fallback: convert to JSON string
-                        try {
-                          tipText = JSON.stringify(tip);
-                        } catch (e) {
-                          tipText = 'Improvement tip';
-                        }
-                      }
-                    } else {
-                      tipText = String(tip || 'Improvement tip');
-                    }
-                    return <li key={index}>{tipText}</li>;
-                  })}
+                  {improvementTips.map((tip, index) => (
+                    <li key={index}>{typeof tip === 'string' ? tip : JSON.stringify(tip)}</li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -1334,15 +1330,28 @@ const GroupsTab = ({ userData }) => {
   const isInBand = userData?.is_in_band === true || subscriptionStatus?.is_in_band === true;
   const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands && !isInBand;
   
-
+    console.log('🔍 Access Control Debug:');
+  console.log('- hasBandSubscription:', hasBandSubscription);
+  console.log('- hasJoinedBands:', hasJoinedBands);
+  console.log('- isInBand (combined):', isInBand);
+  console.log('- userData.is_in_band:', userData?.is_in_band);
+  console.log('- subscriptionStatus.is_in_band:', subscriptionStatus?.is_in_band);
+  console.log('- joinedBands array:', joinedBands);
+  console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
+  console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
+  console.log('- subscriptionStatus:', subscriptionStatus);
   
   if (shouldShowSubscriptionOverlay) {
+    console.log('🔒 Groups tab locked - showing subscription overlay');
+    
     return (
       <div className="content-section">
         <SubscriptionOverlay />
       </div>
     );
   }
+  
+  console.log('✅ Groups tab unlocked - user has subscription or joined bands');
 
   return (
     <div className="content-section">
@@ -1603,7 +1612,7 @@ const GroupsTab = ({ userData }) => {
         </div>
         
         {/* Subscription Status Info */}
-        {subscriptionStatus && typeof subscriptionStatus === 'object' && (
+        {subscriptionStatus && (
           <div className="subscription-status-info">
             <div className="status-card">
               <div className="status-header">
@@ -1615,7 +1624,7 @@ const GroupsTab = ({ userData }) => {
                 </div>
               </div>
               <p className="status-message">{String(subscriptionStatus.message || '')}</p>
-              {subscriptionStatus.subscription && typeof subscriptionStatus.subscription === 'object' && (
+              {subscriptionStatus.subscription && (
                 <div className="subscription-details">
                   <p><strong>Plan:</strong> {String(subscriptionStatus.subscription.plan_name || '')}</p>
                   <p><strong>Status:</strong> {String(subscriptionStatus.subscription.status || '')}</p>
@@ -1667,7 +1676,8 @@ const GroupsTab = ({ userData }) => {
                       borderRadius: '4px',
                       fontSize: '0.9rem',
                       fontWeight: '500',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      textDecoration: 'underline'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'rgba(33, 150, 243, 0.1)';
@@ -1676,7 +1686,7 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    👥 Members: {band.members_count || band.members_data?.length || band.member_count || band.total_members || 0}
+                    👥 Members: {Number(band.members_count) || 0}
                   </button>
                   <button 
                     className="band-score-btn" 
@@ -1690,7 +1700,8 @@ const GroupsTab = ({ userData }) => {
                       borderRadius: '4px',
                       fontSize: '0.9rem',
                       fontWeight: '500',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      textDecoration: 'underline'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'rgba(255, 152, 0, 0.1)';
@@ -1699,7 +1710,7 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    ⭐ Score: {band.profile_score || band.score || band.band_score || band.overall_score || 0}
+                    ⭐ Score: {Number(band.profile_score) || 0}
                   </button>
                 </div>
                 <div className="band-actions">
@@ -1892,6 +1903,7 @@ const GroupsTab = ({ userData }) => {
           </div>
           
           <div className="card-content">
+            {(() => { console.log('Code generator - bands check:', bands, 'length:', bands?.length); return null; })()}
             {bands && bands.length > 0 ? (
               <>
                 <div className="band-selector">
