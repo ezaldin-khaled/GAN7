@@ -493,10 +493,13 @@ const GroupsTab = ({ userData }) => {
       };
       
       console.log('JSON data being sent:', bandData);
+      console.log('Token exists:', !!token);
+      console.log('Is talent user:', isTalent);
       
       // Include the Authorization header and is-talent header
       const headers = {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       };
       
       // Add is-talent header if user is a talent
@@ -505,6 +508,7 @@ const GroupsTab = ({ userData }) => {
       }
       
       console.log('Request headers:', headers);
+      console.log('Full URL will be:', `${axiosInstance.defaults.baseURL}/api/bands/create/`);
       
       const response = await axiosInstance.post('/api/bands/create/', bandData, {
         headers: headers
