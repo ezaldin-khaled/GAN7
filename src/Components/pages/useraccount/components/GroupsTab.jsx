@@ -282,9 +282,6 @@ const GroupsTab = ({ userData }) => {
         
         // Set band score if available
         if (response.data.band_score) {
-          console.log('Band score data:', response.data.band_score);
-          console.log('Band score type:', typeof response.data.band_score);
-          console.log('Band score keys:', Object.keys(response.data.band_score));
           setBandScore(response.data.band_score);
         }
       } else {
@@ -1279,7 +1276,6 @@ const GroupsTab = ({ userData }) => {
     
     // Ensure bandScore is an object
     if (typeof bandScore !== 'object' || bandScore === null) {
-      console.warn('BandScoreDisplay: bandScore is not an object:', bandScore);
       return null;
     }
     
@@ -1371,28 +1367,15 @@ const GroupsTab = ({ userData }) => {
   const isInBand = userData?.is_in_band === true || subscriptionStatus?.is_in_band === true;
   const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands && !isInBand;
   
-    console.log('🔍 Access Control Debug:');
-  console.log('- hasBandSubscription:', hasBandSubscription);
-  console.log('- hasJoinedBands:', hasJoinedBands);
-  console.log('- isInBand (combined):', isInBand);
-  console.log('- userData.is_in_band:', userData?.is_in_band);
-  console.log('- subscriptionStatus.is_in_band:', subscriptionStatus?.is_in_band);
-  console.log('- joinedBands array:', joinedBands ? 'Array exists' : 'null/undefined');
-  console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
-  console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
-      console.log('- subscriptionStatus:', subscriptionStatus ? 'Object exists' : 'null/undefined');
+
   
   if (shouldShowSubscriptionOverlay) {
-    console.log('🔒 Groups tab locked - showing subscription overlay');
-    
     return (
       <div className="content-section">
         <SubscriptionOverlay />
       </div>
     );
   }
-  
-  console.log('✅ Groups tab unlocked - user has subscription or joined bands');
 
   return (
     <div className="content-section">
