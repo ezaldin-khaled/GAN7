@@ -159,7 +159,21 @@ const GroupsTab = ({ userData }) => {
       ]);
       
       console.log(`📋 Band details for ${bandId}:`, response.data);
-      return response.data;
+      
+      // Ensure we have the most accurate data
+      const bandData = response.data;
+      
+      // Log specific fields we're interested in
+      console.log(`📊 Band ${bandId} data breakdown:`);
+      console.log(`  - Members count: ${bandData.members_count}`);
+      console.log(`  - Members data: ${bandData.members_data ? bandData.members_data.length : 'null'} members`);
+      console.log(`  - Profile score: ${bandData.profile_score}`);
+      console.log(`  - Score: ${bandData.score}`);
+      console.log(`  - Band score: ${bandData.band_score}`);
+      console.log(`  - Is creator: ${bandData.is_creator}`);
+      console.log(`  - Creator: ${bandData.creator?.username || bandData.creator_name}`);
+      
+      return bandData;
     } catch (err) {
       console.error(`❌ Error fetching band details for ${bandId}:`, err);
       return null;
@@ -1004,6 +1018,9 @@ const GroupsTab = ({ userData }) => {
 
   const handleViewBandMembers = (band) => {
     console.log('Viewing band members for:', band.name);
+    console.log('Band members data:', band.members_data);
+    console.log('Band members count:', band.members_count);
+    
     // Open the manage modal to show members
     setSelectedBand(band);
     setEditBand({
@@ -1021,9 +1038,31 @@ const GroupsTab = ({ userData }) => {
 
   const handleViewBandScore = (band) => {
     console.log('Viewing band score for:', band.name);
-    // Show band score details in an alert or modal
-    const score = Number(band.profile_score) || 0;
-    const message = `Band Score for "${band.name}":\n\n⭐ Overall Score: ${score}/100\n\nThis score reflects your band's profile completeness and activity level.`;
+    console.log('Band score data:', band);
+    
+    // Get score from multiple possible fields
+    const score = Number(band.profile_score || band.score || band.band_score || 0);
+    const membersCount = band.members_data ? band.members_data.length : (Number(band.members_count) || 0);
+    
+    // Create detailed score message
+    let message = `Band Score for "${band.name}":\n\n`;
+    message += `⭐ Overall Score: ${score}/100\n`;
+    message += `👥 Members: ${membersCount}\n`;
+    message += `🎵 Type: ${band.band_type || 'Not specified'}\n`;
+    message += `📍 Location: ${band.location || 'Not specified'}\n\n`;
+    
+    if (score >= 80) {
+      message += `🎉 Excellent! Your band has a high score. Keep up the great work!`;
+    } else if (score >= 60) {
+      message += `👍 Good score! Consider adding more details to improve your band's visibility.`;
+    } else if (score >= 40) {
+      message += `📈 Your band needs some improvements. Add more details, photos, and member information.`;
+    } else {
+      message += `🚀 Your band is just getting started! Add more information to boost your score.`;
+    }
+    
+    message += `\n\nThis score reflects your band's profile completeness and activity level.`;
+    
     alert(message);
   };
 
@@ -1282,20 +1321,28 @@ const GroupsTab = ({ userData }) => {
     console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
     
     // Add defensive programming to handle different bandScore structures
-    const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
-    const message = bandScore.message || bandScore.details || '';
-    const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || [];
+    const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || bandScore.band_score || 0;
+    const message = bandScore.message || bandScore.details || bandScore.description || '';
+    const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || bandScore.tips || [];
+    
+    // Calculate total bands and average score
+    const totalBands = bands ? bands.length : 0;
+    const joinedBandsCount = joinedBands ? joinedBands.length : 0;
     
     return (
       <div className="band-score-section">
-        <h2>Band Score</h2>
+        <h2>Band Score Overview</h2>
         <div className="score-card">
           <div className="score-main">
             <span className="score-number">{overallScore}</span>
             <span className="score-label">Overall Score</span>
           </div>
           <div className="score-details">
-            <p className="score-message">{message}</p>
+            <div className="score-stats">
+              <p><strong>Your Bands:</strong> {totalBands} created, {joinedBandsCount} joined</p>
+              <p><strong>Total Bands:</strong> {totalBands + joinedBandsCount}</p>
+            </div>
+            {message && <p className="score-message">{message}</p>}
             {improvementTips && improvementTips.length > 0 && (
               <div className="improvement-tips">
                 <h4>How to improve your score:</h4>
@@ -1594,7 +1641,14 @@ const GroupsTab = ({ userData }) => {
             User ID: {currentUser?.id || 'Not loaded'}<br/>
             Auth Error: {authError || 'None'}<br/>
             Bands Count: {bands?.length || 0}<br/>
-            Joined Bands Count: {joinedBands?.length || 0}
+            Joined Bands Count: {joinedBands?.length || 0}<br/>
+            Band Score Data: {bandScore ? JSON.stringify(bandScore, null, 2) : 'None'}<br/>
+            {bands && bands.length > 0 && (
+              <div>
+                <strong>First Band Data:</strong><br/>
+                {JSON.stringify(bands[0], null, 2)}
+              </div>
+            )}
           </div>
         )}
         
@@ -1686,7 +1740,7 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    👥 Members: {Number(band.members_count) || 0}
+                    👥 Members: {band.members_data ? band.members_data.length : (Number(band.members_count) || 0)}
                   </button>
                   <button 
                     className="band-score-btn" 
@@ -1710,7 +1764,7 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    ⭐ Score: {Number(band.profile_score) || 0}
+                    ⭐ Score: {Number(band.profile_score || band.score || band.band_score || 0)}
                   </button>
                 </div>
                 <div className="band-actions">
