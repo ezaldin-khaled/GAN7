@@ -100,8 +100,10 @@ ul li{
 
 /* Avatar styles */
 .avatar-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.8);
     cursor: pointer;
     padding: 0;
     border-radius: 50%;
@@ -111,13 +113,17 @@ ul li{
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
     margin: 0;
     vertical-align: middle;
 }
 
 .avatar-btn:hover {
     transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 1);
 }
 
 /* Ensure avatar list item is properly aligned */
