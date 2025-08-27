@@ -1297,7 +1297,10 @@ const GroupsTab = ({ userData }) => {
   }
 
   // Show subscription overlay only if user doesn't have band subscription AND has no joined bands
-  // Allow unsubscribed users to join bands but require subscription for creating bands
+  // Groups tab access control: Unlock if user has subscription OR is in a band
+  // Two conditions to unlock the tab:
+  // 1. User has band subscription (hasBandSubscription = true)
+  // 2. User is in a band (isInBand = true OR hasJoinedBands = true)
   const hasJoinedBands = joinedBands && joinedBands.length > 0;
   const isInBand = userData?.is_in_band === true;
   const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands && !isInBand;
