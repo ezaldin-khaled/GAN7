@@ -36,7 +36,9 @@ export const AuthProvider = ({ children }) => {
           // Update user data with fresh data from server
           const updatedUser = {
             ...parsedUser,
-            ...response.data
+            ...response.data,
+            // Ensure profilePic field is preserved from API response
+            profilePic: response.data.profile_picture || parsedUser.profilePic
           };
           
           setUser(updatedUser);
