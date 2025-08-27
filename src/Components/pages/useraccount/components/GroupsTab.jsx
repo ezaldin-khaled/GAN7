@@ -1283,9 +1283,7 @@ const GroupsTab = ({ userData }) => {
       return null;
     }
     
-    console.log('BandScoreDisplay - bandScore:', bandScore);
-    console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
-    console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
+
     
     // Add defensive programming to handle different bandScore structures
     const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
@@ -1728,17 +1726,7 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    👥 Members: {(() => {
-                      const memberCount = band.members_count || band.members_data?.length || band.member_count || band.total_members || 0;
-                      console.log(`Band "${band.name}" member count:`, {
-                        members_count: band.members_count,
-                        members_data_length: band.members_data?.length,
-                        member_count: band.member_count,
-                        total_members: band.total_members,
-                        final: memberCount
-                      });
-                      return memberCount;
-                    })()}
+                    👥 Members: {band.members_count || band.members_data?.length || band.member_count || band.total_members || 0}
                   </button>
                   <button 
                     className="band-score-btn" 
@@ -1761,17 +1749,7 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    ⭐ Score: {(() => {
-                      const score = band.profile_score || band.score || band.band_score || band.overall_score || 0;
-                      console.log(`Band "${band.name}" score:`, {
-                        profile_score: band.profile_score,
-                        score: band.score,
-                        band_score: band.band_score,
-                        overall_score: band.overall_score,
-                        final: score
-                      });
-                      return score;
-                    })()}
+                    ⭐ Score: {band.profile_score || band.score || band.band_score || band.overall_score || 0}
                   </button>
                 </div>
                 <div className="band-actions">
@@ -1964,7 +1942,6 @@ const GroupsTab = ({ userData }) => {
           </div>
           
           <div className="card-content">
-            {(() => { console.log('Code generator - bands check:', bands, 'length:', bands?.length); return null; })()}
             {bands && bands.length > 0 ? (
               <>
                 <div className="band-selector">
