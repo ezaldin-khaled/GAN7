@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './UserAccountPage.css';
 import './EnhancedTabStyles.css'; // Import the enhanced styles
 import axiosInstance from '../../../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import Sidebar from './components/Sidebar';
 import ProfileTab from './components/ProfileTab';
 import MediaTab from './components/MediaTab';
@@ -25,6 +26,7 @@ const tabs = [
 ];
 
 const UserAccountPage = () => {
+  const { user: authUser, updateUser } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState({
     fullName: '', email: '', role: '', location: '',
@@ -302,7 +304,19 @@ const UserAccountPage = () => {
       });
       
       // Update the profile image with the response URL
-      setProfileImage(response.data.profile_picture);
+      const newProfilePicture = response.data.profile_picture;
+      setProfileImage(newProfilePicture);
+      
+      // Update the AuthContext user data with the new profile picture
+      if (authUser) {
+        const updatedUser = {
+          ...authUser,
+          profilePic: newProfilePicture
+        };
+        console.log('🔄 Updating AuthContext with new profile picture:', newProfilePicture);
+        updateUser(updatedUser);
+      }
+      
       setSuccessMessage('Profile image updated successfully!');
       setLoading(false);
     } catch (err) {

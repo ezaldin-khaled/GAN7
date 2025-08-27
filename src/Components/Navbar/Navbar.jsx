@@ -67,6 +67,8 @@ function Navbar() {
       );
     } else if (user) {
       // Show avatar when user is logged in
+      console.log('🔍 Navbar - User profile pic:', user.profilePic);
+      console.log('🔍 Navbar - User data:', user);
       return (
         <li>
           <button className="avatar-btn" onClick={handleAvatarClick}>
@@ -76,6 +78,7 @@ function Navbar() {
                 alt="Profile" 
                 className="avatar-img"
                 onError={(e) => {
+                  console.log('🔍 Navbar - Image failed to load:', user.profilePic);
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}
