@@ -1022,7 +1022,7 @@ const GroupsTab = ({ userData }) => {
   const handleViewBandScore = (band) => {
     console.log('Viewing band score for:', band.name);
     // Show band score details in an alert or modal
-    const score = Number(band.profile_score) || 0;
+    const score = band.profile_score || band.score || band.band_score || band.overall_score || 0;
     const message = `Band Score for "${band.name}":\n\n⭐ Overall Score: ${score}/100\n\nThis score reflects your band's profile completeness and activity level.`;
     alert(message);
   };
@@ -1676,8 +1676,7 @@ const GroupsTab = ({ userData }) => {
                       borderRadius: '4px',
                       fontSize: '0.9rem',
                       fontWeight: '500',
-                      transition: 'all 0.2s ease',
-                      textDecoration: 'underline'
+                      transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'rgba(33, 150, 243, 0.1)';
@@ -1686,7 +1685,17 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    👥 Members: {Number(band.members_count) || 0}
+                    👥 Members: {(() => {
+                      const memberCount = band.members_count || band.members_data?.length || band.member_count || band.total_members || 0;
+                      console.log(`Band "${band.name}" member count:`, {
+                        members_count: band.members_count,
+                        members_data_length: band.members_data?.length,
+                        member_count: band.member_count,
+                        total_members: band.total_members,
+                        final: memberCount
+                      });
+                      return memberCount;
+                    })()}
                   </button>
                   <button 
                     className="band-score-btn" 
@@ -1700,8 +1709,7 @@ const GroupsTab = ({ userData }) => {
                       borderRadius: '4px',
                       fontSize: '0.9rem',
                       fontWeight: '500',
-                      transition: 'all 0.2s ease',
-                      textDecoration: 'underline'
+                      transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'rgba(255, 152, 0, 0.1)';
@@ -1710,7 +1718,17 @@ const GroupsTab = ({ userData }) => {
                       e.target.style.backgroundColor = 'transparent';
                     }}
                   >
-                    ⭐ Score: {Number(band.profile_score) || 0}
+                    ⭐ Score: {(() => {
+                      const score = band.profile_score || band.score || band.band_score || band.overall_score || 0;
+                      console.log(`Band "${band.name}" score:`, {
+                        profile_score: band.profile_score,
+                        score: band.score,
+                        band_score: band.band_score,
+                        overall_score: band.overall_score,
+                        final: score
+                      });
+                      return score;
+                    })()}
                   </button>
                 </div>
                 <div className="band-actions">
