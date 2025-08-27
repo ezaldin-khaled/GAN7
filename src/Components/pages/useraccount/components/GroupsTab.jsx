@@ -1002,6 +1002,31 @@ const GroupsTab = ({ userData }) => {
     }
   };
 
+  const handleViewBandMembers = (band) => {
+    console.log('Viewing band members for:', band.name);
+    // Open the manage modal to show members
+    setSelectedBand(band);
+    setEditBand({
+      name: band.name,
+      description: band.description,
+      genre: band.genre || '',
+      location: band.location || '',
+      contact_email: band.contact_email || '',
+      website: band.website || ''
+    });
+    setMembersToUpdate([]);
+    setMembersToRemove([]);
+    setShowManageModal(true);
+  };
+
+  const handleViewBandScore = (band) => {
+    console.log('Viewing band score for:', band.name);
+    // Show band score details in an alert or modal
+    const score = Number(band.profile_score) || 0;
+    const message = `Band Score for "${band.name}":\n\n⭐ Overall Score: ${score}/100\n\nThis score reflects your band's profile completeness and activity level.`;
+    alert(message);
+  };
+
   const handleLeaveBand = async (bandId) => {
     try {
       // Update to the correct endpoint
@@ -1639,8 +1664,54 @@ const GroupsTab = ({ userData }) => {
                   <p>{String(band.description || '')}</p>
                   {band.band_type && <p className="band-genre">{String(band.band_type)}</p>}
                   {band.location && <p className="band-location">{String(band.location)}</p>}
-                  <p className="band-members">Members: {Number(band.members_count) || 0}</p>
-                  <p className="band-score">Score: {Number(band.profile_score) || 0}</p>
+                  <button 
+                    className="band-members-btn" 
+                    onClick={() => handleViewBandMembers(band)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#2196f3',
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      textDecoration: 'underline'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'rgba(33, 150, 243, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    👥 Members: {Number(band.members_count) || 0}
+                  </button>
+                  <button 
+                    className="band-score-btn" 
+                    onClick={() => handleViewBandScore(band)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#ff9800',
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      textDecoration: 'underline'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'rgba(255, 152, 0, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    ⭐ Score: {Number(band.profile_score) || 0}
+                  </button>
                 </div>
                 <div className="band-actions">
                   <button 
