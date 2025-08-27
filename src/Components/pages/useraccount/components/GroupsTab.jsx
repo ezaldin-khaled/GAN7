@@ -1279,12 +1279,28 @@ const GroupsTab = ({ userData }) => {
     
     console.log('BandScoreDisplay - bandScore:', bandScore);
     console.log('BandScoreDisplay - bandScore type:', typeof bandScore);
-    console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
+    if (bandScore && typeof bandScore === 'object') {
+      console.log('BandScoreDisplay - bandScore keys:', Object.keys(bandScore));
+    }
     
     // Add defensive programming to handle different bandScore structures
     const overallScore = bandScore.overall_score || bandScore.total || bandScore.score || 0;
-    const message = bandScore.message || bandScore.details || '';
-    const improvementTips = bandScore.how_to_improve || bandScore.improvement_tips || [];
+    
+    // Handle message - ensure it's always a string
+    let message = '';
+    if (typeof bandScore.message === 'string') {
+      message = bandScore.message;
+    } else if (typeof bandScore.details === 'string') {
+      message = bandScore.details;
+    }
+    
+    // Handle improvement tips - ensure it's always an array
+    let improvementTips = [];
+    if (Array.isArray(bandScore.how_to_improve)) {
+      improvementTips = bandScore.how_to_improve;
+    } else if (Array.isArray(bandScore.improvement_tips)) {
+      improvementTips = bandScore.improvement_tips;
+    }
     
     return (
       <div className="band-score-section">
@@ -1339,7 +1355,7 @@ const GroupsTab = ({ userData }) => {
   console.log('- joinedBands array:', joinedBands);
   console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
   console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
-  console.log('- subscriptionStatus:', subscriptionStatus);
+      console.log('- subscriptionStatus:', subscriptionStatus ? 'Object exists' : 'null/undefined');
   
   if (shouldShowSubscriptionOverlay) {
     console.log('🔒 Groups tab locked - showing subscription overlay');
