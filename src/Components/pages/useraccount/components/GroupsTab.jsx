@@ -1299,11 +1299,14 @@ const GroupsTab = ({ userData }) => {
   // Show subscription overlay only if user doesn't have band subscription AND has no joined bands
   // Allow unsubscribed users to join bands but require subscription for creating bands
   const hasJoinedBands = joinedBands && joinedBands.length > 0;
-  const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands;
+  const isInBand = userData?.is_in_band === true;
+  const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands && !isInBand;
   
   console.log('🔍 Access Control Debug:');
   console.log('- hasBandSubscription:', hasBandSubscription);
   console.log('- hasJoinedBands:', hasJoinedBands);
+  console.log('- isInBand (from userData):', isInBand);
+  console.log('- userData.is_in_band:', userData?.is_in_band);
   console.log('- joinedBands array:', joinedBands);
   console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
   console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
@@ -1326,7 +1329,7 @@ const GroupsTab = ({ userData }) => {
       <h1 className="section-title">Bands</h1>
       
       {/* Limited View for Unsubscribed Users */}
-      {!hasBandSubscription && (
+      {!hasBandSubscription && !isInBand && (
         <div className="limited-access-notice" style={{
           background: 'linear-gradient(135deg, #ffd93d, #ffb347)',
           color: '#333',
@@ -1358,7 +1361,7 @@ const GroupsTab = ({ userData }) => {
       )}
       
       {/* Prominent Join Band Section for Unsubscribed Users */}
-      {!hasBandSubscription && (
+      {!hasBandSubscription && !isInBand && (
         <div className="prominent-join-section" style={{
           background: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
           padding: '32px',
@@ -1467,7 +1470,7 @@ const GroupsTab = ({ userData }) => {
       )}
       
       {/* Display Joined Bands for Unsubscribed Users */}
-      {!hasBandSubscription && hasJoinedBands && (
+      {!hasBandSubscription && !isInBand && hasJoinedBands && (
         <div className="joined-bands-section" style={{
           background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
           padding: '24px',
@@ -1759,7 +1762,7 @@ const GroupsTab = ({ userData }) => {
 
       {/* Invitation code input section */}
       {/* Join Band Section for Unsubscribed Users */}
-      {!hasBandSubscription && (
+      {!hasBandSubscription && !isInBand && (
         <div className="join-band-section prominent-join-section">
           <h2>🎵 Join Another Band</h2>
           <p>Have an invitation code? You can join bands even without a subscription!</p>
