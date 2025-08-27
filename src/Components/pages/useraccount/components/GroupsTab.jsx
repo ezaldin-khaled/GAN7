@@ -382,17 +382,17 @@ const GroupsTab = ({ userData }) => {
       // Validate authentication first
       await validateAuthentication();
       
-      // Check if user just completed a subscription
-      const pendingSubscription = sessionStorage.getItem('pendingSubscription');
-      const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
-      
-      if (shouldForceRefresh) {
-        console.log('Detected recent subscription, forcing refresh...');
-        sessionStorage.removeItem('pendingSubscription'); // Clear the flag
-        fetchBands(true); // Force refresh
-      } else {
-        fetchBands();
-      }
+    // Check if user just completed a subscription
+    const pendingSubscription = sessionStorage.getItem('pendingSubscription');
+    const shouldForceRefresh = pendingSubscription === 'BANDS' || pendingSubscription === 'bands';
+    
+    if (shouldForceRefresh) {
+      console.log('Detected recent subscription, forcing refresh...');
+      sessionStorage.removeItem('pendingSubscription'); // Clear the flag
+      fetchBands(true); // Force refresh
+    } else {
+      fetchBands();
+    }
     };
     
     initializeComponent();
@@ -415,15 +415,15 @@ const GroupsTab = ({ userData }) => {
 
   const handleCloseModal = () => {
     setShowCreateModal(false);
-         setNewBand({
-       name: '',
-       description: '',
-       genre: '',
-       location: '',
-       contact_email: '',
+    setNewBand({
+      name: '',
+      description: '',
+      genre: '',
+      location: '',
+      contact_email: '',
        contact_phone: '',
-       website: ''
-     });
+      website: ''
+    });
     setUploadedImage(null);
   };
 
@@ -747,7 +747,7 @@ const GroupsTab = ({ userData }) => {
           ]);
           
           console.log('✅ Band updated successfully:', response.data);
-          setSuccess('Band updated successfully!');
+      setSuccess('Band updated successfully!');
           
           // Handle image upload separately if there's an image
           if (editImage) {
@@ -765,8 +765,8 @@ const GroupsTab = ({ userData }) => {
             console.log('📤 Handling member removal separately...');
             await handleRemoveMembers();
           } else {
-            handleCloseManageModal();
-            fetchBands(); // Refresh the bands list
+      handleCloseManageModal();
+      fetchBands(); // Refresh the bands list
           }
           
           return; // Success, exit the retry loop
@@ -811,15 +811,15 @@ const GroupsTab = ({ userData }) => {
               errorMessage = data.error;
             } else if (data?.detail) {
               errorMessage = data.detail;
-            } else {
+          } else {
               // Extract validation errors
-              const errorMessages = [];
+            const errorMessages = [];
               Object.entries(data).forEach(([key, value]) => {
-                const valueStr = Array.isArray(value) ? value.join(', ') : value;
-                errorMessages.push(`${key}: ${valueStr}`);
-              });
-              errorMessage = errorMessages.join('\n');
-            }
+              const valueStr = Array.isArray(value) ? value.join(', ') : value;
+              errorMessages.push(`${key}: ${valueStr}`);
+            });
+            errorMessage = errorMessages.join('\n');
+          }
             break;
           default:
             errorMessage = data?.detail || data?.error || data?.message || 'An unexpected error occurred.';
@@ -972,7 +972,7 @@ const GroupsTab = ({ userData }) => {
       setLoading(false);
     }
   };
-
+  
   const handleCloseManageModal = () => {
     setShowManageModal(false);
     setSelectedBand(null);
@@ -1302,14 +1302,15 @@ const GroupsTab = ({ userData }) => {
   // 1. User has band subscription (hasBandSubscription = true)
   // 2. User is in a band (isInBand = true OR hasJoinedBands = true)
   const hasJoinedBands = joinedBands && joinedBands.length > 0;
-  const isInBand = userData?.is_in_band === true;
+  const isInBand = userData?.is_in_band === true || subscriptionStatus?.is_in_band === true;
   const shouldShowSubscriptionOverlay = !hasBandSubscription && !hasJoinedBands && !isInBand;
   
-  console.log('🔍 Access Control Debug:');
+    console.log('🔍 Access Control Debug:');
   console.log('- hasBandSubscription:', hasBandSubscription);
   console.log('- hasJoinedBands:', hasJoinedBands);
-  console.log('- isInBand (from userData):', isInBand);
+  console.log('- isInBand (combined):', isInBand);
   console.log('- userData.is_in_band:', userData?.is_in_band);
+  console.log('- subscriptionStatus.is_in_band:', subscriptionStatus?.is_in_band);
   console.log('- joinedBands array:', joinedBands);
   console.log('- joinedBands length:', joinedBands ? joinedBands.length : 'null');
   console.log('- shouldShowSubscriptionOverlay:', shouldShowSubscriptionOverlay);
