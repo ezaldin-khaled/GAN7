@@ -79,17 +79,16 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
       </div>
       
       <div className="sidebar-menu">
-        <button className="menu-item back-to-main-btn" onClick={handleBackToMain}>
-          <FaHome className="menu-icon" />
-          <span>Back to Main Page</span>
-        </button>
-        
         {menuItems.map(({ id, icon: Icon, label }) => (
           <button key={id} className={`menu-item ${activeTab === id ? 'active' : ''}`} onClick={() => handleTabChange(id)}>
             <Icon className="menu-icon" />
             <span>{label}</span>
           </button>
         ))}
+        <button className="menu-item back-to-main-btn" onClick={handleBackToMain}>
+          <FaHome className="menu-icon" />
+          <span>Back to Main Page</span>
+        </button>
         <button className="menu-item logout-btn" onClick={handleLogout}>
           <FaSignOutAlt className="menu-icon" />
           <span>Logout</span>
