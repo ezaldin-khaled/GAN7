@@ -1341,87 +1341,6 @@
   transform: translateY(0);
 }
 
-/* Join Band Section in Subscription Overlay */
-.subscription-overlay-content .join-band-section {
-  background: rgba(248, 249, 250, 0.95);
-  border-radius: 12px;
-  padding: 24px;
-  margin: 20px 0;
-  border: 2px solid #6c757d;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(108, 117, 125, 0.15);
-}
-
-.subscription-overlay-content .join-band-section h3 {
-  color: #495057;
-  margin-bottom: 12px;
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
-.subscription-overlay-content .join-band-section p {
-  color: #6c757d;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.subscription-overlay-content .join-band-section .invitation-form {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.subscription-overlay-content .join-band-section .invitation-input {
-  flex: 1;
-  min-width: 250px;
-  padding: 12px 16px;
-  border: 2px solid #dee2e6;
-  border-radius: 8px;
-  background: white;
-  color: #495057;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.subscription-overlay-content .join-band-section .invitation-input::placeholder {
-  color: #adb5bd;
-}
-
-.subscription-overlay-content .join-band-section .invitation-input:focus {
-  outline: none;
-  border-color: #495057;
-  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
-}
-
-.subscription-overlay-content .join-band-section .join-band-btn {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #28a745, #20c997);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
-}
-
-.subscription-overlay-content .join-band-section .join-band-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #218838, #1ea085);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
-}
-
-.subscription-overlay-content .join-band-section .join-band-btn:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
 /* Subscription Refresh Section Styles */
 .subscription-refresh-section {
   background: rgba(255, 193, 7, 0.1);
@@ -2035,21 +1954,28 @@
 }
 
 .code-generator-card .card-header h2 {
-  color: #1a1a1a;
+  color: white;
   margin-bottom: 12px;
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-shadow: none;
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: unset;
-  background-clip: unset;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.2);
   position: relative;
-  animation: none;
+  animation: titleGlow 3s ease-in-out infinite;
 }
 
 .code-generator-card .card-header h2::after {
-  display: none;
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ffffff, transparent);
+  border-radius: 2px;
+  animation: titleUnderline 3s ease-in-out infinite;
 }
 
 @keyframes titleGlow {
@@ -2097,7 +2023,7 @@
   display: flex;
   gap: 20px;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
   background: rgba(255, 255, 255, 0.1);
   padding: 24px;
@@ -2166,34 +2092,31 @@
 
 .generate-section {
   text-align: center;
-  margin: 20px 0;
-  padding: 0;
-  background-color: transparent;
-  border-radius: 12px;
-  display: inline-block;
+  margin-bottom: 24px;
 }
 
 .generate-code-btn {
   background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
   color: white;
   border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
+  padding: 18px 36px;
+  border-radius: 16px;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 6px 20px rgba(40, 167, 69, 0.3),
-    0 3px 10px rgba(0, 0, 0, 0.1);
+    0 8px 24px rgba(40, 167, 69, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   position: relative;
   overflow: hidden;
-  max-width: 100%;
+  margin: 0;
 }
 
 .generate-code-btn::before {
@@ -2212,10 +2135,11 @@
 }
 
 .generate-code-btn:hover {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-4px) scale(1.05);
   box-shadow: 
-    0 10px 30px rgba(40, 167, 69, 0.4),
-    0 5px 15px rgba(0, 0, 0, 0.12);
+    0 16px 40px rgba(40, 167, 69, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   background: linear-gradient(135deg, #218838 0%, #1ea085 50%, #138496 100%);
 }
 
@@ -2518,215 +2442,6 @@
   .generate-code-btn {
     padding: 14px 24px;
     font-size: 1rem;
-  }
-}
-
-/* Join Band Section for Unsubscribed Users */
-.join-band-section {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  padding: 24px;
-  border-radius: 16px;
-  margin-top: 32px;
-  border: 1px solid rgba(130, 54, 252, 0.1);
-  box-shadow: 0 4px 20px rgba(130, 54, 252, 0.08);
-  transition: all 0.3s ease;
-}
-
-.join-band-section:hover {
-  box-shadow: 0 8px 30px rgba(130, 54, 252, 0.12);
-  transform: translateY(-2px);
-}
-
-.join-band-section h2 {
-  color: #1a1a1a;
-  margin-bottom: 16px;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.join-band-section p {
-  color: #666;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.join-band-section .invitation-form {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.join-band-section .invitation-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-}
-
-.join-band-section .invitation-input:focus {
-  outline: none;
-  border-color: #8236fc;
-  box-shadow: 0 0 0 3px rgba(130, 54, 252, 0.1);
-}
-
-.join-band-section .join-band-btn {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #28a745, #20c997);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.join-band-section .join-band-btn:hover {
-  background: linear-gradient(135deg, #218838, #1ea085);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.join-band-section .join-band-btn:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Limited Access Notice */
-.limited-access-notice {
-  background: linear-gradient(135deg, #ffd93d, #ffb347);
-  color: #333;
-  padding: 16px 20px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  border-left: 4px solid #ff9500;
-  font-weight: 500;
-  animation: slideInDown 0.5s ease-out;
-}
-
-.limited-access-notice button {
-  background: rgba(0, 0, 0, 0.1);
-  border: none;
-  color: #333;
-  padding: 8px 16px;
-  border-radius: 6px;
-  margin-left: 12px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.limited-access-notice button:hover {
-  background: rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
-}
-
-/* Prominent Join Band Section */
-.prominent-join-section {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  padding: 32px;
-  border-radius: 20px;
-  margin-bottom: 32px;
-  border: 2px solid #6c757d;
-  box-shadow: 0 8px 32px rgba(108, 117, 125, 0.15);
-  text-align: center;
-  animation: slideInUp 0.6s ease-out;
-}
-
-.prominent-join-section h2 {
-  color: #495057;
-  margin-bottom: 16px;
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.prominent-join-section p {
-  color: #6c757d;
-  margin-bottom: 24px;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-.join-form-container {
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.prominent-join-section .invitation-form {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.prominent-join-section .invitation-input {
-  flex: 1;
-  min-width: 300px;
-  padding: 16px 20px;
-  border: 2px solid #dee2e6;
-  border-radius: 12px;
-  font-size: 16px;
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.1);
-  transition: all 0.3s ease;
-}
-
-.prominent-join-section .invitation-input:focus {
-  outline: none;
-  border-color: #495057;
-  box-shadow: 0 4px 20px rgba(108, 117, 125, 0.2);
-}
-
-.prominent-join-section .invitation-input::placeholder {
-  color: #adb5bd;
-}
-
-.prominent-join-section .join-band-btn {
-  padding: 16px 32px;
-  background: linear-gradient(135deg, #28a745, #20c997);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-  min-width: 140px;
-}
-
-.prominent-join-section .join-band-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #218838, #1ea085);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-}
-
-.prominent-join-section .join-band-btn:disabled {
-  background: #9e9e9e;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 

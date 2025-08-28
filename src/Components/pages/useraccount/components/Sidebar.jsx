@@ -1,5 +1,6 @@
 import React from 'react';
-import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox } from 'react-icons/fa';
+import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import useImageWithRetry from '../../../../hooks/useImageWithRetry';
 
 // Default menu items for talent users
@@ -23,11 +24,17 @@ const backgroundMenuItems = [
 ];
 
 const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handleProfileImageChange, handleLogout, menuItems = defaultMenuItems, isBackground = false }) => {
+  const navigate = useNavigate();
+  
   // Use the retry hook for profile image loading
   const { imageSrc, isLoading, retryCount, useFallback } = useImageWithRetry(
     profileImage, 
     5 // 5 retries
   );
+
+  const handleBackToMain = () => {
+    navigate('/');
+  };
 
   return (
     <div className="account-sidebar">
@@ -72,6 +79,10 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
       </div>
       
       <div className="sidebar-menu">
+        <button className="menu-item back-to-main-btn" onClick={handleBackToMain}>
+          <FaHome className="menu-icon" />
+          <span>Back to Main Page</span>
+        </button>
         
         {menuItems.map(({ id, icon: Icon, label }) => (
           <button key={id} className={`menu-item ${activeTab === id ? 'active' : ''}`} onClick={() => handleTabChange(id)}>
