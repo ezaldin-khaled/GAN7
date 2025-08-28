@@ -30,6 +30,7 @@ const fetchCSRFToken = async () => {
       '/csrf/',
       '/api/csrf/',
       '/admin/',  // Django admin usually sets CSRF token
+      '/',        // Root endpoint as last resort
     ];
     
     for (const endpoint of endpoints) {
@@ -43,6 +44,13 @@ const fetchCSRFToken = async () => {
           }
         });
         
+        // Check if CSRF token was set in cookies after any request (even 404s can set cookies)
+        const csrfFromCookie = getCSRFToken();
+        if (csrfFromCookie) {
+          console.log(`🔒 CSRF token found in cookie after ${endpoint} request`);
+          return csrfFromCookie;
+        }
+        
         if (response.ok) {
           // Check if response is JSON and contains csrfToken
           const contentType = response.headers.get('content-type');
@@ -53,19 +61,16 @@ const fetchCSRFToken = async () => {
               return data.csrfToken;
             }
           }
-          
-          // Check if CSRF token was set in cookies after the request
-          const csrfFromCookie = getCSRFToken();
-          if (csrfFromCookie) {
-            console.log('🔒 CSRF token found in cookie after request');
-            return csrfFromCookie;
-          }
         }
+        
+        console.log(`🔒 ${endpoint} returned ${response.status}, no CSRF token found`);
       } catch (err) {
         console.log(`🔒 Failed to get CSRF token from ${endpoint}:`, err.message);
         continue;
       }
     }
+    
+    console.warn('⚠️ Could not obtain CSRF token from any endpoint');
   } catch (error) {
     console.warn('Could not fetch CSRF token:', error.message);
   }
@@ -79,7 +84,8 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-API-Request': 'true'  // Indicates this is an API request
   },
   withCredentials: true // Enable credentials for CSRF cookies
 });
@@ -112,7 +118,10 @@ axiosInstance.interceptors.request.use(
         config.headers['X-CSRFToken'] = csrfToken;
         console.log('🔒 Added CSRF token to request headers');
       } else {
-        console.warn('⚠️ Could not obtain CSRF token');
+        console.warn('⚠️ Could not obtain CSRF token - proceeding without it');
+        // Add additional headers that might help with CSRF-exempt endpoints
+        config.headers['X-Requested-With'] = 'XMLHttpRequest';
+        config.headers['Content-Type'] = 'application/json';
       }
     }
     
