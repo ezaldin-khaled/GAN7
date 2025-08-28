@@ -6,7 +6,6 @@ import dark_arrow from '../../assets/dark-arrow.png'
 const Hero = () => {
     const { t } = useTranslation();
     const [imageLoaded, setImageLoaded] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
     
     useEffect(() => {
         // Preload the appropriate hero image based on screen size
@@ -25,51 +24,36 @@ const Hero = () => {
         };
         
         preloadHeroImage();
-        
-        // Trigger animation after component mounts
-        const timer = setTimeout(() => setIsVisible(true), 100);
-        return () => clearTimeout(timer);
     }, []);
     
-    const scrollToServices = () => {
-        const servicesSection = document.getElementById('services') || 
-                              document.querySelector('.services-section') ||
-                              document.querySelector('.main-content');
+    const scrollToFooter = () => {
+        // Try to find the contact section or footer
+        const contactSection = document.getElementById('contact') || 
+                              document.querySelector('.contact-section') ||
+                              document.querySelector('footer');
         
-        if (servicesSection) {
-            servicesSection.scrollIntoView({ 
+        if (contactSection) {
+            // Simple smooth scroll
+            contactSection.scrollIntoView({ 
                 behavior: 'smooth'
             });
         } else {
-            // If no services section found, scroll down a bit
+            // If no contact section found, scroll to bottom
             window.scrollTo({
-                top: window.innerHeight,
+                top: document.documentElement.scrollHeight,
                 behavior: 'smooth'
             });
         }
     };
 
     return (
-    <div className={`hero container ${imageLoaded ? 'image-loaded' : ''} ${isVisible ? 'visible' : ''}`}>
+    <div className={`hero container ${imageLoaded ? 'image-loaded' : ''}`}>
         <div className="hero-txt">
             <h1>
-                {t('hero.title')}
+            {t('hero.title')}
             </h1>
             <p>{t('hero.subtitle')}</p>
             
-            <div className="hero-actions">
-                <button className="hero-btn primary" onClick={scrollToServices}>
-                    Discover More
-                    <img src={dark_arrow} alt="arrow" className="hero-arrow" />
-                </button>
-                <button className="hero-btn secondary">
-                    Join Now
-                </button>
-            </div>
-        </div>
-        
-        <div className="scroll-indicator">
-            <div className="scroll-arrow"></div>
         </div>
     </div>
     )
