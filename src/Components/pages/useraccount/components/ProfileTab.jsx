@@ -117,112 +117,152 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
     return patterns[platform].test(url);
   };
 
+  // Social media icons
+  const socialIcons = {
+    facebook: '📘',
+    twitter: '🐦',
+    instagram: '📷',
+    linkedin: '💼',
+    youtube: '📺',
+    tiktok: '🎵',
+    snapchat: '👻'
+  };
+
   return (
     <div className="content-section">
-      <h1 className="section-title">Profile Information</h1>
+      <h1 className="section-title">
+        <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          👤 Profile Information
+        </span>
+      </h1>
+      
       <div className="profile-score-section">
         <ProfileScore profileScore={userData.profile_score} />
       </div>
-      <div className="form-row">
-        <div className="form-group">
-          <label>Full Name</label>
-          <input 
-            type="text" 
-            name="full_name" 
-            value={userData.full_name || `${userData.first_name || ''} ${userData.last_name || ''}`} 
-            onChange={handleInputChange} 
-          />
-        </div>
+
+      {/* Personal Information Section */}
+      <div style={{ marginBottom: '40px' }}>
+        <h2 style={{ 
+          fontSize: '1.4rem', 
+          fontWeight: '600', 
+          marginBottom: '25px', 
+          color: '#1f2937',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          📋 Personal Information
+        </h2>
         
-        <div className="form-group">
-          <label>Email</label>
-          <input 
-            type="email" 
-            name="email" 
-            value={userData.email || ''} 
+        <div className="form-row">
+          <div className="form-group">
+            <label>Full Name</label>
+            <input 
+              type="text" 
+              name="full_name" 
+              value={userData.full_name || `${userData.first_name || ''} ${userData.last_name || ''}`} 
+              onChange={handleInputChange}
+              placeholder="Enter your full name"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Email Address</label>
+            <input 
+              type="email" 
+              name="email" 
+              value={userData.email || ''} 
+              onChange={handleInputChange} 
+              disabled 
+              placeholder="your.email@example.com"
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input 
+              type="tel" 
+              name="phone" 
+              value={userData.phone || ''} 
+              onChange={handleInputChange}
+              placeholder="+1 (555) 123-4567"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Country</label>
+            <input 
+              type="text" 
+              name="country" 
+              value={userData.country || ''} 
+              onChange={handleInputChange}
+              placeholder="Your country"
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>City</label>
+            <input 
+              type="text" 
+              name="city" 
+              value={userData.city || ''} 
+              onChange={handleInputChange}
+              placeholder="Your city"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Zip Code</label>
+            <input 
+              type="text" 
+              name="zipcode" 
+              value={userData.zipcode || ''} 
+              onChange={handleInputChange}
+              placeholder="12345"
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Gender</label>
+            <select name="gender" value={userData.gender || ''} onChange={handleInputChange}>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label>Date of Birth</label>
+            <input 
+              type="date" 
+              name="date_of_birth" 
+              value={formattedDob} 
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+
+        <div className="form-group full-width">
+          <label>About You</label>
+          <textarea 
+            name="aboutyou" 
+            value={userData.aboutyou || ''} 
             onChange={handleInputChange} 
-            disabled 
+            rows="4"
+            placeholder="Tell us about yourself, your experience, and what makes you unique..."
           />
         </div>
       </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Phone Number</label>
-          <input 
-            type="tel" 
-            name="phone" 
-            value={userData.phone || ''} 
-            onChange={handleInputChange} 
-          />
-        </div>
-        
-        <div className="form-group">
-          <label>Country</label>
-          <input 
-            type="text" 
-            name="country" 
-            value={userData.country || ''} 
-            onChange={handleInputChange} 
-          />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="form-group">
-          <label>City</label>
-          <input 
-            type="text" 
-            name="city" 
-            value={userData.city || ''} 
-            onChange={handleInputChange} 
-          />
-        </div>
-        
-        <div className="form-group">
-          <label>Zip Code</label>
-          <input 
-            type="text" 
-            name="zipcode" 
-            value={userData.zipcode || ''} 
-            onChange={handleInputChange} 
-          />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="form-group">
-          <label>Gender</label>
-          <select name="gender" value={userData.gender || ''} onChange={handleInputChange}>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-            <option value="prefer_not_to_say">Prefer not to say</option>
-          </select>
-        </div>
-        
-        <div className="form-group">
-          <label>Date of Birth</label>
-          <input 
-            type="date" 
-            name="date_of_birth" 
-            value={formattedDob} 
-            onChange={handleInputChange} 
-          />
-        </div>
-      </div>
-
-      <div className="form-group full-width">
-        <label>About You</label>
-        <textarea 
-          name="aboutyou" 
-          value={userData.aboutyou || ''} 
-          onChange={handleInputChange} 
-          rows="4"
-        />
-      </div>
-
+      {/* Social Media Section */}
       <div className="social-media-section">
         <h2>Social Media Links</h2>
         {error && <div className="error-message">{error}</div>}
@@ -230,82 +270,33 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           <LoadingSpinner text="Loading social media data..." />
         ) : (
           <div className="social-media-grid">
-            <div className="form-group">
-              <label>Facebook</label>
-              <input 
-                type="url" 
-                name="facebook" 
-                value={socialMediaLinks.facebook} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.facebook || "https://facebook.com/yourusername"}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>Twitter</label>
-              <input 
-                type="url" 
-                name="twitter" 
-                value={socialMediaLinks.twitter} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.twitter || "https://twitter.com/yourusername"}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>Instagram</label>
-              <input 
-                type="url" 
-                name="instagram" 
-                value={socialMediaLinks.instagram} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.instagram || "https://instagram.com/yourusername"}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>LinkedIn</label>
-              <input 
-                type="url" 
-                name="linkedin" 
-                value={socialMediaLinks.linkedin} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.linkedin || "https://linkedin.com/in/yourusername"}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>YouTube</label>
-              <input 
-                type="url" 
-                name="youtube" 
-                value={socialMediaLinks.youtube} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.youtube || "https://youtube.com/yourusername"}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>TikTok</label>
-              <input 
-                type="url" 
-                name="tiktok" 
-                value={socialMediaLinks.tiktok} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.tiktok || "https://tiktok.com/@yourusername"}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>Snapchat</label>
-              <input 
-                type="url" 
-                name="snapchat" 
-                value={socialMediaLinks.snapchat} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.snapchat || "https://snapchat.com/add/yourusername"}
-              />
-            </div>
+            {Object.entries(socialMediaLinks).map(([platform, value]) => (
+              <div key={platform} className="form-group">
+                <label>
+                  {socialIcons[platform]} {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                </label>
+                <input 
+                  type="url" 
+                  name={platform} 
+                  value={value} 
+                  onChange={handleSocialMediaChange}
+                  placeholder={`https://${platform}.com/yourusername`}
+                  style={{
+                    borderColor: validateSocialMediaUrl(value, platform) ? '#e5e7eb' : '#ef4444'
+                  }}
+                />
+                {value && !validateSocialMediaUrl(value, platform) && (
+                  <small style={{ 
+                    color: '#ef4444', 
+                    fontSize: '0.8rem', 
+                    marginTop: '4px',
+                    display: 'block'
+                  }}>
+                    Please enter a valid {platform} URL
+                  </small>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -316,7 +307,13 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           onClick={handleSaveChanges}
           disabled={profileLoading || loading}
         >
-          {profileLoading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}
+          {profileLoading ? (
+            <LoadingSpinner text="Saving..." />
+          ) : (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              💾 Save Changes
+            </span>
+          )}
         </button>
       </div>
     </div>
