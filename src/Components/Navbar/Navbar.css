@@ -95,14 +95,29 @@ ul li{
 
 .menu-icon{
     display: none;
-    color: #333;
+    color: #fff;
     font-size: 24px;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 6px;
+    z-index: 1001;
+    position: relative;
 }
 
 .menu-icon:hover {
-    color: #6D0098;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.dark-nav .menu-icon {
+    color: #fff;
+}
+
+/* Ensure menu icon is visible on transparent navbar */
+nav:not(.dark-nav) .menu-icon {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Avatar styles */
@@ -203,6 +218,11 @@ ul li:has(.avatar-btn) {
     .logo{
         width: 120px;
     }
+    .menu-icon{
+        display: block;
+        font-size: 24px;
+        color: #fff;
+    }
 }
 
 @media (max-width: 480px){
@@ -228,8 +248,10 @@ ul li:has(.avatar-btn) {
         width: calc(100% - 50px);
     }
     .menu-icon{
+        display: block;
         font-size: 22px;
         padding: 6px;
+        color: #fff;
     }
     .hide-mobile-menu{
         right: -280px;
