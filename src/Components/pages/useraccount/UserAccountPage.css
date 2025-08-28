@@ -3,13 +3,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     color: #333;
     line-height: 1.6;
     background: #ffffff;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .portfolio-container {
@@ -76,13 +80,16 @@ body {
     font-size: 36px;
     margin: 0;
     font-weight: 600;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 .title {
     font-size: 24px;
     margin: 5px 0 0;
     font-weight: 400;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    letter-spacing: 0.3px;
 }
 
 /* Main Content Styles */
@@ -98,6 +105,9 @@ body {
 
 .section-title {
     font-size: 24px;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.3px;
     position: relative;
     margin-bottom: 20px;
     font-weight: 600;
