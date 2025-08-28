@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../Hero/Hero.css'
 import dark_arrow from '../../assets/dark-arrow.png'
+import heroMobile from '../../assets/ewew/optimized/hero-mobile.webp'
+import heroTablet from '../../assets/ewew/optimized/hero-tablet.webp'
+import heroDesktop from '../../assets/ewew/optimized/hero-desktop.webp'
 
 const Hero = () => {
     const { t } = useTranslation();
@@ -11,19 +14,36 @@ const Hero = () => {
         // Preload the appropriate hero image based on screen size
         const preloadHeroImage = () => {
             const img = new Image();
-            let imageSrc = '/src/assets/ewew/optimized/hero-mobile.webp';
+            let imageSrc = heroMobile;
             
             if (window.innerWidth >= 1920) {
-                imageSrc = '/src/assets/ewew/optimized/hero-desktop.webp';
+                imageSrc = heroDesktop;
             } else if (window.innerWidth >= 768) {
-                imageSrc = '/src/assets/ewew/optimized/hero-tablet.webp';
+                imageSrc = heroTablet;
             }
             
             img.onload = () => setImageLoaded(true);
             img.src = imageSrc;
         };
         
-        preloadHeroImage();
+        // Preload all hero images for better performance
+        const preloadAllImages = () => {
+            const images = [heroMobile, heroTablet, heroDesktop];
+            let loadedCount = 0;
+            
+            images.forEach(src => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === 1) { // Set loaded state after first image loads
+                        setImageLoaded(true);
+                    }
+                };
+                img.src = src;
+            });
+        };
+        
+        preloadAllImages();
     }, []);
     
     const scrollToFooter = () => {

@@ -10,14 +10,18 @@ console.log('VITE_API_URL from env:', import.meta.env.VITE_API_URL);
 console.log('API_BASE_URL resolved to:', API_BASE_URL);
 console.log('Full baseURL will be:', `${API_BASE_URL}/api/`);
 
+// Note: CSRF tokens not needed for JWT-based API authentication
+
 // Create a clean axios instance with proper configuration
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,  // Remove /api/ suffix to avoid double prefix
   timeout: 30000, // 30 second timeout
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  },
+  withCredentials: false // Disable credentials for API-only requests
 });
 
 // Request interceptor for logging and token handling
@@ -28,6 +32,9 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // For JWT-based API, we don't need CSRF tokens
+    // CSRF is only needed for session-based authentication
     
     // Log request for debugging
     console.log('🚀 Making request:', {
@@ -78,5 +85,7 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Note: CSRF token functions removed as they're not needed for JWT-based API
 
 export default axiosInstance;

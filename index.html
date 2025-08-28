@@ -7,10 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gan7Club</title>
     
-    <!-- Preload hero images for better performance -->
-    <link rel="preload" as="image" href="/src/assets/ewew/optimized/hero-mobile.webp" media="(max-width: 767px)">
-    <link rel="preload" as="image" href="/src/assets/ewew/optimized/hero-tablet.webp" media="(min-width: 768px) and (max-width: 1919px)">
-    <link rel="preload" as="image" href="/src/assets/ewew/optimized/hero-desktop.webp" media="(min-width: 1920px)">
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Prevent flash of unstyled content -->
+    <style>
+      /* Critical CSS to prevent layout shift */
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: #ffffff;
+        visibility: hidden;
+      }
+      .loading-ready body {
+        visibility: visible;
+      }
+      /* Skeleton for hero section */
+      .hero {
+        min-height: 100vh;
+        background: #f0f0f0;
+      }
+    </style>
+    
+
   </head>
   <body>
     <div id="root"></div>

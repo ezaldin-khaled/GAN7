@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import axiosInstance from '../../../api/axios';
-import { stripePromise } from '../../../config/stripe';
+import { stripePromise, isStripeConfigured } from '../../../config/stripe';
 import PaymentForm from './PaymentForm';
 import './SubscriptionPlans.css';
 
@@ -354,13 +354,19 @@ const SubscriptionPlans = () => {
                 <p>Annual Price: ${selectedPlan.price}</p>
                 <p>Monthly Equivalent: ${selectedPlan.monthly_equivalent}</p>
               </div>
-              <Elements stripe={stripePromise}>
-                <PaymentForm
-                  planId={selectedPlan.id}
-                  onSuccess={handlePaymentSuccess}
-                  onError={handlePaymentError}
-                />
-              </Elements>
+              {isStripeConfigured ? (
+                <Elements stripe={stripePromise}>
+                  <PaymentForm
+                    planId={selectedPlan.id}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                  />
+                </Elements>
+              ) : (
+                <div className="stripe-not-configured">
+                  <p>Payment processing is not yet configured. Please contact support for subscription options.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

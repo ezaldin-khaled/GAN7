@@ -6,6 +6,8 @@ import './index.css'
 import './i18n'; // Import i18n configuration
 import { LanguageProvider } from './context/LanguageContext';
 
+// Remove loading state to prevent flash of unstyled content
+document.documentElement.classList.add('loading-ready');
 
 const root = createRoot(document.getElementById('root'));
 root.render(
