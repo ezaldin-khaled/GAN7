@@ -109,13 +109,23 @@ function Navbar() {
 
   return (
     <nav className={`container ${sticky? 'dark-nav' : ''}`}>
-      <img 
-        src={logo} 
-        alt="Logo" 
-        className='logo' 
-        onClick={handleLogoClick} 
-        style={{cursor: 'pointer'}} 
-      />
+      <div className="nav-left">
+        <img 
+          src={logo} 
+          alt="Logo" 
+          className='logo' 
+          onClick={handleLogoClick} 
+          style={{cursor: 'pointer'}} 
+        />
+      </div>
+      
+      <div className="nav-right">
+        <FaBars className='menu-icon' onClick={toggleMenu}/>
+        {showProfile && (
+          <UserProfilePopup user={user} onClose={() => setShowProfile(false)} />
+        )}
+      </div>
+      
       <ul className={mobileMenu?'':'hide-mobile-menu'}>
         <li>
           {location.pathname === '/' ? (
@@ -159,15 +169,8 @@ function Navbar() {
         {/* <li>
           <LanguageSwitcher />
         </li> */}
-        <li>
-        <FaBars className='menu-icon' onClick={toggleMenu}/>
-      {showProfile && (
-        <UserProfilePopup user={user} onClose={() => setShowProfile(false)} />
-      )}
-      </li>
         {renderAuthSection()}
       </ul>
-
     </nav>
   );
 };

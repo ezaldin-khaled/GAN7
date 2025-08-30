@@ -12,6 +12,17 @@ nav{
     font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .logo{
     width: 170px;
 }
@@ -230,9 +241,10 @@ ul li:has(.avatar-btn) {
         width: auto;
         height: auto;
         cursor: pointer;
-        color: #333;
+        color: #fff;
         font-size: 24px;
-        margin-right: 20px;
+        z-index: 1001;
+        position: relative;
     }
     .hide-mobile-menu{
         right: -250px;
