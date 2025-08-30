@@ -33,8 +33,6 @@ function Navbar() {
       // If we're not on the main page, navigate to main page first
       navigate('/', { state: { scrollTo: sectionId } });
     }
-    // Close mobile menu after navigation
-    setMobileMenu(false);
   };
 
   const handleLoginClick = () => {
@@ -118,10 +116,6 @@ function Navbar() {
         onClick={handleLogoClick} 
         style={{cursor: 'pointer'}} 
       />
-      
-      {/* Mobile menu icon - always visible */}
-      <FaBars className='menu-icon' onClick={toggleMenu}/>
-      
       <ul className={mobileMenu?'':'hide-mobile-menu'}>
         <li>
           {location.pathname === '/' ? (
@@ -160,17 +154,20 @@ function Navbar() {
           )}
         </li>
         <li>
-          <a href="/gallery" className="gallery-link" onClick={() => setMobileMenu(false)}>{t('navigation.gallery')}</a>
+          <a href="/gallery" className="gallery-link">{t('navigation.gallery')}</a>
         </li>
         {/* <li>
           <LanguageSwitcher />
         </li> */}
-        {renderAuthSection()}
-      </ul>
-
+        <li>
+        <FaBars className='menu-icon' onClick={toggleMenu}/>
       {showProfile && (
         <UserProfilePopup user={user} onClose={() => setShowProfile(false)} />
       )}
+      </li>
+        {renderAuthSection()}
+      </ul>
+
     </nav>
   );
 };
