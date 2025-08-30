@@ -2596,4 +2596,256 @@
     width: 100%;
     justify-content: center;
   }
+  
+  /* General responsive improvements */
+  .groups-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+  
+  .groups-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .band-card {
+    padding: var(--spacing-md);
+  }
+  
+  .band-info {
+    gap: var(--spacing-sm);
+  }
+  
+  .band-name {
+    font-size: 1.3rem;
+  }
+  
+  .band-genre {
+    font-size: 0.9rem;
+  }
+  
+  .band-location {
+    font-size: 0.85rem;
+  }
+  
+  .band-members {
+    font-size: 0.9rem;
+  }
+  
+  .band-score {
+    font-size: 1.1rem;
+  }
+  
+  .band-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .manage-band-btn,
+  .delete-group-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .code-generator-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .code-generator-card .card-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .band-selector {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .generate-code-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .generated-code-container {
+    padding: var(--spacing-md);
+  }
+  
+  .code {
+    font-size: 14px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .copy-code-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .groups-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .band-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .band-name {
+    font-size: 1.2rem;
+  }
+  
+  .band-genre {
+    font-size: 0.85rem;
+  }
+  
+  .band-location {
+    font-size: 0.8rem;
+  }
+  
+  .band-members {
+    font-size: 0.85rem;
+  }
+  
+  .band-score {
+    font-size: 1rem;
+  }
+  
+  .code-generator-card {
+    padding: var(--spacing-md);
+  }
+  
+  .code-generator-card .card-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .code-generator-card .card-header p {
+    font-size: 0.9rem;
+  }
+  
+  .generate-code-btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+  }
+  
+  .code {
+    font-size: 13px;
+  }
+  
+  .copy-code-btn {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .groups-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .band-card {
+    padding: var(--spacing-xs);
+  }
+  
+  .band-name {
+    font-size: 1.1rem;
+  }
+  
+  .band-genre {
+    font-size: 0.8rem;
+  }
+  
+  .band-location {
+    font-size: 0.75rem;
+  }
+  
+  .band-members {
+    font-size: 0.8rem;
+  }
+  
+  .band-score {
+    font-size: 0.95rem;
+  }
+  
+  .code-generator-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .code-generator-card .card-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .code-generator-card .card-header p {
+    font-size: 0.85rem;
+  }
+  
+  .generate-code-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.95rem;
+  }
+  
+  .code {
+    font-size: 12px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .copy-code-btn {
+    font-size: 0.8rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .generated-code-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .generated-code-container h3 {
+    font-size: 1rem;
+  }
+  
+  .code-instructions {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .groups-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .band-name {
+    font-size: 1rem;
+  }
+  
+  .band-genre {
+    font-size: 0.75rem;
+  }
+  
+  .band-location {
+    font-size: 0.7rem;
+  }
+  
+  .band-members {
+    font-size: 0.75rem;
+  }
+  
+  .band-score {
+    font-size: 0.9rem;
+  }
+  
+  .code-generator-card .card-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .code-generator-card .card-header p {
+    font-size: 0.8rem;
+  }
+  
+  .generate-code-btn {
+    font-size: 0.9rem;
+  }
+  
+  .code {
+    font-size: 11px;
+  }
+  
+  .copy-code-btn {
+    font-size: 0.75rem;
+  }
 }

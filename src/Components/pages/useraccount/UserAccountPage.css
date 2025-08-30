@@ -1337,3 +1337,187 @@ select {
     width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .groups-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .groups-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .main-content {
+    flex-direction: column;
+    padding: 20px 5%;
+  }
+  
+  .sidebar {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  
+  .content-area {
+    width: 100%;
+  }
+  
+  .header {
+    min-height: 180px;
+    padding: 15px 5%;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .profile-container {
+    width: 120px;
+    height: 120px;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .name {
+    font-size: 28px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
+  
+  .about-section, .contact-section {
+    padding: 0 10px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-content {
+    padding: 15px 3%;
+  }
+  
+  .header {
+    min-height: 160px;
+    padding: 10px 3%;
+  }
+  
+  .profile-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .name {
+    font-size: 24px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .groups-header {
+    gap: 10px;
+  }
+  
+  .create-group-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 10px 2%;
+  }
+  
+  .header {
+    min-height: 140px;
+    padding: 8px 2%;
+  }
+  
+  .profile-container {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .name {
+    font-size: 20px;
+  }
+  
+  .title {
+    font-size: 14px;
+  }
+  
+  .about-section, .contact-section {
+    padding: 0 5px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+  }
+  
+  .groups-grid {
+    gap: 15px;
+  }
+  
+  .create-group-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-content {
+    padding: 8px 1%;
+  }
+  
+  .header {
+    min-height: 120px;
+    padding: 5px 1%;
+  }
+  
+  .profile-container {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .profile-image {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .name {
+    font-size: 18px;
+  }
+  
+  .title {
+    font-size: 12px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+  }
+  
+  .create-group-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+}
