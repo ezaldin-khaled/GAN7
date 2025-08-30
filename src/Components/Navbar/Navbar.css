@@ -213,6 +213,20 @@ ul li:has(.avatar-btn) {
         justify-content: space-between;
         backdrop-filter: blur(10px);
         box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1002;
+    }
+    
+    /* Mobile menu overlay */
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        backdrop-filter: blur(2px);
     }
     
     nav ul{
@@ -227,6 +241,11 @@ ul li:has(.avatar-btn) {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -4px 0 25px rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(20px);
+        overflow-y: auto;
+    }
+    
+    .mobile-menu-open {
+        right: 0 !important;
     }
     nav ul a{
         display: block;
@@ -315,6 +334,9 @@ ul li:has(.avatar-btn) {
     .hide-mobile-menu{
         right: -260px;
     }
+    .mobile-menu-open {
+        right: 0 !important;
+    }
 }
 
 @media (max-width: 480px){
@@ -341,6 +363,9 @@ ul li:has(.avatar-btn) {
     .hide-mobile-menu{
         right: -240px;
     }
+    .mobile-menu-open {
+        right: 0 !important;
+    }
 }
 
 @media (max-width: 360px){
@@ -363,5 +388,8 @@ ul li:has(.avatar-btn) {
     }
     .hide-mobile-menu{
         right: -220px;
+    }
+    .mobile-menu-open {
+        right: 0 !important;
     }
 }

@@ -24,11 +24,28 @@ function Navbar() {
   },[]);
 
   const [mobileMenu, setMobileMenu] = useState(false);
-  const toggleMenu = ()=>{
-      mobileMenu? setMobileMenu(false) : setMobileMenu(true)
-  }
+  
+  const toggleMenu = () => {
+    const newMobileMenuState = !mobileMenu;
+    setMobileMenu(newMobileMenuState);
+    
+    // Prevent body scroll when menu is open
+    if (newMobileMenuState) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  };
+
+  // Close mobile menu function
+  const closeMobileMenu = () => {
+    setMobileMenu(false);
+    document.body.style.overflow = 'unset';
+  };
 
   const handleNavigation = (sectionId) => {
+    // Close mobile menu when navigating
+    closeMobileMenu();
     if (location.pathname !== '/') {
       // If we're not on the main page, navigate to main page first
       navigate('/', { state: { scrollTo: sectionId } });
@@ -36,6 +53,8 @@ function Navbar() {
   };
 
   const handleLoginClick = () => {
+    // Close mobile menu when clicking login
+    closeMobileMenu();
     console.log('Login button clicked');
     navigate('/login');
   };
@@ -51,7 +70,12 @@ function Navbar() {
   };
 
   const handleLogoClick = () => {
+    closeMobileMenu();
     navigate('/');
+  };
+
+  const handleGalleryClick = () => {
+    closeMobileMenu();
   };
 
   // Determine what to show in the auth section
@@ -126,10 +150,13 @@ function Navbar() {
         )}
       </div>
       
-      <ul className={mobileMenu?'':'hide-mobile-menu'}>
+      {/* Mobile menu overlay */}
+      {mobileMenu && <div className="mobile-menu-overlay" onClick={closeMobileMenu}></div>}
+      
+      <ul className={mobileMenu ? 'mobile-menu-open' : 'hide-mobile-menu'}>
         <li>
           {location.pathname === '/' ? (
-            <Link to="hero" smooth={true} offset={0} duration={500}>{t('navigation.home')}</Link>
+            <Link to="hero" smooth={true} offset={0} duration={500} onClick={closeMobileMenu}>{t('navigation.home')}</Link>
           ) : (
             <button 
               className="nav-link-btn" 
@@ -141,7 +168,7 @@ function Navbar() {
         </li>
         <li>
           {location.pathname === '/' ? (
-            <Link to="serv" smooth={true} offset={-280} duration={500}>{t('navigation.services')}</Link>
+            <Link to="serv" smooth={true} offset={-280} duration={500} onClick={closeMobileMenu}>{t('navigation.services')}</Link>
           ) : (
             <button 
               className="nav-link-btn" 
@@ -153,7 +180,7 @@ function Navbar() {
         </li>
         <li>
           {location.pathname === '/' ? (
-            <Link to="about" smooth={true} offset={-160} duration={500}>{t('navigation.about')}</Link>
+            <Link to="about" smooth={true} offset={-160} duration={500} onClick={closeMobileMenu}>{t('navigation.about')}</Link>
           ) : (
             <button 
               className="nav-link-btn" 
@@ -164,7 +191,7 @@ function Navbar() {
           )}
         </li>
         <li>
-          <a href="/gallery" className="gallery-link">{t('navigation.gallery')}</a>
+          <a href="/gallery" className="gallery-link" onClick={handleGalleryClick}>{t('navigation.gallery')}</a>
         </li>
         {/* <li>
           <LanguageSwitcher />
