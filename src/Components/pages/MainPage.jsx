@@ -33,30 +33,25 @@ const MainPage = () => {
       <Home id="hero" /> {/* Home section */}
       
       <div className="main-content">
-        <div className="three-column-layout">
-          {/* Services Section */}
-          <section className="services-section">
-            <div className="section-content">
-              <Title subTitle={t('main.servicesSubtitle')} title={t('main.servicesTitle')}/>
-              <Services id="serv" />
-            </div>
-          </section>
-          
-          {/* About Section */}
-          <section className="about-section">
-            <div className="section-content">
-              <About id="about" />
-            </div>
-          </section>
-          
-          {/* Gallery Section */}
-          <section className="gallery-section">
-            <div className="section-content">
-              <Title subTitle={t('main.gallerySubtitle')} title={t('main.galleryTitle')}/>
-              <Gallery id="gallery" />
-            </div>
-          </section>
-        </div>
+        <section className="services-section">
+          <div className="container">
+            <Title subTitle={t('main.servicesSubtitle')} title={t('main.servicesTitle')}/>
+            <Services id="serv" /> {/* Services section */}
+          </div>
+        </section>
+        
+        <section className="about-section">
+          <div className="container">
+            <About id="about" /> {/* About section */}
+          </div>
+        </section>
+        
+        <section className="gallery-section">
+          <div className="container">
+            <Title subTitle={t('main.gallerySubtitle')} title={t('main.galleryTitle')}/>
+            <Gallery id="gallery" /> {/* Gallery section */}
+          </div>
+        </section>
         
         <Foot/>
       </div>
