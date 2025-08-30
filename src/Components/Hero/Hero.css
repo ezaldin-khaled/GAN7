@@ -4,13 +4,15 @@
     background: url('../../assets/ewew/optimized/hero-mobile.webp');
     background-size: cover;
     background-position: center;
-    background-attachment: scroll;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0;
+    margin-bottom: 30px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.8;
     position: relative;
+    overflow: hidden;
 }
 
 .hero::before {
@@ -20,15 +22,20 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        135deg, 
-        rgba(109, 0, 152, 0.3) 0%, 
-        rgba(0, 0, 0, 0.4) 25%,
-        rgba(0, 0, 0, 0.2) 50%, 
-        rgba(0, 0, 0, 0.4) 75%,
-        rgba(109, 0, 152, 0.3) 100%
-    );
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
     z-index: 1;
+    animation: gradientShift 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
 }
 
 .hero.image-loaded {
@@ -61,18 +68,65 @@
     margin-top: 160px;
     position: relative;
     z-index: 2;
-    padding: 0 20px;
+    animation: heroTextSlideIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+}
+
+@keyframes heroTextSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(60px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .hero-txt h1{
     font-size: 60px;
-    font-weight: 800;
+    font-weight: 700;
     font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     margin-bottom: 20px;
     line-height: 1.2;
     letter-spacing: -0.5px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    color: #ffffff;
+    text-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: titleGlow 3s ease-in-out infinite;
+    position: relative;
+}
+
+.hero-txt h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ffffff, transparent);
+    border-radius: 2px;
+    animation: titleUnderline 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    }
+    50% { 
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+    }
+}
+
+@keyframes titleUnderline {
+    0%, 100% { 
+        width: 80px;
+        opacity: 0.8;
+    }
+    50% { 
+        width: 120px;
+        opacity: 1;
+    }
 }
 
 .hero-txt p{
@@ -83,53 +137,42 @@
     font-weight: 400;
     font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     letter-spacing: 0.3px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: subtitleFloat 4s ease-in-out infinite;
+    opacity: 0.95;
 }
 
-/* Media queries for better mobile responsiveness */
-@media (max-width: 1024px){
-    .hero-txt{
-        margin-top: 120px;
-        padding: 0 30px;
+@keyframes subtitleFloat {
+    0%, 100% { 
+        transform: translateY(0px);
+        opacity: 0.95;
     }
+    50% { 
+        transform: translateY(-3px);
+        opacity: 1;
+    }
+}
+
+/* media query */
+@media (max-width: 850px){
     .hero-txt h1{
-        font-size: 50px;
-        line-height: 1.1;
+        font-size: 40px;
+        letter-spacing: -0.3px;
     }
-    .hero-txt p{
+    .hero-txt p {
         font-size: 16px;
     }
 }
 
-@media (max-width: 768px){
-    .hero-txt{
-        margin-top: 100px;
-        padding: 0 20px;
-    }
+@media (max-width: 650px){
     .hero-txt h1{
-        font-size: 40px;
-        line-height: 1.1;
-        letter-spacing: -0.3px;
-    }
-    .hero-txt p{
-        font-size: 15px;
-        line-height: 1.5;
-    }
-}
-
-@media (max-width: 480px){
-    .hero-txt{
-        margin-top: 80px;
-        padding: 0 15px;
-    }
-    .hero-txt h1{
-        font-size: 32px;
-        line-height: 1.1;
+        font-size: 30px;
+        max-width: 400px;
+        margin: auto;
         letter-spacing: -0.2px;
     }
     .hero-txt p{
         font-size: 14px;
-        line-height: 1.4;
+        margin: 15px auto 30px;
     }
 }
