@@ -236,3 +236,79 @@ code {
 .language-switcher {
   display: none !important;
 }
+
+/* Three Column Layout for Main Page */
+.three-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 60px 5%;
+  background: #ffffff;
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.services-section,
+.about-section,
+.gallery-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .three-column-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 40px 5%;
+  }
+  
+  .about-section {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .three-column-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 30px 5%;
+  }
+  
+  .section-content {
+    padding: 15px;
+  }
+  
+  .about-section {
+    order: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .three-column-layout {
+    padding: 20px 3%;
+    gap: 20px;
+  }
+  
+  .section-content {
+    padding: 12px;
+  }
+}
