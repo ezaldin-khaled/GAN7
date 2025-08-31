@@ -205,6 +205,9 @@ ul li:has(.avatar-btn) {
     nav ul li{
         margin: 10px 15px;
     }
+    .menu-icon{
+        display: none;
+    }
 }
 
 @media (max-width: 840px){
