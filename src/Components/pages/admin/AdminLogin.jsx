@@ -33,7 +33,7 @@ const AdminLogin = () => {
         admin_login: "true"
       });
 
-      const response = await axiosInstance.post('/api/users/admin/login/', {
+      const response = await axiosInstance.post('/api/login/admin/', {
         email: credentials.email,
         password: credentials.password,
         admin_login: "true"
