@@ -30,13 +30,13 @@ const AdminLogin = () => {
     try {
       console.log('Attempting login with:', {
         email: credentials.email,
-        admin_login: true
+        admin_login: "true"
       });
 
-      const response = await axiosInstance.post('/admin/login/', {
+      const response = await axiosInstance.post('/api/users/admin/login/', {
         email: credentials.email,
         password: credentials.password,
-        admin_login: true
+        admin_login: "true"
       });
 
       const data = response.data;
