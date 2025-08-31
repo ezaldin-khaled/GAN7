@@ -223,20 +223,20 @@ ul li:has(.avatar-btn) {
         top: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(20, 0, 30, 0.98) 0%, rgba(10, 0, 20, 0.99) 100%);
+        background: linear-gradient(135deg, #1a0024 0%, #0d0015 100%);
         z-index: 1000;
         width: 280px;
         padding-top: 80px;
+        padding-bottom: 20px;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: -4px 0 25px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(20px);
-        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: -4px 0 25px rgba(0, 0, 0, 0.4);
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
     }
     nav ul a{
         display: block;
-        margin: 20px 30px;
+        margin: 15px 25px;
         font-size: 17px;
-        padding: 14px 20px;
+        padding: 16px 20px;
         border-radius: 12px;
         transition: all 0.3s ease;
         color: #fff;
@@ -245,7 +245,9 @@ ul li:has(.avatar-btn) {
         text-decoration: none;
         position: relative;
         overflow: hidden;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     nav ul a:hover, nav ul a:focus {
         background: rgba(255, 255, 255, 0.15);
@@ -254,21 +256,21 @@ ul li:has(.avatar-btn) {
     }
     nav ul button{
         display: block;
-        margin: 20px 30px;
+        margin: 15px 25px;
         text-align: left;
         font-size: 17px;
-        padding: 14px 20px;
+        padding: 16px 20px;
         border-radius: 12px;
         transition: all 0.3s ease;
-        background: none;
-        border: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         color: #fff;
         font-weight: 500;
         letter-spacing: 0.3px;
         cursor: pointer;
-        width: calc(100% - 60px);
+        width: calc(100% - 50px);
         font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
     }
     nav ul button:hover, nav ul button:focus {
         background: rgba(255, 255, 255, 0.15);
