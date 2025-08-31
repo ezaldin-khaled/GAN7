@@ -222,15 +222,19 @@ ul li:has(.avatar-btn) {
         position: fixed;
         top: 0;
         right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, #1a0024 0%, #0d0015 100%);
-        z-index: 1000;
         width: 280px;
+        height: 100vh;
+        min-height: 100vh;
+        background: #1a0024;
+        z-index: 1000;
         padding-top: 80px;
-        padding-bottom: 20px;
+        padding-bottom: 40px;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -4px 0 25px rgba(0, 0, 0, 0.4);
         border-left: 1px solid rgba(255, 255, 255, 0.15);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
     }
     nav ul a{
         display: block;
