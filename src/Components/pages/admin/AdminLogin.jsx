@@ -92,6 +92,9 @@ const AdminLogin = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
+      console.error('Error response data:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+      console.error('Error status text:', err.response?.statusText);
       const data = err.response?.data;
       
       // Handle different types of errors
@@ -106,7 +109,7 @@ const AdminLogin = () => {
       } else if (data?.non_field_errors) {
         setError(data.non_field_errors[0]);
       } else {
-        setError('Invalid credentials');
+        setError(`Login failed (${err.response?.status}): ${JSON.stringify(data) || 'Invalid credentials'}`);
       }
     } finally {
       setIsLoading(false);
