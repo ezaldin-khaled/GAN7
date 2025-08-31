@@ -223,13 +223,14 @@ ul li:has(.avatar-btn) {
         top: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, #6D0098 0%, #5a0080 100%);
+        background: linear-gradient(135deg, rgba(20, 0, 30, 0.98) 0%, rgba(10, 0, 20, 0.99) 100%);
         z-index: 1000;
         width: 280px;
         padding-top: 80px;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -4px 0 25px rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(20px);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
     }
     nav ul a{
         display: block;
@@ -244,6 +245,7 @@ ul li:has(.avatar-btn) {
         text-decoration: none;
         position: relative;
         overflow: hidden;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     nav ul a:hover, nav ul a:focus {
         background: rgba(255, 255, 255, 0.15);
@@ -266,6 +268,7 @@ ul li:has(.avatar-btn) {
         cursor: pointer;
         width: calc(100% - 60px);
         font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     nav ul button:hover, nav ul button:focus {
         background: rgba(255, 255, 255, 0.15);
