@@ -40,10 +40,23 @@ function Navbar() {
     navigate('/login');
   };
 
+  // Function to detect if user is on mobile device
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           window.innerWidth <= 768;
+  };
+
   const handleAvatarClick = () => {
     console.log('Avatar clicked, user:', user);
     if (user) {
-      setShowProfile(true);
+      // Check if user is on mobile device
+      if (isMobileDevice()) {
+        console.log('Mobile device detected, redirecting to account page');
+        navigate('/account');
+      } else {
+        console.log('Desktop device detected, showing profile popup');
+        setShowProfile(true);
+      }
     } else {
       console.log('No user data, redirecting to login');
       navigate('/login');
@@ -52,6 +65,12 @@ function Navbar() {
 
   const handleLogoClick = () => {
     navigate('/');
+  };
+
+  // Get appropriate aria-label for avatar button
+  const getAvatarAriaLabel = () => {
+    if (!user) return 'Login';
+    return isMobileDevice() ? 'Go to Account Page' : 'View Profile';
   };
 
   // Determine what to show in the auth section
@@ -74,7 +93,12 @@ function Navbar() {
       console.log('🔍 Navbar - Final image URL:', user.profilePic || user.profile_picture);
       return (
         <li>
-          <button className="avatar-btn" onClick={handleAvatarClick}>
+          <button 
+            className="avatar-btn" 
+            onClick={handleAvatarClick}
+            aria-label={getAvatarAriaLabel()}
+            title={getAvatarAriaLabel()}
+          >
             {(user.profilePic || user.profile_picture) ? (
               <img 
                 src={user.profilePic || user.profile_picture} 
