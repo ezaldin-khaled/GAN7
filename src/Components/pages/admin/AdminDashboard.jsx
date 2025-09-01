@@ -42,6 +42,8 @@ const AdminDashboard = () => {
   const [popupUser, setPopupUser] = useState(null);
 
   useEffect(() => {
+    console.log('=== ADMIN DASHBOARD MOUNTED ===');
+    console.log('Starting authentication check...');
     checkAuth();
   }, []);
 
@@ -57,6 +59,7 @@ const AdminDashboard = () => {
   }, [selectedUser]);
 
   const checkAuth = async () => {
+    console.log('=== STARTING AUTH CHECK ===');
     const token = localStorage.getItem('access');
     const adminLoggedIn = localStorage.getItem('adminLoggedIn');
     const userData = localStorage.getItem('user');
@@ -82,13 +85,18 @@ const AdminDashboard = () => {
         // Check if user has admin or dashboard access
         if (user.isStaff || user.isDashboard || adminLoggedIn === 'true') {
           console.log('AdminDashboard: User authenticated successfully via localStorage');
+          console.log('Setting isAuthenticated to true');
           setIsAuthenticated(true);
           setIsLoading(false);
           return;
+        } else {
+          console.log('User data exists but no admin/dashboard flags found');
         }
       } catch (parseError) {
         console.error('Error parsing user data:', parseError);
       }
+    } else {
+      console.log('No user data found in localStorage');
     }
 
     // Fallback to API verification if localStorage check fails

@@ -148,6 +148,7 @@ function App() {
           <Route path="/auth-test" element={<AuthTest />} />
           <Route path="/simple-test" element={<SimpleAccountTest />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/test" element={<div>Admin Test Route Working!</div>} />
           <Route 
             path="/admin/dashboard" 
             element={

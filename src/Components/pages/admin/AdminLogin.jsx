@@ -132,6 +132,21 @@ const AdminLogin = () => {
       <div className="admin-login-card">
         <h1>Dashboard Login</h1>
         {error && <div className="login-error">{error}</div>}
+        
+        {/* Debug Info */}
+        <div style={{ 
+          background: '#f0f0f0', 
+          padding: '10px', 
+          margin: '10px 0', 
+          fontSize: '12px',
+          fontFamily: 'monospace'
+        }}>
+          <strong>Debug Info:</strong><br/>
+          Current URL: {window.location.href}<br/>
+          User Agent: {navigator.userAgent}<br/>
+          React Router Version: {React.version}
+        </div>
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
