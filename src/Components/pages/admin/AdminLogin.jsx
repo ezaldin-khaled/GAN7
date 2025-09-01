@@ -52,6 +52,7 @@ const AdminLogin = () => {
       console.log('is_talent:', data.is_talent);
       console.log('is_background:', data.is_background);
       console.log('email_verified:', data.email_verified);
+      console.log('=== END LOGIN RESPONSE ===');
 
       // Check for required flags
       if (!data.is_dashboard) {
@@ -70,7 +71,7 @@ const AdminLogin = () => {
       }
 
       // Store user info
-      localStorage.setItem('user', JSON.stringify({
+      const userInfo = {
         email: data.email,
         firstName: data.first_name,
         lastName: data.last_name,
@@ -79,11 +80,18 @@ const AdminLogin = () => {
         isDashboard: data.is_dashboard,
         isStaff: data.is_staff,
         emailVerified: data.email_verified
-      }));
+      };
+      
+      console.log('=== STORING USER INFO ===');
+      console.log('User info to store:', userInfo);
+      localStorage.setItem('user', JSON.stringify(userInfo));
 
       // Set admin login flag for protected routes
       if (data.is_staff) {
         localStorage.setItem('adminLoggedIn', 'true');
+        console.log('Set adminLoggedIn flag to true');
+      } else {
+        console.log('User is not staff, adminLoggedIn flag not set');
       }
 
       // Show email verification warning if needed
@@ -92,14 +100,24 @@ const AdminLogin = () => {
       }
 
       // Redirect based on user type
+      console.log('=== REDIRECT DECISION ===');
+      console.log('data.is_staff:', data.is_staff);
+      console.log('data.is_dashboard:', data.is_dashboard);
+      
       if (data.is_staff) {
         // Admin user - go to admin dashboard
         console.log('Admin login successful, redirecting to admin dashboard');
+        console.log('Current location before redirect:', window.location.href);
+        console.log('Navigating to /admin/dashboard');
         navigate('/admin/dashboard');
+        console.log('Navigate called for admin dashboard');
       } else {
         // Regular dashboard user - go to regular dashboard
         console.log('Dashboard login successful, redirecting to dashboard');
+        console.log('Current location before redirect:', window.location.href);
+        console.log('Navigating to /dashboard');
         navigate('/dashboard');
+        console.log('Navigate called for regular dashboard');
       }
     } catch (err) {
       console.error('Login error:', err);

@@ -52,6 +52,23 @@ const AuthTest = () => {
   );
 };
 
+// Simple test component to show current route
+const RouteTest = () => {
+  const location = window.location;
+  return (
+    <div style={{ padding: '20px', fontFamily: 'monospace', fontSize: '14px' }}>
+      <h3>Route Test Component</h3>
+      <p><strong>Current URL:</strong> {location.href}</p>
+      <p><strong>Pathname:</strong> {location.pathname}</p>
+      <p><strong>Search:</strong> {location.search}</p>
+      <p><strong>Hash:</strong> {location.hash}</p>
+      <p><strong>Admin Flag:</strong> {localStorage.getItem('adminLoggedIn')}</p>
+      <p><strong>User Data:</strong> {localStorage.getItem('user')}</p>
+      <p><strong>Access Token:</strong> {localStorage.getItem('access') ? 'exists' : 'missing'}</p>
+    </div>
+  );
+};
+
 // Component to conditionally redirect based on user type
 const AccountRouter = () => {
   const { user, loading } = useContext(AuthContext);
@@ -149,6 +166,7 @@ function App() {
           <Route path="/simple-test" element={<SimpleAccountTest />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/test" element={<div>Admin Test Route Working!</div>} />
+          <Route path="/route-test" element={<RouteTest />} />
           <Route 
             path="/admin/dashboard" 
             element={
