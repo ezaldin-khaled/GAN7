@@ -58,22 +58,59 @@ const AdminDashboard = () => {
 
   const checkAuth = async () => {
     const token = localStorage.getItem('access');
+    const adminLoggedIn = localStorage.getItem('adminLoggedIn');
+    const userData = localStorage.getItem('user');
+    
+    console.log('=== ADMIN DASHBOARD AUTH CHECK ===');
+    console.log('Token exists:', !!token);
+    console.log('Admin logged in flag:', adminLoggedIn);
+    console.log('User data exists:', !!userData);
+    
     if (!token) {
+      console.log('No access token found');
       redirectToLogin();
       return;
     }
 
-    try {
-      // Verify token with backend
-      const response = await axiosInstance.post('/token/verify/', { token });
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        console.log('Parsed user data:', user);
+        console.log('isStaff:', user.isStaff);
+        console.log('isDashboard:', user.isDashboard);
+        
+        // Check if user has admin or dashboard access
+        if (user.isStaff || user.isDashboard || adminLoggedIn === 'true') {
+          console.log('AdminDashboard: User authenticated successfully via localStorage');
+          setIsAuthenticated(true);
+          setIsLoading(false);
+          return;
+        }
+      } catch (parseError) {
+        console.error('Error parsing user data:', parseError);
+      }
+    }
 
-      if (response.data.is_dashboard === true) {
+    // Fallback to API verification if localStorage check fails
+    try {
+      console.log('Falling back to API token verification...');
+      const response = await axiosInstance.post('/token/verify/', { token });
+      console.log('=== TOKEN VERIFICATION RESPONSE ===');
+      console.log('Full response:', response.data);
+      console.log('is_dashboard:', response.data.is_dashboard);
+      console.log('is_staff:', response.data.is_staff);
+      console.log('Other fields:', Object.keys(response.data));
+
+      // Check if user has dashboard access (either as dashboard user or staff/admin)
+      if (response.data.is_dashboard === true || response.data.is_staff === true) {
+        console.log('AdminDashboard: User authenticated successfully via API');
         setIsAuthenticated(true);
       } else {
+        console.log('AdminDashboard: User not authorized for dashboard access');
         redirectToLogin();
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error('API auth check failed:', error);
       
       // If token is invalid, try to refresh
       const refreshToken = localStorage.getItem('refresh');

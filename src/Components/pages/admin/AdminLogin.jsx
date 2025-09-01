@@ -41,6 +41,17 @@ const AdminLogin = () => {
 
       const data = response.data;
       console.log('Login response:', data);
+      console.log('=== DETAILED LOGIN RESPONSE ===');
+      console.log('is_dashboard:', data.is_dashboard);
+      console.log('is_staff:', data.is_staff);
+      console.log('access token exists:', !!data.access);
+      console.log('refresh token exists:', !!data.refresh);
+      console.log('email:', data.email);
+      console.log('first_name:', data.first_name);
+      console.log('last_name:', data.last_name);
+      console.log('is_talent:', data.is_talent);
+      console.log('is_background:', data.is_background);
+      console.log('email_verified:', data.email_verified);
 
       // Check for required flags
       if (!data.is_dashboard) {

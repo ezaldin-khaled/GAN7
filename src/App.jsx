@@ -105,20 +105,23 @@ const ProtectedAdminRoute = ({ children }) => {
   const accessToken = localStorage.getItem('access');
   const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   
-  console.log('ProtectedAdminRoute: Checking admin status.');
-  console.log('adminLoggedIn:', isAdminLoggedIn);
-  console.log('accessToken:', accessToken ? 'exists' : 'missing');
-  console.log('userInfo.isStaff:', userInfo.isStaff);
+  console.log('🔒 ProtectedAdminRoute: Checking admin status.');
+  console.log('🔒 adminLoggedIn:', isAdminLoggedIn);
+  console.log('🔒 accessToken:', accessToken ? 'exists' : 'missing');
+  console.log('🔒 userInfo.isStaff:', userInfo.isStaff);
+  console.log('🔒 userInfo:', userInfo);
 
   // Check if admin is logged in (either by flag or by token + staff status)
   const isAdmin = isAdminLoggedIn === 'true' || (accessToken && userInfo.isStaff);
   
+  console.log('🔒 Final isAdmin check result:', isAdmin);
+  
   if (!isAdmin) {
-    console.log('ProtectedAdminRoute: Not admin or not logged in. Redirecting to /admin/login.');
+    console.log('🔒 ProtectedAdminRoute: Not admin or not logged in. Redirecting to /admin/login.');
     return <Navigate to="/admin/login" replace />;
   }
 
-  console.log('ProtectedAdminRoute: Admin is logged in. Rendering children.');
+  console.log('🔒 ProtectedAdminRoute: Admin is logged in. Rendering children.');
   return children;
 };
 
@@ -146,11 +149,19 @@ function App() {
           <Route path="/simple-test" element={<SimpleAccountTest />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
-            path="/admin/dashboard/*" 
+            path="/admin/dashboard" 
             element={
               <ProtectedAdminRoute>
                 <AdminDashboard />
               </ProtectedAdminRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AccountRouter />
+              </ProtectedRoute>
             } 
           />
           <Route 

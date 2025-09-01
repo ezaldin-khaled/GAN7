@@ -28,35 +28,41 @@ export const AuthProvider = ({ children }) => {
         // Set user immediately from localStorage to avoid delays
         setUser(parsedUser);
         
-        // Try to verify token is still valid by making a test API call
-        try {
-          const response = await axiosInstance.get('/api/profile/talent/');
-          console.log('🔍 Token validation successful:', response.data);
-          
-          // Update user data with fresh data from server
-          const updatedUser = {
-            ...parsedUser,
-            ...response.data,
-            // Ensure profilePic field is preserved from API response
-            profilePic: response.data.profile_picture || parsedUser.profilePic
-          };
-          
-          setUser(updatedUser);
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-        } catch (error) {
-          console.log('🔍 Token validation failed:', error.response?.status);
-          
-          // If token is invalid (401/403), clear auth data
-          if (error.response?.status === 401 || error.response?.status === 403) {
-            console.log('🔍 Clearing invalid auth data');
-            localStorage.removeItem('access');
-            localStorage.removeItem('refresh');
-            localStorage.removeItem('user');
-            setUser(null);
-          } else {
-            // For other errors (network, server issues), keep the cached user data
-            console.log('🔍 Keeping cached user data due to non-auth error');
-            // User is already set from localStorage above
+        // Skip token validation for admin users to avoid conflicts
+        if (parsedUser.isStaff || parsedUser.isDashboard) {
+          console.log('🔍 Admin/Dashboard user detected, skipping token validation');
+          setUser(parsedUser);
+        } else {
+          // Try to verify token is still valid by making a test API call
+          try {
+            const response = await axiosInstance.get('/api/profile/talent/');
+            console.log('🔍 Token validation successful:', response.data);
+            
+            // Update user data with fresh data from server
+            const updatedUser = {
+              ...parsedUser,
+              ...response.data,
+              // Ensure profilePic field is preserved from API response
+              profilePic: response.data.profile_picture || parsedUser.profilePic
+            };
+            
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+          } catch (error) {
+            console.log('🔍 Token validation failed:', error.response?.status);
+            
+            // If token is invalid (401/403), clear auth data
+            if (error.response?.status === 401 || error.response?.status === 403) {
+              console.log('🔍 Clearing invalid auth data');
+              localStorage.removeItem('access');
+              localStorage.removeItem('refresh');
+              localStorage.removeItem('user');
+              setUser(null);
+            } else {
+              // For other errors (network, server issues), keep the cached user data
+              console.log('🔍 Keeping cached user data due to non-auth error');
+              // User is already set from localStorage above
+            }
           }
         }
       } else {
