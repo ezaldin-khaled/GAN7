@@ -30,19 +30,21 @@
 
 .specialization-form select {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
-  font-size: 1rem;
+  padding: 16px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  font-size: 16px; /* Prevent zoom on iOS */
   color: #333;
   transition: border-color 0.2s ease;
+  min-height: 56px; /* Better touch target */
 }
 
 .specialization-form select:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  background-color: white;
 }
 
 .specialization-form select option {
@@ -56,13 +58,15 @@
 .specialization-form .save-button {
   background-color: #007bff;
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 16px 24px;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 56px; /* Better touch target */
+  width: 100%; /* Full width on mobile */
 }
 
 .specialization-form .save-button:hover {
@@ -74,7 +78,7 @@
   cursor: not-allowed;
 }
 
-/* Social Media Section Styles */
+/* Social Media Section Styles - Mobile First */
 .social-media-section {
   margin-top: 2rem;
   padding-top: 2rem;
@@ -89,7 +93,7 @@
 
 .social-media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -107,18 +111,21 @@
 
 .social-media-grid input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: 16px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 16px; /* Prevent zoom on iOS */
   color: #333;
   transition: all 0.2s ease;
+  background-color: #f8fafc;
+  min-height: 56px; /* Better touch target */
 }
 
 .social-media-grid input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  background-color: white;
 }
 
 .social-media-grid input::placeholder {
@@ -128,18 +135,6 @@
 
 .social-media-grid input:hover {
   border-color: #007bff;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .social-media-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .social-media-section {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-  }
 }
 
 .content-section {
@@ -163,6 +158,260 @@
 }
 
 .profile-stats {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+/* Profile Form Section - Mobile First */
+.profile-form-section {
+  margin-bottom: 2rem;
+}
+
+.subsection-title {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* Button Group - Mobile First */
+.button-group {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.button-group .save-button {
+  width: 100%;
+  min-height: 56px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Section Description */
+.section-description {
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Responsive adjustments - Mobile First Approach */
+@media (min-width: 768px) {
+  .social-media-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .social-media-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+  }
+  
+  .specialization-form .save-button {
+    width: auto;
+  }
+  
+  .button-group {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  
+  .button-group .save-button {
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .social-media-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .content-section {
+    padding: 30px;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .subsection-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .content-section {
+    padding: 15px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .subsection-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .social-media-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+  
+  .social-media-grid {
+    gap: 1rem;
+  }
+  
+  .specialization-form select,
+  .social-media-grid input {
+    padding: 14px 16px;
+    min-height: 48px;
+  }
+  
+  .specialization-form .save-button,
+  .button-group .save-button {
+    padding: 14px 20px;
+    min-height: 48px;
+  }
+  
+  .profile-score-section {
+    margin-bottom: 30px;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 360px) {
+  .content-section {
+    padding: 10px;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+  }
+  
+  .subsection-title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .social-media-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+  
+  .social-media-grid {
+    gap: 0.75rem;
+  }
+  
+  .specialization-form select,
+  .social-media-grid input {
+    padding: 12px 14px;
+    min-height: 44px;
+  }
+  
+  .specialization-form .save-button,
+  .button-group .save-button {
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+  
+  .profile-score-section {
+    margin-bottom: 25px;
+  }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .profile-score-section {
+    margin-bottom: 25px;
+  }
+  
+  .social-media-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .profile-score-section,
+  .social-media-grid input,
+  .specialization-form select {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .specialization-form select,
+  .social-media-grid input,
+  .specialization-form .save-button,
+  .button-group .save-button {
+    transition: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .content-section {
+    background: #2d2d2d;
+    color: #ffffff;
+  }
+  
+  .section-title,
+  .subsection-title {
+    color: #ffffff;
+  }
+  
+  .social-media-section h2 {
+    color: #ffffff;
+  }
+  
+  .social-media-grid label,
+  .specialization-form label {
+    color: #e0e0e0;
+  }
+  
+  .social-media-grid input,
+  .specialization-form select {
+    background-color: #404040;
+    border-color: #555;
+    color: #ffffff;
+  }
+  
+  .social-media-grid input:focus,
+  .specialization-form select:focus {
+    background-color: #505050;
+    border-color: #007bff;
+  }
+  
+  .social-media-grid input::placeholder {
+    color: #aaa;
+  }
+  
+  .section-description {
+    color: #ccc;
+  }
+  
+  .profile-score-section {
+    border-color: #555;
+  }
 } 

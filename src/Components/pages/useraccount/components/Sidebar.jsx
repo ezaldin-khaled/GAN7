@@ -1,5 +1,5 @@
-import React from 'react';
-import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome, FaBars, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useImageWithRetry from '../../../../hooks/useImageWithRetry';
 
@@ -25,6 +25,7 @@ const backgroundMenuItems = [
 
 const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handleProfileImageChange, handleLogout, menuItems = defaultMenuItems, isBackground = false }) => {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Use the retry hook for profile image loading
   const { imageSrc, isLoading, retryCount, useFallback } = useImageWithRetry(
@@ -36,65 +37,91 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
     navigate('/');
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleTabClick = (tabId) => {
+    handleTabChange(tabId);
+    // Close mobile menu when a tab is selected
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <div className="account-sidebar">
-      <div className="profile-summary">
-        <div className="profile-image-container">
-          {imageSrc ? (
-            <img 
-              src={imageSrc} 
-              alt="Profile" 
-              className={`profile-image ${isLoading ? 'loading' : ''} ${useFallback ? 'fallback' : ''}`}
-              style={{ 
-                opacity: isLoading ? 0.6 : 1,
-                transition: 'opacity 0.3s ease-in-out',
-                display: useFallback ? 'none' : 'block'
-              }}
-            />
-          ) : null}
-          {useFallback && (
-            <div className="profile-image-fallback"></div>
-          )}
-          {isLoading && retryCount > 0 && (
-            <div className="image-loading-indicator">
-              Retrying... ({retryCount}/5)
-            </div>
-          )}
-          <label className="change-photo-btn">
-            <FaCamera />
-            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
-          </label>
-          {useFallback && (
-            <div className="add-photo-button-container">
-              <label className="add-photo-btn">
-                <FaCamera />
-                <span>Add Photo</span>
-                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
-              </label>
-            </div>
-          )}
+    <>
+      {/* Mobile Menu Toggle Button */}
+      <button 
+        className="mobile-menu-toggle"
+        onClick={toggleMobileMenu}
+        aria-label="Toggle mobile menu"
+      >
+        {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+      </button>
+
+      {/* Sidebar */}
+      <div className={`account-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`}>
+        <div className="profile-summary">
+          <div className="profile-image-container">
+            {imageSrc ? (
+              <img 
+                src={imageSrc} 
+                alt="Profile" 
+                className={`profile-image ${isLoading ? 'loading' : ''} ${useFallback ? 'fallback' : ''}`}
+                style={{ 
+                  opacity: isLoading ? 0.6 : 1,
+                  transition: 'opacity 0.3s ease-in-out',
+                  display: useFallback ? 'none' : 'block'
+                }}
+              />
+            ) : null}
+            {useFallback && (
+              <div className="profile-image-fallback"></div>
+            )}
+            {isLoading && retryCount > 0 && (
+              <div className="image-loading-indicator">
+                Retrying... ({retryCount}/5)
+              </div>
+            )}
+            <label className="change-photo-btn">
+              <FaCamera />
+              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
+            </label>
+            {useFallback && (
+              <div className="add-photo-button-container">
+                <label className="add-photo-btn">
+                  <FaCamera />
+                  <span>Add Photo</span>
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
+                </label>
+              </div>
+            )}
+          </div>
+          <h2 className="profile-name">{userData.fullName || `${userData.first_name || ''} ${userData.last_name || ''}`}</h2>
+          <p className="profile-role">{userData.role || userData.account_type || 'User'}</p>
         </div>
-        <h2 className="profile-name">{userData.fullName || `${userData.first_name || ''} ${userData.last_name || ''}`}</h2>
-        <p className="profile-role">{userData.role || userData.account_type || 'User'}</p>
-      </div>
-      
-      <div className="sidebar-menu">
-        {menuItems.map(({ id, icon: Icon, label }) => (
-          <button key={id} className={`menu-item ${activeTab === id ? 'active' : ''}`} onClick={() => handleTabChange(id)}>
-            <Icon className="menu-icon" />
-            <span>{label}</span>
+        
+        <div className="sidebar-menu">
+          {menuItems.map(({ id, icon: Icon, label }) => (
+            <button 
+              key={id} 
+              className={`menu-item ${activeTab === id ? 'active' : ''}`} 
+              onClick={() => handleTabClick(id)}
+            >
+              <Icon className="menu-icon" />
+              <span>{label}</span>
+            </button>
+          ))}
+          <button className="menu-item back-to-main-btn" onClick={handleBackToMain}>
+            <FaHome className="menu-icon" />
+            <span>Back to Main Page</span>
           </button>
-        ))}
-        <button className="menu-item back-to-main-btn" onClick={handleBackToMain}>
-          <FaHome className="menu-icon" />
-          <span>Back to Main Page</span>
-        </button>
-        <button className="menu-item logout-btn" onClick={handleLogout}>
-          <FaSignOutAlt className="menu-icon" />
-          <span>Logout</span>
-        </button>
+          <button className="menu-item logout-btn" onClick={handleLogout}>
+            <FaSignOutAlt className="menu-icon" />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
