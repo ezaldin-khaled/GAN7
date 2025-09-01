@@ -87,11 +87,12 @@ const AdminLogin = () => {
       localStorage.setItem('user', JSON.stringify(userInfo));
 
       // Set admin login flag for protected routes
-      if (data.is_staff) {
+      // Both staff users and dashboard users should have admin access
+      if (data.is_staff === true || data.is_dashboard === true) {
         localStorage.setItem('adminLoggedIn', 'true');
-        console.log('Set adminLoggedIn flag to true');
+        console.log('Set adminLoggedIn flag to true (user is admin/dashboard user)');
       } else {
-        console.log('User is not staff, adminLoggedIn flag not set');
+        console.log('User is not admin/dashboard user, adminLoggedIn flag not set');
       }
 
       // Show email verification warning if needed
@@ -104,7 +105,11 @@ const AdminLogin = () => {
       console.log('data.is_staff:', data.is_staff);
       console.log('data.is_dashboard:', data.is_dashboard);
       
-      if (data.is_staff) {
+      // Check if user should go to admin dashboard
+      // Admin users can have is_staff: true OR is_dashboard: true (for dashboard admins)
+      const isAdminUser = data.is_staff === true || data.is_dashboard === true;
+      
+      if (isAdminUser) {
         // Admin user - go to admin dashboard
         console.log('Admin login successful, redirecting to admin dashboard');
         console.log('Current location before redirect:', window.location.href);
@@ -112,8 +117,8 @@ const AdminLogin = () => {
         navigate('/admin/dashboard');
         console.log('Navigate called for admin dashboard');
       } else {
-        // Regular dashboard user - go to regular dashboard
-        console.log('Dashboard login successful, redirecting to dashboard');
+        // Regular user - go to regular dashboard
+        console.log('Regular user login successful, redirecting to dashboard');
         console.log('Current location before redirect:', window.location.href);
         console.log('Navigating to /dashboard');
         navigate('/dashboard');
