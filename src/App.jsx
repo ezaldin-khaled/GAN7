@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, BrowserRouter as Router } from 'react-router-dom';
 import { useContext } from 'react';
 import MainPage from './Components/pages/MainPage';
 import LoginPage from './Components/pages/login/LoginPage/authentication';
@@ -159,61 +159,63 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="/account" element={<AccountRouter />} />
-          <Route path="/auth-test" element={<AuthTest />} />
-          <Route path="/simple-test" element={<SimpleAccountTest />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/test" element={<div>Admin Test Route Working!</div>} />
-          <Route path="/route-test" element={<RouteTest />} />
-          <Route 
-            path="/admin/dashboard" 
-            element={
-              <ProtectedAdminRoute>
-                <AdminDashboard />
-              </ProtectedAdminRoute>
-            } 
-          />
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <AccountRouter />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/subscription" 
-            element={
-              <ProtectedRoute>
-                <SubscriptionPlans />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/subscription/success" 
-            element={
-              <ProtectedRoute>
-                <SubscriptionSuccess />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/subscription/cancel" 
-            element={
-              <ProtectedRoute>
-                <Navigate to="/subscription" replace />
-              </ProtectedRoute>
-            } 
-          />
-        </Routes>
-      </AuthProvider>
-    </LanguageProvider>
+    <Router>
+      <LanguageProvider>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/account" element={<AccountRouter />} />
+            <Route path="/auth-test" element={<AuthTest />} />
+            <Route path="/simple-test" element={<SimpleAccountTest />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/test" element={<div>Admin Test Route Working!</div>} />
+            <Route path="/route-test" element={<RouteTest />} />
+            <Route 
+              path="/admin/dashboard" 
+              element={
+                <ProtectedAdminRoute>
+                  <AdminDashboard />
+                </ProtectedAdminRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <AccountRouter />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/subscription" 
+              element={
+                <ProtectedRoute>
+                  <SubscriptionPlans />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/subscription/success" 
+              element={
+                <ProtectedRoute>
+                  <SubscriptionSuccess />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/subscription/cancel" 
+              element={
+                <ProtectedRoute>
+                  <Navigate to="/subscription" replace />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </AuthProvider>
+      </LanguageProvider>
+    </Router>
   );
 }
 
