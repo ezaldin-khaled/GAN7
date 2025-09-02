@@ -338,6 +338,16 @@ const AdminDashboard = () => {
             <div className="overview-header">
               <h2>Dashboard Overview</h2>
               <p>Welcome to your admin dashboard. Here's what's happening today.</p>
+              <div className="welcome-message">
+                <span className="welcome-time">
+                  {new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </span>
+              </div>
             </div>
             
             <div className="stats-grid">
@@ -411,22 +421,80 @@ const AdminDashboard = () => {
             <div className="quick-actions">
               <h3>Quick Actions</h3>
               <div className="action-buttons">
-                <button className="action-btn primary" onClick={() => setActiveTab('visual')}>
+                <button 
+                  className="action-btn primary" 
+                  onClick={() => setActiveTab('visual')}
+                  title="Manage user accounts and profiles"
+                >
                   <FaUsers />
                   Manage Users
                 </button>
-                <button className="action-btn success" onClick={() => setActiveTab('shared-media')}>
+                <button 
+                  className="action-btn success" 
+                  onClick={() => setActiveTab('shared-media')}
+                  title="Review and approve shared media content"
+                >
                   <FaImages />
                   Review Media
                 </button>
-                <button className="action-btn info" onClick={() => setActiveTab('email')}>
+                <button 
+                  className="action-btn info" 
+                  onClick={() => setActiveTab('email')}
+                  title="Send emails to users and manage communications"
+                >
                   <FaEnvelope />
                   Send Email
                 </button>
-                <button className="action-btn warning" onClick={() => setActiveTab('visual')}>
+                <button 
+                  className="action-btn warning" 
+                  onClick={() => setActiveTab('visual')}
+                  title="View pending approvals and items requiring attention"
+                >
                   <FaExclamationTriangle />
                   View Pending
                 </button>
+              </div>
+            </div>
+
+            <div className="recent-activity">
+              <h3>Recent Activity</h3>
+              <div className="activity-list">
+                <div className="activity-item">
+                  <div className="activity-icon success">
+                    <FaCheckCircle />
+                  </div>
+                  <div className="activity-content">
+                    <p>New user registration: John Doe</p>
+                    <span className="activity-time">2 minutes ago</span>
+                  </div>
+                </div>
+                <div className="activity-item">
+                  <div className="activity-icon info">
+                    <FaImages />
+                  </div>
+                  <div className="activity-content">
+                    <p>Media upload approved: Landscape Photography</p>
+                    <span className="activity-time">15 minutes ago</span>
+                  </div>
+                </div>
+                <div className="activity-item">
+                  <div className="activity-icon warning">
+                    <FaExclamationTriangle />
+                  </div>
+                  <div className="activity-content">
+                    <p>Pending approval: User profile update</p>
+                    <span className="activity-time">1 hour ago</span>
+                  </div>
+                </div>
+                <div className="activity-item">
+                  <div className="activity-icon primary">
+                    <FaUsers />
+                  </div>
+                  <div className="activity-content">
+                    <p>User account activated: Sarah Wilson</p>
+                    <span className="activity-time">2 hours ago</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
