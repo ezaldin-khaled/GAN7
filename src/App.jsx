@@ -129,12 +129,13 @@ const ProtectedAdminRoute = ({ children }) => {
   console.log('🔒 userInfo:', userInfo);
 
   // Check if admin is logged in (either by flag or by token + staff status)
-  const isAdmin = isAdminLoggedIn === 'true' || (accessToken && (userInfo.isStaff || userInfo.isDashboard));
+  const isAdmin = isAdminLoggedIn === 'true' || (accessToken && (userInfo.isStaff || userInfo.isDashboard || userInfo.isDashboardAdmin));
   
   console.log('🔒 Final isAdmin check result:', isAdmin);
   console.log('🔒 isAdminLoggedIn flag:', isAdminLoggedIn);
   console.log('🔒 userInfo.isStaff:', userInfo.isStaff);
   console.log('🔒 userInfo.isDashboard:', userInfo.isDashboard);
+  console.log('🔒 userInfo.isDashboardAdmin:', userInfo.isDashboardAdmin);
   
   if (!isAdmin) {
     console.log('🔒 ProtectedAdminRoute: Not admin or not logged in. Redirecting to /admin/login.');

@@ -78,6 +78,7 @@ const AdminLogin = () => {
         isTalent: data.is_talent,
         isBackground: data.is_background,
         isDashboard: data.is_dashboard,
+        isDashboardAdmin: data.is_dashboard_admin,
         isStaff: data.is_staff,
         emailVerified: data.email_verified
       };
@@ -88,7 +89,7 @@ const AdminLogin = () => {
 
       // Set admin login flag for protected routes
       // Both staff users and dashboard users should have admin access
-      if (data.is_staff === true || data.is_dashboard === true) {
+      if (data.is_staff === true || data.is_dashboard === true || data.is_dashboard_admin === true) {
         localStorage.setItem('adminLoggedIn', 'true');
         console.log('Set adminLoggedIn flag to true (user is admin/dashboard user)');
       } else {
@@ -104,10 +105,17 @@ const AdminLogin = () => {
       console.log('=== REDIRECT DECISION ===');
       console.log('data.is_staff:', data.is_staff);
       console.log('data.is_dashboard:', data.is_dashboard);
+      console.log('data.is_dashboard_admin:', data.is_dashboard_admin);
       
       // Check if user should go to admin dashboard
-      // Admin users can have is_staff: true OR is_dashboard: true (for dashboard admins)
-      const isAdminUser = data.is_staff === true || data.is_dashboard === true;
+      // Admin users can have is_staff: true OR is_dashboard: true OR is_dashboard_admin: true
+      const isAdminUser = data.is_staff === true || data.is_dashboard === true || data.is_dashboard_admin === true;
+      
+      console.log('=== ADMIN DETECTION LOGIC ===');
+      console.log('data.is_staff === true:', data.is_staff === true);
+      console.log('data.is_dashboard === true:', data.is_dashboard === true);
+      console.log('data.is_dashboard_admin === true:', data.is_dashboard_admin === true);
+      console.log('Final isAdminUser result:', isAdminUser);
       
       if (isAdminUser) {
         // Admin user - go to admin dashboard
