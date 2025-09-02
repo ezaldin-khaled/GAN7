@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaBell, FaUserCircle, FaSignOutAlt, FaEnvelope } from 'react-icons/fa';
+import { 
+  FaBell, 
+  FaUserCircle, 
+  FaSignOutAlt, 
+  FaEnvelope, 
+  FaUsers, 
+  FaImages, 
+  FaCheckCircle, 
+  FaExclamationTriangle,
+  FaChartLine
+} from 'react-icons/fa';
 import axiosInstance from '../../../api/axios';
 import UsersTab from './components/UsersTab';
 import ItemsTab from './components/ItemsTab';
@@ -13,6 +23,7 @@ import EmailTab from './components/EmailTab';
 import './AdminDashboard.css';
 
 const TABS = [
+  { id: 'overview', label: 'Overview', count: null },
   { id: 'visual', label: 'Visual Workers', count: 5 },
   { id: 'expressive', label: 'Expressive Workers', count: 5 },
   { id: 'hybrid', label: 'Hybrid Workers', count: 5 },
@@ -22,7 +33,7 @@ const TABS = [
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('visual');
+  const [activeTab, setActiveTab] = useState('overview');
   const [activeExpressiveTab, setActiveExpressiveTab] = useState('items');
   const [stats, setStats] = useState({
     totalUsers: 156,
@@ -321,6 +332,105 @@ const AdminDashboard = () => {
     console.log('selectedUser in renderContent:', selectedUser);
     
     switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="overview-section">
+            <div className="overview-header">
+              <h2>Dashboard Overview</h2>
+              <p>Welcome to your admin dashboard. Here's what's happening today.</p>
+            </div>
+            
+            <div className="stats-grid">
+              <div className="stat-card primary">
+                <div className="stat-icon">
+                  <FaUsers />
+                </div>
+                <div className="stat-content">
+                  <h3>Total Users</h3>
+                  <p className="stat-number">{stats.totalUsers.toLocaleString()}</p>
+                  <span className="stat-change positive">+23 this week</span>
+                </div>
+              </div>
+              
+              <div className="stat-card success">
+                <div className="stat-icon">
+                  <FaImages />
+                </div>
+                <div className="stat-content">
+                  <h3>Total Items</h3>
+                  <p className="stat-number">{stats.totalItems.toLocaleString()}</p>
+                  <span className="stat-change">Media content</span>
+                </div>
+              </div>
+              
+              <div className="stat-card info">
+                <div className="stat-icon">
+                  <FaCheckCircle />
+                </div>
+                <div className="stat-content">
+                  <h3>Active Users</h3>
+                  <p className="stat-number">{stats.activeUsers.toLocaleString()}</p>
+                  <span className="stat-change">Currently online</span>
+                </div>
+              </div>
+              
+              <div className="stat-card warning">
+                <div className="stat-icon">
+                  <FaExclamationTriangle />
+                </div>
+                <div className="stat-content">
+                  <h3>Pending Approvals</h3>
+                  <p className="stat-number">{stats.pendingApprovals}</p>
+                  <span className="stat-change">Requires attention</span>
+                </div>
+              </div>
+              
+              <div className="stat-card revenue">
+                <div className="stat-icon">
+                  <FaChartLine />
+                </div>
+                <div className="stat-content">
+                  <h3>Total Revenue</h3>
+                  <p className="stat-number">$15,420</p>
+                  <span className="stat-change positive">+12% this month</span>
+                </div>
+              </div>
+              
+              <div className="stat-card rating">
+                <div className="stat-icon">
+                  <FaCheckCircle />
+                </div>
+                <div className="stat-content">
+                  <h3>Average Rating</h3>
+                  <p className="stat-number">4.6</p>
+                  <span className="stat-change">User satisfaction</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="quick-actions">
+              <h3>Quick Actions</h3>
+              <div className="action-buttons">
+                <button className="action-btn primary" onClick={() => setActiveTab('visual')}>
+                  <FaUsers />
+                  Manage Users
+                </button>
+                <button className="action-btn success" onClick={() => setActiveTab('shared-media')}>
+                  <FaImages />
+                  Review Media
+                </button>
+                <button className="action-btn info" onClick={() => setActiveTab('email')}>
+                  <FaEnvelope />
+                  Send Email
+                </button>
+                <button className="action-btn warning" onClick={() => setActiveTab('visual')}>
+                  <FaExclamationTriangle />
+                  View Pending
+                </button>
+              </div>
+            </div>
+          </div>
+        );
       case 'visual':
         return <UsersTab />;
       case 'expressive':
