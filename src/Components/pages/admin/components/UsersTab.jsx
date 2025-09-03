@@ -420,6 +420,7 @@ const CreateUserModal = ({ onClose, onSave }) => {
           console.log('✅ Success with nested user object format');
         } catch (err2) {
           console.log('❌ Attempt 2 failed:', err2.response?.status, err2.response?.data);
+          console.log('❌ Attempt 2 error details:', JSON.stringify(err2.response?.data, null, 2));
           
           // Third try: With role field
           try {
@@ -435,6 +436,7 @@ const CreateUserModal = ({ onClose, onSave }) => {
             console.log('✅ Success with role field');
           } catch (err3) {
             console.log('❌ Attempt 3 failed:', err3.response?.status, err3.response?.data);
+            console.log('❌ Attempt 3 error details:', JSON.stringify(err3.response?.data, null, 2));
             
             // Fourth try: Alternative endpoint
             try {
@@ -473,9 +475,57 @@ const CreateUserModal = ({ onClose, onSave }) => {
                 console.log('✅ Success with different data structure');
               } catch (err5) {
                 console.log('❌ Attempt 5 failed:', err5.response?.status, err5.response?.data);
+                console.log('❌ Attempt 5 error details:', JSON.stringify(err5.response?.data, null, 2));
                 
-                // If all attempts fail, throw the last error
-                throw err5;
+                // Sixth try: Minimal required fields only
+                try {
+                  console.log('🔄 Attempt 6: Minimal required fields only');
+                  const minimalUserData = {
+                    email: formData.email,
+                    password: formData.password,
+                    first_name: formData.first_name,
+                    last_name: formData.last_name
+                  };
+                  console.log('📤 Sending minimal data:', JSON.stringify(minimalUserData, null, 2));
+                  response = await axiosInstance.post('/api/dashboard/users/create/', minimalUserData, {
+                    timeout: 60000,
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                  });
+                  console.log('✅ Success with minimal data');
+                } catch (err6) {
+                  console.log('❌ Attempt 6 failed:', err6.response?.status, err6.response?.data);
+                  console.log('❌ Attempt 6 error details:', JSON.stringify(err6.response?.data, null, 2));
+                  
+                  // Seventh try: Different field names
+                  try {
+                    console.log('🔄 Attempt 7: Different field names');
+                    const renamedUserData = {
+                      email: formData.email,
+                      password: formData.password,
+                      firstName: formData.first_name,
+                      lastName: formData.last_name,
+                      country: formData.country,
+                      dateOfBirth: formData.date_of_birth,
+                      gender: formData.gender
+                    };
+                    console.log('📤 Sending renamed data:', JSON.stringify(renamedUserData, null, 2));
+                    response = await axiosInstance.post('/api/dashboard/users/create/', renamedUserData, {
+                      timeout: 60000,
+                      headers: {
+                        'Content-Type': 'application/json'
+                      }
+                    });
+                    console.log('✅ Success with renamed fields');
+                  } catch (err7) {
+                    console.log('❌ Attempt 7 failed:', err7.response?.status, err7.response?.data);
+                    console.log('❌ Attempt 7 error details:', JSON.stringify(err7.response?.data, null, 2));
+                    
+                    // If all attempts fail, throw the last error
+                    throw err7;
+                  }
+                }
               }
             }
           }
@@ -484,6 +534,7 @@ const CreateUserModal = ({ onClose, onSave }) => {
       
       // Log successful response
       console.log('🎉 User created successfully:', response.data);
+      console.log('🎯 Working data format found!');
       
       onSave();
       onClose();
