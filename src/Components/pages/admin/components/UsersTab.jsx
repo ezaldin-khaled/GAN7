@@ -359,27 +359,132 @@ const CreateUserModal = ({ onClose, onSave }) => {
       }
 
       // Create the user data object (JSON format)
-      // This matches the expected API format from your instructions
+      // Try different field combinations to match backend expectations
       const userData = {
         email: formData.email,
         password: formData.password,
         first_name: formData.first_name,
         last_name: formData.last_name,
-        role: formData.role,
         country: formData.country,
         date_of_birth: formData.date_of_birth,
         gender: formData.gender
+        // Removed role field temporarily to see if it's causing issues
       };
 
+      // Check authentication token before making request
+      const token = localStorage.getItem('access');
+      console.log('🔑 Current token exists:', !!token);
+      console.log('🔑 Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
+      
+      // Test if the endpoint is accessible
+      try {
+        console.log('🧪 Testing endpoint accessibility...');
+        const testResponse = await axiosInstance.get('/api/dashboard/users/');
+        console.log('✅ Endpoint test successful:', testResponse.status);
+      } catch (testErr) {
+        console.log('❌ Endpoint test failed:', testErr.response?.status);
+      }
+      
       console.log('🚀 Creating user with data:', userData);
       console.log('📤 Request URL:', '/api/dashboard/users/create/');
       console.log('🔑 Authorization header will be added by axios interceptor');
 
-      // Send as JSON instead of FormData for better compatibility
-      // Increase timeout for user creation as it might take longer
-      await axiosInstance.post('/api/dashboard/users/create/', userData, {
-        timeout: 60000 // 60 seconds timeout
-      });
+      // Try different request formats to see what the backend expects
+      let response;
+      
+      // First try: Simple JSON format
+      try {
+        console.log('🔄 Attempt 1: Simple JSON format');
+        console.log('📤 Sending data:', JSON.stringify(userData, null, 2));
+        response = await axiosInstance.post('/api/dashboard/users/create/', userData, {
+          timeout: 60000, // 60 seconds timeout
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log('✅ Success with simple JSON format');
+      } catch (err1) {
+        console.log('❌ Attempt 1 failed:', err1.response?.status, err1.response?.data);
+        
+        // Second try: Nested user object format
+        try {
+          console.log('🔄 Attempt 2: Nested user object format');
+          const nestedUserData = { user: userData };
+          console.log('📤 Sending nested data:', JSON.stringify(nestedUserData, null, 2));
+          response = await axiosInstance.post('/api/dashboard/users/create/', nestedUserData, {
+            timeout: 60000,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          console.log('✅ Success with nested user object format');
+        } catch (err2) {
+          console.log('❌ Attempt 2 failed:', err2.response?.status, err2.response?.data);
+          
+          // Third try: With role field
+          try {
+            console.log('🔄 Attempt 3: With role field');
+            const userDataWithRole = { ...userData, role: formData.role };
+            console.log('📤 Sending data with role:', JSON.stringify(userDataWithRole, null, 2));
+            response = await axiosInstance.post('/api/dashboard/users/create/', userDataWithRole, {
+              timeout: 60000,
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            console.log('✅ Success with role field');
+          } catch (err3) {
+            console.log('❌ Attempt 3 failed:', err3.response?.status, err3.response?.data);
+            
+            // Fourth try: Alternative endpoint
+            try {
+              console.log('🔄 Attempt 4: Alternative endpoint /api/dashboard/users/');
+              console.log('📤 Sending to alternative endpoint:', JSON.stringify(userData, null, 2));
+              response = await axiosInstance.post('/api/dashboard/users/', userData, {
+                timeout: 60000,
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+              console.log('✅ Success with alternative endpoint');
+            } catch (err4) {
+              console.log('❌ Attempt 4 failed:', err4.response?.status, err4.response?.data);
+              
+              // Fifth try: Different data structure
+              try {
+                console.log('🔄 Attempt 5: Different data structure');
+                const altUserData = {
+                  username: formData.email,
+                  email: formData.email,
+                  password: formData.password,
+                  first_name: formData.first_name,
+                  last_name: formData.last_name,
+                  country: formData.country,
+                  date_of_birth: formData.date_of_birth,
+                  gender: formData.gender
+                };
+                console.log('📤 Sending alternative data structure:', JSON.stringify(altUserData, null, 2));
+                response = await axiosInstance.post('/api/dashboard/users/create/', altUserData, {
+                  timeout: 60000,
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+                console.log('✅ Success with different data structure');
+              } catch (err5) {
+                console.log('❌ Attempt 5 failed:', err5.response?.status, err5.response?.data);
+                
+                // If all attempts fail, throw the last error
+                throw err5;
+              }
+            }
+          }
+        }
+      }
+      
+      // Log successful response
+      console.log('🎉 User created successfully:', response.data);
+      
       onSave();
       onClose();
     } catch (err) {
@@ -391,6 +496,22 @@ const CreateUserModal = ({ onClose, onSave }) => {
         data: err.response?.data,
         config: err.config
       });
+      
+      // Check for specific error types
+      if (err.code === 'ECONNABORTED') {
+        setError('Request timed out. The server is taking too long to respond.');
+        return;
+      }
+      
+      if (err.message === 'Network Error') {
+        setError('Network error. Please check your internet connection.');
+        return;
+      }
+      
+      if (err.response?.status === 0) {
+        setError('CORS error or server not responding. Please check the backend.');
+        return;
+      }
       
       if (err.response?.data) {
         console.error('❌ Error response data:', err.response.data);
