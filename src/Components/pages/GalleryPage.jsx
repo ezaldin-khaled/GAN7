@@ -21,12 +21,7 @@ const GalleryPage = () => {
       
       const token = localStorage.getItem('access');
       
-      const response = await axiosInstance.get('/api/dashboard/shared-media/', {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-          'Accept': 'application/json'
-        }
-      });
+      const response = await axiosInstance.get('/api/dashboard/shared-media/');
       
       if (response.data && Array.isArray(response.data)) {
         const transformedMedia = response.data.map(item => ({

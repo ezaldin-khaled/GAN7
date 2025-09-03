@@ -244,11 +244,7 @@ const BackgroundAccountPage = () => {
 
     try {
       setLoading(true);
-      const response = await axiosInstance.post('/api/profile/background/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axiosInstance.post('/api/profile/background/', formData);
       
       // Update the profile image with the response URL
       const newProfilePicture = response.data.profile_picture;
@@ -282,11 +278,7 @@ const BackgroundAccountPage = () => {
         formData.append('name', file.name);
       }
 
-      const response = await axiosInstance.post('/api/profile/background/items/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axiosInstance.post('/api/profile/background/items/', formData);
       
       // Refresh the item list after successful upload
       const profileResponse = await axiosInstance.get('/api/profile/background/');

@@ -175,12 +175,7 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
                 return;
             }
 
-            const response = await axiosInstance.post('/api/dashboard/share-media/', shareData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await axiosInstance.post('/api/dashboard/share-media/', shareData);
 
             if (response.data.message === 'Media shared successfully!') {
                 showSuccessMessage('Media shared successfully to gallery!');

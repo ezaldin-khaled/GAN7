@@ -25,7 +25,7 @@ const UserSummaryPopup = ({ user, onClose }) => {
         if ((user?.profile_type === 'background' || (user?.profile_url && user.profile_url.includes('background'))) && user?.id) {
           console.log('Production Assets Pro user detected, constructing profile URL');
           // Try to construct the profile URL for background users
-          const backgroundProfileUrl = `/dashboard/profiles/background/${user.id}/`;
+          const backgroundProfileUrl = `/api/dashboard/profiles/background/${user.id}/`;
           console.log('Constructed background profile URL:', backgroundProfileUrl);
           
           try {

@@ -297,11 +297,7 @@ const UserAccountPage = () => {
     try {
       setLoading(true);
       // Use POST instead of PUT for updating the profile picture
-      const response = await axiosInstance.post('/api/profile/talent/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axiosInstance.post('/api/profile/talent/', formData);
       
       // Update the profile image with the response URL
       const newProfilePicture = response.data.profile_picture;
@@ -335,11 +331,7 @@ const UserAccountPage = () => {
           formData.append('name', file.name);
         }
 
-        const response = await axiosInstance.post('/api/profile/talent/media/', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const response = await axiosInstance.post('/api/profile/talent/media/', formData);
         
         // Refresh the media list after successful upload
         const profileResponse = await axiosInstance.get('/api/profile/talent/');

@@ -200,7 +200,7 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axiosInstance.put(`/dashboard/users/${user.id}/`, formData);
+      await axiosInstance.put(`/api/dashboard/users/${user.id}/`, formData);
       onSave();
       onClose();
     } catch (err) {
@@ -344,11 +344,7 @@ const CreateUserModal = ({ onClose, onSave }) => {
         submitData.append(`document_${index}`, doc);
       });
 
-      await axiosInstance.post('/api/dashboard/users/create/', submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      await axiosInstance.post('/api/dashboard/users/create/', submitData);
       onSave();
       onClose();
     } catch (err) {

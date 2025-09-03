@@ -446,12 +446,7 @@ const GroupsTab = ({ userData }) => {
       const formData = new FormData();
       formData.append('profile_picture', file);
 
-      axiosInstance.post(`/api/bands/${bandId}/upload-image/`, formData, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access')}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      axiosInstance.post(`/api/bands/${bandId}/upload-image/`, formData)
       .then(response => {
         console.log('Image uploaded successfully:', response.data);
         resolve(response.data);

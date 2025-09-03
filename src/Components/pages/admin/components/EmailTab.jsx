@@ -104,7 +104,7 @@ const EmailTab = ({ selectedUser }) => {
     setHistoryLoading(true);
     try {
       console.log('Loading email history...');
-      const response = await axiosInstance.get('/dashboard/email/list/');
+      const response = await axiosInstance.get('/api/dashboard/email/list/');
       
       if (Array.isArray(response.data)) {
         setEmailHistory(response.data);
@@ -156,7 +156,7 @@ const EmailTab = ({ selectedUser }) => {
 
       console.log('Sending email with data:', emailData);
       
-      const response = await axiosInstance.post('/dashboard/email/send/', emailData);
+      const response = await axiosInstance.post('/api/dashboard/email/send/', emailData);
       
       console.log('Email sent successfully:', response.data);
       
