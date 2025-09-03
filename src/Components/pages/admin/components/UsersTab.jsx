@@ -497,6 +497,17 @@ const CreateUserModal = ({ onClose, onSave }) => {
         config: err.config
       });
       
+      // Additional CORS debugging
+      if (err.message === 'Network Error') {
+        console.error('🌐 CORS/Network Error Details:');
+        console.error('🌐 Error name:', err.name);
+        console.error('🌐 Error code:', err.code);
+        console.error('🌐 Request config:', err.config);
+        console.error('🌐 Request URL:', err.config?.url);
+        console.error('🌐 Request method:', err.config?.method);
+        console.error('🌐 Request headers:', err.config?.headers);
+      }
+      
       // Check for specific error types
       if (err.code === 'ECONNABORTED') {
         setError('Request timed out. The server is taking too long to respond.');
@@ -504,12 +515,27 @@ const CreateUserModal = ({ onClose, onSave }) => {
       }
       
       if (err.message === 'Network Error') {
-        setError('Network error. Please check your internet connection.');
+        // Check if it's a CORS issue
+        if (err.message.includes('CORS') || err.message.includes('Cross-Origin')) {
+          setError('CORS Error: Backend server is not allowing requests from this domain. Please contact the backend team to fix CORS configuration.');
+        } else {
+          setError('Network error. Please check your internet connection.');
+        }
         return;
       }
       
       if (err.response?.status === 0) {
         setError('CORS error or server not responding. Please check the backend.');
+        return;
+      }
+      
+      if (err.response?.status === 502) {
+        setError('Backend Error (502): The server is down or overloaded. Please try again later or contact the backend team.');
+        return;
+      }
+      
+      if (err.response?.status === 503) {
+        setError('Backend Error (503): The server is temporarily unavailable. Please try again later.');
         return;
       }
       
@@ -559,6 +585,7 @@ const CreateUserModal = ({ onClose, onSave }) => {
         </div>
         <div className="modal-info">
           <p><strong>Note:</strong> All fields are required. Password must be at least 8 characters long.</p>
+          <p><strong>⚠️ Backend Issue:</strong> If you get a CORS or 502 error, the backend server needs CORS configuration fixes.</p>
         </div>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
