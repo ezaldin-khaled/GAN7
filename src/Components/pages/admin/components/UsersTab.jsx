@@ -328,27 +328,102 @@ const CreateUserModal = ({ onClose, onSave }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const submitData = new FormData();
-
-      // Append all form fields
-      Object.keys(formData).forEach(key => {
-        submitData.append(key, formData[key]);
-      });
-
-      // Append media files
-      if (mediaFiles.profile_picture) {
-        submitData.append('profile_picture', mediaFiles.profile_picture);
+      
+      // Validate required fields
+      const requiredFields = ['email', 'password', 'first_name', 'last_name', 'country', 'date_of_birth', 'gender'];
+      const missingFields = requiredFields.filter(field => !formData[field]);
+      
+      if (missingFields.length > 0) {
+        setError(`Missing required fields: ${missingFields.join(', ')}`);
+        return;
       }
 
-      mediaFiles.documents.forEach((doc, index) => {
-        submitData.append(`document_${index}`, doc);
-      });
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setError('Please enter a valid email address');
+        return;
+      }
 
-      await axiosInstance.post('/api/dashboard/users/create/', submitData);
+      // Validate password strength
+      if (formData.password.length < 8) {
+        setError('Password must be at least 8 characters long');
+        return;
+      }
+
+      // Validate date format (should be YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(formData.date_of_birth)) {
+        setError('Date of birth must be in YYYY-MM-DD format');
+        return;
+      }
+
+      // Create the user data object (JSON format)
+      // This matches the expected API format from your instructions
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        role: formData.role,
+        country: formData.country,
+        date_of_birth: formData.date_of_birth,
+        gender: formData.gender
+      };
+
+      console.log('🚀 Creating user with data:', userData);
+      console.log('📤 Request URL:', '/api/dashboard/users/create/');
+      console.log('🔑 Authorization header will be added by axios interceptor');
+
+      // Send as JSON instead of FormData for better compatibility
+      // Increase timeout for user creation as it might take longer
+      await axiosInstance.post('/api/dashboard/users/create/', userData, {
+        timeout: 60000 // 60 seconds timeout
+      });
       onSave();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create user');
+      console.error('❌ Error creating user:', err);
+      console.error('❌ Error details:', {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data,
+        config: err.config
+      });
+      
+      if (err.response?.data) {
+        console.error('❌ Error response data:', err.response.data);
+        
+        // Handle different types of error responses
+        if (err.response.data.detail) {
+          setError(`Server error: ${err.response.data.detail}`);
+        } else if (err.response.data.message) {
+          setError(`Server error: ${err.response.data.message}`);
+        } else if (err.response.data.email) {
+          setError(`Email error: ${err.response.data.email.join(', ')}`);
+        } else if (err.response.data.password) {
+          setError(`Password error: ${err.response.data.password.join(', ')}`);
+        } else if (err.response.data.first_name) {
+          setError(`First name error: ${err.response.data.first_name.join(', ')}`);
+        } else if (err.response.data.last_name) {
+          setError(`Last name error: ${err.response.data.last_name.join(', ')}`);
+        } else if (err.response.data.country) {
+          setError(`Country error: ${err.response.data.country.join(', ')}`);
+        } else if (err.response.data.date_of_birth) {
+          setError(`Date of birth error: ${err.response.data.date_of_birth.join(', ')}`);
+        } else if (err.response.data.gender) {
+          setError(`Gender error: ${err.response.data.gender.join(', ')}`);
+        } else {
+          setError(`Server error: ${JSON.stringify(err.response.data)}`);
+        }
+      } else if (err.message === 'timeout of 60000ms exceeded') {
+        setError('Request timed out. The server is taking too long to respond. Please try again.');
+      } else if (err.message === 'timeout of 30000ms exceeded') {
+        setError('Request timed out. The server is taking too long to respond. Please try again.');
+      } else {
+        setError(`Request failed: ${err.message}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -360,6 +435,9 @@ const CreateUserModal = ({ onClose, onSave }) => {
         <div className="modal-header">
           <h3>Create New User</h3>
           <button className="close-btn" onClick={onClose}>×</button>
+        </div>
+        <div className="modal-info">
+          <p><strong>Note:</strong> All fields are required. Password must be at least 8 characters long.</p>
         </div>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
@@ -428,9 +506,11 @@ const CreateUserModal = ({ onClose, onSave }) => {
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
+              <option value="Prefer not to say">Prefer not to say</option>
             </select>
           </div>
-          <div className="form-group">
+          {/* File uploads temporarily disabled - backend may not support them in user creation */}
+          {/* <div className="form-group">
             <label>Profile Picture</label>
             <input
               type="file"
@@ -455,15 +535,11 @@ const CreateUserModal = ({ onClose, onSave }) => {
               onChange={(e) => handleMediaUpload(e, 'documents')}
             />
             {mediaFiles.documents.length > 0 && (
-              <div className="documents-list">
-                {mediaFiles.documents.map((doc, index) => (
-                  <div key={index} className="document-item">
-                    {doc.name} ({(doc.size / 1024 / 1024).toFixed(2)} MB)
-                  </div>
-                ))}
+              <div className="document-item">
+                {doc.name} ({(doc.size / 1024 / 1024).toFixed(2)} MB)
               </div>
             )}
-          </div>
+          </div> */}
           <div className="modal-actions">
             <button type="button" onClick={onClose}>Cancel</button>
             <button type="submit" disabled={loading}>

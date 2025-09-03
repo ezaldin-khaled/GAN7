@@ -376,4 +376,20 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Modal Styles */
+.modal-info {
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #0c4a6e;
+  font-size: 0.9rem;
+}
+
+.modal-info p {
+  margin: 0;
+  line-height: 1.4;
 } 
