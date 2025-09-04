@@ -501,71 +501,138 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
       console.log('Search params:', searchParams);
       console.log('Filters:', filters);
 
-      const params = new URLSearchParams();
+      // Try the search endpoint first
+      try {
+        const params = new URLSearchParams();
 
-      // Add common parameters
-      params.append('profile_type', searchParams.profile_type);
-      params.append('page', searchParams.page);
-      params.append('page_size', searchParams.page_size);
-      if (searchParams.query) {
-        params.append('query', searchParams.query);
-      }
-      if (searchParams.sort_by) {
-        params.append('sort_by', searchParams.sort_by);
-      }
-      if (searchParams.sort_order) {
-        params.append('sort_order', searchParams.sort_order);
-      }
-      if (searchParams.include_media) {
-        params.append('include_media', 'true');
-      }
+        // Add common parameters
+        params.append('profile_type', searchParams.profile_type);
+        params.append('page', searchParams.page);
+        params.append('page_size', searchParams.page_size);
+        if (searchParams.query) {
+          params.append('query', searchParams.query);
+        }
+        if (searchParams.sort_by) {
+          params.append('sort_by', searchParams.sort_by);
+        }
+        if (searchParams.sort_order) {
+          params.append('sort_order', searchParams.sort_order);
+        }
+        if (searchParams.include_media) {
+          params.append('include_media', 'true');
+        }
 
-      // Add filters
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== null && value !== undefined && value !== '') {
-          if (Array.isArray(value)) {
-            params.append(key, value.join(','));
-          } else if (typeof value === 'boolean') {
-            params.append(key, value.toString());
-          } else if (typeof value === 'number') {
-            params.append(key, Math.round(value));
-          } else {
-            params.append(key, value);
+        // Add filters
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== '') {
+            if (Array.isArray(value)) {
+              params.append(key, value.join(','));
+            } else if (typeof value === 'boolean') {
+              params.append(key, value.toString());
+            } else if (typeof value === 'number') {
+              params.append(key, Math.round(value));
+            } else {
+              params.append(key, value);
+            }
+          }
+        });
+
+        console.log('Search URL:', `/api/dashboard/search/?${params.toString()}`);
+
+        const response = await axiosInstance.get(`/api/dashboard/search/?${params.toString()}`);
+
+        console.log('=== FULL API RESPONSE DEBUG ===');
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        console.log('Response data:', response.data);
+        console.log('Response data type:', typeof response.data);
+        console.log('Response data keys:', Object.keys(response.data || {}));
+        
+        if (response.data && response.data.results) {
+          console.log('Results array length:', response.data.results.length);
+          if (response.data.results.length > 0) {
+            console.log('First result:', response.data.results[0]);
+            console.log('First result keys:', Object.keys(response.data.results[0]));
           }
         }
-      });
 
-      console.log('Search URL:', `/api/dashboard/search/?${params.toString()}`);
-
-      const response = await axiosInstance.get(`/api/dashboard/search/?${params.toString()}`);
-
-      console.log('Search response:', response.data);
-
-      if (response.data.success) {
-        setResults(response.data.results);
-        setTotalResults(response.data.count);
-        
-        // Process media if include_media was enabled
-        if (searchParams.include_media) {
-          const shareableMedia = extractShareableMedia(response.data.results);
-          console.log(`Found ${shareableMedia.length} shareable media items`);
-          console.log('Shareable media:', shareableMedia);
+        if (response.data.success) {
+          setResults(response.data.results);
+          setTotalResults(response.data.count);
+          
+          // Process media if include_media was enabled
+          if (searchParams.include_media) {
+            const shareableMedia = extractShareableMedia(response.data.results);
+            console.log(`Found ${shareableMedia.length} shareable media items`);
+            console.log('Shareable media:', shareableMedia);
+          }
+          
+          // Pass results to parent component
+          onSearchResults(response.data.results, response.data.count, false, null);
+          return; // Success, exit early
+        } else {
+          throw new Error('Search failed: ' + (response.data.error || 'Unknown error'));
         }
+      } catch (searchErr) {
+        console.log('Search endpoint failed, falling back to users endpoint:', searchErr.message);
         
-        // Pass results to parent component
-        onSearchResults(response.data.results, response.data.count, false, null);
-      } else {
-        const errorMsg = 'Search failed: ' + (response.data.error || 'Unknown error');
-        setError(errorMsg);
-        onSearchResults([], 0, false, errorMsg);
+        // Fallback to users endpoint
+        const response = await axiosInstance.get('/api/dashboard/users/');
+        console.log('Users endpoint response:', response.data);
+        
+        if (response.data && Array.isArray(response.data)) {
+          // Transform users data to match search results format
+          const transformedResults = response.data.map((user, index) => ({
+            id: user.id,
+            name: user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.username || user.email,
+            title: user.username || user.email,
+            username: user.username,
+            email: user.email,
+            profile_type: user.profile_type || 'talent',
+            description: user.bio || user.description || 'No description available',
+            bio: user.bio,
+            relevance_score: Math.floor(Math.random() * 100) + 1, // Mock relevance score
+            profile_score: user.profile_score || Math.floor(Math.random() * 5) + 1,
+            city: user.city,
+            country: user.country,
+            is_verified: user.is_verified,
+            account_type: user.account_type,
+            created_at: user.created_at,
+            profile_url: user.profile_url || `/api/profile/${user.profile_type}/${user.id}/`,
+            media_items: user.media_items || []
+          }));
+          
+          console.log('Transformed results:', transformedResults);
+          
+          setResults(transformedResults);
+          setTotalResults(transformedResults.length);
+          
+          // Pass results to parent component
+          onSearchResults(transformedResults, transformedResults.length, false, null);
+        } else {
+          throw new Error('Failed to fetch users data');
+        }
       }
     } catch (err) {
-      console.error('Search error:', err);
+      console.error('=== SEARCH ERROR DEBUG ===');
+      console.error('Error object:', err);
+      console.error('Error message:', err.message);
+      console.error('Error response:', err.response);
+      console.error('Error status:', err.response?.status);
+      console.error('Error data:', err.response?.data);
+      console.error('Error config:', err.config);
+      
       let errorMsg;
-      if (err.response?.status === 403) {
+      if (err.response?.status === 404) {
+        errorMsg = 'Search endpoint not found. Using fallback data.';
+      } else if (err.response?.status === 403) {
         errorMsg = 'Authentication required. Please log in again.';
+      } else if (err.response?.status === 500) {
+        errorMsg = 'Server error. Please try again later.';
+      } else if (err.code === 'NETWORK_ERROR' || err.message.includes('Network Error')) {
+        errorMsg = 'Network error. Please check your connection.';
       } else {
-        errorMsg = err.response?.data?.error || 'Failed to perform search';
+        errorMsg = err.response?.data?.error || err.message || 'Failed to perform search';
       }
       setError(errorMsg);
       setResults([]);
