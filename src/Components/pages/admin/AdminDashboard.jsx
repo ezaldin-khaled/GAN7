@@ -244,7 +244,16 @@ const AdminDashboard = () => {
     if (searchError) {
       return (
         <div className="error-message" role="alert">
-          {searchError}
+          <div className="error-content">
+            <h4>Search Error</h4>
+            <p>{searchError}</p>
+            <button 
+              className="retry-button"
+              onClick={() => window.location.reload()}
+            >
+              Retry Search
+            </button>
+          </div>
         </div>
       );
     }
@@ -255,72 +264,103 @@ const AdminDashboard = () => {
           <div className="no-results-icon">🔍</div>
           <h3>No results found</h3>
           <p>Try adjusting your search criteria or filters</p>
+          <button 
+            className="clear-filters-button"
+            onClick={() => window.location.reload()}
+          >
+            Clear All Filters
+          </button>
         </div>
       );
     }
+
+    // Calculate pagination info
+    const totalPages = Math.ceil(totalResults / 20);
+    const hasNextPage = searchPage < totalPages;
+    const hasPrevPage = searchPage > 1;
 
     return (
       <>
         <div className="results-header">
           <div className="results-count">
-            Found {totalResults} results
+            Found {totalResults.toLocaleString()} results
+            {totalPages > 1 && (
+              <span className="page-info">
+                (Page {searchPage} of {totalPages})
+              </span>
+            )}
           </div>
-          <div className="pagination" role="navigation" aria-label="Pagination">
-            <button
-              onClick={() => setSearchPage(prev => prev - 1)}
-              disabled={searchPage === 1}
-              aria-label="Previous page"
-            >
-              Previous
-            </button>
-            <span aria-current="page">Page {searchPage}</span>
-            <button
-              onClick={() => setSearchPage(prev => prev + 1)}
-              disabled={searchResults.length < 20}
-              aria-label="Next page"
-            >
-              Next
-            </button>
-          </div>
+          {totalPages > 1 && (
+            <div className="pagination" role="navigation" aria-label="Pagination">
+              <button
+                onClick={() => setSearchPage(prev => prev - 1)}
+                disabled={!hasPrevPage}
+                aria-label="Previous page"
+                className={!hasPrevPage ? 'disabled' : ''}
+              >
+                Previous
+              </button>
+              <span aria-current="page">Page {searchPage}</span>
+              <button
+                onClick={() => setSearchPage(prev => prev + 1)}
+                disabled={!hasNextPage}
+                aria-label="Next page"
+                className={!hasNextPage ? 'disabled' : ''}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
         <div className="results-grid" role="list">
-          {searchResults.map((result) => (
-            <article key={result.id} className="result-card" role="listitem">
-              <div className="result-header">
-                <h3>{result.name || result.title}</h3>
-                <span className="relevance-score">
-                  Score: {result.relevance_score}
-                </span>
-              </div>
-              <div className="result-details">
-                <span className="type-badge">
-                  {result.profile_type}
-                </span>
-                {result.profile_score && (
-                  <span className="profile-score">
-                    Profile Score: {result.profile_score}
+          {searchResults.map((result, index) => {
+            // Safe property access with fallbacks
+            const displayName = result.name || result.title || result.username || `User ${result.id || index + 1}`;
+            const relevanceScore = result.relevance_score || result.score || 'N/A';
+            const profileType = result.profile_type || result.type || 'Unknown';
+            const profileScore = result.profile_score || result.rating || null;
+            const description = result.description || result.bio || result.summary || 'No description available';
+            
+            return (
+              <article key={result.id || `result-${index}`} className="result-card" role="listitem">
+                <div className="result-header">
+                  <h3>{displayName}</h3>
+                  <span className="relevance-score">
+                    Score: {relevanceScore}
                   </span>
-                )}
-              </div>
-              <p className="result-description">
-                {result.description || result.bio || 'No description available'}
-              </p>
-              <div className="result-actions">
-                <button
-                  onClick={() => handleViewProfile(result)}
-                  className="view-profile-btn"
-                >
-                  View Profile
-                </button>
-                <button
-                  onClick={() => handleSendEmail(result)}
-                  className="send-email-btn"
-                >
-                  <FaEnvelope /> Send Email
-                </button>
-              </div>
-            </article>
-          ))}
+                </div>
+                <div className="result-details">
+                  <span className="type-badge">
+                    {profileType.replace('_', ' ').toUpperCase()}
+                  </span>
+                  {profileScore && (
+                    <span className="profile-score">
+                      Profile Score: {profileScore}
+                    </span>
+                  )}
+                </div>
+                <p className="result-description">
+                  {description.length > 200 ? `${description.substring(0, 200)}...` : description}
+                </p>
+                <div className="result-actions">
+                  <button
+                    onClick={() => handleViewProfile(result)}
+                    className="view-profile-btn"
+                    disabled={!result.id}
+                  >
+                    View Profile
+                  </button>
+                  <button
+                    onClick={() => handleSendEmail(result)}
+                    className="send-email-btn"
+                    disabled={!result.id}
+                  >
+                    <FaEnvelope /> Send Email
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </>
     );
@@ -588,7 +628,12 @@ const AdminDashboard = () => {
       <div className="dashboard-main-layout">
         {/* Sidebar */}
         <aside className="dashboard-sidebar-light">
-          <SearchTab onSearchResults={handleSearchResults} onViewProfile={handleViewProfile} />
+          <SearchTab 
+            onSearchResults={handleSearchResults} 
+            onViewProfile={handleViewProfile}
+            searchPage={searchPage}
+            onPageChange={setSearchPage}
+          />
         </aside>
         {/* Main Content */}
         <main className="dashboard-main-content-light">

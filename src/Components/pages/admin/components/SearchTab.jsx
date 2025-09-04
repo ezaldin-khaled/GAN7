@@ -407,11 +407,11 @@ const PROFILE_TYPES = {
   }
 };
 
-const SearchTab = ({ onSearchResults, onViewProfile }) => {
+const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChange }) => {
   // Search state
   const [searchParams, setSearchParams] = useState({
     profile_type: 'talent',
-    page: 1,
+    page: searchPage,
     page_size: 20,
     query: '',
     sort_by: 'relevance',
@@ -431,6 +431,14 @@ const SearchTab = ({ onSearchResults, onViewProfile }) => {
 
   // Add new state for active filters display
   const [activeFilters, setActiveFilters] = useState([]);
+
+  // Sync search page with parent component
+  useEffect(() => {
+    setSearchParams(prev => ({
+      ...prev,
+      page: searchPage
+    }));
+  }, [searchPage]);
 
   const toggleSection = (sectionId) => {
     setExpandedSections(prev => ({
