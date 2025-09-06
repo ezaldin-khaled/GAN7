@@ -20,6 +20,7 @@ import SharedMediaTab from './components/SharedMediaTab';
 import UserSummaryPopup from './components/UserSummaryPopup';
 import Loader from '../../common/Loader';
 import EmailTab from './components/EmailTab';
+import AnalyticsOverview from './components/AnalyticsOverview';
 import './AdminDashboard.css';
 
 const TABS = [
@@ -35,12 +36,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [activeExpressiveTab, setActiveExpressiveTab] = useState('items');
-  const [stats, setStats] = useState({
-    totalUsers: 156,
-    totalItems: 432,
-    activeUsers: 89,
-    pendingApprovals: 12
-  });
+  // Stats are now fetched from the AnalyticsOverview component via API
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
@@ -390,73 +386,8 @@ const AdminDashboard = () => {
               </div>
             </div>
             
-            <div className="stats-grid">
-              <div className="stat-card primary">
-                <div className="stat-icon">
-                  <FaUsers />
-                </div>
-                <div className="stat-content">
-                  <h3>Total Users</h3>
-                  <p className="stat-number">{stats.totalUsers.toLocaleString()}</p>
-                  <span className="stat-change positive">+23 this week</span>
-                </div>
-              </div>
-              
-              <div className="stat-card success">
-                <div className="stat-icon">
-                  <FaImages />
-                </div>
-                <div className="stat-content">
-                  <h3>Total Items</h3>
-                  <p className="stat-number">{stats.totalItems.toLocaleString()}</p>
-                  <span className="stat-change">Media content</span>
-                </div>
-              </div>
-              
-              <div className="stat-card info">
-                <div className="stat-icon">
-                  <FaCheckCircle />
-                </div>
-                <div className="stat-content">
-                  <h3>Active Users</h3>
-                  <p className="stat-number">{stats.activeUsers.toLocaleString()}</p>
-                  <span className="stat-change">Currently online</span>
-                </div>
-              </div>
-              
-              <div className="stat-card warning">
-                <div className="stat-icon">
-                  <FaExclamationTriangle />
-                </div>
-                <div className="stat-content">
-                  <h3>Pending Approvals</h3>
-                  <p className="stat-number">{stats.pendingApprovals}</p>
-                  <span className="stat-change">Requires attention</span>
-                </div>
-              </div>
-              
-              <div className="stat-card revenue">
-                <div className="stat-icon">
-                  <FaChartLine />
-                </div>
-                <div className="stat-content">
-                  <h3>Total Revenue</h3>
-                  <p className="stat-number">$15,420</p>
-                  <span className="stat-change positive">+12% this month</span>
-                </div>
-              </div>
-              
-              <div className="stat-card rating">
-                <div className="stat-icon">
-                  <FaCheckCircle />
-                </div>
-                <div className="stat-content">
-                  <h3>Average Rating</h3>
-                  <p className="stat-number">4.6</p>
-                  <span className="stat-change">User satisfaction</span>
-                </div>
-              </div>
-            </div>
+            {/* Real-time Analytics from API */}
+            <AnalyticsOverview />
             
             <div className="quick-actions">
               <h3>Quick Actions</h3>
