@@ -208,41 +208,6 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .pricing-card {
-    background: #ffffff;
-    border-color: rgba(87, 36, 169, 0.547);
-  }
-
-  .pricing-card h3 {
-    color: rgba(88, 38, 167, 0.837);
-  }
-
-  .pricing-card p {
-    color: #262626cd;
-  }
-
-  .current-price {
-    color: #ffffff;
-  }
-
-  .feature-item {
-    color: #6a6a6a;
-  }
-
-  .pricing-card.popular {
-    background: linear-gradient(145deg, #1a1a1a, #222222);
-  }
-
-  .current-plan {
-    background: #ffffff;
-  }
-
-  .current-plan-features {
-    background: #fffdfd;
-  }
-}
 
 .error-message {
   background-color: #ffebee;
@@ -462,28 +427,5 @@
   }
   100% {
     transform: scale(1);
-  }
-}
-
-/* Dark mode enhancements */
-@media (prefers-color-scheme: dark) {
-  .features-list.highlight .feature-item {
-    background: rgba(130, 54, 252, 0.1);
-  }
-
-  .features-list.highlight .feature-item:hover {
-    background: rgba(130, 54, 252, 0.15);
-  }
-
-  .plan-status {
-    color: #4cd964;
-  }
-
-  .plan-status.free {
-    color: #e7e7e7;
-  }
-
-  .current-plan-marker {
-    color: #4cd964;
   }
 }

@@ -410,52 +410,6 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .content-section {
-    color: #ffffff;
-  }
-  
-  .modal-content {
-    background-color: #2d2d2d;
-    color: #ffffff;
-  }
-  
-  .content-section input,
-  .content-section select,
-  .content-section textarea {
-    background-color: #404040;
-    border-color: #555;
-    color: #ffffff;
-  }
-  
-  .content-section input:focus,
-  .content-section select:focus,
-  .content-section textarea:focus {
-    background-color: #505050;
-    border-color: #4a90e2;
-  }
-  
-  .group-card, .media-card {
-    background-color: #2d2d2d;
-    color: #ffffff;
-  }
-  
-  .file-upload-label {
-    background-color: #404040;
-    border-color: #555;
-    color: #ffffff;
-  }
-  
-  .file-upload-label:hover {
-    background-color: #505050;
-    border-color: #8236fc;
-  }
-  
-  .modal-close:hover {
-    background-color: #404040;
-  }
-}
 
 /* Special text styling */
 .mod-tsxt h2 {
