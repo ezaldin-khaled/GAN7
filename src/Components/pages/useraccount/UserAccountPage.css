@@ -191,9 +191,9 @@ body {
   z-index: 1000;
 }
 
-/* Mobile Menu Toggle Button */
+/* Mobile Menu Toggle Button - Hidden by default on desktop */
 .mobile-menu-toggle {
-  display: block;
+  display: none; /* Hidden by default */
   position: fixed;
   top: 20px;
   right: 20px;
@@ -209,6 +209,13 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Show mobile menu toggle only on mobile devices */
+@media (max-width: 767px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
 .mobile-menu-toggle:hover {
   background: #6b1fa8;
   transform: scale(1.1);
@@ -219,9 +226,11 @@ body {
   height: 20px;
 }
 
-/* Mobile Sidebar State */
-.account-sidebar.mobile-hidden {
-  display: none;
+/* Mobile Sidebar State - Only hide on mobile devices */
+@media (max-width: 767px) {
+  .account-sidebar.mobile-hidden {
+    display: none;
+  }
 }
 
 /* Profile Summary - Mobile Optimized */
@@ -1415,10 +1424,6 @@ select {
   
   .plan-button {
     width: auto;
-  }
-  
-  .mobile-menu-toggle {
-    display: none;
   }
 }
 

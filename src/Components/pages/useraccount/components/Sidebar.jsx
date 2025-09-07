@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome, FaBars, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useImageWithRetry from '../../../../hooks/useImageWithRetry';
@@ -26,12 +26,29 @@ const backgroundMenuItems = [
 const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handleProfileImageChange, handleLogout, menuItems = defaultMenuItems, isBackground = false }) => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Use the retry hook for profile image loading
   const { imageSrc, isLoading, retryCount, useFallback } = useImageWithRetry(
     profileImage, 
     5 // 5 retries
   );
+
+  // Detect screen size and update mobile state
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 767);
+    };
+
+    // Check on mount
+    checkScreenSize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup event listener
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const handleBackToMain = () => {
     navigate('/');
@@ -41,8 +58,8 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
     const newMenuState = !isMobileMenuOpen;
     setIsMobileMenuOpen(newMenuState);
     
-    // Auto-scroll to top when opening mobile menu
-    if (newMenuState) {
+    // Auto-scroll to top when opening mobile menu (only on mobile devices)
+    if (newMenuState && isMobile) {
       // Small delay to ensure the menu is rendered before scrolling
       setTimeout(() => {
         window.scrollTo({
@@ -55,8 +72,10 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
 
   const handleTabClick = (tabId) => {
     handleTabChange(tabId);
-    // Close mobile menu when a tab is selected
-    setIsMobileMenuOpen(false);
+    // Close mobile menu when a tab is selected (only on mobile devices)
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
   };
 
   return (
@@ -71,7 +90,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
       </button>
 
       {/* Sidebar */}
-      <div className={`account-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`}>
+      <div className={`account-sidebar ${isMobile && !isMobileMenuOpen ? 'mobile-hidden' : ''}`}>
         <div className="profile-summary">
           <div className="profile-image-container">
             {imageSrc ? (
