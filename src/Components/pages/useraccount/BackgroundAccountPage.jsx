@@ -311,11 +311,9 @@ const BackgroundAccountPage = () => {
       // If logout endpoint fails or doesn't exist, just continue with local cleanup
       console.log('Logout API call failed or endpoint does not exist');
     } finally {
-      // Clear all authentication data
-      localStorage.removeItem('token'); // Remove legacy token if exists
-      localStorage.removeItem('access');
-      localStorage.removeItem('refresh');
-      localStorage.removeItem('user');
+      // Use AuthContext logout method to update state immediately
+      const { logout } = useContext(AuthContext);
+      logout();
       
       // Navigate to login page
       navigate('/login');

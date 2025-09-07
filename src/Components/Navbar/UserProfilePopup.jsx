@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import "./UserProfilePopup.css";
 
 // SVG Icons
@@ -42,6 +43,7 @@ export default function UserProfilePopup({ user, onClose }) {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
 
   const handleOpenUserAccount = () => {
     // Determine which account page to navigate to based on user type
@@ -61,10 +63,8 @@ export default function UserProfilePopup({ user, onClose }) {
   };
 
   const handleLogout = () => {
-    // Clear all auth data
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
-    localStorage.removeItem('user');
+    // Use AuthContext logout method to update state immediately
+    logout();
     
     // Close the popup
     onClose();

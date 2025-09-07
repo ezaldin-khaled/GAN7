@@ -96,8 +96,8 @@ function Navbar() {
           </div>
         </li>
       );
-    } else if (user) {
-      // Show avatar when user is logged in
+    } else if (user && user.id) {
+      // Show avatar when user is logged in and has valid user data
       console.log('🔍 Navbar - User profile pic:', user.profilePic);
       console.log('🔍 Navbar - User profile_picture (API):', user.profile_picture);
       console.log('🔍 Navbar - User data:', user);
@@ -132,7 +132,8 @@ function Navbar() {
         </li>
       );
     } else {
-      // Show login button when no user is logged in
+      // Show login button when no user is logged in or session has ended
+      console.log('🔍 Navbar - No valid user found, showing login button');
       return (
         <li>
           <button className="btn" onClick={handleLoginClick}>

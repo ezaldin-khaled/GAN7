@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import { 
   FaBell, 
   FaUserCircle, 
@@ -34,6 +35,7 @@ const TABS = [
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('overview');
   const [activeExpressiveTab, setActiveExpressiveTab] = useState('items');
   // Stats are now fetched from the AnalyticsOverview component via API
@@ -170,6 +172,8 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {
+      // Use AuthContext logout method to update state immediately
+      logout();
       redirectToLogin();
     }
   };

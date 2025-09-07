@@ -10,7 +10,43 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if user is logged in when component mounts
     checkAuthStatus();
-  }, []);
+    
+    // Set up periodic session validation (every 5 minutes)
+    const sessionCheckInterval = setInterval(() => {
+      if (user && !user.isStaff && !user.isDashboard) {
+        // Only check session for regular users, not admin users
+        validateSession();
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+    
+    return () => clearInterval(sessionCheckInterval);
+  }, [user]);
+
+  const validateSession = async () => {
+    try {
+      const token = localStorage.getItem('access');
+      if (!token) {
+        console.log('🔍 No token found during session validation, clearing user');
+        setUser(null);
+        return;
+      }
+      
+      // Make a lightweight API call to validate the session
+      await axiosInstance.get('/api/profile/talent/');
+      console.log('🔍 Session validation successful');
+    } catch (error) {
+      console.log('🔍 Session validation failed:', error.response?.status);
+      
+      // If token is invalid (401/403), clear auth data
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        console.log('🔍 Session expired during validation, clearing auth data');
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        localStorage.removeItem('user');
+        setUser(null);
+      }
+    }
+  };
 
   const checkAuthStatus = async () => {
     try {
@@ -24,6 +60,16 @@ export const AuthProvider = ({ children }) => {
       if (token && userData) {
         const parsedUser = JSON.parse(userData);
         console.log('🔍 Parsed user data:', parsedUser);
+        
+        // Check if user data has required fields
+        if (!parsedUser.id) {
+          console.log('🔍 Invalid user data - missing ID, clearing auth data');
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          localStorage.removeItem('user');
+          setUser(null);
+          return;
+        }
         
         // Set user immediately from localStorage to avoid delays
         setUser(parsedUser);
@@ -53,7 +99,7 @@ export const AuthProvider = ({ children }) => {
             
             // If token is invalid (401/403), clear auth data
             if (error.response?.status === 401 || error.response?.status === 403) {
-              console.log('🔍 Clearing invalid auth data');
+              console.log('🔍 Session expired or invalid, clearing auth data');
               localStorage.removeItem('access');
               localStorage.removeItem('refresh');
               localStorage.removeItem('user');
@@ -71,6 +117,10 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('❌ Error checking auth status:', error);
+      // Clear any potentially corrupted data
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('user');
       setUser(null);
     } finally {
       setLoading(false);
