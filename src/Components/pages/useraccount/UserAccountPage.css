@@ -375,6 +375,29 @@ body {
   margin-left: 0;
 }
 
+/* Desktop styles for account-content */
+@media (min-width: 768px) {
+  .account-content {
+    margin-left: 280px !important;
+    padding: 40px !important;
+    width: calc(100% - 280px) !important;
+  }
+  
+  /* Ensure account container is row layout on desktop */
+  .account-container {
+    flex-direction: row !important;
+  }
+  
+  /* Debug: Add a subtle background to make desktop layout visible */
+  .account-sidebar {
+    background-color: #f8f9fa !important;
+  }
+  
+  .account-content {
+    background-color: #ffffff !important;
+  }
+}
+
 .content-section {
   background-color: white;
   border-radius: 16px;
@@ -1314,23 +1337,32 @@ select {
 /* Comprehensive Mobile Responsiveness */
 @media (min-width: 768px) {
   .account-container {
-    flex-direction: row;
+    flex-direction: row !important;
   }
   
   .account-sidebar {
-    width: 280px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    border-right: 1px solid #e0e0e0;
-    border-bottom: none;
-    overflow-y: auto;
+    width: 280px !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    border-right: 1px solid #e0e0e0 !important;
+    border-bottom: none !important;
+    overflow-y: auto !important;
+    z-index: 100 !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
   }
   
-  .account-content {
-    margin-left: 280px;
-    padding: 40px;
+  /* Ensure profile summary looks good on desktop */
+  .account-sidebar .profile-summary {
+    padding: 30px 20px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+  }
+  
+  /* Ensure sidebar menu looks good on desktop */
+  .account-sidebar .sidebar-menu {
+    padding: 20px !important;
+    gap: 4px !important;
   }
   
   .form-row {
