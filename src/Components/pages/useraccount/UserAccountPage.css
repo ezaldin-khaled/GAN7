@@ -388,14 +388,6 @@ body {
     flex-direction: row !important;
   }
   
-  /* Debug: Add a subtle background to make desktop layout visible */
-  .account-sidebar {
-    background-color: #f8f9fa !important;
-  }
-  
-  .account-content {
-    background-color: #ffffff !important;
-  }
 }
 
 .content-section {
