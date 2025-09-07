@@ -38,7 +38,19 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    const newMenuState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newMenuState);
+    
+    // Auto-scroll to top when opening mobile menu
+    if (newMenuState) {
+      // Small delay to ensure the menu is rendered before scrolling
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
   };
 
   const handleTabClick = (tabId) => {

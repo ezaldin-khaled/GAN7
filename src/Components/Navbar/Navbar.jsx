@@ -25,7 +25,19 @@ function Navbar() {
 
   const [mobileMenu, setMobileMenu] = useState(false);
   const toggleMenu = ()=>{
-      mobileMenu? setMobileMenu(false) : setMobileMenu(true)
+      const newMenuState = !mobileMenu;
+      setMobileMenu(newMenuState);
+      
+      // Auto-scroll to top when opening mobile menu
+      if (newMenuState) {
+        // Small delay to ensure the menu is rendered before scrolling
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
   }
 
   const handleNavigation = (sectionId) => {
