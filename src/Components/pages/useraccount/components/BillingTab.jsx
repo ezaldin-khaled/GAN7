@@ -259,51 +259,6 @@ const BillingTab = () => {
     }
   ];
 
-  const getCurrentPlanFeatures = () => {
-    if (currentSubscription?.plan) {
-      // If features exist in the plan, use them
-      if (currentSubscription.plan.features && Array.isArray(currentSubscription.plan.features)) {
-        return currentSubscription.plan.features;
-      }
-      
-      // Otherwise, return default features based on plan name
-      const planName = currentSubscription.plan.name?.toLowerCase() || '';
-      if (planName.includes('basic')) {
-        return [
-          '3 Projects',
-          'Basic AI Features',
-          '1GB Storage',
-          'Community Support'
-        ];
-      } else if (planName.includes('pro')) {
-        return [
-          '10 Projects',
-          'Advanced AI Features',
-          '5GB Storage',
-          'Priority Support',
-          'Custom Branding'
-        ];
-      } else if (planName.includes('enterprise')) {
-        return [
-          'Unlimited Projects',
-          'Premium AI Features',
-          '20GB Storage',
-          '24/7 Support',
-          'Custom Branding',
-          'API Access',
-          'Dedicated Account Manager'
-        ];
-      }
-    }
-    
-    // Default free plan features
-    return [
-      '3 Projects',
-      'Basic AI Features',
-      '1GB Storage',
-      'Community Support'
-    ];
-  };
 
   const getDefaultFeatures = (planName) => {
     const name = planName.toLowerCase();
@@ -422,20 +377,6 @@ const BillingTab = () => {
         })}
       </div>
 
-      <div className="current-plan-features">
-        <h3>
-          <FaCrown className="section-icon" />
-          Your {currentSubscription ? currentSubscription.plan.name : 'Free'} Plan Features
-        </h3>
-        <div className="features-list highlight">
-          {getCurrentPlanFeatures().map((feature, index) => (
-            <div key={index} className="feature-item">
-              <FaCheck className="feature-icon" />
-              <span className="feature-text">{feature}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };

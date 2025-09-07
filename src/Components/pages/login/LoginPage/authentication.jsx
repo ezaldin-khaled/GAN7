@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import './authentication.css';
-import google_logo from '../assets/img/icon-google.svg'
-import face_logo from '../assets/img/icon-facebook.svg'
-import apple_logo from '../assets/img/icon-apple.svg'
 import back_img from '../assets/img/purpleq.jpg'
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../../api/axios';
@@ -330,20 +327,6 @@ const AuthPage = () => {
                 </button>
               </form>
               
-              <div className="social-login">
-                <p>{t('auth.orLoginWith')}</p>
-                <div className="social-buttons">
-                  <button className="social-btn" disabled={isLoading}>
-                    <img src={google_logo} alt="Google" />
-                  </button>
-                  <button className="social-btn" disabled={isLoading}>
-                    <img src={face_logo} alt="Facebook" />
-                  </button>
-                  <button className="social-btn" disabled={isLoading}>
-                    <img src={apple_logo} alt="Apple" />
-                  </button>
-                </div>
-              </div>
               
               <p className="auth-switch">
                 {t('auth.dontHaveAccount')} 
