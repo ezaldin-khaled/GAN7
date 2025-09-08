@@ -8,8 +8,16 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in when component mounts
-    checkAuthStatus();
+    console.log('🔍 AuthContext - useEffect triggered');
+    console.log('🔍 AuthContext - Current user state:', user);
+    
+    // Only check auth status on initial mount, not on every user change
+    if (!user) {
+      console.log('🔍 AuthContext - No user state, checking auth status');
+      checkAuthStatus();
+    } else {
+      console.log('🔍 AuthContext - User already exists, skipping auth check');
+    }
     
     // Set up periodic session validation (every 5 minutes)
     const sessionCheckInterval = setInterval(() => {
@@ -20,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     }, 5 * 60 * 1000); // 5 minutes
     
     return () => clearInterval(sessionCheckInterval);
-  }, [user]);
+  }, []); // Remove user dependency to prevent re-running on user changes
 
   const validateSession = async () => {
     try {
@@ -148,10 +156,15 @@ export const AuthProvider = ({ children }) => {
     console.log('🔐 Login called with:', { userData, token: !!token });
     console.log('🔐 User data structure:', userData);
     console.log('🔐 User ID:', userData?.id);
+    console.log('🔐 User is_background:', userData?.is_background);
+    console.log('🔐 User is_talent:', userData?.is_talent);
     
     // Store tokens and user data in localStorage first
     localStorage.setItem('access', token);
     localStorage.setItem('user', JSON.stringify(userData));
+    
+    console.log('🔐 Stored in localStorage - access token:', !!localStorage.getItem('access'));
+    console.log('🔐 Stored in localStorage - user data:', !!localStorage.getItem('user'));
     
     // Immediately update the user state to ensure UI updates
     setUser(userData);
@@ -161,6 +174,12 @@ export const AuthProvider = ({ children }) => {
     
     // Force a re-render by updating loading state
     setLoading(false);
+    
+    // Verify the state was set correctly
+    setTimeout(() => {
+      console.log('🔐 Post-login verification - user state:', user);
+      console.log('🔐 Post-login verification - localStorage user:', localStorage.getItem('user'));
+    }, 100);
   };
 
   const logout = () => {

@@ -95,9 +95,9 @@ const AuthPage = () => {
         // Redirect to main page after a short delay to ensure state is updated
         setTimeout(() => {
           console.log('🔐 Redirecting to main page after login');
-          // Force a page refresh to ensure all components get the updated state
-          window.location.href = '/';
-        }, 1000);
+          // Use navigate instead of window.location.href to preserve state
+          navigate('/');
+        }, 1500);
       } else {
         throw new Error('Invalid response from server: Missing tokens');
       }

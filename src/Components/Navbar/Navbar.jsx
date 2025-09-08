@@ -27,6 +27,22 @@ function Navbar() {
   useEffect(() => {
     console.log('🔍 Navbar - User state changed:', user);
     console.log('🔍 Navbar - Loading state:', loading);
+    console.log('🔍 Navbar - User ID:', user?.id);
+    console.log('🔍 Navbar - User exists:', !!user);
+    console.log('🔍 Navbar - User is_background:', user?.is_background);
+    console.log('🔍 Navbar - User is_talent:', user?.is_talent);
+    
+    // Check localStorage as well
+    const storedUser = localStorage.getItem('user');
+    console.log('🔍 Navbar - localStorage user exists:', !!storedUser);
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        console.log('🔍 Navbar - localStorage user data:', parsedUser);
+      } catch (e) {
+        console.log('🔍 Navbar - Error parsing localStorage user:', e);
+      }
+    }
   }, [user, loading]);
 
   const [mobileMenu, setMobileMenu] = useState(false);
