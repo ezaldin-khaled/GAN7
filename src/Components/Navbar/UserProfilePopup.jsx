@@ -119,57 +119,24 @@ export default function UserProfilePopup({ user, onClose }) {
           // Removed firstSeen, firstPurchase, revenue, mrr fields
         });
 
-        // Try to fetch detailed data from API
-        const endpoints = [
-          'api/profile/talent/',
-          'api/profile/background/',
-        ];
+        // Skip API calls since profile endpoints are not available (404/403 errors)
+        // Use cached user data from localStorage instead
+        console.log('UserProfilePopup - Profile endpoints not available, using cached user data');
         
-        // Prioritize endpoint based on user type
-        if (userInfo.is_talent) {
-          endpoints.unshift('api/profile/talent/');
-        } else if (userInfo.is_background) {
-          endpoints.unshift('api/profile/background/');
-        }
+        // Use the cached user data directly
+        const response = null; // No API response since endpoints are unavailable
         
-        let response = null;
-        let lastError = null;
+        // Since we can't get data from API, use the cached user data
+        const profileData = userInfo; // Use the userInfo from localStorage
+        const profileScore = {}; // No profile score available from API
+        const subscriptionStatus = {}; // No subscription status available from API
+        const restrictions = {}; // No restrictions available from API
         
-        // Try each endpoint until one succeeds
-        for (const endpoint of endpoints) {
-          try {
-            console.log('UserProfilePopup - Trying endpoint:', endpoint);
-            const url = endpoint.includes('?') ? 
-              `${endpoint}&t=${new Date().getTime()}` : 
-              `${endpoint}?t=${new Date().getTime()}`;
-              
-            response = await axiosInstance.get(url);
-            console.log('UserProfilePopup - Success with endpoint:', endpoint);
-            console.log('UserProfilePopup - Response data:', response.data);
-            break;
-          } catch (err) {
-            console.error(`UserProfilePopup - Error with endpoint ${endpoint}:`, err);
-            // Don't treat 500 errors as critical - just log and continue
-            if (err.response?.status >= 500) {
-              console.log(`UserProfilePopup - Server error with ${endpoint}, continuing with cached data`);
-            }
-            lastError = err;
-          }
-        }
-
-        // If API call succeeded, update with detailed data
-        if (response) {
-          // Handle nested profile structure
-          const profileData = response.data.profile || response.data;
-          const profileScore = response.data.profile_score || {};
-          const subscriptionStatus = response.data.subscription_status || {};
-          const restrictions = response.data.restrictions || {};
-          
-          console.log('UserProfilePopup - Profile data:', profileData);
-          console.log('UserProfilePopup - Profile score:', profileScore);
-          console.log('UserProfilePopup - Subscription status:', subscriptionStatus);
-          
-          const mappedUserData = {
+        console.log('UserProfilePopup - Using cached profile data:', profileData);
+        console.log('UserProfilePopup - No profile score available from API');
+        console.log('UserProfilePopup - Subscription status:', subscriptionStatus);
+        
+        const mappedUserData = {
             ...profileData,  // Store the complete profile data
             firstName: profileData.first_name || profileData.user?.first_name || initialUserData.firstName,
             lastName: profileData.last_name || profileData.user?.last_name || initialUserData.lastName,
@@ -198,33 +165,18 @@ export default function UserProfilePopup({ user, onClose }) {
             subscriptionRequired: restrictions.subscription_required || false
           };
           
-          console.log('UserProfilePopup - Mapped user data:', mappedUserData);
-          setUserData(mappedUserData);
-          
-          // Update stats from response data
+        console.log('UserProfilePopup - Mapped user data:', mappedUserData);
+        setUserData(mappedUserData);
+        
+        // Update stats from response data
         setStats({
             // Removed firstSeen, firstPurchase, revenue, mrr fields
         });
         
-        // Fetch media files if available
-          let mediaData = [];
-          if (profileData.media && Array.isArray(profileData.media)) {
-            mediaData = profileData.media;
-          } else if (profileData.items && Array.isArray(profileData.items)) {
-          // For background users, media might be in 'items' field
-            mediaData = profileData.items;
-          } else if (profileData.media_items && Array.isArray(profileData.media_items)) {
-            // Alternative media field
-            mediaData = profileData.media_items;
-          }
-          
-          console.log('UserProfilePopup - Media data found:', mediaData);
-          setMediaFiles(mediaData);
-        } else {
-          // If API failed, show warning but keep using initial data
-          console.warn('UserProfilePopup - API fetch failed, using initial data');
-          setError('Could not load detailed profile data. Showing basic information.');
-        }
+        // Since we're using cached data, no media files are available from API
+        let mediaData = [];
+        console.log('UserProfilePopup - No media data available from API, using empty array');
+        setMediaFiles(mediaData);
         
         setLoading(false);
       } catch (err) {
