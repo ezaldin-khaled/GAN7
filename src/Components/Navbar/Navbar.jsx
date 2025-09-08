@@ -128,7 +128,8 @@ function Navbar() {
     // Fallback to localStorage if AuthContext user is not available
     const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
     const finalUser = user || fallbackUser;
-    const hasValidUser = finalUser && finalUser.id;
+    // Check if user exists and has either an ID or is a valid user object with account_type
+    const hasValidUser = finalUser && (finalUser.id || (finalUser.account_type && (finalUser.is_talent || finalUser.is_background)));
     
     console.log('🔍 Navbar - fallbackUser:', fallbackUser);
     console.log('🔍 Navbar - finalUser:', finalUser);

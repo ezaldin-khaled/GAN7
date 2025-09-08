@@ -68,14 +68,18 @@ const AuthPage = () => {
       console.log('Sending login request with data:', loginData);
       const response = await axiosInstance.post(`/api/login/${loginRole}/`, loginData);
       console.log('Login response:', response.data);
+      console.log('Login response ID:', response.data.id);
+      console.log('Login response email:', response.data.email);
+      console.log('Login response first_name:', response.data.first_name);
+      console.log('Login response last_name:', response.data.last_name);
       
       // Enhanced token and user data storage
       if (response.data.access && response.data.refresh) {
         const userData = {
           id: response.data.id,
           email: response.data.email,
-          name: `${response.data.first_name} ${response.data.last_name}`,
-          profilePic: response.data.profile_picture || null, // Remove hardcoded default path
+          name: `${response.data.first_name || ''} ${response.data.last_name || ''}`.trim() || 'User',
+          profilePic: response.data.profile_picture || null,
           is_talent: loginRole === 'talent',
           is_background: loginRole === 'background',
           email_verified: response.data.email_verified,
@@ -83,6 +87,11 @@ const AuthPage = () => {
           last_name: response.data.last_name,
           account_type: loginRole
         };
+        
+        console.log('Created userData:', userData);
+        console.log('UserData ID:', userData.id);
+        console.log('UserData email:', userData.email);
+        console.log('UserData name:', userData.name);
 
         // Use AuthContext login method
         authLogin(userData, response.data.access);

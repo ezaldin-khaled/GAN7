@@ -81,9 +81,9 @@ export const AuthProvider = ({ children }) => {
         const parsedUser = JSON.parse(userData);
         console.log('🔍 Parsed user data:', parsedUser);
         
-        // Check if user data has required fields
-        if (!parsedUser.id) {
-          console.log('🔍 Invalid user data - missing ID, clearing auth data');
+        // Check if user data has required fields (either ID or valid account type)
+        if (!parsedUser.id && !(parsedUser.account_type && (parsedUser.is_talent || parsedUser.is_background))) {
+          console.log('🔍 Invalid user data - missing ID and account type, clearing auth data');
           localStorage.removeItem('access');
           localStorage.removeItem('refresh');
           localStorage.removeItem('user');
