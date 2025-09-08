@@ -149,6 +149,10 @@ export default function UserProfilePopup({ user, onClose }) {
             break;
           } catch (err) {
             console.error(`UserProfilePopup - Error with endpoint ${endpoint}:`, err);
+            // Don't treat 500 errors as critical - just log and continue
+            if (err.response?.status >= 500) {
+              console.log(`UserProfilePopup - Server error with ${endpoint}, continuing with cached data`);
+            }
             lastError = err;
           }
         }

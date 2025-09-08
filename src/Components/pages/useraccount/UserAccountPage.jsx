@@ -126,6 +126,7 @@ const UserAccountPage = () => {
         //   endpoints.unshift('api/background/me/', 'api/background/profile/');
         // }
         
+      
         // Instead, use this approach based on the available endpoints
         if (userInfo.is_talent) {
         endpoints.unshift('api/profile/talent/');
@@ -151,6 +152,10 @@ const UserAccountPage = () => {
             break;
           } catch (err) {
             console.error(`Error with endpoint ${endpoint}:`, err);
+            // Don't treat 500 errors as critical - just log and continue
+            if (err.response?.status >= 500) {
+              console.log(`Server error with ${endpoint}, will try next endpoint`);
+            }
             lastError = err;
           }
         }

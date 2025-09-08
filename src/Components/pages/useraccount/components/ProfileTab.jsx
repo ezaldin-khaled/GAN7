@@ -53,8 +53,17 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
     } catch (err) {
       console.error('Error fetching social media data:', err);
       if (err.response?.status === 404) {
-        console.log('No social media data found');
+        console.log('No social media data found - this is normal for new users');
+        // Don't set error for 404, just use empty defaults
+      } else if (err.response?.status === 403) {
+        console.log('Access denied to social media endpoint - user may not have permission');
+        // Don't set error for 403, just use empty defaults
+      } else if (err.response?.status >= 500) {
+        console.log('Server error fetching social media data - using defaults');
+        // Don't set error for server errors, just use empty defaults
       } else {
+        console.log('Failed to load social media data - using defaults');
+        // Only show error for unexpected client errors
         setError('Failed to load social media data');
       }
     } finally {
