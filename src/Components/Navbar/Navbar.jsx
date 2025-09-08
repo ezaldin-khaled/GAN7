@@ -105,6 +105,9 @@ function Navbar() {
     console.log('🔍 Navbar - user:', user);
     console.log('🔍 Navbar - user.id:', user?.id);
     console.log('🔍 Navbar - user exists:', !!user);
+    console.log('🔍 Navbar - user.is_background:', user?.is_background);
+    console.log('🔍 Navbar - user.is_talent:', user?.is_talent);
+    console.log('🔍 Navbar - user.account_type:', user?.account_type);
     
     // Fallback to localStorage if AuthContext user is not available
     const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
@@ -114,6 +117,8 @@ function Navbar() {
     console.log('🔍 Navbar - fallbackUser:', fallbackUser);
     console.log('🔍 Navbar - finalUser:', finalUser);
     console.log('🔍 Navbar - hasValidUser:', hasValidUser);
+    console.log('🔍 Navbar - finalUser.is_background:', finalUser?.is_background);
+    console.log('🔍 Navbar - finalUser.account_type:', finalUser?.account_type);
     
     if (loading) {
       // Show loading spinner while fetching user data

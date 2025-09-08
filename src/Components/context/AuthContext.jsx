@@ -31,8 +31,20 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       
+      // Get user data to determine the correct endpoint
+      const userData = localStorage.getItem('user');
+      if (!userData) {
+        console.log('🔍 No user data found during session validation, clearing user');
+        setUser(null);
+        return;
+      }
+      
+      const parsedUser = JSON.parse(userData);
+      const endpoint = parsedUser.is_background ? '/api/profile/background/' : '/api/profile/talent/';
+      console.log('🔍 Session validation with endpoint:', endpoint);
+      
       // Make a lightweight API call to validate the session
-      await axiosInstance.get('/api/profile/talent/');
+      await axiosInstance.get(endpoint);
       console.log('🔍 Session validation successful');
     } catch (error) {
       console.log('🔍 Session validation failed:', error.response?.status);
@@ -80,8 +92,12 @@ export const AuthProvider = ({ children }) => {
           setUser(parsedUser);
         } else {
           // Try to verify token is still valid by making a test API call
+          // Use the correct endpoint based on user type
+          const endpoint = parsedUser.is_background ? '/api/profile/background/' : '/api/profile/talent/';
+          console.log('🔍 Validating token with endpoint:', endpoint);
+          
           try {
-            const response = await axiosInstance.get('/api/profile/talent/');
+            const response = await axiosInstance.get(endpoint);
             console.log('🔍 Token validation successful:', response.data);
             
             // Update user data with fresh data from server
