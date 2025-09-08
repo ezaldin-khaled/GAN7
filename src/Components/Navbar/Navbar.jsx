@@ -137,9 +137,9 @@ function Navbar() {
     console.log('🔍 Navbar - finalUser.is_background:', finalUser?.is_background);
     console.log('🔍 Navbar - finalUser.account_type:', finalUser?.account_type);
     
-    if (loading) {
-      // Show loading spinner while fetching user data
-      console.log('🔍 Navbar - Showing loading spinner');
+    if (loading && !hasValidUser) {
+      // Show loading spinner only if we don't have a valid user yet
+      console.log('🔍 Navbar - Showing loading spinner (no valid user yet)');
       return (
         <li>
           <div className="navbar-loader">

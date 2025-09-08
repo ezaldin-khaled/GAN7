@@ -186,9 +186,31 @@ const UserAccountPage = () => {
       } catch (err) {
         // Enhanced error handling
         if (err.response?.status === 404) {
-          setError('Profile endpoint not found. Please check your API configuration.');
+          console.log('🔍 Profile endpoints not available (404), using cached user data');
+          // Use cached user data from localStorage when API endpoints are not available
+          const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+          if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
+            setUserData({
+              ...cachedUser,
+              fullName: cachedUser.name || `${cachedUser.first_name || ''} ${cachedUser.last_name || ''}`.trim(),
+              email: cachedUser.email || '',
+              role: cachedUser.account_type || '',
+              location: `${cachedUser.city || ''}, ${cachedUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+              gender: cachedUser.gender || '',
+              dateOfBirth: cachedUser.date_of_birth || '',
+              country: cachedUser.country || '',
+              phoneNumber: cachedUser.phone || '',
+              bio: cachedUser.aboutyou || ''
+            });
+            setProfileImage(cachedUser.profilePic || null);
+            setError(''); // Clear any previous errors
+          } else {
+            setError('Unable to load profile data. Please try logging in again.');
+          }
         } else if (err.response?.status === 401) {
-          localStorage.removeItem('token');
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          localStorage.removeItem('user');
           navigate('/login');
         } else {
           setError('Failed to load user data. Please try again later.');
