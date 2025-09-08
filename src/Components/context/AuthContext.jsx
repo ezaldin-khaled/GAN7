@@ -130,10 +130,21 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData, token) => {
     console.log('🔐 Login called with:', { userData, token: !!token });
+    console.log('🔐 User data structure:', userData);
+    console.log('🔐 User ID:', userData?.id);
+    
+    // Store tokens and user data in localStorage first
     localStorage.setItem('access', token);
     localStorage.setItem('user', JSON.stringify(userData));
+    
+    // Immediately update the user state to ensure UI updates
     setUser(userData);
-    console.log('🔐 User logged in successfully');
+    
+    console.log('🔐 User logged in successfully, user state updated');
+    console.log('🔐 Current user state after login:', userData);
+    
+    // Force a re-render by updating loading state
+    setLoading(false);
   };
 
   const logout = () => {

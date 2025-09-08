@@ -92,9 +92,11 @@ const AuthPage = () => {
         
         setSuccessMessage(t('auth.loginSuccess'));
         
-        // Redirect to main page after a short delay
+        // Redirect to main page after a short delay to ensure state is updated
         setTimeout(() => {
-          navigate('/');
+          console.log('🔐 Redirecting to main page after login');
+          // Force a page refresh to ensure all components get the updated state
+          window.location.href = '/';
         }, 1000);
       } else {
         throw new Error('Invalid response from server: Missing tokens');
