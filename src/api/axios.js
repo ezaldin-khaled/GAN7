@@ -23,13 +23,24 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem('access');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('🔑 Adding auth token to request:', config.url);
+    } else {
+      console.warn('⚠️ No auth token found for request:', config.url);
     }
     
-    // Request interceptor logic
+    // Log request details for debugging
+    console.log('📤 API Request:', {
+      method: config.method?.toUpperCase(),
+      url: config.url,
+      baseURL: config.baseURL,
+      hasAuth: !!config.headers.Authorization,
+      headers: config.headers
+    });
     
     return config;
   },
   error => {
+    console.error('❌ Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
@@ -37,17 +48,47 @@ axiosInstance.interceptors.request.use(
 // Response interceptor for error handling
 axiosInstance.interceptors.response.use(
   response => {
+    console.log('📥 API Response:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data
+    });
     return response;
   },
   error => {
+    console.error('❌ API Error:', {
+      status: error.response?.status,
+      url: error.config?.url,
+      message: error.message,
+      data: error.response?.data
+    });
 
     // Handle specific error cases
     if (error.response) {
       if (error.response.status === 401) {
+        console.log('🔓 401 Unauthorized - clearing auth data');
         // Clear auth data on unauthorized
         localStorage.removeItem('access');
         localStorage.removeItem('refresh');
         localStorage.removeItem('user');
+        // Redirect to login page
+        window.location.href = '/login';
+      } else if (error.response.status === 403) {
+        console.log('🚫 403 Forbidden - checking token validity');
+        // Check if token exists and is valid
+        const token = localStorage.getItem('access');
+        if (!token) {
+          console.log('❌ No token found - redirecting to login');
+          window.location.href = '/login';
+        } else {
+          console.log('⚠️ Token exists but access forbidden - may need refresh');
+          // Try to refresh token
+          const refreshToken = localStorage.getItem('refresh');
+          if (refreshToken) {
+            console.log('🔄 Attempting token refresh...');
+            // Token refresh will be handled by the calling component
+          }
+        }
       }
     }
     

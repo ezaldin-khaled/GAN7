@@ -55,7 +55,7 @@ const UserAccountPage = () => {
     };
   }, []);
 
-  // Token refresh function
+  // Enhanced token refresh function
   const refreshToken = async () => {
     try {
       const refreshTokenValue = localStorage.getItem('refresh');
@@ -63,19 +63,41 @@ const UserAccountPage = () => {
         throw new Error('No refresh token found');
       }
       
+      console.log('🔄 Attempting token refresh...');
       const response = await axiosInstance.post('/api/token/refresh/', {
         refresh: refreshTokenValue
       });
       
       const { access } = response.data;
       localStorage.setItem('access', access);
+      console.log('✅ Token refreshed successfully');
       return access;
     } catch (error) {
-      console.error('Token refresh failed:', error);
+      console.error('❌ Token refresh failed:', error);
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
       localStorage.removeItem('user');
       window.location.href = '/login';
+      throw error;
+    }
+  };
+
+  // Enhanced API call with automatic token refresh
+  const apiCallWithRefresh = async (apiCall) => {
+    try {
+      return await apiCall();
+    } catch (error) {
+      if (error.response?.status === 403 || error.response?.status === 401) {
+        console.log('🔄 API call failed with auth error, attempting token refresh...');
+        try {
+          await refreshToken();
+          // Retry the original API call with new token
+          return await apiCall();
+        } catch (refreshError) {
+          console.error('❌ Token refresh failed, redirecting to login');
+          throw refreshError;
+        }
+      }
       throw error;
     }
   };
@@ -221,15 +243,21 @@ const UserAccountPage = () => {
     if (activeTab === 'media') {
       const fetchMediaFiles = async () => {
         try {
-          const response = await axiosInstance.get('/api/profile/talent/');
+          console.log('📁 Fetching media files...');
+          const response = await apiCallWithRefresh(() => 
+            axiosInstance.get('/api/profile/talent/')
+          );
           
+          console.log('📁 Media files response:', response.data);
           if (response.data && response.data.media) {
             setMediaFiles(response.data.media);
+            console.log('📁 Media files loaded:', response.data.media.length);
           } else {
             setMediaFiles([]);
+            console.log('📁 No media files found');
           }
         } catch (err) {
-          console.error('Error fetching media files:', err);
+          console.error('❌ Error fetching media files:', err);
           setError('Failed to load media files. Please try again later.');
         }
       };
@@ -338,24 +366,34 @@ const UserAccountPage = () => {
   const handleMediaUpload = async (formData) => {
       try {
         setLoading(true);
+        console.log('📤 Uploading media file...');
+        
         // Ensure name field is present in formData
         if (!formData.get('name')) {
           const file = formData.get('media_file');
           formData.append('name', file.name);
         }
 
-        const response = await axiosInstance.post('/api/profile/talent/media/', formData);
+        const response = await apiCallWithRefresh(() => 
+          axiosInstance.post('/api/profile/talent/media/', formData)
+        );
+        
+        console.log('📤 Media upload response:', response.data);
         
         // Refresh the media list after successful upload
-        const profileResponse = await axiosInstance.get('/api/profile/talent/');
+        const profileResponse = await apiCallWithRefresh(() => 
+          axiosInstance.get('/api/profile/talent/')
+        );
+        
         if (profileResponse.data && profileResponse.data.media) {
           setMediaFiles(profileResponse.data.media);
           setSuccessMessage('Media file uploaded successfully!');
+          console.log('📤 Media files updated after upload');
         }
         
         setLoading(false);
       } catch (err) {
-        console.error('Error uploading media file:', err);
+        console.error('❌ Error uploading media file:', err);
         const errorMessage = err.response?.data?.name?.[0] || 
                       err.response?.data?.non_field_errors?.[0] || 
                       err.response?.data?.message || 
@@ -373,18 +411,22 @@ const UserAccountPage = () => {
     try {
       setLoading(true);
       setError('');
+      console.log('🗑️ Deleting media file:', mediaId);
       
-      const response = await axiosInstance.delete(`/api/profile/talent/media/${mediaId}/`);
+      const response = await apiCallWithRefresh(() => 
+        axiosInstance.delete(`/api/profile/talent/media/${mediaId}/`)
+      );
       
       if (response.status === 204 || response.status === 200) {
         // Remove the deleted media from the local state
         setMediaFiles(prev => prev.filter(media => media.id !== mediaId));
         setSuccessMessage('Media file deleted successfully!');
+        console.log('🗑️ Media file deleted successfully');
       } else {
         setError('Failed to delete media file. Please try again.');
       }
     } catch (err) {
-      console.error('Error deleting media file:', err);
+      console.error('❌ Error deleting media file:', err);
       const errorMessage = err.response?.data?.detail || 
                           err.response?.data?.message || 
                           'Failed to delete media file. Please try again.';

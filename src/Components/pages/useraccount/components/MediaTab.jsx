@@ -1,6 +1,7 @@
 import React from 'react';
-import { FaImage, FaTrash, FaUpload } from 'react-icons/fa';
+import { FaImage, FaTrash, FaUpload, FaBug } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
+import { debugAuthStatus, testApiConnection } from '../../../../utils/authDebugger';
 
 const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   console.log('🎨 MediaTab render - mediaFiles:', mediaFiles);
@@ -41,6 +42,36 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     
     console.log('❌ All API endpoints failed');
     return null;
+  };
+
+  // Debug function to check authentication and API status
+  const handleDebugAuth = async () => {
+    console.log('🐛 Starting authentication debug...');
+    
+    // Check auth status
+    const authStatus = debugAuthStatus();
+    
+    // Test API connection
+    const apiWorking = await testApiConnection(axiosInstance);
+    
+    // Test specific endpoints
+    try {
+      console.log('🧪 Testing profile endpoint...');
+      const profileResponse = await axiosInstance.get('/api/profile/talent/');
+      console.log('✅ Profile endpoint working:', profileResponse.status);
+    } catch (error) {
+      console.log('❌ Profile endpoint failed:', error.response?.status, error.message);
+    }
+    
+    try {
+      console.log('🧪 Testing media endpoint...');
+      const mediaResponse = await axiosInstance.get('/api/profile/talent/media/');
+      console.log('✅ Media endpoint working:', mediaResponse.status);
+    } catch (error) {
+      console.log('❌ Media endpoint failed:', error.response?.status, error.message);
+    }
+    
+    alert(`Debug complete! Check console for details.\nAuth: ${authStatus.hasToken ? 'Token found' : 'No token'}\nAPI: ${apiWorking ? 'Working' : 'Failed'}`);
   };
 
   // Helper function to get the correct image URL from different data structures
@@ -206,7 +237,27 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
 
   return (
     <div className="content-section">
-      <h1 className="section-title">Media Gallery</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h1 className="section-title">Media Gallery</h1>
+        <button 
+          onClick={handleDebugAuth}
+          style={{
+            background: '#ff6b6b',
+            color: 'white',
+            border: 'none',
+            padding: '8px 12px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            fontSize: '12px'
+          }}
+          title="Debug authentication and API status"
+        >
+          <FaBug /> Debug Auth
+        </button>
+      </div>
       
       <div className="upload-area">
         <div className="upload-box" onClick={() => document.getElementById('media-upload').click()}>
