@@ -1,12 +1,8 @@
 import React from 'react';
-import { FaImage, FaTrash, FaUpload, FaBug } from 'react-icons/fa';
+import { FaImage, FaTrash, FaUpload } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
-import { debugAuthStatus, testApiConnection } from '../../../../utils/authDebugger';
 
 const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
-  console.log('🎨 MediaTab render - mediaFiles:', mediaFiles);
-  console.log('🎨 MediaTab render - mediaFiles type:', typeof mediaFiles);
-  console.log('🎨 MediaTab render - mediaFiles length:', mediaFiles?.length);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -44,62 +40,11 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     return null;
   };
 
-  // Debug function to check authentication and API status
-  const handleDebugAuth = async () => {
-    console.log('🐛 Starting authentication debug...');
-    
-    // Check auth status
-    const authStatus = debugAuthStatus();
-    
-    // Test API connection
-    const apiWorking = await testApiConnection(axiosInstance);
-    
-    // Test specific endpoints
-    try {
-      console.log('🧪 Testing profile endpoint...');
-      const profileResponse = await axiosInstance.get('/api/profile/talent/');
-      console.log('✅ Profile endpoint working:', profileResponse.status);
-    } catch (error) {
-      console.log('❌ Profile endpoint failed:', error.response?.status, error.message);
-    }
-    
-    try {
-      console.log('🧪 Testing media endpoint (GET)...');
-      const mediaResponse = await axiosInstance.get('/api/profile/talent/media/');
-      console.log('✅ Media endpoint working:', mediaResponse.status);
-    } catch (error) {
-      console.log('❌ Media endpoint failed:', error.response?.status, error.message);
-      console.log('📋 Error details:', error.response?.data);
-    }
-    
-    // Test media upload endpoint with a dummy request to see what it expects
-    try {
-      console.log('🧪 Testing media upload endpoint structure...');
-      const formData = new FormData();
-      formData.append('test', 'dummy');
-      
-      const uploadResponse = await axiosInstance.post('/api/profile/talent/media/', formData);
-      console.log('✅ Media upload endpoint working:', uploadResponse.status);
-    } catch (error) {
-      console.log('❌ Media upload endpoint failed:', error.response?.status, error.message);
-      console.log('📋 Upload error details:', error.response?.data);
-      console.log('📋 Expected fields:', error.response?.data?.errors || error.response?.data);
-    }
-    
-    alert(`Debug complete! Check console for details.\nAuth: ${authStatus.hasToken ? 'Token found' : 'No token'}\nAPI: ${apiWorking ? 'Working' : 'Failed'}`);
-  };
 
   // Helper function to get the correct image URL from different data structures
   const getMediaUrl = (file) => {
-    console.log('🔗 Getting media URL for file:', file);
-    console.log('🔗 File ID:', file.id);
-    console.log('🔗 File name:', file.name);
-    console.log('🔗 Media type:', file.media_type);
-    console.log('🔗 Full file object:', JSON.stringify(file, null, 2));
-    
     // The media_file field contains the direct S3/CDN URL - use this as primary
     let primaryUrl = file.media_file;
-    console.log('🔗 Found media_file URL:', primaryUrl);
     
     // If media_file is not available, try other possible URL field names
     if (!primaryUrl) {
@@ -113,31 +58,16 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       ];
       
       primaryUrl = possibleUrls.find(url => url && typeof url === 'string');
-      console.log('🔗 Found fallback URL:', primaryUrl);
     }
     
-    // Validate the URL format
-    if (primaryUrl) {
-      console.log('🔗 URL validation:');
-      console.log('  - Is string:', typeof primaryUrl === 'string');
-      console.log('  - Is empty:', !primaryUrl);
-      console.log('  - Contains spaces:', primaryUrl.includes(' '));
-      console.log('  - Starts with http:', primaryUrl.startsWith('http'));
-      console.log('  - Contains cdn.gan7club.com:', primaryUrl.includes('cdn.gan7club.com'));
-      console.log('  - Contains ganspace:', primaryUrl.includes('ganspace'));
-      
-      // Check for URL encoding issues
-      if (primaryUrl.includes(' ')) {
-        console.log('⚠️  URL contains spaces - this might cause issues');
-        primaryUrl = encodeURI(primaryUrl);
-        console.log('🔗 URL after encoding:', primaryUrl);
-      }
+    // Check for URL encoding issues
+    if (primaryUrl && primaryUrl.includes(' ')) {
+      primaryUrl = encodeURI(primaryUrl);
     }
     
     // For DigitalOcean Spaces URLs, use them directly without alternatives
     if (primaryUrl && (primaryUrl.includes('ganspace.fra1.cdn.digitaloceanspaces.com') || 
         primaryUrl.includes('cdn.gan7club.com'))) {
-      console.log('🔗 DigitalOcean Spaces/CDN URL detected - using directly');
       return {
         primary: primaryUrl,
         alternatives: []
@@ -252,27 +182,7 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
 
   return (
     <div className="content-section">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 className="section-title">Media Gallery</h1>
-        <button 
-          onClick={handleDebugAuth}
-          style={{
-            background: '#ff6b6b',
-            color: 'white',
-            border: 'none',
-            padding: '8px 12px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '12px'
-          }}
-          title="Debug authentication and API status"
-        >
-          <FaBug /> Debug Auth
-        </button>
-      </div>
+      <h1 className="section-title">Media Gallery</h1>
       
       <div className="upload-area">
         <div className="upload-box" onClick={() => document.getElementById('media-upload').click()}>
@@ -293,17 +203,9 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       <div className="gallery-grid">
         {mediaFiles && mediaFiles.length > 0 ? (
           mediaFiles.map((file, index) => {
-            console.log(`🎨 Rendering media item ${index}:`, file);
             const mediaUrlData = getMediaUrl(file);
             const mediaTitle = getMediaTitle(file);
             const isImageFile = isImage(file);
-            
-            console.log(`🎨 Item ${index} - Primary URL: ${mediaUrlData.primary}, Alternatives: ${mediaUrlData.alternatives?.length || 0}, Title: ${mediaTitle}, IsImage: ${isImageFile}`);
-            
-            // Test API endpoint for debugging (only for first few items to avoid spam)
-            if (index < 3 && file.id) {
-              testApiEndpoint(file.id);
-            }
             
             // Create a function to handle media loading errors
             const handleMediaError = (e) => {

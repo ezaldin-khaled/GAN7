@@ -243,21 +243,17 @@ const UserAccountPage = () => {
     if (activeTab === 'media') {
       const fetchMediaFiles = async () => {
         try {
-          console.log('📁 Fetching media files...');
           const response = await apiCallWithRefresh(() => 
             axiosInstance.get('/api/profile/talent/')
           );
           
-          console.log('📁 Media files response:', response.data);
           if (response.data && response.data.media) {
             setMediaFiles(response.data.media);
-            console.log('📁 Media files loaded:', response.data.media.length);
           } else {
             setMediaFiles([]);
-            console.log('📁 No media files found');
           }
         } catch (err) {
-          console.error('❌ Error fetching media files:', err);
+          console.error('Error fetching media files:', err);
           setError('Failed to load media files. Please try again later.');
         }
       };
@@ -366,28 +362,18 @@ const UserAccountPage = () => {
   const handleMediaUpload = async (formData) => {
       try {
         setLoading(true);
-        console.log('📤 Uploading media file...');
-        
-        // Log form data contents for debugging
-        console.log('📤 FormData contents:');
-        for (let [key, value] of formData.entries()) {
-          console.log(`  - ${key}:`, value);
-        }
         
         // Ensure name field is present in formData
         if (!formData.get('name')) {
           const file = formData.get('media_file');
           if (file) {
             formData.append('name', file.name);
-            console.log('📤 Added name field:', file.name);
           }
         }
 
         const response = await apiCallWithRefresh(() => 
           axiosInstance.post('/api/profile/talent/media/', formData)
         );
-        
-        console.log('📤 Media upload response:', response.data);
         
         // Refresh the media list after successful upload
         const profileResponse = await apiCallWithRefresh(() => 
@@ -397,15 +383,11 @@ const UserAccountPage = () => {
         if (profileResponse.data && profileResponse.data.media) {
           setMediaFiles(profileResponse.data.media);
           setSuccessMessage('Media file uploaded successfully!');
-          console.log('📤 Media files updated after upload');
         }
         
         setLoading(false);
       } catch (err) {
-        console.error('❌ Error uploading media file:', err);
-        console.error('❌ Error response data:', err.response?.data);
-        console.error('❌ Error response status:', err.response?.status);
-        console.error('❌ Error response headers:', err.response?.headers);
+        console.error('Error uploading media file:', err);
         
         // Enhanced error message extraction
         let errorMessage = 'Failed to upload media file. Please try again.';
@@ -413,8 +395,12 @@ const UserAccountPage = () => {
         if (err.response?.data) {
           const errorData = err.response.data;
           
+          // Check for upload limit error specifically
+          if (errorData.error && errorData.error.includes('Upload limit reached')) {
+            errorMessage = "You've reached the free account upload limit";
+          }
           // Check for field-specific errors
-          if (errorData.media_file) {
+          else if (errorData.media_file) {
             errorMessage = `Media file error: ${Array.isArray(errorData.media_file) ? errorData.media_file[0] : errorData.media_file}`;
           } else if (errorData.name) {
             errorMessage = `Name error: ${Array.isArray(errorData.name) ? errorData.name[0] : errorData.name}`;
@@ -427,9 +413,7 @@ const UserAccountPage = () => {
           } else if (typeof errorData === 'string') {
             errorMessage = errorData;
           } else {
-            // Log the full error data for debugging
-            console.log('📋 Full error data structure:', errorData);
-            errorMessage = `Upload failed: ${JSON.stringify(errorData)}`;
+            errorMessage = 'Failed to upload media file. Please try again.';
           }
         }
         
@@ -446,7 +430,6 @@ const UserAccountPage = () => {
     try {
       setLoading(true);
       setError('');
-      console.log('🗑️ Deleting media file:', mediaId);
       
       const response = await apiCallWithRefresh(() => 
         axiosInstance.delete(`/api/profile/talent/media/${mediaId}/`)
@@ -456,12 +439,11 @@ const UserAccountPage = () => {
         // Remove the deleted media from the local state
         setMediaFiles(prev => prev.filter(media => media.id !== mediaId));
         setSuccessMessage('Media file deleted successfully!');
-        console.log('🗑️ Media file deleted successfully');
       } else {
         setError('Failed to delete media file. Please try again.');
       }
     } catch (err) {
-      console.error('❌ Error deleting media file:', err);
+      console.error('Error deleting media file:', err);
       const errorMessage = err.response?.data?.detail || 
                           err.response?.data?.message || 
                           'Failed to delete media file. Please try again.';
