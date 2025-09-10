@@ -93,63 +93,36 @@ export default function UserProfilePopup({ user, onClose }) {
         console.log('🔍 DEBUG - UserInfo from localStorage:', userInfo);
         console.log('🔍 DEBUG - CurrentUser:', currentUser);
 
-        // Create initial user data from the current user data
-        const initialUserData = {
-          firstName: currentUser?.first_name || currentUser?.firstName || '',
-          lastName: currentUser?.last_name || currentUser?.lastName || '',
-          fullName: currentUser?.full_name || `${currentUser?.first_name || currentUser?.firstName || ''} ${currentUser?.last_name || currentUser?.lastName || ''}`.trim(),
-          email: currentUser?.email || '',
-          role: currentUser?.account_type || currentUser?.role || '',
-          location: currentUser?.location || '',
-          gender: currentUser?.gender || '',
-          dateOfBirth: currentUser?.date_of_birth || currentUser?.dateOfBirth || '',
-          country: currentUser?.country || '',
-          phoneNumber: currentUser?.phone || currentUser?.phoneNumber || '',
-          bio: currentUser?.aboutyou || currentUser?.bio || currentUser?.description || '',
-          username: currentUser?.username || currentUser?.email?.split('@')[0] || '',
-          isVerified: currentUser?.is_verified || currentUser?.isVerified || false,
-          isSubscribed: currentUser?.is_subscribed || currentUser?.isSubscribed || false,
-          verifiedDate: currentUser?.verified_date || currentUser?.verifiedDate || "2 JAN, 2025",
-          profile_picture: currentUser?.profile_picture || currentUser?.profilePic || null,
-          cover_photo: currentUser?.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg'
-        };
-
-        // Set initial data immediately so UI shows something
-        console.log('🔍 DEBUG - InitialUserData:', initialUserData);
-        setUserData(initialUserData);
-        
-        // Create initial stats
-        setStats({
-          // Removed firstSeen, firstPurchase, revenue, mrr fields
-        });
-
         // Since profile endpoints are not available (404/403 errors), use cached user data from localStorage
-        
         // Use the same approach as the account page - use cached user data from localStorage
         const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
         console.log('🔍 DEBUG - CachedUser:', cachedUser);
         
-        if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
-          // Map the cached user data to our display structure (same as account page)
+        // Use currentUser as primary source, fallback to cachedUser if needed
+        const sourceUser = currentUser && (currentUser.id || currentUser.account_type) ? currentUser : cachedUser;
+        console.log('🔍 DEBUG - SourceUser:', sourceUser);
+        
+        if (sourceUser && (sourceUser.id || sourceUser.account_type || sourceUser.email)) {
+          // Map the user data to our display structure (same as account page)
           const mappedUserData = {
-            ...cachedUser,  // Store the complete cached user data
-            firstName: cachedUser.first_name || cachedUser.firstName || '',
-            lastName: cachedUser.last_name || cachedUser.lastName || '',
-            fullName: cachedUser.name || `${cachedUser.first_name || cachedUser.firstName || ''} ${cachedUser.last_name || cachedUser.lastName || ''}`.trim(),
-            email: cachedUser.email || '',
-            role: cachedUser.account_type || cachedUser.role || '',
-            location: `${cachedUser.city || ''}, ${cachedUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
-            gender: cachedUser.gender || '',
-            dateOfBirth: cachedUser.date_of_birth || cachedUser.dateOfBirth || '',
-            country: cachedUser.country || '',
-            phoneNumber: cachedUser.phone || cachedUser.phoneNumber || '',
-            bio: cachedUser.aboutyou || cachedUser.bio || cachedUser.description || '',
-            username: cachedUser.username || cachedUser.email?.split('@')[0] || '',
-            isVerified: cachedUser.is_verified || cachedUser.isVerified || false,
-            isSubscribed: cachedUser.is_subscribed || cachedUser.isSubscribed || false,
-            verifiedDate: cachedUser.verified_date || cachedUser.verifiedDate || "2 JAN, 2025",
-            profile_picture: cachedUser.profile_picture || cachedUser.profilePic || null,
-            cover_photo: cachedUser.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
+            ...sourceUser,  // Store the complete user data
+            firstName: sourceUser.first_name || sourceUser.firstName || '',
+            lastName: sourceUser.last_name || sourceUser.lastName || '',
+            fullName: sourceUser.name || sourceUser.full_name || `${sourceUser.first_name || sourceUser.firstName || ''} ${sourceUser.last_name || sourceUser.lastName || ''}`.trim(),
+            email: sourceUser.email || '',
+            role: sourceUser.account_type || sourceUser.role || '',
+            location: sourceUser.location || `${sourceUser.city || ''}, ${sourceUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+            gender: sourceUser.gender || '',
+            dateOfBirth: sourceUser.date_of_birth || sourceUser.dateOfBirth || '',
+            country: sourceUser.country || '',
+            phoneNumber: sourceUser.phone || sourceUser.phoneNumber || '',
+            bio: sourceUser.aboutyou || sourceUser.bio || sourceUser.description || '',
+            username: sourceUser.username || sourceUser.email?.split('@')[0] || '',
+            isVerified: sourceUser.is_verified || sourceUser.isVerified || false,
+            isSubscribed: sourceUser.is_subscribed || sourceUser.isSubscribed || false,
+            verifiedDate: sourceUser.verified_date || sourceUser.verifiedDate || "2 JAN, 2025",
+            profile_picture: sourceUser.profile_picture || sourceUser.profilePic || null,
+            cover_photo: sourceUser.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
             // Additional fields
             profileScore: 0,
             accountTier: 0,
@@ -163,6 +136,7 @@ export default function UserProfilePopup({ user, onClose }) {
           console.log('🔍 DEBUG - MappedUserData:', mappedUserData);
           setUserData(mappedUserData);
         } else {
+          console.log('🔍 DEBUG - No valid user data found');
           setError('Unable to load profile data. Please try logging in again.');
         }
         
@@ -240,6 +214,9 @@ export default function UserProfilePopup({ user, onClose }) {
     );
   }
 
+  // Debug: Log the current userData state
+  console.log('🔍 DEBUG - Final userData state:', userData);
+  
   return (
     <div className="profile-popup-overlay" onClick={onClose}>
       <div className="profile-popup-card" onClick={(e) => e.stopPropagation()}>
