@@ -204,6 +204,16 @@ export default function UserProfilePopup({ user, onClose }) {
       
       const file = formData.get('media_file');
       
+      // Debug logging
+      console.log('Uploading file:', file);
+      console.log('File name:', file.name);
+      console.log('File size:', file.size);
+      console.log('File type:', file.type);
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      
       // Validate file before upload
       validateFile(file);
       
@@ -212,7 +222,28 @@ export default function UserProfilePopup({ user, onClose }) {
         formData.append('name', file.name);
       }
 
-      const response = await axiosInstance.post('/api/profile/talent/media/', formData);
+      console.log('Sending request to:', '/api/profile/talent/media/');
+      
+      // Check if user has a talent profile
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      console.log('User info:', userInfo);
+      console.log('Is talent:', userInfo.is_talent);
+      
+      if (!userInfo.is_talent) {
+        throw new Error('User is not a talent. Only talent users can upload media.');
+      }
+      
+      // For file uploads, we need to let the browser set the Content-Type header
+      // to multipart/form-data with the proper boundary
+      const token = localStorage.getItem('access');
+      console.log('Auth token available:', !!token);
+      
+      const response = await axiosInstance.post('/api/profile/talent/media/', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          // Don't set Content-Type - let browser set it with boundary
+        }
+      });
       
       // Refresh the media list after successful upload
       await fetchMediaFiles();
@@ -220,6 +251,10 @@ export default function UserProfilePopup({ user, onClose }) {
       
     } catch (err) {
       console.error('Error uploading media file:', err);
+      console.error('Error response:', err.response);
+      console.error('Error response data:', err.response?.data);
+      console.error('Error response status:', err.response?.status);
+      console.error('Error response headers:', err.response?.headers);
       
       // Handle different types of errors
       if (err.message && (err.message.includes('less than') || err.message.includes('format'))) {
@@ -227,6 +262,7 @@ export default function UserProfilePopup({ user, onClose }) {
         setMediaError(err.message);
       } else if (err.response?.status === 400) {
         const errorData = err.response.data;
+        console.error('400 Error data:', errorData);
         
         // Handle account limit errors
         if (errorData.error && errorData.error.includes('Upload limit reached')) {
@@ -238,8 +274,12 @@ export default function UserProfilePopup({ user, onClose }) {
           setMediaError(errorData.name[0]);
         } else if (errorData.non_field_errors) {
           setMediaError(errorData.non_field_errors[0]);
+        } else if (errorData.detail) {
+          setMediaError(errorData.detail);
         } else {
-          setMediaError(errorData.error || 'Failed to upload media file. Please try again.');
+          // Log the full error data for debugging
+          console.error('Full 400 error data:', JSON.stringify(errorData, null, 2));
+          setMediaError(errorData.error || errorData.message || 'Failed to upload media file. Please try again.');
         }
       } else if (err.response?.status === 404) {
         setMediaError('Talent profile not found. Please complete your profile first.');
