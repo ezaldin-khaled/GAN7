@@ -137,36 +137,39 @@ export default function UserProfilePopup({ user, onClose }) {
         const restrictions = {}; // No restrictions available from API
         
         console.log('UserProfilePopup - Using cached profile data:', profileData);
+        console.log('UserProfilePopup - Initial user data:', initialUserData);
         console.log('UserProfilePopup - No profile score available from API');
         console.log('UserProfilePopup - Subscription status:', subscriptionStatus);
         
+        // Use the currentUser data (which is either user prop or localStorage) as the primary source
+        // and only fallback to profileData if currentUser doesn't have the field
         const mappedUserData = {
-            ...profileData,  // Store the complete profile data
-            firstName: profileData.first_name || profileData.user?.first_name || initialUserData.firstName,
-            lastName: profileData.last_name || profileData.user?.last_name || initialUserData.lastName,
-            fullName: profileData.full_name || `${profileData.first_name || profileData.user?.first_name || ''} ${profileData.last_name || profileData.user?.last_name || ''}`.trim() || initialUserData.fullName,
-            email: profileData.email || profileData.user?.email || initialUserData.email,
-            role: profileData.account_type || profileData.user?.account_type || initialUserData.role,
-            location: `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, '') || initialUserData.location,
-            gender: profileData.gender || initialUserData.gender,
-            dateOfBirth: profileData.date_of_birth || initialUserData.dateOfBirth,
-            country: profileData.country || initialUserData.country,
-            phoneNumber: profileData.phone || initialUserData.phoneNumber,
-            bio: profileData.aboutyou || profileData.bio || profileData.description || initialUserData.bio,
-            username: profileData.username || profileData.email?.split('@')[0] || initialUserData.username,
-            isVerified: profileData.is_verified || initialUserData.isVerified,
-            isSubscribed: subscriptionStatus.has_subscription || initialUserData.isSubscribed,
-            verifiedDate: profileData.verified_date || initialUserData.verifiedDate,
-            profile_picture: profileData.profile_picture || initialUserData.profile_picture,
-            cover_photo: profileData.cover_photo || initialUserData.cover_photo,
+            ...currentUser,  // Store the complete current user data first
+            firstName: currentUser?.first_name || currentUser?.firstName || profileData?.first_name || profileData?.user?.first_name || initialUserData.firstName,
+            lastName: currentUser?.last_name || currentUser?.lastName || profileData?.last_name || profileData?.user?.last_name || initialUserData.lastName,
+            fullName: currentUser?.full_name || `${currentUser?.first_name || currentUser?.firstName || ''} ${currentUser?.last_name || currentUser?.lastName || ''}`.trim() || profileData?.full_name || initialUserData.fullName,
+            email: currentUser?.email || profileData?.email || profileData?.user?.email || initialUserData.email,
+            role: currentUser?.account_type || currentUser?.role || profileData?.account_type || profileData?.user?.account_type || initialUserData.role,
+            location: currentUser?.location || `${profileData?.city || ''}, ${profileData?.country || ''}`.replace(', ,', '').replace(/^, |, $/, '') || initialUserData.location,
+            gender: currentUser?.gender || profileData?.gender || initialUserData.gender,
+            dateOfBirth: currentUser?.date_of_birth || currentUser?.dateOfBirth || profileData?.date_of_birth || initialUserData.dateOfBirth,
+            country: currentUser?.country || profileData?.country || initialUserData.country,
+            phoneNumber: currentUser?.phone || currentUser?.phoneNumber || profileData?.phone || initialUserData.phoneNumber,
+            bio: currentUser?.aboutyou || currentUser?.bio || currentUser?.description || profileData?.aboutyou || profileData?.bio || profileData?.description || initialUserData.bio,
+            username: currentUser?.username || currentUser?.email?.split('@')[0] || profileData?.username || profileData?.email?.split('@')[0] || initialUserData.username,
+            isVerified: currentUser?.is_verified || currentUser?.isVerified || profileData?.is_verified || initialUserData.isVerified,
+            isSubscribed: currentUser?.is_subscribed || currentUser?.isSubscribed || subscriptionStatus?.has_subscription || initialUserData.isSubscribed,
+            verifiedDate: currentUser?.verified_date || currentUser?.verifiedDate || profileData?.verified_date || initialUserData.verifiedDate,
+            profile_picture: currentUser?.profile_picture || currentUser?.profilePic || profileData?.profile_picture || initialUserData.profile_picture,
+            cover_photo: currentUser?.cover_photo || profileData?.cover_photo || initialUserData.cover_photo,
             // Additional fields from the nested structure
-            profileScore: profileScore.total || 0,
-            accountTier: profileScore.account_tier || 0,
-            profileCompletion: profileScore.profile_completion || 0,
-            subscriptionMessage: subscriptionStatus.message || '',
-            canAccessFeatures: subscriptionStatus.can_access_features || false,
-            isRestricted: restrictions.restricted || false,
-            subscriptionRequired: restrictions.subscription_required || false
+            profileScore: profileScore?.total || 0,
+            accountTier: profileScore?.account_tier || 0,
+            profileCompletion: profileScore?.profile_completion || 0,
+            subscriptionMessage: subscriptionStatus?.message || '',
+            canAccessFeatures: subscriptionStatus?.can_access_features || false,
+            isRestricted: restrictions?.restricted || false,
+            subscriptionRequired: restrictions?.subscription_required || false
           };
           
         console.log('UserProfilePopup - Mapped user data:', mappedUserData);
