@@ -90,25 +90,29 @@ export default function UserProfilePopup({ user, onClose }) {
         console.log('UserProfilePopup - User info from localStorage:', userInfo);
         console.log('UserProfilePopup - User prop:', user);
 
-        // Create initial user data from the user prop (from AuthContext)
+        // Use user prop if available, otherwise fallback to localStorage data
+        const currentUser = user || userInfo;
+        console.log('UserProfilePopup - Using currentUser:', currentUser);
+
+        // Create initial user data from the current user data
         const initialUserData = {
-          firstName: user?.first_name || user?.firstName || '',
-          lastName: user?.last_name || user?.lastName || '',
-          fullName: user?.full_name || `${user?.first_name || user?.firstName || ''} ${user?.last_name || user?.lastName || ''}`.trim(),
-          email: user?.email || '',
-          role: user?.account_type || user?.role || '',
-          location: user?.location || '',
-          gender: user?.gender || '',
-          dateOfBirth: user?.date_of_birth || user?.dateOfBirth || '',
-          country: user?.country || '',
-          phoneNumber: user?.phone || user?.phoneNumber || '',
-          bio: user?.aboutyou || user?.bio || user?.description || '',
-          username: user?.username || user?.email?.split('@')[0] || '',
-          isVerified: user?.is_verified || user?.isVerified || false,
-          isSubscribed: user?.is_subscribed || user?.isSubscribed || false,
-          verifiedDate: user?.verified_date || user?.verifiedDate || "2 JAN, 2025",
-          profile_picture: user?.profile_picture || user?.profilePic || null,
-          cover_photo: user?.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg'
+          firstName: currentUser?.first_name || currentUser?.firstName || '',
+          lastName: currentUser?.last_name || currentUser?.lastName || '',
+          fullName: currentUser?.full_name || `${currentUser?.first_name || currentUser?.firstName || ''} ${currentUser?.last_name || currentUser?.lastName || ''}`.trim(),
+          email: currentUser?.email || '',
+          role: currentUser?.account_type || currentUser?.role || '',
+          location: currentUser?.location || '',
+          gender: currentUser?.gender || '',
+          dateOfBirth: currentUser?.date_of_birth || currentUser?.dateOfBirth || '',
+          country: currentUser?.country || '',
+          phoneNumber: currentUser?.phone || currentUser?.phoneNumber || '',
+          bio: currentUser?.aboutyou || currentUser?.bio || currentUser?.description || '',
+          username: currentUser?.username || currentUser?.email?.split('@')[0] || '',
+          isVerified: currentUser?.is_verified || currentUser?.isVerified || false,
+          isSubscribed: currentUser?.is_subscribed || currentUser?.isSubscribed || false,
+          verifiedDate: currentUser?.verified_date || currentUser?.verifiedDate || "2 JAN, 2025",
+          profile_picture: currentUser?.profile_picture || currentUser?.profilePic || null,
+          cover_photo: currentUser?.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg'
         };
 
         // Set initial data immediately so UI shows something
@@ -199,9 +203,8 @@ export default function UserProfilePopup({ user, onClose }) {
       }
     };
 
-    if (user) {
-      fetchUserData();
-    }
+    // Always try to fetch user data, either from user prop or localStorage
+    fetchUserData();
   }, [user, navigate]);
 
   if (loading && !userData) {
@@ -272,9 +275,9 @@ export default function UserProfilePopup({ user, onClose }) {
           <div className="profile-popup-info">
             <div className="profile-header">
               <div className="profile-header-left">
-                {user.profilePic || userData?.profile_picture ? (
+                {userData?.profile_picture ? (
                 <img 
-                    src={user.profilePic || userData?.profile_picture} 
+                    src={userData.profile_picture} 
                   className="profile-pic-small" 
                   alt={`${userData?.firstName} ${userData?.lastName}`} 
                     onError={(e) => {
@@ -283,7 +286,7 @@ export default function UserProfilePopup({ user, onClose }) {
                     }}
                   />
                 ) : null}
-                {!user.profilePic && !userData?.profile_picture && (
+                {!userData?.profile_picture && (
                   <div className="profile-pic-placeholder">
                     {userData?.firstName ? userData.firstName.charAt(0).toUpperCase() : 'U'}
                   </div>

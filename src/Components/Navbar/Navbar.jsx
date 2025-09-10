@@ -212,7 +212,10 @@ function Navbar() {
       <div className="nav-right">
         <FaBars className='menu-icon' onClick={toggleMenu}/>
         {showProfile && (
-          <UserProfilePopup user={user} onClose={() => setShowProfile(false)} />
+          <UserProfilePopup 
+            user={user || (!loading ? JSON.parse(localStorage.getItem('user') || 'null') : null)} 
+            onClose={() => setShowProfile(false)} 
+          />
         )}
       </div>
       
