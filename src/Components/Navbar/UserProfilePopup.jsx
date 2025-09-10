@@ -89,6 +89,9 @@ export default function UserProfilePopup({ user, onClose }) {
 
         // Use user prop if available, otherwise fallback to localStorage data
         const currentUser = user || userInfo;
+        console.log('🔍 DEBUG - User prop:', user);
+        console.log('🔍 DEBUG - UserInfo from localStorage:', userInfo);
+        console.log('🔍 DEBUG - CurrentUser:', currentUser);
 
         // Create initial user data from the current user data
         const initialUserData = {
@@ -112,6 +115,7 @@ export default function UserProfilePopup({ user, onClose }) {
         };
 
         // Set initial data immediately so UI shows something
+        console.log('🔍 DEBUG - InitialUserData:', initialUserData);
         setUserData(initialUserData);
         
         // Create initial stats
@@ -123,6 +127,7 @@ export default function UserProfilePopup({ user, onClose }) {
         
         // Use the same approach as the account page - use cached user data from localStorage
         const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        console.log('🔍 DEBUG - CachedUser:', cachedUser);
         
         if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
           // Map the cached user data to our display structure (same as account page)
@@ -155,6 +160,7 @@ export default function UserProfilePopup({ user, onClose }) {
             subscriptionRequired: false
           };
           
+          console.log('🔍 DEBUG - MappedUserData:', mappedUserData);
           setUserData(mappedUserData);
         } else {
           setError('Unable to load profile data. Please try logging in again.');
