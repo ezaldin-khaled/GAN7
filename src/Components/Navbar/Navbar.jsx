@@ -23,26 +23,9 @@ function Navbar() {
       })
   },[]);
 
-  // Add useEffect to monitor user state changes
+  // Monitor user state changes
   useEffect(() => {
-    console.log('🔍 Navbar - User state changed:', user);
-    console.log('🔍 Navbar - Loading state:', loading);
-    console.log('🔍 Navbar - User ID:', user?.id);
-    console.log('🔍 Navbar - User exists:', !!user);
-    console.log('🔍 Navbar - User is_background:', user?.is_background);
-    console.log('🔍 Navbar - User is_talent:', user?.is_talent);
-    
-    // Check localStorage as well
-    const storedUser = localStorage.getItem('user');
-    console.log('🔍 Navbar - localStorage user exists:', !!storedUser);
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        console.log('🔍 Navbar - localStorage user data:', parsedUser);
-      } catch (e) {
-        console.log('🔍 Navbar - Error parsing localStorage user:', e);
-      }
-    }
+    // User state monitoring removed for production
   }, [user, loading]);
 
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -70,7 +53,6 @@ function Navbar() {
   };
 
   const handleLoginClick = () => {
-    console.log('Login button clicked');
     navigate('/login');
   };
 
@@ -85,18 +67,14 @@ function Navbar() {
     const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
     const finalUser = user || fallbackUser;
     
-    console.log('Avatar clicked, user:', finalUser);
     if (finalUser) {
       // Check if user is on mobile device
       if (isMobileDevice()) {
-        console.log('Mobile device detected, redirecting to account page');
         navigate('/account');
       } else {
-        console.log('Desktop device detected, showing profile popup');
         setShowProfile(true);
       }
     } else {
-      console.log('No user data, redirecting to login');
       navigate('/login');
     }
   };
@@ -116,30 +94,14 @@ function Navbar() {
 
   // Determine what to show in the auth section
   const renderAuthSection = () => {
-    console.log('🔍 Navbar - renderAuthSection called');
-    console.log('🔍 Navbar - loading:', loading);
-    console.log('🔍 Navbar - user:', user);
-    console.log('🔍 Navbar - user.id:', user?.id);
-    console.log('🔍 Navbar - user exists:', !!user);
-    console.log('🔍 Navbar - user.is_background:', user?.is_background);
-    console.log('🔍 Navbar - user.is_talent:', user?.is_talent);
-    console.log('🔍 Navbar - user.account_type:', user?.account_type);
-    
     // Fallback to localStorage if AuthContext user is not available
     const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
     const finalUser = user || fallbackUser;
     // Check if user exists and has either an ID or is a valid user object with account_type
     const hasValidUser = finalUser && (finalUser.id || (finalUser.account_type && (finalUser.is_talent || finalUser.is_background)));
     
-    console.log('🔍 Navbar - fallbackUser:', fallbackUser);
-    console.log('🔍 Navbar - finalUser:', finalUser);
-    console.log('🔍 Navbar - hasValidUser:', hasValidUser);
-    console.log('🔍 Navbar - finalUser.is_background:', finalUser?.is_background);
-    console.log('🔍 Navbar - finalUser.account_type:', finalUser?.account_type);
-    
     if (loading && !hasValidUser) {
       // Show loading spinner only if we don't have a valid user yet
-      console.log('🔍 Navbar - Showing loading spinner (no valid user yet)');
       return (
         <li>
           <div className="navbar-loader">
@@ -149,11 +111,6 @@ function Navbar() {
       );
     } else if (hasValidUser) {
       // Show avatar when user is logged in and has valid user data
-      console.log('🔍 Navbar - Showing avatar for user:', finalUser);
-      console.log('🔍 Navbar - User profile pic:', finalUser.profilePic);
-      console.log('🔍 Navbar - User profile_picture (API):', finalUser.profile_picture);
-      console.log('🔍 Navbar - Will show image:', !!(finalUser.profilePic || finalUser.profile_picture));
-      console.log('🔍 Navbar - Final image URL:', finalUser.profilePic || finalUser.profile_picture);
       return (
         <li>
           <button 
@@ -168,7 +125,6 @@ function Navbar() {
                 alt="Profile" 
                 className="avatar-img"
                 onError={(e) => {
-                  console.log('🔍 Navbar - Image failed to load:', finalUser.profilePic || finalUser.profile_picture);
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}
@@ -184,9 +140,6 @@ function Navbar() {
       );
     } else {
       // Show login button when no user is logged in or session has ended
-      console.log('🔍 Navbar - No valid user found, showing login button');
-      console.log('🔍 Navbar - User state:', user);
-      console.log('🔍 Navbar - Fallback user state:', fallbackUser);
       return (
         <li>
           <button className="btn" onClick={handleLoginClick}>

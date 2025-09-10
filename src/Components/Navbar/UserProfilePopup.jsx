@@ -87,12 +87,8 @@ export default function UserProfilePopup({ user, onClose }) {
           throw new Error('No authentication token found');
         }
 
-        console.log('UserProfilePopup - User info from localStorage:', userInfo);
-        console.log('UserProfilePopup - User prop:', user);
-
         // Use user prop if available, otherwise fallback to localStorage data
         const currentUser = user || userInfo;
-        console.log('UserProfilePopup - Using currentUser:', currentUser);
 
         // Create initial user data from the current user data
         const initialUserData = {
@@ -124,11 +120,9 @@ export default function UserProfilePopup({ user, onClose }) {
         });
 
         // Since profile endpoints are not available (404/403 errors), use cached user data from localStorage
-        console.log('UserProfilePopup - Profile endpoints not available, using cached user data');
         
         // Use the same approach as the account page - use cached user data from localStorage
         const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
-        console.log('UserProfilePopup - Cached user data:', cachedUser);
         
         if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
           // Map the cached user data to our display structure (same as account page)
@@ -161,10 +155,8 @@ export default function UserProfilePopup({ user, onClose }) {
             subscriptionRequired: false
           };
           
-          console.log('UserProfilePopup - Mapped cached user data:', mappedUserData);
           setUserData(mappedUserData);
         } else {
-          console.log('UserProfilePopup - No valid cached user data found');
           setError('Unable to load profile data. Please try logging in again.');
         }
         
@@ -175,7 +167,6 @@ export default function UserProfilePopup({ user, onClose }) {
         
         // Since we're using cached data, no media files are available from API
         let mediaData = [];
-        console.log('UserProfilePopup - No media data available from API, using empty array');
         setMediaFiles(mediaData);
         
         setLoading(false);
