@@ -89,48 +89,63 @@ export default function UserProfilePopup({ user, onClose }) {
 
         // Use user prop if available, otherwise fallback to localStorage data
         const currentUser = user || userInfo;
-        console.log('🔍 DEBUG - User prop:', user);
-        console.log('🔍 DEBUG - UserInfo from localStorage:', userInfo);
-        console.log('🔍 DEBUG - CurrentUser:', currentUser);
+        // User data processing
 
-        // Since profile endpoints are not available (404/403 errors), use cached user data from localStorage
-        // Use the same approach as the account page - use cached user data from localStorage
-        const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
-        console.log('🔍 DEBUG - CachedUser:', cachedUser);
+        // Try to fetch real user data from API endpoints first (same as account page)
+        const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
         
-        // Use currentUser as primary source, fallback to cachedUser if needed
-        const sourceUser = currentUser && (currentUser.id || currentUser.account_type) ? currentUser : cachedUser;
-        console.log('🔍 DEBUG - SourceUser:', sourceUser);
-        console.log('🔍 DEBUG - SourceUser keys:', Object.keys(sourceUser));
-        console.log('🔍 DEBUG - SourceUser values:', Object.values(sourceUser));
+        // Define all possible endpoint variations to try
+        const endpoints = [
+          'api/profile/talent/',
+          'api/profile/background/',
+        ];
         
-        if (sourceUser && (sourceUser.id || sourceUser.account_type || sourceUser.email)) {
-          // Map the user data to our display structure (same as account page)
-          // Handle case where we only have a generic "name" field
-          const fullName = sourceUser.name || sourceUser.full_name || `${sourceUser.first_name || sourceUser.firstName || ''} ${sourceUser.last_name || sourceUser.lastName || ''}`.trim();
-          const nameParts = fullName.split(' ');
-          const firstName = sourceUser.first_name || sourceUser.firstName || (nameParts.length > 0 ? nameParts[0] : '');
-          const lastName = sourceUser.last_name || sourceUser.lastName || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
-          
+        // Prioritize endpoints based on user type
+        if (userInfo.is_talent) {
+          endpoints.unshift('api/profile/talent/');
+        } else if (userInfo.is_background) {
+          endpoints.unshift('api/profile/background/');
+        }
+        
+        let response = null;
+        let lastError = null;
+        
+        // Try each endpoint until one succeeds
+        for (const endpoint of endpoints) {
+          try {
+            const url = endpoint.includes('?') ? 
+              `${endpoint}&t=${new Date().getTime()}` : 
+              `${endpoint}?t=${new Date().getTime()}`;
+              
+            response = await axiosInstance.get(url);
+            break;
+          } catch (err) {
+            // Don't treat 500 errors as critical - just continue
+            lastError = err;
+          }
+        }
+
+        // If API call succeeded, use the real data
+        if (response) {
           const mappedUserData = {
-            ...sourceUser,  // Store the complete user data
-            firstName: firstName,
-            lastName: lastName,
-            fullName: fullName,
-            email: sourceUser.email || sourceUser.email_address || '',
-            role: sourceUser.account_type || sourceUser.role || '',
-            location: sourceUser.location || `${sourceUser.city || ''}, ${sourceUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
-            gender: sourceUser.gender || '',
-            dateOfBirth: sourceUser.date_of_birth || sourceUser.dateOfBirth || '',
-            country: sourceUser.country || '',
-            phoneNumber: sourceUser.phone || sourceUser.phoneNumber || sourceUser.phone_number || '',
-            bio: sourceUser.aboutyou || sourceUser.bio || sourceUser.description || '',
-            username: sourceUser.username || sourceUser.email?.split('@')[0] || '',
-            isVerified: sourceUser.is_verified || sourceUser.isVerified || sourceUser.email_verified || false,
-            isSubscribed: sourceUser.is_subscribed || sourceUser.isSubscribed || false,
-            verifiedDate: sourceUser.verified_date || sourceUser.verifiedDate || "2 JAN, 2025",
-            profile_picture: sourceUser.profile_picture || sourceUser.profilePic || null,
-            cover_photo: sourceUser.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
+            ...response.data,  // Store the complete response data
+            firstName: response.data.first_name || response.data.firstName || '',
+            lastName: response.data.last_name || response.data.lastName || '',
+            fullName: response.data.full_name || `${response.data.first_name || response.data.firstName || ''} ${response.data.last_name || response.data.lastName || ''}`.trim(),
+            email: response.data.email || '',
+            role: response.data.account_type || response.data.role || '',
+            location: `${response.data.city || ''}, ${response.data.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+            gender: response.data.gender || '',
+            dateOfBirth: response.data.date_of_birth || response.data.dateOfBirth || '',
+            country: response.data.country || '',
+            phoneNumber: response.data.phone || response.data.phoneNumber || '',
+            bio: response.data.aboutyou || response.data.bio || response.data.description || '',
+            username: response.data.username || response.data.email?.split('@')[0] || '',
+            isVerified: response.data.is_verified || response.data.isVerified || false,
+            isSubscribed: response.data.is_subscribed || response.data.isSubscribed || false,
+            verifiedDate: response.data.verified_date || response.data.verifiedDate || "2 JAN, 2025",
+            profile_picture: response.data.profile_picture || response.data.profilePic || null,
+            cover_photo: response.data.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
             // Additional fields
             profileScore: 0,
             accountTier: 0,
@@ -141,11 +156,52 @@ export default function UserProfilePopup({ user, onClose }) {
             subscriptionRequired: false
           };
           
-          console.log('🔍 DEBUG - MappedUserData:', mappedUserData);
           setUserData(mappedUserData);
         } else {
-          console.log('🔍 DEBUG - No valid user data found');
-          setError('Unable to load profile data. Please try logging in again.');
+          // Fallback to cached user data from localStorage if API calls failed
+          const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+          const sourceUser = currentUser && (currentUser.id || currentUser.account_type) ? currentUser : cachedUser;
+          
+          if (sourceUser && (sourceUser.id || sourceUser.account_type || sourceUser.email)) {
+            // Map the cached user data to our display structure
+            const fullName = sourceUser.name || sourceUser.full_name || `${sourceUser.first_name || sourceUser.firstName || ''} ${sourceUser.last_name || sourceUser.lastName || ''}`.trim();
+            const nameParts = fullName.split(' ');
+            const firstName = sourceUser.first_name || sourceUser.firstName || (nameParts.length > 0 ? nameParts[0] : '');
+            const lastName = sourceUser.last_name || sourceUser.lastName || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
+            
+            const mappedUserData = {
+              ...sourceUser,  // Store the complete user data
+              firstName: firstName,
+              lastName: lastName,
+              fullName: fullName,
+              email: sourceUser.email || sourceUser.email_address || '',
+              role: sourceUser.account_type || sourceUser.role || '',
+              location: sourceUser.location || `${sourceUser.city || ''}, ${sourceUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+              gender: sourceUser.gender || '',
+              dateOfBirth: sourceUser.date_of_birth || sourceUser.dateOfBirth || '',
+              country: sourceUser.country || '',
+              phoneNumber: sourceUser.phone || sourceUser.phoneNumber || sourceUser.phone_number || '',
+              bio: sourceUser.aboutyou || sourceUser.bio || sourceUser.description || '',
+              username: sourceUser.username || sourceUser.email?.split('@')[0] || '',
+              isVerified: sourceUser.is_verified || sourceUser.isVerified || sourceUser.email_verified || false,
+              isSubscribed: sourceUser.is_subscribed || sourceUser.isSubscribed || false,
+              verifiedDate: sourceUser.verified_date || sourceUser.verifiedDate || "2 JAN, 2025",
+              profile_picture: sourceUser.profile_picture || sourceUser.profilePic || null,
+              cover_photo: sourceUser.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
+              // Additional fields
+              profileScore: 0,
+              accountTier: 0,
+              profileCompletion: 0,
+              subscriptionMessage: '',
+              canAccessFeatures: false,
+              isRestricted: false,
+              subscriptionRequired: false
+            };
+            
+            setUserData(mappedUserData);
+          } else {
+            setError('Unable to load profile data. Please try logging in again.');
+          }
         }
         
         // Update stats from response data
@@ -222,8 +278,7 @@ export default function UserProfilePopup({ user, onClose }) {
     );
   }
 
-  // Debug: Log the current userData state
-  console.log('🔍 DEBUG - Final userData state:', userData);
+  // User data is ready for display
   
   return (
     <div className="profile-popup-overlay" onClick={onClose}>

@@ -166,12 +166,7 @@ function Navbar() {
         <FaBars className='menu-icon' onClick={toggleMenu}/>
         {showProfile && (
           <UserProfilePopup 
-            user={(() => {
-              const fallbackUser = !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
-              const finalUser = user || fallbackUser;
-              console.log('🔍 DEBUG - Navbar passing user to popup:', finalUser);
-              return finalUser;
-            })()} 
+            user={user || (!loading ? JSON.parse(localStorage.getItem('user') || 'null') : null)} 
             onClose={() => setShowProfile(false)} 
           />
         )}
