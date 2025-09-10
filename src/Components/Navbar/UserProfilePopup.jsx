@@ -123,57 +123,50 @@ export default function UserProfilePopup({ user, onClose }) {
           // Removed firstSeen, firstPurchase, revenue, mrr fields
         });
 
-        // Skip API calls since profile endpoints are not available (404/403 errors)
-        // Use cached user data from localStorage instead
+        // Since profile endpoints are not available (404/403 errors), use cached user data from localStorage
         console.log('UserProfilePopup - Profile endpoints not available, using cached user data');
         
-        // Use the cached user data directly
-        const response = null; // No API response since endpoints are unavailable
+        // Use the same approach as the account page - use cached user data from localStorage
+        const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        console.log('UserProfilePopup - Cached user data:', cachedUser);
         
-        // Since we can't get data from API, use the cached user data
-        const profileData = userInfo; // Use the userInfo from localStorage
-        const profileScore = {}; // No profile score available from API
-        const subscriptionStatus = {}; // No subscription status available from API
-        const restrictions = {}; // No restrictions available from API
-        
-        console.log('UserProfilePopup - Using cached profile data:', profileData);
-        console.log('UserProfilePopup - Initial user data:', initialUserData);
-        console.log('UserProfilePopup - No profile score available from API');
-        console.log('UserProfilePopup - Subscription status:', subscriptionStatus);
-        
-        // Use the currentUser data (which is either user prop or localStorage) as the primary source
-        // and only fallback to profileData if currentUser doesn't have the field
-        const mappedUserData = {
-            ...currentUser,  // Store the complete current user data first
-            firstName: currentUser?.first_name || currentUser?.firstName || profileData?.first_name || profileData?.user?.first_name || initialUserData.firstName,
-            lastName: currentUser?.last_name || currentUser?.lastName || profileData?.last_name || profileData?.user?.last_name || initialUserData.lastName,
-            fullName: currentUser?.full_name || `${currentUser?.first_name || currentUser?.firstName || ''} ${currentUser?.last_name || currentUser?.lastName || ''}`.trim() || profileData?.full_name || initialUserData.fullName,
-            email: currentUser?.email || profileData?.email || profileData?.user?.email || initialUserData.email,
-            role: currentUser?.account_type || currentUser?.role || profileData?.account_type || profileData?.user?.account_type || initialUserData.role,
-            location: currentUser?.location || `${profileData?.city || ''}, ${profileData?.country || ''}`.replace(', ,', '').replace(/^, |, $/, '') || initialUserData.location,
-            gender: currentUser?.gender || profileData?.gender || initialUserData.gender,
-            dateOfBirth: currentUser?.date_of_birth || currentUser?.dateOfBirth || profileData?.date_of_birth || initialUserData.dateOfBirth,
-            country: currentUser?.country || profileData?.country || initialUserData.country,
-            phoneNumber: currentUser?.phone || currentUser?.phoneNumber || profileData?.phone || initialUserData.phoneNumber,
-            bio: currentUser?.aboutyou || currentUser?.bio || currentUser?.description || profileData?.aboutyou || profileData?.bio || profileData?.description || initialUserData.bio,
-            username: currentUser?.username || currentUser?.email?.split('@')[0] || profileData?.username || profileData?.email?.split('@')[0] || initialUserData.username,
-            isVerified: currentUser?.is_verified || currentUser?.isVerified || profileData?.is_verified || initialUserData.isVerified,
-            isSubscribed: currentUser?.is_subscribed || currentUser?.isSubscribed || subscriptionStatus?.has_subscription || initialUserData.isSubscribed,
-            verifiedDate: currentUser?.verified_date || currentUser?.verifiedDate || profileData?.verified_date || initialUserData.verifiedDate,
-            profile_picture: currentUser?.profile_picture || currentUser?.profilePic || profileData?.profile_picture || initialUserData.profile_picture,
-            cover_photo: currentUser?.cover_photo || profileData?.cover_photo || initialUserData.cover_photo,
-            // Additional fields from the nested structure
-            profileScore: profileScore?.total || 0,
-            accountTier: profileScore?.account_tier || 0,
-            profileCompletion: profileScore?.profile_completion || 0,
-            subscriptionMessage: subscriptionStatus?.message || '',
-            canAccessFeatures: subscriptionStatus?.can_access_features || false,
-            isRestricted: restrictions?.restricted || false,
-            subscriptionRequired: restrictions?.subscription_required || false
+        if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
+          // Map the cached user data to our display structure (same as account page)
+          const mappedUserData = {
+            ...cachedUser,  // Store the complete cached user data
+            firstName: cachedUser.first_name || cachedUser.firstName || '',
+            lastName: cachedUser.last_name || cachedUser.lastName || '',
+            fullName: cachedUser.name || `${cachedUser.first_name || cachedUser.firstName || ''} ${cachedUser.last_name || cachedUser.lastName || ''}`.trim(),
+            email: cachedUser.email || '',
+            role: cachedUser.account_type || cachedUser.role || '',
+            location: `${cachedUser.city || ''}, ${cachedUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+            gender: cachedUser.gender || '',
+            dateOfBirth: cachedUser.date_of_birth || cachedUser.dateOfBirth || '',
+            country: cachedUser.country || '',
+            phoneNumber: cachedUser.phone || cachedUser.phoneNumber || '',
+            bio: cachedUser.aboutyou || cachedUser.bio || cachedUser.description || '',
+            username: cachedUser.username || cachedUser.email?.split('@')[0] || '',
+            isVerified: cachedUser.is_verified || cachedUser.isVerified || false,
+            isSubscribed: cachedUser.is_subscribed || cachedUser.isSubscribed || false,
+            verifiedDate: cachedUser.verified_date || cachedUser.verifiedDate || "2 JAN, 2025",
+            profile_picture: cachedUser.profile_picture || cachedUser.profilePic || null,
+            cover_photo: cachedUser.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
+            // Additional fields
+            profileScore: 0,
+            accountTier: 0,
+            profileCompletion: 0,
+            subscriptionMessage: '',
+            canAccessFeatures: false,
+            isRestricted: false,
+            subscriptionRequired: false
           };
           
-        console.log('UserProfilePopup - Mapped user data:', mappedUserData);
-        setUserData(mappedUserData);
+          console.log('UserProfilePopup - Mapped cached user data:', mappedUserData);
+          setUserData(mappedUserData);
+        } else {
+          console.log('UserProfilePopup - No valid cached user data found');
+          setError('Unable to load profile data. Please try logging in again.');
+        }
         
         // Update stats from response data
         setStats({
