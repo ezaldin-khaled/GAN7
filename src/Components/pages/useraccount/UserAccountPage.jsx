@@ -431,9 +431,36 @@ const UserAccountPage = () => {
       setLoading(true);
       setError('');
       
-      const response = await apiCallWithRefresh(() => 
-        axiosInstance.delete(`/api/profile/talent/media/${mediaId}/`)
-      );
+      console.log('🗑️ Attempting to delete media with ID:', mediaId);
+      
+      // Try multiple deletion endpoints
+      const deleteEndpoints = [
+        `/api/profile/talent/media/${mediaId}/`,
+        `/api/media/${mediaId}/delete/`,
+        `/api/media/${mediaId}/`,
+        `/api/files/${mediaId}/`
+      ];
+      
+      let response;
+      let lastError;
+      
+      for (const endpoint of deleteEndpoints) {
+        try {
+          console.log(`🧪 Trying delete endpoint: ${endpoint}`);
+          response = await apiCallWithRefresh(() => 
+            axiosInstance.delete(endpoint)
+          );
+          console.log(`✅ Delete successful with endpoint: ${endpoint}`);
+          break;
+        } catch (error) {
+          console.log(`❌ Endpoint failed: ${endpoint} - Status: ${error.response?.status}`);
+          lastError = error;
+        }
+      }
+      
+      if (!response) {
+        throw lastError || new Error('All deletion endpoints failed');
+      }
       
       if (response.status === 204 || response.status === 200) {
         // Remove the deleted media from the local state
@@ -443,7 +470,10 @@ const UserAccountPage = () => {
         setError('Failed to delete media file. Please try again.');
       }
     } catch (err) {
-      console.error('Error deleting media file:', err);
+      console.error('❌ Error deleting media file:', err);
+      console.error('❌ Error response:', err.response?.data);
+      console.error('❌ Error status:', err.response?.status);
+      
       const errorMessage = err.response?.data?.detail || 
                           err.response?.data?.message || 
                           'Failed to delete media file. Please try again.';
