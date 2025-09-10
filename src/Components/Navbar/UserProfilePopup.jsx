@@ -44,6 +44,9 @@ export default function UserProfilePopup({ user, onClose }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [profileScore, setProfileScore] = useState(0);
   const [scoreBreakdown, setScoreBreakdown] = useState([]);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [mediaError, setMediaError] = useState(null);
+  const [mediaSuccess, setMediaSuccess] = useState(null);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
@@ -166,6 +169,113 @@ export default function UserProfilePopup({ user, onClose }) {
     
     // Navigate to login page
     navigate('/login');
+  };
+
+  // Media upload function
+  const handleMediaUpload = async (formData) => {
+    try {
+      setMediaLoading(true);
+      setMediaError(null);
+      setMediaSuccess(null);
+      
+      // Ensure name field is present in formData
+      if (!formData.get('name')) {
+        const file = formData.get('media_file');
+        formData.append('name', file.name);
+      }
+
+      const response = await axiosInstance.post('/api/profile/talent/media/', formData);
+      
+      // Refresh the media list after successful upload
+      await fetchMediaFiles();
+      setMediaSuccess('Media file uploaded successfully!');
+      
+    } catch (err) {
+      console.error('Error uploading media file:', err);
+      const errorMessage = err.response?.data?.name?.[0] || 
+                    err.response?.data?.non_field_errors?.[0] || 
+                    err.response?.data?.message || 
+                    'Failed to upload media file. Please try again.';
+      setMediaError(errorMessage);
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  // Media deletion function with correct endpoint
+  const handleDeleteMedia = async (mediaId) => {
+    if (!window.confirm('Are you sure you want to delete this media file?')) {
+      return;
+    }
+
+    try {
+      setMediaLoading(true);
+      setMediaError(null);
+      setMediaSuccess(null);
+      
+      // Use the correct endpoint as per backend documentation
+      const response = await axiosInstance.delete(`/api/media/${mediaId}/delete/`);
+      
+      if (response.status === 204 || response.status === 200) {
+        // Remove the deleted media from the local state
+        setMediaFiles(prev => prev.filter(media => media.id !== mediaId));
+        setMediaSuccess('Media file deleted successfully!');
+      } else {
+        setMediaError('Failed to delete media file. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error deleting media file:', err);
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          'Failed to delete media file. Please try again.';
+      setMediaError(errorMessage);
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  // Fetch media files from API
+  const fetchMediaFiles = async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      // Try to fetch media from profile endpoint
+      const endpoints = [
+        'api/profile/talent/',
+        'api/profile/background/',
+      ];
+      
+      // Prioritize endpoints based on user type
+      if (userInfo.is_talent) {
+        endpoints.unshift('api/profile/talent/');
+      } else if (userInfo.is_background) {
+        endpoints.unshift('api/profile/background/');
+      }
+      
+      let mediaData = [];
+      
+      // Try each endpoint until one succeeds
+      for (const endpoint of endpoints) {
+        try {
+          const url = endpoint.includes('?') ? 
+            `${endpoint}&t=${new Date().getTime()}` : 
+            `${endpoint}?t=${new Date().getTime()}`;
+            
+          const response = await axiosInstance.get(url);
+          if (response.data && response.data.media) {
+            mediaData = response.data.media;
+            break;
+          }
+        } catch (err) {
+          // Continue to next endpoint
+        }
+      }
+      
+      setMediaFiles(mediaData);
+    } catch (err) {
+      console.error('Error fetching media files:', err);
+      setMediaFiles([]);
+    }
   };
 
   useEffect(() => {
@@ -313,9 +423,8 @@ export default function UserProfilePopup({ user, onClose }) {
             // Removed firstSeen, firstPurchase, revenue, mrr fields
         });
         
-        // Since we're using cached data, no media files are available from API
-        let mediaData = [];
-        setMediaFiles(mediaData);
+        // Fetch media files from API
+        await fetchMediaFiles();
         
         setLoading(false);
       } catch (err) {
@@ -341,6 +450,13 @@ export default function UserProfilePopup({ user, onClose }) {
     // Always try to fetch user data, either from user prop or localStorage
     fetchUserData();
   }, [user, navigate]);
+
+  // Fetch media files when media tab becomes active
+  useEffect(() => {
+    if (activeTab === 'media') {
+      fetchMediaFiles();
+    }
+  }, [activeTab]);
 
   if (loading && !userData) {
     return (
@@ -663,43 +779,127 @@ export default function UserProfilePopup({ user, onClose }) {
 
             {activeTab === 'media' && (
               <div className="media-tab">
+                {/* Media Upload Section */}
+                <div className="media-upload-section">
+                  <div className="upload-area">
+                    <input
+                      type="file"
+                      id="media-upload"
+                      accept="image/*,video/*"
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        if (!files || files.length === 0) return;
+
+                        const formData = new FormData();
+                        formData.append('media_file', files[0]);
+                        formData.append('name', files[0].name);
+                        
+                        handleMediaUpload(formData);
+                        e.target.value = ''; // Reset input
+                      }}
+                      style={{ display: 'none' }}
+                    />
+                    <label htmlFor="media-upload" className="upload-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7,10 12,15 17,10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                      </svg>
+                      Upload Media
+                    </label>
+                  </div>
+                  
+                  {/* Media Messages */}
+                  {mediaError && (
+                    <div className="media-message error">
+                      ⚠️ {mediaError}
+                    </div>
+                  )}
+                  {mediaSuccess && (
+                    <div className="media-message success">
+                      ✅ {mediaSuccess}
+                    </div>
+                  )}
+                  {mediaLoading && (
+                    <div className="media-message loading">
+                      📤 Uploading...
+                    </div>
+                  )}
+                </div>
+
+                {/* Media Grid */}
                 {mediaFiles.length > 0 ? (
                   <div className="media-grid">
                     {mediaFiles.map((media, index) => (
-                      <div key={index} className="media-item">
-                        {media.file_type === 'video' || media.file?.includes('.mp4') || media.file?.includes('.mov') ? (
-                          <video 
-                            src={media.file} 
-                            controls 
-                            className="media-video"
-                            poster={media.thumbnail}
-                          >
-                            Your browser does not support video playback.
-                          </video>
-                        ) : (
-                          <img 
-                            src={media.file || media.image} 
-                            alt={media.name || `Media ${index + 1}`}
-                            className="media-image"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                            }}
-                          />
-                        )}
-                        {media.name && (
-                          <div className="media-info">
-                            <p className="media-name">{media.name}</p>
+                      <div key={media.id || index} className="media-item">
+                        <div className="media-content">
+                          {media.file_type === 'video' || media.file?.includes('.mp4') || media.file?.includes('.mov') ? (
+                            <video 
+                              src={media.file} 
+                              controls 
+                              className="media-video"
+                              poster={media.thumbnail}
+                            >
+                              Your browser does not support video playback.
+                            </video>
+                          ) : (
+                            <img 
+                              src={media.file || media.image} 
+                              alt={media.name || `Media ${index + 1}`}
+                              className="media-image"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          )}
+                          {/* Fallback for broken images */}
+                          <div className="media-placeholder" style={{ display: 'none' }}>
+                            <div className="placeholder-icon">
+                              {media.file_type === 'video' ? '🎥' : '🖼️'}
+                            </div>
+                            <div className="placeholder-text">
+                              {media.name || 'Media File'}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="media-info">
+                          <div className="media-details">
+                            <p className="media-name">{media.name || `Media ${index + 1}`}</p>
                             {media.description && (
                               <p className="media-description">{media.description}</p>
                             )}
+                            {media.id && (
+                              <p className="media-id">ID: {media.id}</p>
+                            )}
                           </div>
-                        )}
+                          
+                          {/* Delete Button */}
+                          {media.id && (
+                            <button 
+                              className="delete-media-btn"
+                              onClick={() => handleDeleteMedia(media.id)}
+                              title="Delete media file"
+                              disabled={mediaLoading}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="3,6 5,6 21,6"/>
+                                <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                              </svg>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="no-media">
-                    <p>No media files available</p>
+                    <div className="no-media-icon">📁</div>
+                    <p>No media files uploaded yet</p>
+                    <p>Click "Upload Media" to add images or videos</p>
                   </div>
                 )}
               </div>

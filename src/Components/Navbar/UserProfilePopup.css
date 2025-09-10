@@ -319,6 +319,76 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     padding: 12px 0;
 }
 
+/* Media Upload Section */
+.media-upload-section {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #f7f5f0;
+    border-radius: 12px;
+    border: 1px solid rgba(139, 90, 43, 0.1);
+}
+
+.upload-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #8b5a2b, #5c4033);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(139, 90, 43, 0.2);
+}
+
+.upload-btn:hover {
+    background: linear-gradient(135deg, #5c4033, #8b5a2b);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 90, 43, 0.3);
+}
+
+.upload-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Media Messages */
+.media-message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.media-message.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.media-message.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.media-message.loading {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
 .media-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -332,17 +402,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     overflow: hidden;
     border: 1px solid rgba(0,0,0,0.04);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .media-item:hover {
     transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.2);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    border-color: rgba(139, 90, 43, 0.2);
+    box-shadow: 0 8px 24px rgba(139, 90, 43, 0.1);
+}
+
+.media-content {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
 }
 
 .media-image, .media-video {
     width: 100%;
-    height: 150px;
+    height: 100%;
     object-fit: cover;
     display: block;
 }
@@ -351,8 +429,43 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     background: #000;
 }
 
+.media-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-align: center;
+    padding: 20px;
+}
+
+.placeholder-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.placeholder-text {
+    font-size: 12px;
+    font-weight: 500;
+}
+
 .media-info {
     padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.media-details {
+    flex: 1;
+    min-width: 0;
 }
 
 .media-name {
@@ -368,12 +481,49 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
 .media-description {
     color: #5c4033;
     font-size: 12px;
-    margin: 0;
+    margin: 0 0 4px 0;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.media-id {
+    color: #8b5a2b;
+    font-size: 10px;
+    margin: 0;
+    opacity: 0.7;
+}
+
+.delete-media-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-media-btn:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: scale(1.05);
+}
+
+.delete-media-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.delete-media-btn svg {
+    width: 16px;
+    height: 16px;
 }
 
 .no-media {
@@ -383,6 +533,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     background: #f7f5f0;
     border-radius: 12px;
     border: 1px solid rgba(0,0,0,0.04);
+}
+
+.no-media-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+.no-media p {
+    margin: 8px 0;
+}
+
+.no-media p:first-of-type {
+    font-weight: 600;
+    color: #1a0f0a;
 }
 
 /* Enhanced Bio Field */
@@ -1056,12 +1221,22 @@ input:focus, select:focus {
         gap: 12px;
     }
     
-    .media-image, .media-video {
+    .media-content {
         height: 120px;
+    }
+    
+    .media-image, .media-video {
+        height: 100%;
     }
     
     .media-info {
         padding: 8px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .media-details {
+        width: 100%;
     }
     
     .media-name {
@@ -1070,6 +1245,41 @@ input:focus, select:focus {
     
     .media-description {
         font-size: 11px;
+    }
+    
+    .media-id {
+        font-size: 9px;
+    }
+    
+    .delete-media-btn {
+        align-self: flex-end;
+        padding: 4px;
+    }
+    
+    .delete-media-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    /* Mobile upload section */
+    .media-upload-section {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .upload-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    .upload-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .media-message {
+        padding: 10px 12px;
+        font-size: 13px;
     }
     
     /* Header buttons mobile - High Specificity */
