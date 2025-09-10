@@ -65,13 +65,7 @@ const AuthPage = () => {
     setIsLoading(true);
     
     try {
-      console.log('Sending login request with data:', loginData);
       const response = await axiosInstance.post(`/api/login/${loginRole}/`, loginData);
-      console.log('Login response:', response.data);
-      console.log('Login response ID:', response.data.id);
-      console.log('Login response email:', response.data.email);
-      console.log('Login response first_name:', response.data.first_name);
-      console.log('Login response last_name:', response.data.last_name);
       
       // Enhanced token and user data storage
       if (response.data.access && response.data.refresh) {
@@ -88,10 +82,6 @@ const AuthPage = () => {
           account_type: loginRole
         };
         
-        console.log('Created userData:', userData);
-        console.log('UserData ID:', userData.id);
-        console.log('UserData email:', userData.email);
-        console.log('UserData name:', userData.name);
 
         // Use AuthContext login method
         authLogin(userData, response.data.access);
@@ -103,7 +93,6 @@ const AuthPage = () => {
         
         // Redirect to main page after a short delay to ensure state is updated
         setTimeout(() => {
-          console.log('🔐 Redirecting to main page after login');
           // Use navigate instead of window.location.href to preserve state
           navigate('/');
         }, 1500);
@@ -163,20 +152,10 @@ const AuthPage = () => {
         throw new Error('Password must be at least 8 characters long');
       }
       
-      console.log('📝 Registration data:', {
-        first_name: registerData.first_name,
-        last_name: registerData.last_name,
-        email: registerData.email,
-        gender: registerData.gender,
-        date_of_birth: registerData.date_of_birth,
-        country: registerData.country,
-        role: registerData.role
-      });
       
       // Make registration request
       const response = await axiosInstance.post('/api/register/', registerData);
       
-      console.log('✅ Registration successful:', response.data);
       
       // Handle successful registration
       if (response.data.success) {

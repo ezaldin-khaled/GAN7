@@ -142,20 +142,15 @@ const UserAccountPage = () => {
         // Try each endpoint until one succeeds
         for (const endpoint of endpoints) {
           try {
-            console.log('Trying endpoint:', endpoint);
             const url = endpoint.includes('?') ? 
               `${endpoint}&t=${new Date().getTime()}` : 
               `${endpoint}?t=${new Date().getTime()}`;
               
             response = await axiosInstance.get(url);
-            console.log('Success with endpoint:', endpoint);
             break;
           } catch (err) {
             console.error(`Error with endpoint ${endpoint}:`, err);
-            // Don't treat 500 errors as critical - just log and continue
-            if (err.response?.status >= 500) {
-              console.log(`Server error with ${endpoint}, will try next endpoint`);
-            }
+            // Don't treat 500 errors as critical - just continue
             lastError = err;
           }
         }
@@ -186,7 +181,6 @@ const UserAccountPage = () => {
       } catch (err) {
         // Enhanced error handling
         if (err.response?.status === 404) {
-          console.log('🔍 Profile endpoints not available (404), using cached user data');
           // Use cached user data from localStorage when API endpoints are not available
           const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
           if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
@@ -228,16 +222,10 @@ const UserAccountPage = () => {
       const fetchMediaFiles = async () => {
         try {
           const response = await axiosInstance.get('/api/profile/talent/');
-          console.log('🔍 Full API response:', response.data);
-          console.log('📁 Media data:', response.data?.media);
-          console.log('📁 Media type:', typeof response.data?.media);
-          console.log('📁 Media length:', response.data?.media?.length);
           
           if (response.data && response.data.media) {
-            console.log('✅ Setting media files:', response.data.media);
             setMediaFiles(response.data.media);
           } else {
-            console.log('❌ No media data found in response');
             setMediaFiles([]);
           }
         } catch (err) {
@@ -283,7 +271,6 @@ const UserAccountPage = () => {
         aboutyou: userData.aboutyou || userData.bio
       };
       
-      console.log('Sending profile update with payload:', payload);
       
       const response = await axiosInstance.post('/api/profile/talent/', payload);
       
@@ -336,7 +323,6 @@ const UserAccountPage = () => {
           ...authUser,
           profilePic: newProfilePicture
         };
-        console.log('🔄 Updating AuthContext with new profile picture:', newProfilePicture);
         updateUser(updatedUser);
       }
       
@@ -414,7 +400,6 @@ const UserAccountPage = () => {
       await axiosInstance.post('/api/logout/');
     } catch (err) {
       // If logout endpoint fails or doesn't exist, just continue with local cleanup
-      console.log('Logout API call failed or endpoint does not exist');
     } finally {
       // Use AuthContext logout method to update state immediately
       const { logout } = useContext(AuthContext);

@@ -4,11 +4,7 @@ import axios from 'axios';
 // Temporarily hardcode the correct URL to bypass env var caching issue
 const API_BASE_URL = 'https://api.gan7club.com';
 
-// Debug logging to see what's happening
-console.log('🔧 Axios Configuration Debug:');
-console.log('VITE_API_URL from env:', import.meta.env.VITE_API_URL);
-console.log('API_BASE_URL resolved to:', API_BASE_URL);
-console.log('Full baseURL will be:', `${API_BASE_URL}/api/`);
+// Axios configuration for API requests
 
 // Create a clean axios instance with proper configuration
 const axiosInstance = axios.create({
@@ -29,19 +25,11 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Log request for debugging
-    console.log('🚀 Making request:', {
-      url: config.url,
-      method: config.method?.toUpperCase(),
-      baseURL: config.baseURL,
-      timeout: config.timeout,
-      headers: config.headers
-    });
+    // Request interceptor logic
     
     return config;
   },
   error => {
-    console.error('❌ Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
@@ -49,21 +37,9 @@ axiosInstance.interceptors.request.use(
 // Response interceptor for error handling
 axiosInstance.interceptors.response.use(
   response => {
-    console.log('✅ Response received:', {
-      status: response.status,
-      statusText: response.statusText,
-      url: response.config.url
-    });
     return response;
   },
   error => {
-    console.error('❌ Response error:', {
-      message: error.message,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      url: error.config?.url,
-      data: error.response?.data
-    });
 
     // Handle specific error cases
     if (error.response) {
