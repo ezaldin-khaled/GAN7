@@ -101,24 +101,32 @@ export default function UserProfilePopup({ user, onClose }) {
         // Use currentUser as primary source, fallback to cachedUser if needed
         const sourceUser = currentUser && (currentUser.id || currentUser.account_type) ? currentUser : cachedUser;
         console.log('🔍 DEBUG - SourceUser:', sourceUser);
+        console.log('🔍 DEBUG - SourceUser keys:', Object.keys(sourceUser));
+        console.log('🔍 DEBUG - SourceUser values:', Object.values(sourceUser));
         
         if (sourceUser && (sourceUser.id || sourceUser.account_type || sourceUser.email)) {
           // Map the user data to our display structure (same as account page)
+          // Handle case where we only have a generic "name" field
+          const fullName = sourceUser.name || sourceUser.full_name || `${sourceUser.first_name || sourceUser.firstName || ''} ${sourceUser.last_name || sourceUser.lastName || ''}`.trim();
+          const nameParts = fullName.split(' ');
+          const firstName = sourceUser.first_name || sourceUser.firstName || (nameParts.length > 0 ? nameParts[0] : '');
+          const lastName = sourceUser.last_name || sourceUser.lastName || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
+          
           const mappedUserData = {
             ...sourceUser,  // Store the complete user data
-            firstName: sourceUser.first_name || sourceUser.firstName || '',
-            lastName: sourceUser.last_name || sourceUser.lastName || '',
-            fullName: sourceUser.name || sourceUser.full_name || `${sourceUser.first_name || sourceUser.firstName || ''} ${sourceUser.last_name || sourceUser.lastName || ''}`.trim(),
-            email: sourceUser.email || '',
+            firstName: firstName,
+            lastName: lastName,
+            fullName: fullName,
+            email: sourceUser.email || sourceUser.email_address || '',
             role: sourceUser.account_type || sourceUser.role || '',
             location: sourceUser.location || `${sourceUser.city || ''}, ${sourceUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
             gender: sourceUser.gender || '',
             dateOfBirth: sourceUser.date_of_birth || sourceUser.dateOfBirth || '',
             country: sourceUser.country || '',
-            phoneNumber: sourceUser.phone || sourceUser.phoneNumber || '',
+            phoneNumber: sourceUser.phone || sourceUser.phoneNumber || sourceUser.phone_number || '',
             bio: sourceUser.aboutyou || sourceUser.bio || sourceUser.description || '',
             username: sourceUser.username || sourceUser.email?.split('@')[0] || '',
-            isVerified: sourceUser.is_verified || sourceUser.isVerified || false,
+            isVerified: sourceUser.is_verified || sourceUser.isVerified || sourceUser.email_verified || false,
             isSubscribed: sourceUser.is_subscribed || sourceUser.isSubscribed || false,
             verifiedDate: sourceUser.verified_date || sourceUser.verifiedDate || "2 JAN, 2025",
             profile_picture: sourceUser.profile_picture || sourceUser.profilePic || null,
