@@ -64,11 +64,26 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     }
     
     try {
-      console.log('🧪 Testing media endpoint...');
+      console.log('🧪 Testing media endpoint (GET)...');
       const mediaResponse = await axiosInstance.get('/api/profile/talent/media/');
       console.log('✅ Media endpoint working:', mediaResponse.status);
     } catch (error) {
       console.log('❌ Media endpoint failed:', error.response?.status, error.message);
+      console.log('📋 Error details:', error.response?.data);
+    }
+    
+    // Test media upload endpoint with a dummy request to see what it expects
+    try {
+      console.log('🧪 Testing media upload endpoint structure...');
+      const formData = new FormData();
+      formData.append('test', 'dummy');
+      
+      const uploadResponse = await axiosInstance.post('/api/profile/talent/media/', formData);
+      console.log('✅ Media upload endpoint working:', uploadResponse.status);
+    } catch (error) {
+      console.log('❌ Media upload endpoint failed:', error.response?.status, error.message);
+      console.log('📋 Upload error details:', error.response?.data);
+      console.log('📋 Expected fields:', error.response?.data?.errors || error.response?.data);
     }
     
     alert(`Debug complete! Check console for details.\nAuth: ${authStatus.hasToken ? 'Token found' : 'No token'}\nAPI: ${apiWorking ? 'Working' : 'Failed'}`);

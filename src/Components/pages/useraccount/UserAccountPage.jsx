@@ -368,10 +368,19 @@ const UserAccountPage = () => {
         setLoading(true);
         console.log('📤 Uploading media file...');
         
+        // Log form data contents for debugging
+        console.log('📤 FormData contents:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`  - ${key}:`, value);
+        }
+        
         // Ensure name field is present in formData
         if (!formData.get('name')) {
           const file = formData.get('media_file');
-          formData.append('name', file.name);
+          if (file) {
+            formData.append('name', file.name);
+            console.log('📤 Added name field:', file.name);
+          }
         }
 
         const response = await apiCallWithRefresh(() => 
@@ -394,10 +403,36 @@ const UserAccountPage = () => {
         setLoading(false);
       } catch (err) {
         console.error('❌ Error uploading media file:', err);
-        const errorMessage = err.response?.data?.name?.[0] || 
-                      err.response?.data?.non_field_errors?.[0] || 
-                      err.response?.data?.message || 
-                      'Failed to upload media file. Please try again.';
+        console.error('❌ Error response data:', err.response?.data);
+        console.error('❌ Error response status:', err.response?.status);
+        console.error('❌ Error response headers:', err.response?.headers);
+        
+        // Enhanced error message extraction
+        let errorMessage = 'Failed to upload media file. Please try again.';
+        
+        if (err.response?.data) {
+          const errorData = err.response.data;
+          
+          // Check for field-specific errors
+          if (errorData.media_file) {
+            errorMessage = `Media file error: ${Array.isArray(errorData.media_file) ? errorData.media_file[0] : errorData.media_file}`;
+          } else if (errorData.name) {
+            errorMessage = `Name error: ${Array.isArray(errorData.name) ? errorData.name[0] : errorData.name}`;
+          } else if (errorData.non_field_errors) {
+            errorMessage = Array.isArray(errorData.non_field_errors) ? errorData.non_field_errors[0] : errorData.non_field_errors;
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.detail) {
+            errorMessage = errorData.detail;
+          } else if (typeof errorData === 'string') {
+            errorMessage = errorData;
+          } else {
+            // Log the full error data for debugging
+            console.log('📋 Full error data structure:', errorData);
+            errorMessage = `Upload failed: ${JSON.stringify(errorData)}`;
+          }
+        }
+        
         setError(errorMessage);
         setLoading(false);
       }

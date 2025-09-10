@@ -28,12 +28,20 @@ axiosInstance.interceptors.request.use(
       console.warn('⚠️ No auth token found for request:', config.url);
     }
     
+    // Handle multipart form data properly
+    if (config.data instanceof FormData) {
+      // Don't set Content-Type for FormData - let browser set it with boundary
+      delete config.headers['Content-Type'];
+      console.log('📤 FormData detected - removing Content-Type header');
+    }
+    
     // Log request details for debugging
     console.log('📤 API Request:', {
       method: config.method?.toUpperCase(),
       url: config.url,
       baseURL: config.baseURL,
       hasAuth: !!config.headers.Authorization,
+      isFormData: config.data instanceof FormData,
       headers: config.headers
     });
     
