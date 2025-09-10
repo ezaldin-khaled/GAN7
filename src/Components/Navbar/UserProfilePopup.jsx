@@ -92,7 +92,6 @@ export default function UserProfilePopup({ user, onClose }) {
         // User data processing
 
         // Try to fetch real user data from API endpoints first (same as account page)
-        const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
         
         // Define all possible endpoint variations to try
         const endpoints = [
