@@ -171,6 +171,30 @@ export default function UserProfilePopup({ user, onClose }) {
     navigate('/login');
   };
 
+  // File validation function
+  const validateFile = (file) => {
+    const maxImageSize = 10 * 1024 * 1024; // 10MB
+    const maxVideoSize = 100 * 1024 * 1024; // 100MB
+    
+    if (file.type.startsWith('image/') && file.size > maxImageSize) {
+      throw new Error('Image must be less than 10MB');
+    }
+    if (file.type.startsWith('video/') && file.size > maxVideoSize) {
+      throw new Error('Video must be less than 100MB');
+    }
+    
+    // Check file types
+    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedVideoTypes = ['video/mp4', 'video/mov', 'video/avi'];
+    
+    if (file.type.startsWith('image/') && !allowedImageTypes.includes(file.type)) {
+      throw new Error('Image must be JPG, PNG, or WEBP format');
+    }
+    if (file.type.startsWith('video/') && !allowedVideoTypes.includes(file.type)) {
+      throw new Error('Video must be MP4, MOV, or AVI format');
+    }
+  };
+
   // Media upload function
   const handleMediaUpload = async (formData) => {
     try {
@@ -178,9 +202,13 @@ export default function UserProfilePopup({ user, onClose }) {
       setMediaError(null);
       setMediaSuccess(null);
       
+      const file = formData.get('media_file');
+      
+      // Validate file before upload
+      validateFile(file);
+      
       // Ensure name field is present in formData
       if (!formData.get('name')) {
-        const file = formData.get('media_file');
         formData.append('name', file.name);
       }
 
@@ -192,11 +220,32 @@ export default function UserProfilePopup({ user, onClose }) {
       
     } catch (err) {
       console.error('Error uploading media file:', err);
-      const errorMessage = err.response?.data?.name?.[0] || 
-                    err.response?.data?.non_field_errors?.[0] || 
-                    err.response?.data?.message || 
-                    'Failed to upload media file. Please try again.';
-      setMediaError(errorMessage);
+      
+      // Handle different types of errors
+      if (err.message && (err.message.includes('less than') || err.message.includes('format'))) {
+        // File validation error
+        setMediaError(err.message);
+      } else if (err.response?.status === 400) {
+        const errorData = err.response.data;
+        
+        // Handle account limit errors
+        if (errorData.error && errorData.error.includes('Upload limit reached')) {
+          setMediaError(`${errorData.error} ${errorData.upgrade_message || ''}`);
+        } else if (errorData.media_file) {
+          // File-specific errors
+          setMediaError(errorData.media_file[0] || 'Invalid file format or size');
+        } else if (errorData.name) {
+          setMediaError(errorData.name[0]);
+        } else if (errorData.non_field_errors) {
+          setMediaError(errorData.non_field_errors[0]);
+        } else {
+          setMediaError(errorData.error || 'Failed to upload media file. Please try again.');
+        }
+      } else if (err.response?.status === 404) {
+        setMediaError('Talent profile not found. Please complete your profile first.');
+      } else {
+        setMediaError('Failed to upload media file. Please try again.');
+      }
     } finally {
       setMediaLoading(false);
     }
@@ -225,10 +274,18 @@ export default function UserProfilePopup({ user, onClose }) {
       }
     } catch (err) {
       console.error('Error deleting media file:', err);
-      const errorMessage = err.response?.data?.detail || 
-                          err.response?.data?.message || 
-                          'Failed to delete media file. Please try again.';
-      setMediaError(errorMessage);
+      
+      // Handle specific error responses as per API documentation
+      if (err.response?.status === 403) {
+        setMediaError('You do not have permission to delete this media.');
+      } else if (err.response?.status === 404) {
+        setMediaError('Media file not found.');
+      } else {
+        const errorMessage = err.response?.data?.detail || 
+                            err.response?.data?.message || 
+                            'Failed to delete media file. Please try again.';
+        setMediaError(errorMessage);
+      }
     } finally {
       setMediaLoading(false);
     }
@@ -785,7 +842,7 @@ export default function UserProfilePopup({ user, onClose }) {
                     <input
                       type="file"
                       id="media-upload"
-                      accept="image/*,video/*"
+                      accept="image/jpeg,image/jpg,image/png,image/webp,video/mp4,video/mov,video/avi"
                       onChange={(e) => {
                         const files = e.target.files;
                         if (!files || files.length === 0) return;
@@ -807,6 +864,13 @@ export default function UserProfilePopup({ user, onClose }) {
                       </svg>
                       Upload Media
                     </label>
+                  </div>
+                  
+                  {/* File Limits Info */}
+                  <div className="file-limits-info">
+                    <p className="limits-text">
+                      <strong>Supported formats:</strong> JPG, PNG, WEBP (max 10MB) • MP4, MOV, AVI (max 100MB)
+                    </p>
                   </div>
                   
                   {/* Media Messages */}
