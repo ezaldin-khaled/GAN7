@@ -42,8 +42,103 @@ export default function UserProfilePopup({ user, onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [profileScore, setProfileScore] = useState(0);
+  const [scoreBreakdown, setScoreBreakdown] = useState([]);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+
+  // Calculate profile score based on data completeness
+  const calculateProfileScore = (userData) => {
+    if (!userData) return { score: 0, breakdown: [] };
+
+    const breakdown = [];
+    let totalScore = 0;
+    let maxScore = 0;
+
+    // Define scoring criteria
+    const criteria = [
+      {
+        key: 'basicInfo',
+        label: 'Basic Information',
+        weight: 20,
+        check: () => userData.firstName && userData.lastName && userData.email,
+        description: 'First name, last name, and email'
+      },
+      {
+        key: 'profilePicture',
+        label: 'Profile Picture',
+        weight: 15,
+        check: () => userData.profile_picture,
+        description: 'Upload a profile picture'
+      },
+      {
+        key: 'bio',
+        label: 'Bio/About',
+        weight: 15,
+        check: () => userData.bio && userData.bio.length > 20,
+        description: 'Write a compelling bio (20+ characters)'
+      },
+      {
+        key: 'location',
+        label: 'Location',
+        weight: 10,
+        check: () => userData.country || userData.location,
+        description: 'Add your location'
+      },
+      {
+        key: 'contact',
+        label: 'Contact Info',
+        weight: 10,
+        check: () => userData.phoneNumber,
+        description: 'Add phone number'
+      },
+      {
+        key: 'personalDetails',
+        label: 'Personal Details',
+        weight: 10,
+        check: () => userData.gender && userData.dateOfBirth,
+        description: 'Gender and date of birth'
+      },
+      {
+        key: 'verification',
+        label: 'Email Verification',
+        weight: 10,
+        check: () => userData.isVerified,
+        description: 'Verify your email address'
+      },
+      {
+        key: 'subscription',
+        label: 'Subscription',
+        weight: 10,
+        check: () => userData.isSubscribed,
+        description: 'Active subscription'
+      }
+    ];
+
+    criteria.forEach(criterion => {
+      const isComplete = criterion.check();
+      const score = isComplete ? criterion.weight : 0;
+      
+      breakdown.push({
+        ...criterion,
+        score,
+        isComplete,
+        percentage: (score / criterion.weight) * 100
+      });
+      
+      totalScore += score;
+      maxScore += criterion.weight;
+    });
+
+    const finalScore = Math.round((totalScore / maxScore) * 100);
+    
+    return {
+      score: finalScore,
+      breakdown,
+      totalScore,
+      maxScore
+    };
+  };
 
   const handleOpenUserAccount = () => {
     // Determine which account page to navigate to based on user type
@@ -156,6 +251,11 @@ export default function UserProfilePopup({ user, onClose }) {
           };
           
           setUserData(mappedUserData);
+          
+          // Calculate profile score for API data
+          const scoreData = calculateProfileScore(mappedUserData);
+          setProfileScore(scoreData.score);
+          setScoreBreakdown(scoreData.breakdown);
         } else {
           // Fallback to cached user data from localStorage if API calls failed
           const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -198,6 +298,11 @@ export default function UserProfilePopup({ user, onClose }) {
             };
             
             setUserData(mappedUserData);
+            
+            // Calculate profile score for cached data
+            const scoreData = calculateProfileScore(mappedUserData);
+            setProfileScore(scoreData.score);
+            setScoreBreakdown(scoreData.breakdown);
           } else {
             setError('Unable to load profile data. Please try logging in again.');
           }
@@ -348,21 +453,68 @@ export default function UserProfilePopup({ user, onClose }) {
             )}
           </div>
 
-          {stats && (
-            <div className="profile-stats">
-              {userData?.profileScore && (
-                <div className="profile-score-section">
-                  <div className="score-info">
-                    <p className="stat-label">Profile Score</p>
-                    <p className="stat-value">{userData.profileScore}/100</p>
-                  </div>
-                  <p className="score-message">
-                    Go to the account settings to setup and change your info for better opportunities
-                  </p>
+          {/* Enhanced Profile Score Section */}
+          <div className="profile-stats">
+            <div className="profile-score-section">
+              <div className="score-visual">
+                <div className="score-circle">
+                  <svg className="score-ring" viewBox="0 0 120 120">
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="50"
+                      fill="none"
+                      stroke="rgba(139, 90, 43, 0.1)"
+                      strokeWidth="8"
+                    />
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="50"
+                      fill="none"
+                      stroke="url(#scoreGradient)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 50}`}
+                      strokeDashoffset={`${2 * Math.PI * 50 * (1 - profileScore / 100)}`}
+                      className="score-progress"
+                    />
+                    <defs>
+                      <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#8b5a2b" />
+                        <stop offset="100%" stopColor="#d4af37" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="score-number">{profileScore}</div>
                 </div>
-              )}
+              </div>
+              <div className="score-content">
+                <div className="score-header">
+                  <h3 className="score-title">Profile Score</h3>
+                  <p className="score-subtitle">{profileScore}/100</p>
+                </div>
+                <p className="score-message">
+                  {profileScore >= 80 
+                    ? "Excellent! Your profile is well-completed and attractive to potential opportunities."
+                    : profileScore >= 60 
+                    ? "Good progress! Complete a few more sections to boost your profile appeal."
+                    : profileScore >= 40
+                    ? "Getting there! Add more information to make your profile stand out."
+                    : "Let's improve your profile! Complete the missing sections below to increase your score."
+                  }
+                </p>
+                {profileScore < 100 && (
+                  <button 
+                    className="improve-score-btn"
+                    onClick={handleOpenUserAccount}
+                  >
+                    Improve Profile
+                  </button>
+                )}
+              </div>
             </div>
-          )}
+          </div>
 
           {/* Tab Navigation */}
           <div className="popup-tabs">
@@ -371,6 +523,12 @@ export default function UserProfilePopup({ user, onClose }) {
               onClick={() => setActiveTab('overview')}
             >
               Overview
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'score' ? 'active' : ''}`}
+              onClick={() => setActiveTab('score')}
+            >
+              Score ({profileScore}%)
             </button>
             <button 
               className={`tab-btn ${activeTab === 'media' ? 'active' : ''}`}
@@ -433,6 +591,74 @@ export default function UserProfilePopup({ user, onClose }) {
                   </div>
                 </div>
             </div>
+            )}
+
+            {activeTab === 'score' && (
+              <div className="score-tab">
+                <div className="score-breakdown">
+                  <h3 className="breakdown-title">Profile Score Breakdown</h3>
+                  <p className="breakdown-subtitle">
+                    Complete these sections to improve your profile score and attract more opportunities.
+                  </p>
+                  
+                  <div className="breakdown-list">
+                    {scoreBreakdown.map((item, index) => (
+                      <div key={item.key} className={`breakdown-item ${item.isComplete ? 'complete' : 'incomplete'}`}>
+                        <div className="breakdown-icon">
+                          {item.isComplete ? (
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                            </svg>
+                          ) : (
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="breakdown-content">
+                          <div className="breakdown-header">
+                            <h4 className="breakdown-label">{item.label}</h4>
+                            <span className="breakdown-weight">{item.weight} points</span>
+                          </div>
+                          <p className="breakdown-description">{item.description}</p>
+                          <div className="breakdown-progress">
+                            <div className="progress-bar">
+                              <div 
+                                className="progress-fill" 
+                                style={{ width: `${item.percentage}%` }}
+                              ></div>
+                            </div>
+                            <span className="progress-text">{item.percentage}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="breakdown-summary">
+                    <div className="summary-stats">
+                      <div className="summary-item">
+                        <span className="summary-label">Current Score</span>
+                        <span className="summary-value">{profileScore}/100</span>
+                      </div>
+                      <div className="summary-item">
+                        <span className="summary-label">Completed</span>
+                        <span className="summary-value">
+                          {scoreBreakdown.filter(item => item.isComplete).length}/{scoreBreakdown.length}
+                        </span>
+                      </div>
+                    </div>
+                    {profileScore < 100 && (
+                      <button 
+                        className="complete-profile-btn"
+                        onClick={handleOpenUserAccount}
+                      >
+                        Complete Your Profile
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             )}
 
             {activeTab === 'media' && (
