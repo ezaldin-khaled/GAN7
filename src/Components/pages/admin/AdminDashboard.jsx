@@ -26,9 +26,9 @@ import './AdminDashboard.css';
 
 const TABS = [
   { id: 'overview', label: 'Overview', count: null },
-  { id: 'visual', label: 'Visual Workers', count: 5 },
-  { id: 'expressive', label: 'Expressive Workers', count: 5 },
-  { id: 'hybrid', label: 'Hybrid Workers', count: 5 },
+  { id: 'visual', label: 'User Management', count: 5 },
+  { id: 'expressive', label: 'Item Management', count: 5 },
+  { id: 'hybrid', label: 'Search Results', count: 5 },
   { id: 'shared-media', label: 'Shared Media', count: 0 },
   { id: 'email', label: 'Email', count: 0 },
 ];
