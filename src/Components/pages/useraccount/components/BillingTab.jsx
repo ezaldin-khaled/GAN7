@@ -47,10 +47,13 @@ const BillingTab = () => {
     try {
       const response = await axiosInstance.get('/api/payments/subscriptions/');
       console.log('Current subscription data:', response.data);
+      console.log('Subscription data structure:', JSON.stringify(response.data, null, 2));
       if (response.data.length > 0) {
         setCurrentSubscription(response.data[0]);
+        console.log('Set current subscription to:', response.data[0]);
       } else {
         setCurrentSubscription(null);
+        console.log('No subscription found, set to null');
       }
     } catch (err) {
       console.error('Error fetching current subscription:', err);
@@ -211,6 +214,41 @@ const BillingTab = () => {
     );
   }
 
+  // Get current plan object by matching subscription with available plans
+  const getCurrentPlan = () => {
+    if (!currentSubscription || !plans.length) return null;
+    
+    // Try different ways to match the plan
+    const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan?.id;
+    const subscriptionPlanName = currentSubscription.plan_name || currentSubscription.plan?.name;
+    
+    console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
+    
+    // First try to match by ID
+    if (subscriptionPlanId) {
+      const matchedPlan = plans.find(plan => plan.id === subscriptionPlanId);
+      if (matchedPlan) {
+        console.log('✅ Found plan by ID:', matchedPlan);
+        return matchedPlan;
+      }
+    }
+    
+    // Then try to match by name
+    if (subscriptionPlanName) {
+      const matchedPlan = plans.find(plan => 
+        plan.name.toLowerCase() === subscriptionPlanName.toLowerCase() ||
+        plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase()
+      );
+      if (matchedPlan) {
+        console.log('✅ Found plan by name:', matchedPlan);
+        return matchedPlan;
+      }
+    }
+    
+    console.log('❌ No matching plan found');
+    return null;
+  };
+
   // Fallback to static content if no plans are found
   const displayPlans = plans.length > 0 ? plans : [
     {
@@ -330,8 +368,10 @@ const BillingTab = () => {
       )}
 
       <div className="plans-container">
-        {displayPlans.map((plan) => {
-          const isCurrentPlan = currentSubscription?.plan.id === plan.id;
+        {displayPlans.length > 0 ? (
+          displayPlans.map((plan) => {
+          const currentPlan = getCurrentPlan();
+          const isCurrentPlan = currentPlan?.id === plan.id;
           return (
             <div 
               key={plan.id} 
@@ -374,7 +414,13 @@ const BillingTab = () => {
               </div>
             </div>
           );
-        })}
+        })
+        ) : (
+          <div className="no-plans-message">
+            <p>No subscription plans available at the moment.</p>
+            <p>Please contact support for more information.</p>
+          </div>
+        )}
       </div>
 
     </div>

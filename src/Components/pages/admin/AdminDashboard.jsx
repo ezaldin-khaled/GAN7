@@ -580,7 +580,7 @@ const AdminDashboard = () => {
                 className={`dashboard-tab-btn${activeTab === tab.id ? ' active' : ''}`}
                 onClick={() => handleTabClick(tab.id)}
               >
-                {tab.label} <span className="tab-badge">{tab.count}</span>
+                {tab.label}
               </button>
             ))}
           </div>
