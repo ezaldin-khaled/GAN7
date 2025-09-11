@@ -26,7 +26,7 @@ const tabs = [
 ];
 
 const UserAccountPage = () => {
-  const { user: authUser, updateUser } = useContext(AuthContext);
+  const { user: authUser, updateUser, logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState({
     fullName: '', email: '', role: '', location: '',
@@ -484,16 +484,21 @@ const UserAccountPage = () => {
   };
 
   const handleLogout = async () => {
+    console.log('🚪 Logout button clicked');
     try {
+      console.log('🔄 Attempting to call logout endpoint...');
       // Attempt to call logout endpoint if it exists
       await axiosInstance.post('/api/logout/');
+      console.log('✅ Logout endpoint called successfully');
     } catch (err) {
+      console.log('⚠️ Logout endpoint failed or doesn\'t exist, continuing with local cleanup:', err.message);
       // If logout endpoint fails or doesn't exist, just continue with local cleanup
     } finally {
-      // Use AuthContext logout method to update state immediately
-      const { logout } = useContext(AuthContext);
+      console.log('🧹 Performing local cleanup...');
+      console.log('🔐 Calling AuthContext logout...');
       logout();
       
+      console.log('🧭 Navigating to login page...');
       // Navigate to login page
       navigate('/login');
     }

@@ -146,7 +146,19 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
             <FaHome className="menu-icon" />
             <span>Back to Main Page</span>
           </button>
-          <button className="menu-item logout-btn" onClick={handleLogout}>
+          <button 
+            className="menu-item logout-btn" 
+            onClick={(e) => {
+              console.log('🔴 Logout button clicked in Sidebar');
+              e.preventDefault();
+              e.stopPropagation();
+              if (handleLogout) {
+                handleLogout();
+              } else {
+                console.error('❌ handleLogout function is not defined');
+              }
+            }}
+          >
             <FaSignOutAlt className="menu-icon" />
             <span>Logout</span>
           </button>
