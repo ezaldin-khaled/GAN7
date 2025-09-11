@@ -13,33 +13,55 @@ const BillingTab = () => {
 
   // Add polling interval for subscription updates
   useEffect(() => {
+    console.log('🚀 BillingTab component mounted - fetching initial data');
     fetchPlans();
     fetchCurrentSubscription();
     fetchUserData();
 
     // Set up polling for subscription updates
-    const pollInterval = setInterval(fetchCurrentSubscription, 30000);
+    const pollInterval = setInterval(() => {
+      console.log('🔄 Polling interval - refreshing subscription and plans');
+      fetchCurrentSubscription();
+      fetchPlans(); // Also refresh plans to ensure they stay visible
+    }, 30000);
     return () => clearInterval(pollInterval);
+  }, []);
+
+  // Add visibility change listener to refresh plans when user returns to tab
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('👁️ Page became visible - refreshing plans and subscription');
+        fetchPlans();
+        fetchCurrentSubscription();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
   const fetchPlans = async () => {
     try {
+      console.log('🔄 Fetching plans from API...');
       const response = await axiosInstance.get('/api/payments/plans/');
-      console.log('Plans received from API:', response.data);
+      console.log('✅ Plans received from API:', response.data);
       setPlans(response.data);
       setLoading(false);
+      console.log('✅ Plans state updated, loading set to false');
     } catch (err) {
-      console.error('Error fetching plans:', err);
+      console.error('❌ Error fetching plans:', err);
       
       // Handle 404 error gracefully - API endpoint might not be implemented yet
       if (err.response?.status === 404) {
-        console.log('Payment plans API endpoint not available, using fallback plans');
+        console.log('⚠️ Payment plans API endpoint not available, using fallback plans');
         setPlans([]); // This will trigger the fallback plans in displayPlans
         setError(''); // Clear any previous errors
       } else {
         setError('Failed to load subscription plans');
       }
       setLoading(false);
+      console.log('✅ Loading set to false after error');
     }
   };
 
@@ -165,11 +187,15 @@ const BillingTab = () => {
   // Add effect to check for pending subscription on component mount
   useEffect(() => {
     const pendingSubscription = sessionStorage.getItem('pendingSubscription');
+    console.log('🔍 Checking for pending subscription:', pendingSubscription);
     if (pendingSubscription) {
+      console.log('🔄 Found pending subscription, clearing and refreshing...');
       // Clear the pending subscription
       sessionStorage.removeItem('pendingSubscription');
       // Fetch the latest subscription data
       fetchCurrentSubscription();
+      // Also refresh plans to ensure they stay visible
+      fetchPlans();
     }
   }, []);
 
@@ -250,6 +276,11 @@ const BillingTab = () => {
   };
 
   // Fallback to static content if no plans are found
+  console.log('🔍 BillingTab Debug - Plans state:', plans);
+  console.log('🔍 BillingTab Debug - Plans length:', plans.length);
+  console.log('🔍 BillingTab Debug - Current subscription:', currentSubscription);
+  console.log('🔍 BillingTab Debug - Loading state:', loading);
+  
   const displayPlans = plans.length > 0 ? plans : [
     {
       id: 1,
@@ -368,6 +399,8 @@ const BillingTab = () => {
       )}
 
       <div className="plans-container">
+        {console.log('🔍 Rendering plans container - displayPlans:', displayPlans)}
+        {console.log('🔍 Rendering plans container - displayPlans.length:', displayPlans.length)}
         {displayPlans.length > 0 ? (
           displayPlans.map((plan) => {
           const currentPlan = getCurrentPlan();
