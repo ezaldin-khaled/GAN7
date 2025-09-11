@@ -240,22 +240,63 @@ const BillingTab = () => {
     );
   }
 
+
+  // Fallback to static content if no plans are found
+  console.log('🔍 BillingTab Debug - Plans state:', plans);
+  console.log('🔍 BillingTab Debug - Plans length:', plans.length);
+  console.log('🔍 BillingTab Debug - Current subscription:', currentSubscription);
+  console.log('🔍 BillingTab Debug - Loading state:', loading);
+  
+  // Ensure the subscribed plan is always available
+  const ensureSubscribedPlanAvailable = (apiPlans, subscription) => {
+    if (!subscription || !subscription.plan) return apiPlans;
+    
+    const subscribedPlanId = subscription.plan;
+    const subscribedPlanName = subscription.plan_name;
+    
+    // Check if the subscribed plan is already in the API plans
+    const hasSubscribedPlan = apiPlans.some(plan => plan.id === subscribedPlanId);
+    
+    if (hasSubscribedPlan) {
+      console.log('✅ Subscribed plan found in API plans');
+      return apiPlans;
+    }
+    
+    console.log('⚠️ Subscribed plan not found in API plans, adding it');
+    
+    // Create a plan object for the subscribed plan
+    const subscribedPlan = {
+      id: subscribedPlanId,
+      name: subscribedPlanName,
+      price: subscription.plan_price || "0.00",
+      features: getDefaultFeatures(subscribedPlanName),
+      is_active: true,
+      is_subscribed: true // Mark this as the subscribed plan
+    };
+    
+    // Add the subscribed plan to the beginning of the plans array
+    return [subscribedPlan, ...apiPlans];
+  };
+  
+  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
+  console.log('🔍 Enhanced plans with subscribed plan:', enhancedPlans);
+  
   // Get current plan object by matching subscription with available plans
   const getCurrentPlan = () => {
-    if (!currentSubscription || !plans.length) return null;
+    if (!currentSubscription || !enhancedPlans.length) return null;
     
     // Try different ways to match the plan
     const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan;
     const subscriptionPlanName = currentSubscription.plan_name || currentSubscription.plan?.name;
     
     console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
-    console.log('🔍 Available plans:', plans.map(p => ({ id: p.id, name: p.name })));
-    console.log('🔍 Full plans data:', JSON.stringify(plans, null, 2));
+    console.log('🔍 Available plans:', enhancedPlans.map(p => ({ id: p.id, name: p.name })));
+    console.log('🔍 Full plans data:', JSON.stringify(enhancedPlans, null, 2));
     
     // First try to match by ID (handle both plan_id and plan fields)
     if (subscriptionPlanId) {
       console.log('🔍 Trying to match by ID:', subscriptionPlanId);
-      const matchedPlan = plans.find(plan => {
+      const matchedPlan = enhancedPlans.find(plan => {
         console.log('🔍 Comparing plan.id:', plan.id, 'with subscriptionPlanId:', subscriptionPlanId, 'Match:', plan.id === subscriptionPlanId);
         return plan.id === subscriptionPlanId;
       });
@@ -268,7 +309,7 @@ const BillingTab = () => {
     // Then try to match by name
     if (subscriptionPlanName) {
       console.log('🔍 Trying to match by name:', subscriptionPlanName);
-      const matchedPlan = plans.find(plan => {
+      const matchedPlan = enhancedPlans.find(plan => {
         const nameMatch = plan.name.toLowerCase() === subscriptionPlanName.toLowerCase();
         const displayNameMatch = plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase();
         console.log('🔍 Comparing plan.name:', plan.name, 'with subscriptionPlanName:', subscriptionPlanName, 'Name match:', nameMatch);
@@ -283,17 +324,11 @@ const BillingTab = () => {
     
     console.log('❌ No matching plan found');
     console.log('🔍 Subscription plan ID:', subscriptionPlanId, 'Type:', typeof subscriptionPlanId);
-    console.log('🔍 Available plan IDs:', JSON.stringify(plans.map(p => ({ id: p.id, type: typeof p.id })), null, 2));
+    console.log('🔍 Available plan IDs:', JSON.stringify(enhancedPlans.map(p => ({ id: p.id, type: typeof p.id })), null, 2));
     return null;
   };
-
-  // Fallback to static content if no plans are found
-  console.log('🔍 BillingTab Debug - Plans state:', plans);
-  console.log('🔍 BillingTab Debug - Plans length:', plans.length);
-  console.log('🔍 BillingTab Debug - Current subscription:', currentSubscription);
-  console.log('🔍 BillingTab Debug - Loading state:', loading);
   
-  const displayPlans = plans.length > 0 ? plans : [
+  const displayPlans = enhancedPlans.length > 0 ? enhancedPlans : [
     {
       id: 1,
       name: 'SILVER',
