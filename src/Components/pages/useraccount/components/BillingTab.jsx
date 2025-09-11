@@ -250,10 +250,15 @@ const BillingTab = () => {
     
     console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
     console.log('🔍 Available plans:', plans.map(p => ({ id: p.id, name: p.name })));
+    console.log('🔍 Full plans data:', plans);
     
     // First try to match by ID (handle both plan_id and plan fields)
     if (subscriptionPlanId) {
-      const matchedPlan = plans.find(plan => plan.id === subscriptionPlanId);
+      console.log('🔍 Trying to match by ID:', subscriptionPlanId);
+      const matchedPlan = plans.find(plan => {
+        console.log('🔍 Comparing plan.id:', plan.id, 'with subscriptionPlanId:', subscriptionPlanId, 'Match:', plan.id === subscriptionPlanId);
+        return plan.id === subscriptionPlanId;
+      });
       if (matchedPlan) {
         console.log('✅ Found plan by ID:', matchedPlan);
         return matchedPlan;
@@ -262,10 +267,14 @@ const BillingTab = () => {
     
     // Then try to match by name
     if (subscriptionPlanName) {
-      const matchedPlan = plans.find(plan => 
-        plan.name.toLowerCase() === subscriptionPlanName.toLowerCase() ||
-        plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase()
-      );
+      console.log('🔍 Trying to match by name:', subscriptionPlanName);
+      const matchedPlan = plans.find(plan => {
+        const nameMatch = plan.name.toLowerCase() === subscriptionPlanName.toLowerCase();
+        const displayNameMatch = plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase();
+        console.log('🔍 Comparing plan.name:', plan.name, 'with subscriptionPlanName:', subscriptionPlanName, 'Name match:', nameMatch);
+        console.log('🔍 Comparing plan.display_name:', plan.display_name, 'with subscriptionPlanName:', subscriptionPlanName, 'Display name match:', displayNameMatch);
+        return nameMatch || displayNameMatch;
+      });
       if (matchedPlan) {
         console.log('✅ Found plan by name:', matchedPlan);
         return matchedPlan;
