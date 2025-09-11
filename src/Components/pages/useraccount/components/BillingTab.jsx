@@ -245,12 +245,13 @@ const BillingTab = () => {
     if (!currentSubscription || !plans.length) return null;
     
     // Try different ways to match the plan
-    const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan?.id;
+    const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan;
     const subscriptionPlanName = currentSubscription.plan_name || currentSubscription.plan?.name;
     
     console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
+    console.log('🔍 Available plans:', plans.map(p => ({ id: p.id, name: p.name })));
     
-    // First try to match by ID
+    // First try to match by ID (handle both plan_id and plan fields)
     if (subscriptionPlanId) {
       const matchedPlan = plans.find(plan => plan.id === subscriptionPlanId);
       if (matchedPlan) {
@@ -272,6 +273,8 @@ const BillingTab = () => {
     }
     
     console.log('❌ No matching plan found');
+    console.log('🔍 Subscription plan ID:', subscriptionPlanId, 'Type:', typeof subscriptionPlanId);
+    console.log('🔍 Available plan IDs:', plans.map(p => ({ id: p.id, type: typeof p.id })));
     return null;
   };
 
