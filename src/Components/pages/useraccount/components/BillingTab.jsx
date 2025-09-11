@@ -249,10 +249,18 @@ const BillingTab = () => {
   
   // Ensure the subscribed plan is always available
   const ensureSubscribedPlanAvailable = (apiPlans, subscription) => {
-    if (!subscription || !subscription.plan) return apiPlans;
+    console.log('🔍 ensureSubscribedPlanAvailable called with:', { apiPlans, subscription });
+    
+    if (!subscription || !subscription.plan) {
+      console.log('⚠️ No subscription or plan found, returning original plans');
+      return apiPlans;
+    }
     
     const subscribedPlanId = subscription.plan;
     const subscribedPlanName = subscription.plan_name;
+    
+    console.log('🔍 Looking for subscribed plan:', { subscribedPlanId, subscribedPlanName });
+    console.log('🔍 Available API plans:', apiPlans.map(p => ({ id: p.id, name: p.name })));
     
     // Check if the subscribed plan is already in the API plans
     const hasSubscribedPlan = apiPlans.some(plan => plan.id === subscribedPlanId);
@@ -274,8 +282,13 @@ const BillingTab = () => {
       is_subscribed: true // Mark this as the subscribed plan
     };
     
+    console.log('🔍 Created subscribed plan object:', subscribedPlan);
+    
     // Add the subscribed plan to the beginning of the plans array
-    return [subscribedPlan, ...apiPlans];
+    const enhancedPlans = [subscribedPlan, ...apiPlans];
+    console.log('🔍 Enhanced plans result:', enhancedPlans.map(p => ({ id: p.id, name: p.name })));
+    
+    return enhancedPlans;
   };
   
   const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
@@ -378,14 +391,14 @@ const BillingTab = () => {
 
   const getDefaultFeatures = (planName) => {
     const name = planName.toLowerCase();
-    if (name.includes('basic')) {
+    if (name.includes('basic') || name.includes('silver')) {
       return [
         '3 Projects',
         'Basic AI Features',
         '1GB Storage',
         'Community Support'
       ];
-    } else if (name.includes('pro')) {
+    } else if (name.includes('pro') || name.includes('gold')) {
       return [
         '10 Projects',
         'Advanced AI Features',
@@ -393,7 +406,7 @@ const BillingTab = () => {
         'Priority Support',
         'Custom Branding'
       ];
-    } else if (name.includes('enterprise')) {
+    } else if (name.includes('enterprise') || name.includes('platinum')) {
       return [
         'Unlimited Projects',
         'Premium AI Features',
@@ -402,6 +415,16 @@ const BillingTab = () => {
         'Custom Branding',
         'API Access',
         'Dedicated Account Manager'
+      ];
+    } else if (name.includes('bands')) {
+      return [
+        'Special band profile layout',
+        'Upload up to 5 band pictures',
+        'Upload up to 5 band videos',
+        'Band member management',
+        'Event calendar integration',
+        'Priority booking requests',
+        'Dedicated band support'
       ];
     }
     return [

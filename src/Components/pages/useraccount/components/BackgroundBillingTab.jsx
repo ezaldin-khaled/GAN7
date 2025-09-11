@@ -164,14 +164,14 @@ const BackgroundBillingTab = () => {
   // Get default features based on plan type
   const getDefaultFeatures = (planName) => {
     const name = (planName || '').toLowerCase();
-    if (name.includes('basic') || name.includes('starter')) {
+    if (name.includes('basic') || name.includes('starter') || name.includes('silver')) {
       return [
         'Up to 10 Production Assets Pro items',
         'Basic AI Production Assets Generation',
         '5GB Storage',
         'Email Support'
       ];
-    } else if (name.includes('pro') || name.includes('professional')) {
+    } else if (name.includes('pro') || name.includes('professional') || name.includes('gold')) {
       return [
         'Unlimited Production Assets Pro items',
         'Advanced AI Production Assets Generation',
@@ -179,7 +179,7 @@ const BackgroundBillingTab = () => {
         'Priority Support',
         'Custom Branding'
       ];
-    } else if (name.includes('enterprise') || name.includes('premium')) {
+    } else if (name.includes('enterprise') || name.includes('premium') || name.includes('platinum')) {
       return [
         'Unlimited Everything',
         'Enterprise AI Features',
@@ -187,6 +187,16 @@ const BackgroundBillingTab = () => {
         '24/7 Dedicated Support',
         'API Access',
         'Custom Integration'
+      ];
+    } else if (name.includes('bands')) {
+      return [
+        'Special band profile layout',
+        'Upload up to 5 band pictures',
+        'Upload up to 5 band videos',
+        'Band member management',
+        'Event calendar integration',
+        'Priority booking requests',
+        'Dedicated band support'
       ];
     }
     return [
@@ -197,38 +207,84 @@ const BackgroundBillingTab = () => {
     ];
   };
 
+  // Ensure the subscribed plan is always available
+  const ensureSubscribedPlanAvailable = (apiPlans, subscription) => {
+    console.log('🔍 BackgroundBillingTab: ensureSubscribedPlanAvailable called with:', { apiPlans, subscription });
+    
+    if (!subscription || !subscription.plan) {
+      console.log('⚠️ BackgroundBillingTab: No subscription or plan found, returning original plans');
+      return apiPlans;
+    }
+    
+    const subscribedPlanId = subscription.plan;
+    const subscribedPlanName = subscription.plan_name;
+    
+    console.log('🔍 BackgroundBillingTab: Looking for subscribed plan:', { subscribedPlanId, subscribedPlanName });
+    console.log('🔍 BackgroundBillingTab: Available API plans:', apiPlans.map(p => ({ id: p.id, name: p.name })));
+    
+    // Check if the subscribed plan is already in the API plans
+    const hasSubscribedPlan = apiPlans.some(plan => plan.id === subscribedPlanId);
+    
+    if (hasSubscribedPlan) {
+      console.log('✅ BackgroundBillingTab: Subscribed plan found in API plans');
+      return apiPlans;
+    }
+    
+    console.log('⚠️ BackgroundBillingTab: Subscribed plan not found in API plans, adding it');
+    
+    // Create a plan object for the subscribed plan
+    const subscribedPlan = {
+      id: subscribedPlanId,
+      name: subscribedPlanName,
+      price: subscription.plan_price || "0.00",
+      features: getDefaultFeatures(subscribedPlanName),
+      is_active: true,
+      is_subscribed: true // Mark this as the subscribed plan
+    };
+    
+    console.log('🔍 BackgroundBillingTab: Created subscribed plan object:', subscribedPlan);
+    
+    // Add the subscribed plan to the beginning of the plans array
+    const enhancedPlans = [subscribedPlan, ...apiPlans];
+    console.log('🔍 BackgroundBillingTab: Enhanced plans result:', enhancedPlans.map(p => ({ id: p.id, name: p.name })));
+    
+    return enhancedPlans;
+  };
+
+  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
+
   // Get current plan object by matching subscription with available plans
   const getCurrentPlan = () => {
-    if (!currentSubscription || !plans.length) return null;
+    if (!currentSubscription || !enhancedPlans.length) return null;
     
     // Try different ways to match the plan
-    const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan?.id;
+    const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan;
     const subscriptionPlanName = currentSubscription.plan_name || currentSubscription.plan?.name;
     
-    console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
+    console.log('🔍 BackgroundBillingTab: Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
     
     // First try to match by ID
     if (subscriptionPlanId) {
-      const matchedPlan = plans.find(plan => plan.id === subscriptionPlanId);
+      const matchedPlan = enhancedPlans.find(plan => plan.id === subscriptionPlanId);
       if (matchedPlan) {
-        console.log('✅ Found plan by ID:', matchedPlan);
+        console.log('✅ BackgroundBillingTab: Found plan by ID:', matchedPlan);
         return matchedPlan;
       }
     }
     
     // Then try to match by name
     if (subscriptionPlanName) {
-      const matchedPlan = plans.find(plan => 
+      const matchedPlan = enhancedPlans.find(plan => 
         plan.name.toLowerCase() === subscriptionPlanName.toLowerCase() ||
         plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase()
       );
       if (matchedPlan) {
-        console.log('✅ Found plan by name:', matchedPlan);
+        console.log('✅ BackgroundBillingTab: Found plan by name:', matchedPlan);
         return matchedPlan;
       }
     }
     
-    console.log('❌ No matching plan found');
+    console.log('❌ BackgroundBillingTab: No matching plan found');
     return null;
   };
 
