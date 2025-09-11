@@ -250,7 +250,7 @@ const BillingTab = () => {
     
     console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
     console.log('🔍 Available plans:', plans.map(p => ({ id: p.id, name: p.name })));
-    console.log('🔍 Full plans data:', plans);
+    console.log('🔍 Full plans data:', JSON.stringify(plans, null, 2));
     
     // First try to match by ID (handle both plan_id and plan fields)
     if (subscriptionPlanId) {
@@ -283,7 +283,7 @@ const BillingTab = () => {
     
     console.log('❌ No matching plan found');
     console.log('🔍 Subscription plan ID:', subscriptionPlanId, 'Type:', typeof subscriptionPlanId);
-    console.log('🔍 Available plan IDs:', plans.map(p => ({ id: p.id, type: typeof p.id })));
+    console.log('🔍 Available plan IDs:', JSON.stringify(plans.map(p => ({ id: p.id, type: typeof p.id })), null, 2));
     return null;
   };
 
