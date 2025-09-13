@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
@@ -241,12 +241,53 @@ const BillingTab = () => {
   }
 
 
-  // Fallback to static content if no plans are found
-  console.log('🔍 BillingTab Debug - Plans state:', plans);
-  console.log('🔍 BillingTab Debug - Plans length:', plans.length);
-  console.log('🔍 BillingTab Debug - Current subscription:', currentSubscription);
-  console.log('🔍 BillingTab Debug - Loading state:', loading);
-  
+  // Get default features based on plan type - moved before usage
+  const getDefaultFeatures = (planName) => {
+    const name = planName.toLowerCase();
+    if (name.includes('basic') || name.includes('silver')) {
+      return [
+        '3 Projects',
+        'Basic AI Features',
+        '1GB Storage',
+        'Community Support'
+      ];
+    } else if (name.includes('pro') || name.includes('gold')) {
+      return [
+        '10 Projects',
+        'Advanced AI Features',
+        '5GB Storage',
+        'Priority Support',
+        'Custom Branding'
+      ];
+    } else if (name.includes('enterprise') || name.includes('platinum')) {
+      return [
+        'Unlimited Projects',
+        'Premium AI Features',
+        '20GB Storage',
+        '24/7 Support',
+        'Custom Branding',
+        'API Access',
+        'Dedicated Account Manager'
+      ];
+    } else if (name.includes('bands')) {
+      return [
+        'Special band profile layout',
+        'Upload up to 5 band pictures',
+        'Upload up to 5 band videos',
+        'Band member management',
+        'Event calendar integration',
+        'Priority booking requests',
+        'Dedicated band support'
+      ];
+    }
+    return [
+      '3 Projects',
+      'Basic AI Features',
+      '1GB Storage',
+      'Community Support'
+    ];
+  };
+
   // Ensure the subscribed plan is always available
   const ensureSubscribedPlanAvailable = (apiPlans, subscription) => {
     console.log('🔍 ensureSubscribedPlanAvailable called with:', { apiPlans, subscription });
@@ -338,10 +379,13 @@ const BillingTab = () => {
     return null;
   };
 
-  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
-  console.log('🔍 Enhanced plans with subscribed plan:', enhancedPlans);
+  // Move these calculations to useMemo to avoid re-execution on every render
+  const enhancedPlans = useMemo(() => {
+    return ensureSubscribedPlanAvailable(plans, currentSubscription);
+  }, [plans, currentSubscription]);
   
-  const displayPlans = enhancedPlans.length > 0 ? enhancedPlans : [
+  const displayPlans = useMemo(() => {
+    return enhancedPlans.length > 0 ? enhancedPlans : [
     {
       id: 1,
       name: 'SILVER',
@@ -387,53 +431,7 @@ const BillingTab = () => {
       premium: true
     }
   ];
-
-
-  const getDefaultFeatures = (planName) => {
-    const name = planName.toLowerCase();
-    if (name.includes('basic') || name.includes('silver')) {
-      return [
-        '3 Projects',
-        'Basic AI Features',
-        '1GB Storage',
-        'Community Support'
-      ];
-    } else if (name.includes('pro') || name.includes('gold')) {
-      return [
-        '10 Projects',
-        'Advanced AI Features',
-        '5GB Storage',
-        'Priority Support',
-        'Custom Branding'
-      ];
-    } else if (name.includes('enterprise') || name.includes('platinum')) {
-      return [
-        'Unlimited Projects',
-        'Premium AI Features',
-        '20GB Storage',
-        '24/7 Support',
-        'Custom Branding',
-        'API Access',
-        'Dedicated Account Manager'
-      ];
-    } else if (name.includes('bands')) {
-      return [
-        'Special band profile layout',
-        'Upload up to 5 band pictures',
-        'Upload up to 5 band videos',
-        'Band member management',
-        'Event calendar integration',
-        'Priority booking requests',
-        'Dedicated band support'
-      ];
-    }
-    return [
-      '3 Projects',
-      'Basic AI Features',
-      '1GB Storage',
-      'Community Support'
-    ];
-  };
+  }, [enhancedPlans]);
 
   return (
     <div className="content-section">
