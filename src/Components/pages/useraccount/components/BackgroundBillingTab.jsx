@@ -139,31 +139,74 @@ const BackgroundBillingTab = () => {
 
   const fetchCurrentSubscription = async () => {
     try {
-      // Fetch profile data which includes subscription information
-      const response = await axiosInstance.get('/api/profile/background/');
+      // Try multiple endpoints for background user subscription data
+      const endpoints = [
+        '/api/profile/background/',
+        '/api/profile/',
+        '/api/payments/subscriptions/'
+      ];
       
-      console.log('📥 Production Assets Pro profile API response:', response.data);
+      let response = null;
+      let lastError = null;
       
-      // Extract subscription data from profile response
-      const subscriptionStatus = response.data.subscription_status;
-      const endDate = response.data.end_date; // Root level end_date
+      let successfulEndpoint = null;
       
-      if (subscriptionStatus && subscriptionStatus.has_subscription) {
-        const subscriptionData = {
-          ...subscriptionStatus.subscription,
-          current_period_end: endDate || subscriptionStatus.subscription?.current_period_end || subscriptionStatus.subscription?.end_date || subscriptionStatus.subscription?.plan_end
-        };
-        
-        console.log('✅ Setting current subscription from profile:', subscriptionData);
-        console.log('📋 Subscription structure:', JSON.stringify(subscriptionData, null, 2));
-        setCurrentSubscription(subscriptionData);
-      } else {
-        console.log('❌ No subscription found in profile, setting to null');
+      // Try each endpoint until one succeeds
+      for (const endpoint of endpoints) {
+        try {
+          console.log(`🔍 BackgroundBillingTab: Trying endpoint: ${endpoint}`);
+          response = await axiosInstance.get(endpoint);
+          console.log(`✅ BackgroundBillingTab: Success with endpoint: ${endpoint}`);
+          successfulEndpoint = endpoint;
+          break;
+        } catch (err) {
+          console.error(`❌ BackgroundBillingTab: Error with endpoint ${endpoint}:`, err);
+          lastError = err;
+        }
+      }
+      
+      if (!response) {
+        console.log('⚠️ BackgroundBillingTab: All endpoints failed, setting subscription to null');
         setCurrentSubscription(null);
+        return;
+      }
+      
+      console.log('📥 BackgroundBillingTab: API response:', response.data);
+      
+      // Handle different response structures
+      if (successfulEndpoint === '/api/payments/subscriptions/') {
+        // Direct subscriptions endpoint
+        if (response.data.length > 0) {
+          const activeSubscriptions = response.data.filter(sub => sub.is_active);
+          if (activeSubscriptions.length > 0) {
+            setCurrentSubscription(activeSubscriptions[0]);
+            console.log('✅ BackgroundBillingTab: Set subscription from direct endpoint:', activeSubscriptions[0]);
+          } else {
+            setCurrentSubscription(null);
+          }
+        } else {
+          setCurrentSubscription(null);
+        }
+      } else {
+        // Profile endpoint - extract subscription data
+        const subscriptionStatus = response.data.subscription_status;
+        const endDate = response.data.end_date;
+        
+        if (subscriptionStatus && subscriptionStatus.has_subscription) {
+          const subscriptionData = {
+            ...subscriptionStatus.subscription,
+            current_period_end: endDate || subscriptionStatus.subscription?.current_period_end || subscriptionStatus.subscription?.end_date || subscriptionStatus.subscription?.plan_end
+          };
+          
+          console.log('✅ BackgroundBillingTab: Setting current subscription from profile:', subscriptionData);
+          setCurrentSubscription(subscriptionData);
+        } else {
+          console.log('❌ BackgroundBillingTab: No subscription found in profile, setting to null');
+          setCurrentSubscription(null);
+        }
       }
     } catch (err) {
-      console.error('❌ Error fetching current Production Assets Pro subscription from profile:', err);
-      // If profile endpoint doesn't exist or user has no subscription, set to null
+      console.error('❌ BackgroundBillingTab: Error fetching current subscription:', err);
       setCurrentSubscription(null);
     }
   };
