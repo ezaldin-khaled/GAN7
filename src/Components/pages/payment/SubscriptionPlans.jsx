@@ -5,6 +5,83 @@ import { stripePromise } from '../../../config/stripe';
 import PaymentForm from './PaymentForm';
 import './SubscriptionPlans.css';
 
+// Helper function to get fallback plans when API is not available
+const getFallbackPlans = () => {
+  return [
+    {
+      id: 'basic',
+      name: 'Basic Plan',
+      price: '29.99',
+      monthly_equivalent: '2.50',
+      features: [
+        'Basic image generation',
+        'Standard resolution',
+        'Community support',
+        '5 generations per day'
+      ]
+    },
+    {
+      id: 'pro',
+      name: 'Pro Plan',
+      price: '59.99',
+      monthly_equivalent: '5.00',
+      features: [
+        'Advanced image generation',
+        'High resolution',
+        'Priority support',
+        'Unlimited generations',
+        'Custom styles'
+      ]
+    },
+    {
+      id: 'premium',
+      name: 'Premium Plan',
+      price: '99.99',
+      monthly_equivalent: '8.33',
+      features: [
+        'Premium image generation',
+        'Ultra high resolution',
+        '24/7 support',
+        'Unlimited generations',
+        'All custom styles',
+        'Commercial license'
+      ]
+    }
+  ];
+};
+
+// Helper function to ensure all plans are available
+const ensureAllPlansAvailable = (apiPlans) => {
+  const fallbackPlans = getFallbackPlans();
+  
+  // Always start with fallback plans to ensure we have all plans available
+  let allPlans = [...fallbackPlans];
+  
+  // If API returned plans, merge them with fallback plans
+  if (apiPlans && apiPlans.length > 0) {
+    console.log('🔍 API returned plans, merging with fallback plans');
+    
+    // For each API plan, update the corresponding fallback plan or add it
+    apiPlans.forEach(apiPlan => {
+      const existingIndex = allPlans.findIndex(plan => plan.id === apiPlan.id);
+      if (existingIndex >= 0) {
+        // Update existing plan with API data
+        allPlans[existingIndex] = { ...allPlans[existingIndex], ...apiPlan };
+        console.log(`✅ Updated plan ${apiPlan.name} with API data`);
+      } else {
+        // Add new plan from API
+        allPlans.push(apiPlan);
+        console.log(`✅ Added new plan ${apiPlan.name} from API`);
+      }
+    });
+  } else {
+    console.log('⚠️ No plans from API, using fallback plans only');
+  }
+  
+  console.log('🔍 Final plans available:', allPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
+  return allPlans;
+};
+
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -44,8 +121,12 @@ const SubscriptionPlans = () => {
       console.log('🔍 SubscriptionPlans: Plans data:', response.data);
       console.log('🔍 SubscriptionPlans: Number of plans:', response.data?.length || 0);
       
-      setPlans(response.data);
-      setDebugInfo(prev => ({ ...prev, plansFetched: true, plansCount: response.data?.length || 0 }));
+      // Ensure we always have plans to display
+      const apiPlans = response.data || [];
+      const enhancedPlans = ensureAllPlansAvailable(apiPlans);
+      
+      setPlans(enhancedPlans);
+      setDebugInfo(prev => ({ ...prev, plansFetched: true, plansCount: enhancedPlans?.length || 0 }));
       setLoading(false);
     } catch (err) {
       console.error('❌ SubscriptionPlans: Error fetching plans:', err);
@@ -65,10 +146,14 @@ const SubscriptionPlans = () => {
       // Handle 404 error gracefully - API endpoint might not be implemented yet
       if (err.response?.status === 404) {
         console.log('⚠️ SubscriptionPlans: Payment plans API endpoint not available, using fallback plans');
-        setPlans([]); // This will trigger the fallback plans
+        const fallbackPlans = getFallbackPlans();
+        setPlans(fallbackPlans);
         setError(''); // Clear any previous errors
       } else {
         setError('Failed to load subscription plans');
+        // Still provide fallback plans even on other errors
+        const fallbackPlans = getFallbackPlans();
+        setPlans(fallbackPlans);
       }
       setLoading(false);
     }
@@ -282,6 +367,17 @@ const SubscriptionPlans = () => {
           fontSize: '12px'
         }}>
           <h4>🔧 Debug Info</h4>
+          <div><strong>Plans Count:</strong> {plans.length}</div>
+          <div><strong>Current Subscription:</strong> {currentSubscription ? `${currentSubscription.plan?.name || 'Unknown'} (ID: ${currentSubscription.plan?.id || 'Unknown'})` : 'None'}</div>
+          <div><strong>Available Plans:</strong></div>
+          <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
+            {plans.map(plan => (
+              <li key={plan.id}>
+                {plan.name} (ID: {plan.id}, Price: ${plan.price})
+                {currentSubscription?.plan?.id === plan.id && ' - CURRENT PLAN'}
+              </li>
+            ))}
+          </ul>
           <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
         </div>
       )}
@@ -296,15 +392,19 @@ const SubscriptionPlans = () => {
           {currentSubscription.plan_end && (
             <p>Plan ends: {new Date(currentSubscription.plan_end).toLocaleDateString()}</p>
           )}
+          <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+            💡 You can view all available plans below and upgrade or change your subscription at any time.
+          </p>
         </div>
       )}
 
       <div className="plans-grid">
         {plans.map((plan) => {
           const isCurrentPlan = currentSubscription?.plan.id === plan.id;
+          // Fix upgrade logic: only consider it an upgrade if the plan price is higher than current plan
           const isUpgrade = currentSubscription && 
-            plans.findIndex(p => p.id === plan.id) > 
-            plans.findIndex(p => p.id === currentSubscription.plan.id);
+            currentSubscription.plan && 
+            parseFloat(plan.price) > parseFloat(currentSubscription.plan.price);
 
           return (
             <div
