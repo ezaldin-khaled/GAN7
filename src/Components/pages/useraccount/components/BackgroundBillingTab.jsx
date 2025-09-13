@@ -129,7 +129,21 @@ const BackgroundBillingTab = () => {
               is_active: true
             }));
             
-            plansArray.forEach(plan => {
+            // Filter plans based on user type
+            let filteredPlans = plansArray;
+            if (isTalent) {
+              // Talent users: Hide Production Assets Pro (BACKGROUND_JOBS)
+              filteredPlans = plansArray.filter(plan => plan.name !== 'BACKGROUND_JOBS');
+              console.log('BackgroundBillingTab: Filtered plans for talent user (removed BACKGROUND_JOBS):', filteredPlans.map(p => p.name));
+            } else if (isBackground) {
+              // Background users: Hide talent plans (SILVER, GOLD, PLATINUM)
+              filteredPlans = plansArray.filter(plan => 
+                !['SILVER', 'GOLD', 'PLATINUM'].includes(plan.name)
+              );
+              console.log('BackgroundBillingTab: Filtered plans for background user (removed SILVER/GOLD/PLATINUM):', filteredPlans.map(p => p.name));
+            }
+            
+            filteredPlans.forEach(plan => {
               if (plan.id) {
                 allPlans.set(plan.id, plan);
                 console.log(`✅ BackgroundBillingTab: Added plan ${plan.id} (${plan.name})`);

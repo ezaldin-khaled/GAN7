@@ -67,7 +67,7 @@ const BillingTab = () => {
         // Handle the correct backend response structure
         if (response.data && response.data.subscription_plans) {
           console.log('Found subscription_plans in response, converting to array format...');
-          const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
+          const allPlansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
             id: index + 1,
             name: key,
             display_name: plan.name,
@@ -79,8 +79,22 @@ const BillingTab = () => {
             is_active: true
           }));
           
-          console.log('Converted plans array:', plansArray);
-          setPlans(plansArray);
+          // Filter plans based on user type
+          let filteredPlans = allPlansArray;
+          if (isTalent) {
+            // Talent users: Hide Production Assets Pro (BACKGROUND_JOBS)
+            filteredPlans = allPlansArray.filter(plan => plan.name !== 'BACKGROUND_JOBS');
+            console.log('Filtered plans for talent user (removed BACKGROUND_JOBS):', filteredPlans.map(p => p.name));
+          } else if (isBackground) {
+            // Background users: Hide talent plans (SILVER, GOLD, PLATINUM)
+            filteredPlans = allPlansArray.filter(plan => 
+              !['SILVER', 'GOLD', 'PLATINUM'].includes(plan.name)
+            );
+            console.log('Filtered plans for background user (removed SILVER/GOLD/PLATINUM):', filteredPlans.map(p => p.name));
+          }
+          
+          console.log('Converted plans array:', filteredPlans);
+          setPlans(filteredPlans);
           setLoading(false);
           return; // Exit early since we got the data
         }
