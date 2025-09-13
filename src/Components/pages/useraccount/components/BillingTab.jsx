@@ -58,16 +58,16 @@ const BillingTab = () => {
       
       console.log('Fetching plans from API...');
       
-      // First, let's test the basic API call without any parameters
+      // Use the correct API endpoint for pricing
       try {
-        console.log('Testing basic API call without parameters...');
-        const basicResponse = await axiosInstance.get('/api/payments/plans/');
-        console.log('Basic API response (no params):', basicResponse.data);
+        console.log('Fetching plans from pricing API...');
+        const response = await axiosInstance.get('/api/payments/pricing/');
+        console.log('Pricing API response:', response.data);
         
         // Handle the correct backend response structure
-        if (basicResponse.data && basicResponse.data.subscription_plans) {
+        if (response.data && response.data.subscription_plans) {
           console.log('Found subscription_plans in response, converting to array format...');
-          const plansArray = Object.entries(basicResponse.data.subscription_plans).map(([key, plan], index) => ({
+          const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
             id: index + 1,
             name: key,
             display_name: plan.name,
@@ -85,66 +85,12 @@ const BillingTab = () => {
           return; // Exit early since we got the data
         }
       } catch (err) {
-        console.log('Basic API call failed:', err.message);
+        console.log('Pricing API call failed:', err.message);
       }
       
-      // Try multiple approaches to get all plans
-      const allPlans = new Map(); // Use Map to avoid duplicates by ID
-      
-      // Approach 1: Try with different parameter combinations
-      const parameterSets = [
-        { show_all: true, include_subscribed: true },
-        { show_all: true },
-        { include_subscribed: true },
-        { user_type: isTalent ? 'talent' : isBackground ? 'background' : undefined },
-        {} // No parameters - default behavior
-      ];
-      
-      for (const params of parameterSets) {
-        try {
-          console.log(`Trying API call with params:`, params);
-          const response = await axiosInstance.get('/api/payments/plans/', { params });
-          console.log(`API response for params ${JSON.stringify(params)}:`, response.data);
-          
-          // Handle the correct backend response structure
-          if (response.data && response.data.subscription_plans) {
-            const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
-              id: index + 1,
-              name: key,
-              display_name: plan.name,
-              price: parseFloat(plan.price),
-              features: plan.features,
-              duration_months: plan.duration_months,
-              stripe_price_id: plan.stripe_price_id,
-              monthly_equivalent: plan.monthly_equivalent,
-              is_active: true
-            }));
-            
-            plansArray.forEach(plan => {
-              if (plan.id) {
-                allPlans.set(plan.id, plan);
-                console.log(`Added plan ${plan.id} (${plan.name})`);
-              }
-            });
-          } else if (response.data && Array.isArray(response.data)) {
-            // Fallback for old array format
-            response.data.forEach(plan => {
-              if (plan.id) {
-                allPlans.set(plan.id, plan);
-                console.log(`Added plan ${plan.id} (${plan.name})`);
-              }
-            });
-          }
-        } catch (err) {
-          console.log(`API call failed with params ${JSON.stringify(params)}:`, err.message);
-        }
-      }
-      
-      // Convert Map to Array
-      const apiPlans = Array.from(allPlans.values());
-      console.log(`API returned ${apiPlans.length} plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-      
-      setPlans(apiPlans);
+      // If we reach here, the pricing API failed, so set empty plans
+      console.log('No plans available from API');
+      setPlans([]);
       setLoading(false);
     } catch (err) {
       console.error('❌ Error fetching plans:', err);

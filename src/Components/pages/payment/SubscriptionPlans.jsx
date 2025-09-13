@@ -121,9 +121,30 @@ const SubscriptionPlans = () => {
       for (const params of parameterSets) {
         try {
           console.log(`🔍 SubscriptionPlans: Trying with params:`, params);
-          const response = await axiosInstance.get('/api/payments/plans/', { params });
+          const response = await axiosInstance.get('/api/payments/pricing/', { params });
           
-          if (response.data && Array.isArray(response.data)) {
+          // Handle the correct backend response structure
+          if (response.data && response.data.subscription_plans) {
+            const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
+              id: index + 1,
+              name: key,
+              display_name: plan.name,
+              price: parseFloat(plan.price),
+              features: plan.features,
+              duration_months: plan.duration_months,
+              stripe_price_id: plan.stripe_price_id,
+              monthly_equivalent: plan.monthly_equivalent,
+              is_active: true
+            }));
+            
+            plansArray.forEach(plan => {
+              if (plan.id) {
+                allPlans.set(plan.id, plan);
+                console.log(`✅ SubscriptionPlans: Added plan ${plan.id} (${plan.name})`);
+              }
+            });
+          } else if (response.data && Array.isArray(response.data)) {
+            // Fallback for old array format
             response.data.forEach(plan => {
               if (plan.id) {
                 allPlans.set(plan.id, plan);
