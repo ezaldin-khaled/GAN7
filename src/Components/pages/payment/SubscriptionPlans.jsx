@@ -95,7 +95,7 @@ const SubscriptionPlans = () => {
       const isTalent = userInfo.is_talent;
       const isBackground = userInfo.is_background;
       
-      console.log('🔍 SubscriptionPlans: Fetching user-type-specific plans');
+      console.log('🔍 SubscriptionPlans: Fetching all available plans...');
       console.log('🔍 SubscriptionPlans: User type - is_talent:', isTalent, 'is_background:', isBackground);
       console.log('🔍 SubscriptionPlans: Request headers:', {
         'Authorization': 'Bearer ***',
@@ -106,39 +106,57 @@ const SubscriptionPlans = () => {
       console.log('🔍 SubscriptionPlans: JWT Token available:', !!token);
       console.log('🔍 SubscriptionPlans: Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
       
-      // Use the general endpoint with user-type-specific parameters
-      const endpoint = '/api/payments/plans/';
-      const params = {
-        show_all: true,  // Request all available plans, not just upgradeable ones
-        include_subscribed: true  // Include plans user is already subscribed to
-      };
+      // Try multiple approaches to get all plans
+      const allPlans = new Map(); // Use Map to avoid duplicates by ID
       
-      // Add user type as parameter to help backend filter plans
-      if (isTalent) {
-        params.user_type = 'talent';
-        console.log('🔍 SubscriptionPlans: Adding talent user type parameter');
-      } else if (isBackground) {
-        params.user_type = 'background';
-        console.log('🔍 SubscriptionPlans: Adding background user type parameter');
+      // Approach 1: Try with different parameter combinations
+      const parameterSets = [
+        { show_all: true, include_subscribed: true },
+        { show_all: true },
+        { include_subscribed: true },
+        { user_type: isTalent ? 'talent' : isBackground ? 'background' : undefined },
+        {} // No parameters - default behavior
+      ];
+      
+      for (const params of parameterSets) {
+        try {
+          console.log(`🔍 SubscriptionPlans: Trying with params:`, params);
+          const response = await axiosInstance.get('/api/payments/plans/', { params });
+          
+          if (response.data && Array.isArray(response.data)) {
+            response.data.forEach(plan => {
+              if (plan.id) {
+                allPlans.set(plan.id, plan);
+                console.log(`✅ SubscriptionPlans: Added plan ${plan.id} (${plan.name})`);
+              }
+            });
+          }
+        } catch (err) {
+          console.log(`⚠️ SubscriptionPlans: Failed with params ${JSON.stringify(params)}:`, err.message);
+        }
       }
       
-      console.log(`🔍 SubscriptionPlans: Using endpoint: ${endpoint} with params:`, params);
-      const response = await axiosInstance.get(endpoint, { params });
-      console.log(`✅ SubscriptionPlans: Success with endpoint: ${endpoint}`);
+      // Convert Map to Array
+      const apiPlans = Array.from(allPlans.values());
+      console.log(`✅ SubscriptionPlans: Collected ${apiPlans.length} unique plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
       
-      console.log('✅ SubscriptionPlans: Plans fetched successfully');
-      console.log('🔍 SubscriptionPlans: Response status:', response.status);
-      console.log('🔍 SubscriptionPlans: Response headers:', response.headers);
-      console.log('🔍 SubscriptionPlans: Plans data:', response.data);
-      console.log('🔍 SubscriptionPlans: Number of plans:', response.data?.length || 0);
+      // If we still don't have enough plans, add fallback plans for missing ones
+      if (apiPlans.length < 3) {
+        console.log('⚠️ SubscriptionPlans: Not enough plans from API, adding fallback plans');
+        const fallbackPlans = getFallbackPlans();
+        fallbackPlans.forEach(fallbackPlan => {
+          if (!allPlans.has(fallbackPlan.id)) {
+            allPlans.set(fallbackPlan.id, fallbackPlan);
+            console.log(`✅ SubscriptionPlans: Added fallback plan ${fallbackPlan.id} (${fallbackPlan.name})`);
+          }
+        });
+      }
       
-      // Ensure we always have plans to display
-      const apiPlans = response.data || [];
-      const enhancedPlans = ensureAllPlansAvailable(apiPlans);
-      
-      setPlans(enhancedPlans);
-      setDebugInfo(prev => ({ ...prev, plansFetched: true, plansCount: enhancedPlans?.length || 0 }));
+      const finalPlans = Array.from(allPlans.values());
+      setPlans(finalPlans);
+      setDebugInfo(prev => ({ ...prev, plansFetched: true, plansCount: finalPlans?.length || 0 }));
       setLoading(false);
+      console.log(`✅ SubscriptionPlans: Final plans count: ${finalPlans.length}`);
     } catch (err) {
       console.error('❌ SubscriptionPlans: Error fetching plans:', err);
       console.error('❌ SubscriptionPlans: Error response:', err.response?.data);

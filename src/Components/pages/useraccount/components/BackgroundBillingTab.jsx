@@ -95,38 +95,59 @@ const BackgroundBillingTab = () => {
       const isTalent = userInfo.is_talent;
       const isBackground = userInfo.is_background;
       
-      console.log('🔍 Fetching Production Assets Pro plans with centralized axios');
+      console.log('🔍 Fetching all available Production Assets Pro plans...');
       console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
       
-      // Use the general endpoint with user-type-specific parameters
-      const endpoint = '/api/payments/plans/';
-      const params = {
-        show_all: true,  // Request all available plans, not just upgradeable ones
-        include_subscribed: true  // Include plans user is already subscribed to
-      };
+      // Try multiple approaches to get all plans
+      const allPlans = new Map(); // Use Map to avoid duplicates by ID
       
-      // Add user type as parameter to help backend filter plans
-      if (isBackground) {
-        params.user_type = 'background';
-        console.log('🔍 BackgroundBillingTab: Adding background user type parameter');
-      } else if (isTalent) {
-        params.user_type = 'talent';
-        console.log('🔍 BackgroundBillingTab: Adding talent user type parameter');
+      // Approach 1: Try with different parameter combinations
+      const parameterSets = [
+        { show_all: true, include_subscribed: true },
+        { show_all: true },
+        { include_subscribed: true },
+        { user_type: isBackground ? 'background' : isTalent ? 'talent' : undefined },
+        {} // No parameters - default behavior
+      ];
+      
+      for (const params of parameterSets) {
+        try {
+          console.log(`🔍 BackgroundBillingTab: Trying with params:`, params);
+          const response = await axiosInstance.get('/api/payments/plans/', { params });
+          
+          if (response.data && Array.isArray(response.data)) {
+            response.data.forEach(plan => {
+              if (plan.id) {
+                allPlans.set(plan.id, plan);
+                console.log(`✅ BackgroundBillingTab: Added plan ${plan.id} (${plan.name})`);
+              }
+            });
+          }
+        } catch (err) {
+          console.log(`⚠️ BackgroundBillingTab: Failed with params ${JSON.stringify(params)}:`, err.message);
+        }
       }
       
-      console.log(`🔍 BackgroundBillingTab: Using endpoint: ${endpoint} with params:`, params);
-      const response = await axiosInstance.get(endpoint, { params });
-      console.log(`✅ BackgroundBillingTab: Success with endpoint: ${endpoint}`);
+      // Convert Map to Array
+      const apiPlans = Array.from(allPlans.values());
+      console.log(`✅ BackgroundBillingTab: Collected ${apiPlans.length} unique plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
       
-      console.log('📥 Production Assets Pro plans API response:', response.data);
-      console.log('📋 Plans structure:', JSON.stringify(response.data, null, 2));
+      // If we still don't have enough plans, add fallback plans for missing ones
+      if (apiPlans.length < 3) {
+        console.log('⚠️ BackgroundBillingTab: Not enough plans from API, adding fallback plans');
+        const fallbackPlans = getFallbackPlans();
+        fallbackPlans.forEach(fallbackPlan => {
+          if (!allPlans.has(fallbackPlan.id)) {
+            allPlans.set(fallbackPlan.id, fallbackPlan);
+            console.log(`✅ BackgroundBillingTab: Added fallback plan ${fallbackPlan.id} (${fallbackPlan.name})`);
+          }
+        });
+      }
       
-      // Ensure we always have plans to display
-      const apiPlans = response.data || [];
-      const enhancedPlans = ensureAllPlansAvailable(apiPlans);
-      
-      setPlans(enhancedPlans);
+      const finalPlans = Array.from(allPlans.values());
+      setPlans(finalPlans);
       setLoading(false);
+      console.log(`✅ BackgroundBillingTab: Final plans count: ${finalPlans.length}`);
     } catch (err) {
       console.error('❌ Error fetching Production Assets Pro plans:', err);
       console.error('Error response:', err.response?.data);
