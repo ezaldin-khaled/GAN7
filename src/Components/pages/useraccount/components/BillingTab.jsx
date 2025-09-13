@@ -63,6 +63,27 @@ const BillingTab = () => {
         console.log('Testing basic API call without parameters...');
         const basicResponse = await axiosInstance.get('/api/payments/plans/');
         console.log('Basic API response (no params):', basicResponse.data);
+        
+        // Handle the correct backend response structure
+        if (basicResponse.data && basicResponse.data.subscription_plans) {
+          console.log('Found subscription_plans in response, converting to array format...');
+          const plansArray = Object.entries(basicResponse.data.subscription_plans).map(([key, plan], index) => ({
+            id: index + 1,
+            name: key,
+            display_name: plan.name,
+            price: parseFloat(plan.price),
+            features: plan.features,
+            duration_months: plan.duration_months,
+            stripe_price_id: plan.stripe_price_id,
+            monthly_equivalent: plan.monthly_equivalent,
+            is_active: true
+          }));
+          
+          console.log('Converted plans array:', plansArray);
+          setPlans(plansArray);
+          setLoading(false);
+          return; // Exit early since we got the data
+        }
       } catch (err) {
         console.log('Basic API call failed:', err.message);
       }
@@ -85,7 +106,28 @@ const BillingTab = () => {
           const response = await axiosInstance.get('/api/payments/plans/', { params });
           console.log(`API response for params ${JSON.stringify(params)}:`, response.data);
           
-          if (response.data && Array.isArray(response.data)) {
+          // Handle the correct backend response structure
+          if (response.data && response.data.subscription_plans) {
+            const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
+              id: index + 1,
+              name: key,
+              display_name: plan.name,
+              price: parseFloat(plan.price),
+              features: plan.features,
+              duration_months: plan.duration_months,
+              stripe_price_id: plan.stripe_price_id,
+              monthly_equivalent: plan.monthly_equivalent,
+              is_active: true
+            }));
+            
+            plansArray.forEach(plan => {
+              if (plan.id) {
+                allPlans.set(plan.id, plan);
+                console.log(`Added plan ${plan.id} (${plan.name})`);
+              }
+            });
+          } else if (response.data && Array.isArray(response.data)) {
+            // Fallback for old array format
             response.data.forEach(plan => {
               if (plan.id) {
                 allPlans.set(plan.id, plan);
