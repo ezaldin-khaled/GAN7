@@ -3,6 +3,91 @@ import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
 
+// Helper function to get fallback plans when API is not available
+const getFallbackPlans = () => {
+  return [
+    {
+      id: 1,
+      name: 'SILVER',
+      display_name: 'Silver',
+      description: 'Perfect for getting started with enhanced features.',
+      price: 9.99,
+      stripe_price_id: 'price_silver_yearly',
+      features: [
+        'Up to 10 projects',
+        'Basic AI Generation',
+        '5GB Storage',
+        'Email Support'
+      ]
+    },
+    {
+      id: 2,
+      name: 'GOLD',
+      display_name: 'Gold',
+      description: 'Advanced features for professionals.',
+      price: 19.99,
+      stripe_price_id: 'price_gold_yearly',
+      features: [
+        'Unlimited projects',
+        'Advanced AI Generation',
+        '20GB Storage',
+        'Priority Support',
+        'Custom Branding'
+      ],
+      popular: true
+    },
+    {
+      id: 3,
+      name: 'PLATINUM',
+      display_name: 'Platinum',
+      description: 'Ultimate features for enterprises.',
+      price: 49.99,
+      stripe_price_id: 'price_platinum_yearly',
+      features: [
+        'Unlimited Everything',
+        'Enterprise AI Features',
+        '100GB Storage',
+        '24/7 Dedicated Support',
+        'API Access',
+        'Custom Integration'
+      ],
+      premium: true
+    }
+  ];
+};
+
+// Helper function to ensure all plans are available
+const ensureAllPlansAvailable = (apiPlans) => {
+  const fallbackPlans = getFallbackPlans();
+  
+  // Always start with fallback plans to ensure we have all plans available
+  let allPlans = [...fallbackPlans];
+  
+  // If API returned plans, merge them with fallback plans
+  if (apiPlans && apiPlans.length > 0) {
+    console.log('🔍 BillingTab: API returned plans, merging with fallback plans');
+    
+    // For each API plan, update the corresponding fallback plan or add it
+    apiPlans.forEach(apiPlan => {
+      const existingIndex = allPlans.findIndex(plan => plan.id === apiPlan.id);
+      if (existingIndex >= 0) {
+        // Update existing plan with API data
+        allPlans[existingIndex] = { ...allPlans[existingIndex], ...apiPlan };
+        console.log(`✅ BillingTab: Updated plan ${apiPlan.name} with API data`);
+      } else {
+        // Add new plan from API
+        allPlans.push(apiPlan);
+        console.log(`✅ BillingTab: Added new plan ${apiPlan.name} from API`);
+      }
+    });
+  } else {
+    console.log('⚠️ BillingTab: No plans from API, using fallback plans only');
+  }
+  
+  console.log('🔍 BillingTab: Final plans available:', allPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
+  return allPlans;
+};
+
 const BillingTab = () => {
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
@@ -46,7 +131,12 @@ const BillingTab = () => {
       console.log('🔄 Fetching plans from API...');
       const response = await axiosInstance.get('/api/payments/plans/');
       console.log('✅ Plans received from API:', response.data);
-      setPlans(response.data);
+      
+      // Ensure we always have plans to display
+      const apiPlans = response.data || [];
+      const enhancedPlans = ensureAllPlansAvailable(apiPlans);
+      
+      setPlans(enhancedPlans);
       setLoading(false);
       console.log('✅ Plans state updated, loading set to false');
     } catch (err) {
@@ -55,10 +145,14 @@ const BillingTab = () => {
       // Handle 404 error gracefully - API endpoint might not be implemented yet
       if (err.response?.status === 404) {
         console.log('⚠️ Payment plans API endpoint not available, using fallback plans');
-        setPlans([]); // This will trigger the fallback plans in displayPlans
+        const fallbackPlans = getFallbackPlans();
+        setPlans(fallbackPlans);
         setError(''); // Clear any previous errors
       } else {
         setError('Failed to load subscription plans');
+        // Still provide fallback plans even on other errors
+        const fallbackPlans = getFallbackPlans();
+        setPlans(fallbackPlans);
       }
       setLoading(false);
       console.log('✅ Loading set to false after error');
@@ -71,8 +165,16 @@ const BillingTab = () => {
       console.log('Current subscription data:', response.data);
       console.log('Subscription data structure:', JSON.stringify(response.data, null, 2));
       if (response.data.length > 0) {
-        setCurrentSubscription(response.data[0]);
-        console.log('Set current subscription to:', response.data[0]);
+        // Use the most recent active subscription (or first one if multiple)
+        const activeSubscriptions = response.data.filter(sub => sub.is_active);
+        if (activeSubscriptions.length > 0) {
+          setCurrentSubscription(activeSubscriptions[0]);
+          console.log('Set current subscription to:', activeSubscriptions[0]);
+          console.log(`User has ${activeSubscriptions.length} active subscription(s)`);
+        } else {
+          setCurrentSubscription(response.data[0]);
+          console.log('No active subscriptions, using first subscription:', response.data[0]);
+        }
       } else {
         setCurrentSubscription(null);
         console.log('No subscription found, set to null');
