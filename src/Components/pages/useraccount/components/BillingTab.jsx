@@ -58,6 +58,15 @@ const BillingTab = () => {
       
       console.log('Fetching plans from API...');
       
+      // First, let's test the basic API call without any parameters
+      try {
+        console.log('Testing basic API call without parameters...');
+        const basicResponse = await axiosInstance.get('/api/payments/plans/');
+        console.log('Basic API response (no params):', basicResponse.data);
+      } catch (err) {
+        console.log('Basic API call failed:', err.message);
+      }
+      
       // Try multiple approaches to get all plans
       const allPlans = new Map(); // Use Map to avoid duplicates by ID
       
@@ -72,17 +81,20 @@ const BillingTab = () => {
       
       for (const params of parameterSets) {
         try {
+          console.log(`Trying API call with params:`, params);
           const response = await axiosInstance.get('/api/payments/plans/', { params });
+          console.log(`API response for params ${JSON.stringify(params)}:`, response.data);
           
           if (response.data && Array.isArray(response.data)) {
             response.data.forEach(plan => {
               if (plan.id) {
                 allPlans.set(plan.id, plan);
+                console.log(`Added plan ${plan.id} (${plan.name})`);
               }
             });
           }
         } catch (err) {
-          // Silent fail for parameter combinations
+          console.log(`API call failed with params ${JSON.stringify(params)}:`, err.message);
         }
       }
       
