@@ -4,6 +4,92 @@ import axiosInstance from '../../../../api/axios';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import './BillingTab.css';
 
+// Helper function to get fallback plans for Production Assets Pro
+const getFallbackPlans = () => {
+  return [
+    {
+      id: 1,
+      name: 'BASIC',
+      display_name: 'Basic',
+      description: 'Essential features for getting started.',
+      price: 19.99,
+      stripe_price_id: 'price_basic_yearly',
+      features: [
+        'Basic asset generation',
+        'Standard resolution',
+        '5GB Storage',
+        'Email Support'
+      ]
+    },
+    {
+      id: 2,
+      name: 'PRO',
+      display_name: 'Pro',
+      description: 'Advanced features for professionals.',
+      price: 39.99,
+      stripe_price_id: 'price_pro_yearly',
+      features: [
+        'Advanced asset generation',
+        'High resolution',
+        '20GB Storage',
+        'Priority Support',
+        'Custom templates'
+      ],
+      popular: true
+    },
+    {
+      id: 3,
+      name: 'ENTERPRISE',
+      display_name: 'Enterprise',
+      description: 'Ultimate features for large teams.',
+      price: 79.99,
+      stripe_price_id: 'price_enterprise_yearly',
+      features: [
+        'Unlimited asset generation',
+        'Ultra high resolution',
+        '100GB Storage',
+        '24/7 Dedicated Support',
+        'API Access',
+        'Custom branding',
+        'Team collaboration'
+      ],
+      premium: true
+    }
+  ];
+};
+
+// Helper function to ensure all plans are available
+const ensureAllPlansAvailable = (apiPlans) => {
+  const fallbackPlans = getFallbackPlans();
+  
+  // Always start with fallback plans to ensure we have all plans available
+  let allPlans = [...fallbackPlans];
+  
+  // If API returned plans, merge them with fallback plans
+  if (apiPlans && apiPlans.length > 0) {
+    console.log('🔍 BackgroundBillingTab: API returned plans, merging with fallback plans');
+    
+    // For each API plan, update the corresponding fallback plan or add it
+    apiPlans.forEach(apiPlan => {
+      const existingIndex = allPlans.findIndex(plan => plan.id === apiPlan.id);
+      if (existingIndex >= 0) {
+        // Update existing plan with API data
+        allPlans[existingIndex] = { ...allPlans[existingIndex], ...apiPlan };
+        console.log(`✅ BackgroundBillingTab: Updated plan ${apiPlan.name} with API data`);
+      } else {
+        // Add new plan from API
+        allPlans.push(apiPlan);
+        console.log(`✅ BackgroundBillingTab: Added new plan ${apiPlan.name} from API`);
+      }
+    });
+  } else {
+    console.log('⚠️ BackgroundBillingTab: No plans from API, using fallback plans only');
+  }
+  
+  console.log('🔍 BackgroundBillingTab: Final plans available:', allPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
+  return allPlans;
+};
+
 const BackgroundBillingTab = () => {
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
@@ -24,7 +110,12 @@ const BackgroundBillingTab = () => {
       
       console.log('📥 Production Assets Pro plans API response:', response.data);
       console.log('📋 Plans structure:', JSON.stringify(response.data, null, 2));
-      setPlans(response.data);
+      
+      // Ensure we always have plans to display
+      const apiPlans = response.data || [];
+      const enhancedPlans = ensureAllPlansAvailable(apiPlans);
+      
+      setPlans(enhancedPlans);
       setLoading(false);
     } catch (err) {
       console.error('❌ Error fetching Production Assets Pro plans:', err);
@@ -34,10 +125,14 @@ const BackgroundBillingTab = () => {
       // Handle 404 error gracefully - API endpoint might not be implemented yet
       if (err.response?.status === 404) {
         console.log('Payment plans API endpoint not available, using fallback plans');
-        setPlans([]); // This will trigger the fallback plans
+        const fallbackPlans = getFallbackPlans();
+        setPlans(fallbackPlans);
         setError(''); // Clear any previous errors
       } else {
         setError('Failed to load subscription plans');
+        // Still provide fallback plans even on other errors
+        const fallbackPlans = getFallbackPlans();
+        setPlans(fallbackPlans);
       }
       setLoading(false);
     }
