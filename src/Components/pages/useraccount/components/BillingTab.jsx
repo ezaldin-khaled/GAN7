@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
@@ -242,7 +242,7 @@ const BillingTab = () => {
 
 
   // Get default features based on plan type - moved before usage
-  const getDefaultFeatures = useCallback((planName) => {
+  const getDefaultFeatures = (planName) => {
     const name = planName.toLowerCase();
     if (name.includes('basic') || name.includes('silver')) {
       return [
@@ -286,10 +286,10 @@ const BillingTab = () => {
       '1GB Storage',
       'Community Support'
     ];
-  }, []);
+  };
 
   // Ensure the subscribed plan is always available
-  const ensureSubscribedPlanAvailable = useCallback((apiPlans, subscription) => {
+  const ensureSubscribedPlanAvailable = (apiPlans, subscription) => {
     console.log('🔍 ensureSubscribedPlanAvailable called with:', { apiPlans, subscription });
     
     if (!subscription || !subscription.plan) {
@@ -330,7 +330,7 @@ const BillingTab = () => {
     console.log('🔍 Enhanced plans result:', enhancedPlans.map(p => ({ id: p.id, name: p.name })));
     
     return enhancedPlans;
-  }, [getDefaultFeatures]);
+  };
   
   // Get current plan object by matching subscription with available plans
   const getCurrentPlan = (availablePlans) => {
@@ -382,7 +382,7 @@ const BillingTab = () => {
   // Move these calculations to useMemo to avoid re-execution on every render
   const enhancedPlans = useMemo(() => {
     return ensureSubscribedPlanAvailable(plans, currentSubscription);
-  }, [plans, currentSubscription, ensureSubscribedPlanAvailable]);
+  }, [plans, currentSubscription]);
   
   const displayPlans = useMemo(() => {
     return enhancedPlans.length > 0 ? enhancedPlans : [
