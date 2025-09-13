@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
@@ -379,13 +379,10 @@ const BillingTab = () => {
     return null;
   };
 
-  // Move these calculations to useMemo to avoid re-execution on every render
-  const enhancedPlans = useMemo(() => {
-    return ensureSubscribedPlanAvailable(plans, currentSubscription);
-  }, [plans, currentSubscription]);
+  // Calculate enhanced plans directly
+  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
   
-  const displayPlans = useMemo(() => {
-    return enhancedPlans.length > 0 ? enhancedPlans : [
+  const displayPlans = enhancedPlans.length > 0 ? enhancedPlans : [
     {
       id: 1,
       name: 'SILVER',
@@ -431,7 +428,6 @@ const BillingTab = () => {
       premium: true
     }
   ];
-  }, [enhancedPlans]);
 
   return (
     <div className="content-section">
