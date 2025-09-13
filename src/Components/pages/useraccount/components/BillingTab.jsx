@@ -3,75 +3,12 @@ import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
 
-// Helper function to get fallback plans when API is not available
-const getFallbackPlans = () => {
-  return [
-    {
-      id: 1,
-      name: 'SILVER',
-      display_name: 'Silver',
-      description: 'Perfect for getting started with enhanced features.',
-      price: 9.99,
-      stripe_price_id: 'price_silver_yearly',
-      features: [
-        'Up to 10 projects',
-        'Basic AI Generation',
-        '5GB Storage',
-        'Email Support'
-      ]
-    },
-    {
-      id: 2,
-      name: 'GOLD',
-      display_name: 'Gold',
-      description: 'Advanced features for professionals.',
-      price: 19.99,
-      stripe_price_id: 'price_gold_yearly',
-      features: [
-        'Unlimited projects',
-        'Advanced AI Generation',
-        '20GB Storage',
-        'Priority Support',
-        'Custom Branding'
-      ],
-      popular: true
-    },
-    {
-      id: 3,
-      name: 'PLATINUM',
-      display_name: 'Platinum',
-      description: 'Ultimate features for enterprises.',
-      price: 49.99,
-      stripe_price_id: 'price_platinum_yearly',
-      features: [
-        'Unlimited Everything',
-        'Enterprise AI Features',
-        '100GB Storage',
-        '24/7 Dedicated Support',
-        'API Access',
-        'Custom Integration'
-      ],
-      premium: true
-    }
-  ];
-};
+// Removed hardcoded fallback plans - using only API data
 
 // Helper function to ensure all plans are available
 const ensureAllPlansAvailable = (apiPlans) => {
-  const fallbackPlans = getFallbackPlans();
-  
-  // If API returned plans, use ONLY API data (no fallback plans)
-  if (apiPlans && apiPlans.length > 0) {
-    console.log('🔍 BillingTab: Using ONLY API plans (no fallback plans)');
-    console.log('🔍 BillingTab: API plans:', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-    
-    // Return only API plans - no fallback plans added
-    console.log('🔍 BillingTab: Final plans (API only):', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-    return apiPlans;
-  } else {
-    console.log('⚠️ BillingTab: No plans from API, using fallback plans only');
-    return fallbackPlans;
-  }
+  // Use only API data - no fallback plans
+  return apiPlans || [];
 };
 
 const BillingTab = () => {
@@ -119,8 +56,7 @@ const BillingTab = () => {
       const isTalent = userInfo.is_talent;
       const isBackground = userInfo.is_background;
       
-      console.log('🔄 Fetching all available plans from API...');
-      console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
+      console.log('Fetching plans from API...');
       
       // Try multiple approaches to get all plans
       const allPlans = new Map(); // Use Map to avoid duplicates by ID
@@ -136,57 +72,32 @@ const BillingTab = () => {
       
       for (const params of parameterSets) {
         try {
-          console.log(`🔍 BillingTab: Trying with params:`, params);
           const response = await axiosInstance.get('/api/payments/plans/', { params });
           
           if (response.data && Array.isArray(response.data)) {
             response.data.forEach(plan => {
               if (plan.id) {
                 allPlans.set(plan.id, plan);
-                console.log(`✅ BillingTab: Added plan ${plan.id} (${plan.name})`);
               }
             });
           }
         } catch (err) {
-          console.log(`⚠️ BillingTab: Failed with params ${JSON.stringify(params)}:`, err.message);
+          // Silent fail for parameter combinations
         }
       }
       
       // Convert Map to Array
       const apiPlans = Array.from(allPlans.values());
-      console.log(`✅ BillingTab: Collected ${apiPlans.length} unique plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
+      console.log(`API returned ${apiPlans.length} plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
       
-      // If we still don't have enough plans, add fallback plans for missing ones
-      if (apiPlans.length < 3) {
-        console.log('⚠️ BillingTab: Not enough plans from API, adding fallback plans');
-        const fallbackPlans = getFallbackPlans();
-        fallbackPlans.forEach(fallbackPlan => {
-          if (!allPlans.has(fallbackPlan.id)) {
-            allPlans.set(fallbackPlan.id, fallbackPlan);
-            console.log(`✅ BillingTab: Added fallback plan ${fallbackPlan.id} (${fallbackPlan.name})`);
-          }
-        });
-      }
-      
-      const finalPlans = Array.from(allPlans.values());
-      setPlans(finalPlans);
+      setPlans(apiPlans);
       setLoading(false);
-      console.log(`✅ BillingTab: Final plans count: ${finalPlans.length}`);
     } catch (err) {
       console.error('❌ Error fetching plans:', err);
       
-      // Handle 404 error gracefully - API endpoint might not be implemented yet
-      if (err.response?.status === 404) {
-        console.log('⚠️ Payment plans API endpoint not available, using fallback plans');
-        const fallbackPlans = getFallbackPlans();
-        setPlans(fallbackPlans);
-        setError(''); // Clear any previous errors
-      } else {
-        setError('Failed to load subscription plans');
-        // Still provide fallback plans even on other errors
-        const fallbackPlans = getFallbackPlans();
-        setPlans(fallbackPlans);
-      }
+      // Handle errors - no fallback plans
+      setError('Failed to load subscription plans');
+      setPlans([]);
       setLoading(false);
       console.log('✅ Loading set to false after error');
     }
@@ -195,22 +106,18 @@ const BillingTab = () => {
   const fetchCurrentSubscription = async () => {
     try {
       const response = await axiosInstance.get('/api/payments/subscriptions/');
-      console.log('Current subscription data:', response.data);
-      console.log('Subscription data structure:', JSON.stringify(response.data, null, 2));
+      console.log('Subscription data:', response.data);
       if (response.data.length > 0) {
         // Use the most recent active subscription (or first one if multiple)
         const activeSubscriptions = response.data.filter(sub => sub.is_active);
         if (activeSubscriptions.length > 0) {
           setCurrentSubscription(activeSubscriptions[0]);
-          console.log('Set current subscription to:', activeSubscriptions[0]);
           console.log(`User has ${activeSubscriptions.length} active subscription(s)`);
         } else {
           setCurrentSubscription(response.data[0]);
-          console.log('No active subscriptions, using first subscription:', response.data[0]);
         }
       } else {
         setCurrentSubscription(null);
-        console.log('No subscription found, set to null');
       }
     } catch (err) {
       console.error('Error fetching current subscription:', err);
@@ -425,28 +332,19 @@ const BillingTab = () => {
 
   // Ensure the subscribed plan is always available
   const ensureSubscribedPlanAvailable = (apiPlans, subscription) => {
-    console.log('🔍 ensureSubscribedPlanAvailable called with:', { apiPlans, subscription });
-    
     if (!subscription || !subscription.plan) {
-      console.log('⚠️ No subscription or plan found, returning original plans');
       return apiPlans;
     }
     
     const subscribedPlanId = subscription.plan;
     const subscribedPlanName = subscription.plan_name;
     
-    console.log('🔍 Looking for subscribed plan:', { subscribedPlanId, subscribedPlanName });
-    console.log('🔍 Available API plans:', apiPlans.map(p => ({ id: p.id, name: p.name })));
-    
     // Check if the subscribed plan is already in the API plans
     const hasSubscribedPlan = apiPlans.some(plan => plan.id === subscribedPlanId);
     
     if (hasSubscribedPlan) {
-      console.log('✅ Subscribed plan found in API plans');
       return apiPlans;
     }
-    
-    console.log('⚠️ Subscribed plan not found in API plans, adding it');
     
     // Create a plan object for the subscribed plan
     const subscribedPlan = {
@@ -458,12 +356,8 @@ const BillingTab = () => {
       is_subscribed: true // Mark this as the subscribed plan
     };
     
-    console.log('🔍 Created subscribed plan object:', subscribedPlan);
-    
     // Add the subscribed plan to the beginning of the plans array
     const enhancedPlans = [subscribedPlan, ...apiPlans];
-    console.log('🔍 Enhanced plans result:', enhancedPlans.map(p => ({ id: p.id, name: p.name })));
-    
     return enhancedPlans;
   };
   
@@ -475,94 +369,33 @@ const BillingTab = () => {
     const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan;
     const subscriptionPlanName = currentSubscription.plan_name || currentSubscription.plan?.name;
     
-    console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
-    console.log('🔍 Available plans:', availablePlans.map(p => ({ id: p.id, name: p.name })));
-    console.log('🔍 Full plans data:', JSON.stringify(availablePlans, null, 2));
-    
     // First try to match by ID (handle both plan_id and plan fields)
     if (subscriptionPlanId) {
-      console.log('🔍 Trying to match by ID:', subscriptionPlanId);
-      const matchedPlan = availablePlans.find(plan => {
-        console.log('🔍 Comparing plan.id:', plan.id, 'with subscriptionPlanId:', subscriptionPlanId, 'Match:', plan.id === subscriptionPlanId);
-        return plan.id === subscriptionPlanId;
-      });
+      const matchedPlan = availablePlans.find(plan => plan.id === subscriptionPlanId);
       if (matchedPlan) {
-        console.log('✅ Found plan by ID:', matchedPlan);
         return matchedPlan;
       }
     }
     
     // Then try to match by name
     if (subscriptionPlanName) {
-      console.log('🔍 Trying to match by name:', subscriptionPlanName);
       const matchedPlan = availablePlans.find(plan => {
         const nameMatch = plan.name.toLowerCase() === subscriptionPlanName.toLowerCase();
         const displayNameMatch = plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase();
-        console.log('🔍 Comparing plan.name:', plan.name, 'with subscriptionPlanName:', subscriptionPlanName, 'Name match:', nameMatch);
-        console.log('🔍 Comparing plan.display_name:', plan.display_name, 'with subscriptionPlanName:', subscriptionPlanName, 'Display name match:', displayNameMatch);
         return nameMatch || displayNameMatch;
       });
       if (matchedPlan) {
-        console.log('✅ Found plan by name:', matchedPlan);
         return matchedPlan;
       }
     }
     
-    console.log('❌ No matching plan found');
-    console.log('🔍 Subscription plan ID:', subscriptionPlanId, 'Type:', typeof subscriptionPlanId);
-    console.log('🔍 Available plan IDs:', JSON.stringify(availablePlans.map(p => ({ id: p.id, type: typeof p.id })), null, 2));
     return null;
   };
 
   // Calculate enhanced plans directly
   const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
   
-  const displayPlans = enhancedPlans.length > 0 ? enhancedPlans : [
-    {
-      id: 1,
-      name: 'SILVER',
-      description: 'Perfect for getting started with enhanced features.',
-      price: 9.99,
-      stripe_price_id: 'price_silver_yearly',
-      features: [
-        'Up to 10 projects',
-        'Basic AI Generation',
-        '5GB Storage',
-        'Email Support'
-      ]
-    },
-    {
-      id: 2,
-      name: 'GOLD',
-      description: 'Advanced features for professionals.',
-      price: 19.99,
-      stripe_price_id: 'price_gold_yearly',
-      features: [
-        'Unlimited projects',
-        'Advanced AI Generation',
-        '20GB Storage',
-        'Priority Support',
-        'Custom Branding'
-      ],
-      popular: true
-    },
-    {
-      id: 3,
-      name: 'PLATINUM',
-      description: 'Ultimate features for enterprises.',
-      price: 49.99,
-      stripe_price_id: 'price_platinum_yearly',
-      features: [
-        'Unlimited Everything',
-        'Enterprise AI Features',
-        '100GB Storage',
-        '24/7 Dedicated Support',
-        'API Access',
-        'Custom Integration'
-      ],
-      premium: true
-    }
-  ];
+  const displayPlans = enhancedPlans;
 
   return (
     <div className="content-section">
@@ -598,8 +431,6 @@ const BillingTab = () => {
       )}
 
       <div className="plans-container">
-        {console.log('🔍 Rendering plans container - displayPlans:', displayPlans)}
-        {console.log('🔍 Rendering plans container - displayPlans.length:', displayPlans.length)}
         {displayPlans.length > 0 ? (
           displayPlans.map((plan) => {
           const currentPlan = getCurrentPlan(enhancedPlans);
