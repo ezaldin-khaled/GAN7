@@ -62,32 +62,31 @@ const getFallbackPlans = () => {
 const ensureAllPlansAvailable = (apiPlans) => {
   const fallbackPlans = getFallbackPlans();
   
-  // Always start with fallback plans to ensure we have all plans available
-  let allPlans = [...fallbackPlans];
-  
-  // If API returned plans, merge them with fallback plans
+  // If API returned plans, use them as the primary source
   if (apiPlans && apiPlans.length > 0) {
-    console.log('🔍 BackgroundBillingTab: API returned plans, merging with fallback plans');
+    console.log('🔍 BackgroundBillingTab: Using API plans as primary source');
+    console.log('🔍 BackgroundBillingTab: API plans:', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
     
-    // For each API plan, update the corresponding fallback plan or add it
-    apiPlans.forEach(apiPlan => {
-      const existingIndex = allPlans.findIndex(plan => plan.id === apiPlan.id);
-      if (existingIndex >= 0) {
-        // Update existing plan with API data
-        allPlans[existingIndex] = { ...allPlans[existingIndex], ...apiPlan };
-        console.log(`✅ BackgroundBillingTab: Updated plan ${apiPlan.name} with API data`);
+    // Start with API plans
+    let allPlans = [...apiPlans];
+    
+    // Only add fallback plans if they don't exist in API plans
+    fallbackPlans.forEach(fallbackPlan => {
+      const existsInApi = apiPlans.some(apiPlan => apiPlan.id === fallbackPlan.id);
+      if (!existsInApi) {
+        console.log(`⚠️ BackgroundBillingTab: Plan ${fallbackPlan.name} not in API, adding fallback`);
+        allPlans.push(fallbackPlan);
       } else {
-        // Add new plan from API
-        allPlans.push(apiPlan);
-        console.log(`✅ BackgroundBillingTab: Added new plan ${apiPlan.name} from API`);
+        console.log(`✅ BackgroundBillingTab: Plan ${fallbackPlan.name} found in API, using API data`);
       }
     });
+    
+    console.log('🔍 BackgroundBillingTab: Final plans (API + missing fallbacks):', allPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
+    return allPlans;
   } else {
     console.log('⚠️ BackgroundBillingTab: No plans from API, using fallback plans only');
+    return fallbackPlans;
   }
-  
-  console.log('🔍 BackgroundBillingTab: Final plans available:', allPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-  return allPlans;
 };
 
 const BackgroundBillingTab = () => {
