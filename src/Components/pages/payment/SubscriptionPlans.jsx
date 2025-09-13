@@ -106,40 +106,22 @@ const SubscriptionPlans = () => {
       console.log('🔍 SubscriptionPlans: JWT Token available:', !!token);
       console.log('🔍 SubscriptionPlans: Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
       
-      // Try user-type-specific endpoints first
-      const endpoints = [];
+      // Use the general endpoint with user-type-specific parameters
+      const endpoint = '/api/payments/plans/';
+      const params = {};
       
+      // Add user type as parameter to help backend filter plans
       if (isTalent) {
-        endpoints.push('/api/payments/plans/talent/');
-        endpoints.push('/api/payments/talent/plans/');
+        params.user_type = 'talent';
+        console.log('🔍 SubscriptionPlans: Adding talent user type parameter');
       } else if (isBackground) {
-        endpoints.push('/api/payments/plans/background/');
-        endpoints.push('/api/payments/background/plans/');
-        endpoints.push('/api/payments/production-assets-pro/plans/');
+        params.user_type = 'background';
+        console.log('🔍 SubscriptionPlans: Adding background user type parameter');
       }
       
-      // Always try the general endpoint as fallback
-      endpoints.push('/api/payments/plans/');
-      
-      let response = null;
-      let lastError = null;
-      
-      // Try each endpoint until one succeeds
-      for (const endpoint of endpoints) {
-        try {
-          console.log(`🔍 SubscriptionPlans: Trying endpoint: ${endpoint}`);
-          response = await axiosInstance.get(endpoint);
-          console.log(`✅ SubscriptionPlans: Success with endpoint: ${endpoint}`);
-          break;
-        } catch (err) {
-          console.error(`❌ SubscriptionPlans: Error with endpoint ${endpoint}:`, err);
-          lastError = err;
-        }
-      }
-      
-      if (!response) {
-        throw lastError || new Error('All endpoints failed');
-      }
+      console.log(`🔍 SubscriptionPlans: Using endpoint: ${endpoint} with params:`, params);
+      const response = await axiosInstance.get(endpoint, { params });
+      console.log(`✅ SubscriptionPlans: Success with endpoint: ${endpoint}`);
       
       console.log('✅ SubscriptionPlans: Plans fetched successfully');
       console.log('🔍 SubscriptionPlans: Response status:', response.status);

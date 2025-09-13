@@ -98,40 +98,22 @@ const BackgroundBillingTab = () => {
       console.log('🔍 Fetching Production Assets Pro plans with centralized axios');
       console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
       
-      // Try user-type-specific endpoints first
-      const endpoints = [];
+      // Use the general endpoint with user-type-specific parameters
+      const endpoint = '/api/payments/plans/';
+      const params = {};
       
+      // Add user type as parameter to help backend filter plans
       if (isBackground) {
-        endpoints.push('/api/payments/plans/background/');
-        endpoints.push('/api/payments/background/plans/');
-        endpoints.push('/api/payments/production-assets-pro/plans/');
+        params.user_type = 'background';
+        console.log('🔍 BackgroundBillingTab: Adding background user type parameter');
       } else if (isTalent) {
-        endpoints.push('/api/payments/plans/talent/');
-        endpoints.push('/api/payments/talent/plans/');
+        params.user_type = 'talent';
+        console.log('🔍 BackgroundBillingTab: Adding talent user type parameter');
       }
       
-      // Always try the general endpoint as fallback
-      endpoints.push('/api/payments/plans/');
-      
-      let response = null;
-      let lastError = null;
-      
-      // Try each endpoint until one succeeds
-      for (const endpoint of endpoints) {
-        try {
-          console.log(`🔍 BackgroundBillingTab: Trying endpoint: ${endpoint}`);
-          response = await axiosInstance.get(endpoint);
-          console.log(`✅ BackgroundBillingTab: Success with endpoint: ${endpoint}`);
-          break;
-        } catch (err) {
-          console.error(`❌ BackgroundBillingTab: Error with endpoint ${endpoint}:`, err);
-          lastError = err;
-        }
-      }
-      
-      if (!response) {
-        throw lastError || new Error('All endpoints failed');
-      }
+      console.log(`🔍 BackgroundBillingTab: Using endpoint: ${endpoint} with params:`, params);
+      const response = await axiosInstance.get(endpoint, { params });
+      console.log(`✅ BackgroundBillingTab: Success with endpoint: ${endpoint}`);
       
       console.log('📥 Production Assets Pro plans API response:', response.data);
       console.log('📋 Plans structure:', JSON.stringify(response.data, null, 2));
