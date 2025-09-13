@@ -90,7 +90,13 @@ const SubscriptionPlans = () => {
 
   const fetchPlans = async () => {
     try {
-      console.log('🔍 SubscriptionPlans: Fetching plans from /api/payments/plans/');
+      // Get user type from localStorage
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isTalent = userInfo.is_talent;
+      const isBackground = userInfo.is_background;
+      
+      console.log('🔍 SubscriptionPlans: Fetching user-type-specific plans');
+      console.log('🔍 SubscriptionPlans: User type - is_talent:', isTalent, 'is_background:', isBackground);
       console.log('🔍 SubscriptionPlans: Request headers:', {
         'Authorization': 'Bearer ***',
         'Content-Type': 'application/json'
@@ -100,7 +106,41 @@ const SubscriptionPlans = () => {
       console.log('🔍 SubscriptionPlans: JWT Token available:', !!token);
       console.log('🔍 SubscriptionPlans: Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
       
-      const response = await axiosInstance.get('/api/payments/plans/');
+      // Try user-type-specific endpoints first
+      const endpoints = [];
+      
+      if (isTalent) {
+        endpoints.push('/api/payments/plans/talent/');
+        endpoints.push('/api/payments/talent/plans/');
+      } else if (isBackground) {
+        endpoints.push('/api/payments/plans/background/');
+        endpoints.push('/api/payments/background/plans/');
+        endpoints.push('/api/payments/production-assets-pro/plans/');
+      }
+      
+      // Always try the general endpoint as fallback
+      endpoints.push('/api/payments/plans/');
+      
+      let response = null;
+      let lastError = null;
+      
+      // Try each endpoint until one succeeds
+      for (const endpoint of endpoints) {
+        try {
+          console.log(`🔍 SubscriptionPlans: Trying endpoint: ${endpoint}`);
+          response = await axiosInstance.get(endpoint);
+          console.log(`✅ SubscriptionPlans: Success with endpoint: ${endpoint}`);
+          break;
+        } catch (err) {
+          console.error(`❌ SubscriptionPlans: Error with endpoint ${endpoint}:`, err);
+          lastError = err;
+        }
+      }
+      
+      if (!response) {
+        throw lastError || new Error('All endpoints failed');
+      }
+      
       console.log('✅ SubscriptionPlans: Plans fetched successfully');
       console.log('🔍 SubscriptionPlans: Response status:', response.status);
       console.log('🔍 SubscriptionPlans: Response headers:', response.headers);

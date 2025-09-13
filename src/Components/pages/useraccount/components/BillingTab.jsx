@@ -114,8 +114,48 @@ const BillingTab = () => {
 
   const fetchPlans = async () => {
     try {
-      console.log('🔄 Fetching plans from API...');
-      const response = await axiosInstance.get('/api/payments/plans/');
+      // Get user type from localStorage
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isTalent = userInfo.is_talent;
+      const isBackground = userInfo.is_background;
+      
+      console.log('🔄 Fetching talent-specific plans from API...');
+      console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
+      
+      // Try user-type-specific endpoints first
+      const endpoints = [];
+      
+      if (isTalent) {
+        endpoints.push('/api/payments/plans/talent/');
+        endpoints.push('/api/payments/talent/plans/');
+      } else if (isBackground) {
+        endpoints.push('/api/payments/plans/background/');
+        endpoints.push('/api/payments/background/plans/');
+      }
+      
+      // Always try the general endpoint as fallback
+      endpoints.push('/api/payments/plans/');
+      
+      let response = null;
+      let lastError = null;
+      
+      // Try each endpoint until one succeeds
+      for (const endpoint of endpoints) {
+        try {
+          console.log(`🔍 BillingTab: Trying endpoint: ${endpoint}`);
+          response = await axiosInstance.get(endpoint);
+          console.log(`✅ BillingTab: Success with endpoint: ${endpoint}`);
+          break;
+        } catch (err) {
+          console.error(`❌ BillingTab: Error with endpoint ${endpoint}:`, err);
+          lastError = err;
+        }
+      }
+      
+      if (!response) {
+        throw lastError || new Error('All endpoints failed');
+      }
+      
       console.log('✅ Plans received from API:', response.data);
       
       // Ensure we always have plans to display
