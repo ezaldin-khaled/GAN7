@@ -251,11 +251,9 @@ const BackgroundBillingTab = () => {
     return enhancedPlans;
   };
 
-  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
-
   // Get current plan object by matching subscription with available plans
-  const getCurrentPlan = () => {
-    if (!currentSubscription || !enhancedPlans.length) return null;
+  const getCurrentPlan = (availablePlans) => {
+    if (!currentSubscription || !availablePlans || !availablePlans.length) return null;
     
     // Try different ways to match the plan
     const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan;
@@ -265,7 +263,7 @@ const BackgroundBillingTab = () => {
     
     // First try to match by ID
     if (subscriptionPlanId) {
-      const matchedPlan = enhancedPlans.find(plan => plan.id === subscriptionPlanId);
+      const matchedPlan = availablePlans.find(plan => plan.id === subscriptionPlanId);
       if (matchedPlan) {
         console.log('✅ BackgroundBillingTab: Found plan by ID:', matchedPlan);
         return matchedPlan;
@@ -274,7 +272,7 @@ const BackgroundBillingTab = () => {
     
     // Then try to match by name
     if (subscriptionPlanName) {
-      const matchedPlan = enhancedPlans.find(plan => 
+      const matchedPlan = availablePlans.find(plan => 
         plan.name.toLowerCase() === subscriptionPlanName.toLowerCase() ||
         plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase()
       );
@@ -288,9 +286,11 @@ const BackgroundBillingTab = () => {
     return null;
   };
 
+  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
+
   // Get current plan features
   const getCurrentPlanFeatures = () => {
-    const currentPlan = getCurrentPlan();
+    const currentPlan = getCurrentPlan(enhancedPlans);
     
     console.log('🎯 Getting features for current plan:', currentPlan);
     
@@ -395,7 +395,7 @@ const BackgroundBillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon pulse" />
           <div className="plan-info">
-            <h3>Current Plan: {getDisplayPlanName(getCurrentPlan()?.name) || getCurrentPlan()?.display_name || 'Active Plan'}</h3>
+            <h3>Current Plan: {getDisplayPlanName(getCurrentPlan(enhancedPlans)?.name) || getCurrentPlan(enhancedPlans)?.display_name || 'Active Plan'}</h3>
             <div className="end-date">
               <p><strong>Valid until:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
             </div>
@@ -422,7 +422,7 @@ const BackgroundBillingTab = () => {
       <div className="plans-container">
         {displayPlans.length > 0 ? (
           displayPlans.map((plan) => {
-            const currentPlan = getCurrentPlan();
+            const currentPlan = getCurrentPlan(enhancedPlans);
             const isCurrentPlan = currentPlan?.id === plan.id;
             return (
               <div 
@@ -478,7 +478,7 @@ const BackgroundBillingTab = () => {
       <div className="current-plan-features">
         <h3>
           <FaCrown className="section-icon" />
-          Your {getDisplayPlanName(getCurrentPlan()?.name) || getCurrentPlan()?.display_name || 'Free'} Plan Features
+          Your {getDisplayPlanName(getCurrentPlan(enhancedPlans)?.name) || getCurrentPlan(enhancedPlans)?.display_name || 'Free'} Plan Features
         </h3>
         <div className="features-list highlight">
           {getCurrentPlanFeatures().map((feature, index) => (

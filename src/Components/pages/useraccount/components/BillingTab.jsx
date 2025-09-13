@@ -291,25 +291,22 @@ const BillingTab = () => {
     return enhancedPlans;
   };
   
-  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
-  console.log('🔍 Enhanced plans with subscribed plan:', enhancedPlans);
-  
   // Get current plan object by matching subscription with available plans
-  const getCurrentPlan = () => {
-    if (!currentSubscription || !enhancedPlans.length) return null;
+  const getCurrentPlan = (availablePlans) => {
+    if (!currentSubscription || !availablePlans || !availablePlans.length) return null;
     
     // Try different ways to match the plan
     const subscriptionPlanId = currentSubscription.plan_id || currentSubscription.plan;
     const subscriptionPlanName = currentSubscription.plan_name || currentSubscription.plan?.name;
     
     console.log('🔍 Looking for plan with ID:', subscriptionPlanId, 'or name:', subscriptionPlanName);
-    console.log('🔍 Available plans:', enhancedPlans.map(p => ({ id: p.id, name: p.name })));
-    console.log('🔍 Full plans data:', JSON.stringify(enhancedPlans, null, 2));
+    console.log('🔍 Available plans:', availablePlans.map(p => ({ id: p.id, name: p.name })));
+    console.log('🔍 Full plans data:', JSON.stringify(availablePlans, null, 2));
     
     // First try to match by ID (handle both plan_id and plan fields)
     if (subscriptionPlanId) {
       console.log('🔍 Trying to match by ID:', subscriptionPlanId);
-      const matchedPlan = enhancedPlans.find(plan => {
+      const matchedPlan = availablePlans.find(plan => {
         console.log('🔍 Comparing plan.id:', plan.id, 'with subscriptionPlanId:', subscriptionPlanId, 'Match:', plan.id === subscriptionPlanId);
         return plan.id === subscriptionPlanId;
       });
@@ -322,7 +319,7 @@ const BillingTab = () => {
     // Then try to match by name
     if (subscriptionPlanName) {
       console.log('🔍 Trying to match by name:', subscriptionPlanName);
-      const matchedPlan = enhancedPlans.find(plan => {
+      const matchedPlan = availablePlans.find(plan => {
         const nameMatch = plan.name.toLowerCase() === subscriptionPlanName.toLowerCase();
         const displayNameMatch = plan.display_name?.toLowerCase() === subscriptionPlanName.toLowerCase();
         console.log('🔍 Comparing plan.name:', plan.name, 'with subscriptionPlanName:', subscriptionPlanName, 'Name match:', nameMatch);
@@ -337,9 +334,12 @@ const BillingTab = () => {
     
     console.log('❌ No matching plan found');
     console.log('🔍 Subscription plan ID:', subscriptionPlanId, 'Type:', typeof subscriptionPlanId);
-    console.log('🔍 Available plan IDs:', JSON.stringify(enhancedPlans.map(p => ({ id: p.id, type: typeof p.id })), null, 2));
+    console.log('🔍 Available plan IDs:', JSON.stringify(availablePlans.map(p => ({ id: p.id, type: typeof p.id })), null, 2));
     return null;
   };
+
+  const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
+  console.log('🔍 Enhanced plans with subscribed plan:', enhancedPlans);
   
   const displayPlans = enhancedPlans.length > 0 ? enhancedPlans : [
     {
@@ -473,7 +473,7 @@ const BillingTab = () => {
         {console.log('🔍 Rendering plans container - displayPlans.length:', displayPlans.length)}
         {displayPlans.length > 0 ? (
           displayPlans.map((plan) => {
-          const currentPlan = getCurrentPlan();
+          const currentPlan = getCurrentPlan(enhancedPlans);
           const isCurrentPlan = currentPlan?.id === plan.id;
           return (
             <div 
