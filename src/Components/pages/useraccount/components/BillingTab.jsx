@@ -60,27 +60,14 @@ const getFallbackPlans = () => {
 const ensureAllPlansAvailable = (apiPlans) => {
   const fallbackPlans = getFallbackPlans();
   
-  // If API returned plans, use them as the primary source
+  // If API returned plans, use ONLY API data (no fallback plans)
   if (apiPlans && apiPlans.length > 0) {
-    console.log('🔍 BillingTab: Using API plans as primary source');
+    console.log('🔍 BillingTab: Using ONLY API plans (no fallback plans)');
     console.log('🔍 BillingTab: API plans:', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
     
-    // Start with API plans
-    let allPlans = [...apiPlans];
-    
-    // Only add fallback plans if they don't exist in API plans
-    fallbackPlans.forEach(fallbackPlan => {
-      const existsInApi = apiPlans.some(apiPlan => apiPlan.id === fallbackPlan.id);
-      if (!existsInApi) {
-        console.log(`⚠️ BillingTab: Plan ${fallbackPlan.name} not in API, adding fallback`);
-        allPlans.push(fallbackPlan);
-      } else {
-        console.log(`✅ BillingTab: Plan ${fallbackPlan.name} found in API, using API data`);
-      }
-    });
-    
-    console.log('🔍 BillingTab: Final plans (API + missing fallbacks):', allPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-    return allPlans;
+    // Return only API plans - no fallback plans added
+    console.log('🔍 BillingTab: Final plans (API only):', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
+    return apiPlans;
   } else {
     console.log('⚠️ BillingTab: No plans from API, using fallback plans only');
     return fallbackPlans;
