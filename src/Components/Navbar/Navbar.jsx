@@ -29,6 +29,11 @@ function Navbar() {
   }, [user, loading]);
 
   const [mobileMenu, setMobileMenu] = useState(false);
+  
+  // Define finalUser at component level to avoid scope issues
+  const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
+  const finalUser = user || fallbackUser;
+  
   const toggleMenu = ()=>{
       const newMenuState = !mobileMenu;
       setMobileMenu(newMenuState);
@@ -63,9 +68,7 @@ function Navbar() {
   };
 
   const handleAvatarClick = () => {
-    // Use the same fallback logic as renderAuthSection
-    const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
-    const finalUser = user || fallbackUser;
+    // Use the component-level finalUser
     
     if (finalUser) {
       // Check if user is on mobile device
@@ -85,8 +88,7 @@ function Navbar() {
 
   // Get appropriate aria-label for avatar button
   const getAvatarAriaLabel = () => {
-    const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
-    const finalUser = user || fallbackUser;
+    // Use the component-level finalUser
     
     if (!finalUser) return 'Login';
     return isMobileDevice() ? 'Go to Account Page' : 'View Profile';
@@ -94,9 +96,7 @@ function Navbar() {
 
   // Determine what to show in the auth section
   const renderAuthSection = () => {
-    // Fallback to localStorage if AuthContext user is not available
-    const fallbackUser = !user && !loading ? JSON.parse(localStorage.getItem('user') || 'null') : null;
-    const finalUser = user || fallbackUser;
+    // Use the component-level finalUser
     // Check if user exists and has either an ID or is a valid user object with account_type
     const hasValidUser = finalUser && (finalUser.id || (finalUser.account_type && (finalUser.is_talent || finalUser.is_background)));
     
