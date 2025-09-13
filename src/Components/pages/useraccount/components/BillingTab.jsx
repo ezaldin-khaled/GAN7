@@ -124,7 +124,10 @@ const BillingTab = () => {
       
       // Use the general endpoint with user-type-specific parameters
       const endpoint = '/api/payments/plans/';
-      const params = {};
+      const params = {
+        show_all: true,  // Request all available plans, not just upgradeable ones
+        include_subscribed: true  // Include plans user is already subscribed to
+      };
       
       // Add user type as parameter to help backend filter plans
       if (isTalent) {
