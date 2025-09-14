@@ -6,62 +6,12 @@ import './BillingTab.css';
 
 // Helper function to get fallback plans for Production Assets Pro
 const getFallbackPlans = () => {
-  return [
-    {
-      id: 1,
-      name: 'BASIC',
-      display_name: 'Basic',
-      description: 'Essential features for getting started.',
-      price: 19.99,
-      stripe_price_id: 'price_basic_yearly',
-      features: [
-        'Basic asset generation',
-        'Standard resolution',
-        '5GB Storage',
-        'Email Support'
-      ]
-    },
-    {
-      id: 2,
-      name: 'PRO',
-      display_name: 'Pro',
-      description: 'Advanced features for professionals.',
-      price: 39.99,
-      stripe_price_id: 'price_pro_yearly',
-      features: [
-        'Advanced asset generation',
-        'High resolution',
-        '20GB Storage',
-        'Priority Support',
-        'Custom templates'
-      ],
-      popular: true
-    },
-    {
-      id: 3,
-      name: 'ENTERPRISE',
-      display_name: 'Enterprise',
-      description: 'Ultimate features for large teams.',
-      price: 79.99,
-      stripe_price_id: 'price_enterprise_yearly',
-      features: [
-        'Unlimited asset generation',
-        'Ultra high resolution',
-        '100GB Storage',
-        '24/7 Dedicated Support',
-        'API Access',
-        'Custom branding',
-        'Team collaboration'
-      ],
-      premium: true
-    }
-  ];
+  // Return empty array - no hardcoded plans
+  return [];
 };
 
 // Helper function to ensure all plans are available
 const ensureAllPlansAvailable = (apiPlans) => {
-  const fallbackPlans = getFallbackPlans();
-  
   // If API returned plans, use ONLY API data (no fallback plans)
   if (apiPlans && apiPlans.length > 0) {
     console.log('🔍 BackgroundBillingTab: Using ONLY API plans (no fallback plans)');
@@ -71,8 +21,8 @@ const ensureAllPlansAvailable = (apiPlans) => {
     console.log('🔍 BackgroundBillingTab: Final plans (API only):', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
     return apiPlans;
   } else {
-    console.log('⚠️ BackgroundBillingTab: No plans from API, using fallback plans only');
-    return fallbackPlans;
+    console.log('⚠️ BackgroundBillingTab: No plans from API, returning empty array');
+    return [];
   }
 };
 
@@ -167,22 +117,10 @@ const BackgroundBillingTab = () => {
       const apiPlans = Array.from(allPlans.values());
       console.log(`✅ BackgroundBillingTab: Collected ${apiPlans.length} unique plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
       
-      // If we still don't have enough plans, add fallback plans for missing ones
-      if (apiPlans.length < 3) {
-        console.log('⚠️ BackgroundBillingTab: Not enough plans from API, adding fallback plans');
-        const fallbackPlans = getFallbackPlans();
-        fallbackPlans.forEach(fallbackPlan => {
-          if (!allPlans.has(fallbackPlan.id)) {
-            allPlans.set(fallbackPlan.id, fallbackPlan);
-            console.log(`✅ BackgroundBillingTab: Added fallback plan ${fallbackPlan.id} (${fallbackPlan.name})`);
-          }
-        });
-      }
-      
-      const finalPlans = Array.from(allPlans.values());
-      setPlans(finalPlans);
+      // Use only API plans - no fallback plans
+      setPlans(apiPlans);
       setLoading(false);
-      console.log(`✅ BackgroundBillingTab: Final plans count: ${finalPlans.length}`);
+      console.log(`✅ BackgroundBillingTab: Final plans count: ${apiPlans.length}`);
     } catch (err) {
       console.error('❌ Error fetching Production Assets Pro plans:', err);
       console.error('Error response:', err.response?.data);
@@ -190,15 +128,12 @@ const BackgroundBillingTab = () => {
       
       // Handle 404 error gracefully - API endpoint might not be implemented yet
       if (err.response?.status === 404) {
-        console.log('Payment plans API endpoint not available, using fallback plans');
-        const fallbackPlans = getFallbackPlans();
-        setPlans(fallbackPlans);
-        setError(''); // Clear any previous errors
+        console.log('Payment plans API endpoint not available');
+        setPlans([]);
+        setError('Subscription plans are not available at the moment. Please contact support.');
       } else {
         setError('Failed to load subscription plans');
-        // Still provide fallback plans even on other errors
-        const fallbackPlans = getFallbackPlans();
-        setPlans(fallbackPlans);
+        setPlans([]);
       }
       setLoading(false);
     }
