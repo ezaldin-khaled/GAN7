@@ -141,23 +141,18 @@ const UserAccountPage = () => {
 
         // Determine the correct endpoint based on user type
         let primaryEndpoint;
+        let endpoints = [];
+        
         if (userInfo.is_background) {
           primaryEndpoint = 'api/profile/background/';
+          endpoints = ['api/profile/background/']; // Only try background endpoint for background users
         } else if (userInfo.is_talent) {
           primaryEndpoint = 'api/profile/talent/';
+          endpoints = ['api/profile/talent/']; // Only try talent endpoint for talent users
         } else {
-          // Fallback: try both endpoints
+          // Fallback: try both endpoints for unknown users
           primaryEndpoint = 'api/profile/talent/';
-        }
-        
-        // Define endpoints to try - prioritize the correct one
-        const endpoints = [primaryEndpoint];
-        
-        // Add fallback endpoints if the primary fails
-        if (primaryEndpoint === 'api/profile/background/') {
-          endpoints.push('api/profile/talent/');
-        } else {
-          endpoints.push('api/profile/background/');
+          endpoints = ['api/profile/talent/', 'api/profile/background/'];
         }
         
         // Debug logging
