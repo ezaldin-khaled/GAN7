@@ -187,24 +187,27 @@ const UserAccountPage = () => {
         }
         
         // Map API response to our state structure - Updated to match the actual API response fields
+        // Extract profile data from the nested structure
+        const profileData = response.data.profile || response.data;
+        
         const mappedUserData = {
           ...response.data,  // Store the complete response data
-          fullName: response.data.full_name || `${response.data.first_name || ''} ${response.data.last_name || ''}`.trim(),
-          email: response.data.email || '',
-          role: response.data.account_type || '',
-          location: `${response.data.city || ''}, ${response.data.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
-          gender: response.data.gender || '',
-          dateOfBirth: response.data.date_of_birth || '',
-          country: response.data.country || '',
-          phoneNumber: response.data.phone || '',
-          bio: response.data.aboutyou || ''
+          fullName: profileData.full_name || `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim(),
+          email: profileData.email || '',
+          role: profileData.account_type || '',
+          location: `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+          gender: profileData.gender || '',
+          dateOfBirth: profileData.date_of_birth || '',
+          country: profileData.country || '',
+          phoneNumber: profileData.phone || '',
+          bio: profileData.aboutyou || ''
         };
         
         console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
         setUserData(mappedUserData);
         
         // Set profile image from API response only
-        setProfileImage(response.data.profile_picture || null);
+        setProfileImage(profileData.profile_picture || null);
         
         setLoading(false);
       } catch (err) {

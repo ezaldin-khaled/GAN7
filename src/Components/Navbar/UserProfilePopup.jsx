@@ -449,33 +449,36 @@ export default function UserProfilePopup({ user, onClose }) {
 
         // If API call succeeded, use the real data
         if (response) {
+          // Extract profile data from the nested structure
+          const profileData = response.data.profile || response.data;
+          
           const mappedUserData = {
             ...response.data,  // Store the complete response data
-            firstName: response.data.first_name || response.data.firstName || '',
-            lastName: response.data.last_name || response.data.lastName || '',
-            fullName: response.data.full_name || `${response.data.first_name || response.data.firstName || ''} ${response.data.last_name || response.data.lastName || ''}`.trim(),
-            email: response.data.email || '',
-            role: response.data.account_type || response.data.role || '',
-            location: `${response.data.city || ''}, ${response.data.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
-            gender: response.data.gender || '',
-            dateOfBirth: response.data.date_of_birth || response.data.dateOfBirth || '',
-            country: response.data.country || '',
-            phoneNumber: response.data.phone || response.data.phoneNumber || '',
-            bio: response.data.aboutyou || response.data.bio || response.data.description || '',
-            username: response.data.username || response.data.email?.split('@')[0] || '',
-            isVerified: response.data.is_verified || response.data.isVerified || false,
-            isSubscribed: response.data.is_subscribed || response.data.isSubscribed || false,
-            verifiedDate: response.data.verified_date || response.data.verifiedDate || "2 JAN, 2025",
-            profile_picture: response.data.profile_picture || response.data.profilePic || null,
-            cover_photo: response.data.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
+            firstName: profileData.first_name || profileData.firstName || '',
+            lastName: profileData.last_name || profileData.lastName || '',
+            fullName: profileData.full_name || `${profileData.first_name || profileData.firstName || ''} ${profileData.last_name || profileData.lastName || ''}`.trim(),
+            email: profileData.email || '',
+            role: profileData.account_type || profileData.role || '',
+            location: `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+            gender: profileData.gender || '',
+            dateOfBirth: profileData.date_of_birth || profileData.dateOfBirth || '',
+            country: profileData.country || '',
+            phoneNumber: profileData.phone || profileData.phoneNumber || '',
+            bio: profileData.aboutyou || profileData.bio || profileData.description || '',
+            username: profileData.username || profileData.email?.split('@')[0] || '',
+            isVerified: profileData.is_verified || profileData.isVerified || false,
+            isSubscribed: profileData.is_subscribed || profileData.isSubscribed || false,
+            verifiedDate: profileData.verified_date || profileData.verifiedDate || "2 JAN, 2025",
+            profile_picture: profileData.profile_picture || profileData.profilePic || null,
+            cover_photo: profileData.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
             // Additional fields
-            profileScore: 0,
-            accountTier: 0,
-            profileCompletion: 0,
-            subscriptionMessage: '',
-            canAccessFeatures: false,
-            isRestricted: false,
-            subscriptionRequired: false
+            profileScore: response.data.profile_score?.score || 0,
+            accountTier: response.data.subscription_status?.tier || 0,
+            profileCompletion: response.data.profile_score?.completion_percentage || 0,
+            subscriptionMessage: response.data.subscription_status?.message || '',
+            canAccessFeatures: response.data.restrictions?.can_access_features || false,
+            isRestricted: response.data.restrictions?.is_restricted || false,
+            subscriptionRequired: response.data.restrictions?.subscription_required || false
           };
           
           console.log('📊 UserProfilePopup fetchUserData - Mapped User Data:', mappedUserData);
