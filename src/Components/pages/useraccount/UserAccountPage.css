@@ -582,39 +582,25 @@ body {
   position: absolute;
   bottom: 0;
   right: 0;
-  background: rgba(130, 54, 252, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #8236fc;
   color: white;
-  padding: 8px 12px;
-  border-radius: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
-  font-size: 12px;
-  font-weight: 500;
-  box-shadow: 0 4px 15px rgba(130, 54, 252, 0.3);
+  border: 3px solid white;
+  transition: all 0.2s ease;
   min-height: 44px; /* Better touch target */
-  white-space: nowrap;
+  min-width: 44px;
+  z-index: 10; /* Increased z-index to make it more prominent */
 }
 
 .change-photo-btn:hover {
-  background: rgba(112, 41, 227, 0.95);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(130, 54, 252, 0.4);
-  border-color: rgba(255, 255, 255, 1);
-}
-
-.change-photo-btn svg {
-  font-size: 14px;
-}
-
-.change-photo-text {
-  font-size: 11px;
-  font-weight: 500;
+  background: #7029e3;
+  transform: scale(1.1);
 }
 
 

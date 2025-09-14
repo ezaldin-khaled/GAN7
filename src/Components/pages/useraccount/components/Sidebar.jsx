@@ -115,7 +115,6 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
             )}
             <label className="change-photo-btn">
               <FaCamera />
-              <span className="change-photo-text">Change Photo</span>
               <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
             </label>
           </div>
