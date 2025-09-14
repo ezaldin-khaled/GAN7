@@ -19,8 +19,18 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   const testApiEndpoint = async (fileId) => {
     console.log('🧪 Testing API endpoint for file ID:', fileId);
     
-    const endpoints = [
+    // Get user type to determine correct endpoint priority
+    const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+    const isBackground = userInfo.is_background;
+    
+    const endpoints = isBackground ? [
+      `/api/profile/background/media/${fileId}/`,
       `/api/profile/talent/media/${fileId}/`,
+      `/api/media/${fileId}/`,
+      `/api/files/${fileId}/`
+    ] : [
+      `/api/profile/talent/media/${fileId}/`,
+      `/api/profile/background/media/${fileId}/`,
       `/api/media/${fileId}/`,
       `/api/files/${fileId}/`
     ];
@@ -77,9 +87,19 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     // For other URLs, provide multiple fallback options
     const alternatives = [];
     
+    // Get user type to determine correct endpoint
+    const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+    const isBackground = userInfo.is_background;
+    
     // 1. Direct API endpoint for media download
     if (file.id) {
-      alternatives.push(`/api/profile/talent/media/${file.id}/`);
+      if (isBackground) {
+        alternatives.push(`/api/profile/background/media/${file.id}/`);
+        alternatives.push(`/api/profile/talent/media/${file.id}/`);
+      } else {
+        alternatives.push(`/api/profile/talent/media/${file.id}/`);
+        alternatives.push(`/api/profile/background/media/${file.id}/`);
+      }
     }
     
     // 2. Media proxy through our server

@@ -243,8 +243,13 @@ const UserAccountPage = () => {
     if (activeTab === 'media') {
       const fetchMediaFiles = async () => {
         try {
+          // Get user type to determine correct endpoint
+          const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+          const isBackground = userInfo.is_background;
+          const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
+          
           const response = await apiCallWithRefresh(() => 
-            axiosInstance.get('/api/profile/talent/')
+            axiosInstance.get(endpoint)
           );
           
           if (response.data && response.data.media) {
@@ -282,6 +287,11 @@ const UserAccountPage = () => {
       setLoading(true);
       setError('');
       
+      // Get user type to determine correct endpoint
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isBackground = userInfo.is_background;
+      const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
+      
       const payload = {
         first_name: userData.first_name,
         last_name: userData.last_name,
@@ -296,7 +306,7 @@ const UserAccountPage = () => {
       };
       
       
-      const response = await axiosInstance.post('/api/profile/talent/', payload);
+      const response = await axiosInstance.post(endpoint, payload);
       
       // Update local state with the response data structure
       if (response.data.profile) {
@@ -334,8 +344,14 @@ const UserAccountPage = () => {
 
     try {
       setLoading(true);
+      
+      // Get user type to determine correct endpoint
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isBackground = userInfo.is_background;
+      const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
+      
       // Use POST instead of PUT for updating the profile picture
-      const response = await axiosInstance.post('/api/profile/talent/', formData);
+      const response = await axiosInstance.post(endpoint, formData);
       
       // Update the profile image with the response URL
       const newProfilePicture = response.data.profile_picture;
@@ -363,6 +379,12 @@ const UserAccountPage = () => {
       try {
         setLoading(true);
         
+        // Get user type to determine correct endpoint
+        const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+        const isBackground = userInfo.is_background;
+        const profileEndpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
+        const mediaEndpoint = isBackground ? '/api/profile/background/media/' : '/api/profile/talent/media/';
+        
         // Ensure name field is present in formData
         if (!formData.get('name')) {
           const file = formData.get('media_file');
@@ -372,12 +394,12 @@ const UserAccountPage = () => {
         }
 
         const response = await apiCallWithRefresh(() => 
-          axiosInstance.post('/api/profile/talent/media/', formData)
+          axiosInstance.post(mediaEndpoint, formData)
         );
         
         // Refresh the media list after successful upload
         const profileResponse = await apiCallWithRefresh(() => 
-          axiosInstance.get('/api/profile/talent/')
+          axiosInstance.get(profileEndpoint)
         );
         
         if (profileResponse.data && profileResponse.data.media) {
@@ -433,9 +455,20 @@ const UserAccountPage = () => {
       
       console.log('🗑️ Attempting to delete media with ID:', mediaId);
       
-      // Try multiple deletion endpoints
-      const deleteEndpoints = [
+      // Get user type to determine correct endpoint
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isBackground = userInfo.is_background;
+      
+      // Try multiple deletion endpoints based on user type
+      const deleteEndpoints = isBackground ? [
+        `/api/profile/background/media/${mediaId}/`,
         `/api/profile/talent/media/${mediaId}/`,
+        `/api/media/${mediaId}/delete/`,
+        `/api/media/${mediaId}/`,
+        `/api/files/${mediaId}/`
+      ] : [
+        `/api/profile/talent/media/${mediaId}/`,
+        `/api/profile/background/media/${mediaId}/`,
         `/api/media/${mediaId}/delete/`,
         `/api/media/${mediaId}/`,
         `/api/files/${mediaId}/`
@@ -541,3 +574,546 @@ const UserAccountPage = () => {
 };
 
 export default UserAccountPage;
+
+
+    setUserData({
+
+      ...userData,
+
+      [name]: value
+
+    });
+
+  };
+
+
+
+  const handleSaveChanges = async () => {
+
+    try {
+
+      setLoading(true);
+
+      setError('');
+
+      
+
+      const payload = {
+
+        first_name: userData.first_name,
+
+        last_name: userData.last_name,
+
+        email: userData.email,
+
+        country: userData.country,
+
+        city: userData.city,
+
+        zipcode: userData.zipcode,
+
+        phone: userData.phone,
+
+        gender: userData.gender,
+
+        date_of_birth: userData.date_of_birth,
+
+        aboutyou: userData.aboutyou || userData.bio
+
+      };
+
+      
+
+      
+
+      const response = await axiosInstance.post('/api/profile/talent/', payload);
+
+      
+
+      // Update local state with the response data structure
+
+      if (response.data.profile) {
+
+        setUserData({
+
+          ...response.data.profile,
+
+          fullName: response.data.profile.full_name,
+
+          email: response.data.profile.email,
+
+          role: response.data.profile.account_type,
+
+          location: `${response.data.profile.city || ''}, ${response.data.profile.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+
+          gender: response.data.profile.gender,
+
+          dateOfBirth: response.data.profile.date_of_birth,
+
+          country: response.data.profile.country,
+
+          phoneNumber: response.data.profile.phone,
+
+          bio: response.data.profile.aboutyou
+
+        });
+
+
+
+        setProfileImage(response.data.profile.profile_picture || null);
+
+        setSuccessMessage(response.data.message || 'Profile updated successfully!');
+
+      }
+
+      
+
+      setLoading(false);
+
+    } catch (err) {
+
+      console.error('Error updating profile:', err);
+
+      setError(err.response?.data?.message || 'Failed to update profile. Please try again.');
+
+      setLoading(false);
+
+    }
+
+  };
+
+
+
+  const handleProfileImageChange = async (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+
+
+    const formData = new FormData();
+
+    formData.append('profile_picture', file);
+
+
+
+    try {
+
+      setLoading(true);
+
+      // Use POST instead of PUT for updating the profile picture
+
+      const response = await axiosInstance.post('/api/profile/talent/', formData);
+
+      
+
+      // Update the profile image with the response URL
+
+      const newProfilePicture = response.data.profile_picture;
+
+      setProfileImage(newProfilePicture);
+
+      
+
+      // Update the AuthContext user data with the new profile picture
+
+      if (authUser) {
+
+        const updatedUser = {
+
+          ...authUser,
+
+          profilePic: newProfilePicture
+
+        };
+
+        updateUser(updatedUser);
+
+      }
+
+      
+
+      setSuccessMessage('Profile image updated successfully!');
+
+      setLoading(false);
+
+    } catch (err) {
+
+      console.error('Error uploading profile image:', err);
+
+      setError(err.response?.data?.detail || err.response?.data?.message || 'Failed to upload profile image. Please try again.');
+
+      setLoading(false);
+
+    }
+
+  };
+
+
+
+  const handleMediaUpload = async (formData) => {
+
+      try {
+
+        setLoading(true);
+
+        
+
+        // Ensure name field is present in formData
+
+        if (!formData.get('name')) {
+
+          const file = formData.get('media_file');
+
+          if (file) {
+
+            formData.append('name', file.name);
+
+          }
+
+        }
+
+
+
+        const response = await apiCallWithRefresh(() => 
+
+          axiosInstance.post('/api/profile/talent/media/', formData)
+
+        );
+
+        
+
+        // Refresh the media list after successful upload
+
+        const profileResponse = await apiCallWithRefresh(() => 
+
+          axiosInstance.get('/api/profile/talent/')
+
+        );
+
+        
+
+        if (profileResponse.data && profileResponse.data.media) {
+
+          setMediaFiles(profileResponse.data.media);
+
+          setSuccessMessage('Media file uploaded successfully!');
+
+        }
+
+        
+
+        setLoading(false);
+
+      } catch (err) {
+
+        console.error('Error uploading media file:', err);
+
+        
+
+        // Enhanced error message extraction
+
+        let errorMessage = 'Failed to upload media file. Please try again.';
+
+        
+
+        if (err.response?.data) {
+
+          const errorData = err.response.data;
+
+          
+
+          // Check for upload limit error specifically
+
+          if (errorData.error && errorData.error.includes('Upload limit reached')) {
+
+            errorMessage = "You've reached the free account upload limit";
+
+          }
+
+          // Check for field-specific errors
+
+          else if (errorData.media_file) {
+
+            errorMessage = `Media file error: ${Array.isArray(errorData.media_file) ? errorData.media_file[0] : errorData.media_file}`;
+
+          } else if (errorData.name) {
+
+            errorMessage = `Name error: ${Array.isArray(errorData.name) ? errorData.name[0] : errorData.name}`;
+
+          } else if (errorData.non_field_errors) {
+
+            errorMessage = Array.isArray(errorData.non_field_errors) ? errorData.non_field_errors[0] : errorData.non_field_errors;
+
+          } else if (errorData.message) {
+
+            errorMessage = errorData.message;
+
+          } else if (errorData.detail) {
+
+            errorMessage = errorData.detail;
+
+          } else if (typeof errorData === 'string') {
+
+            errorMessage = errorData;
+
+          } else {
+
+            errorMessage = 'Failed to upload media file. Please try again.';
+
+          }
+
+        }
+
+        
+
+        setError(errorMessage);
+
+        setLoading(false);
+
+      }
+
+    };
+
+
+
+  const handleDeleteMedia = async (mediaId) => {
+
+    if (!window.confirm('Are you sure you want to delete this media file?')) {
+
+      return;
+
+    }
+
+
+
+    try {
+
+      setLoading(true);
+
+      setError('');
+
+      
+
+      console.log('🗑️ Attempting to delete media with ID:', mediaId);
+
+      
+
+      // Try multiple deletion endpoints
+
+      const deleteEndpoints = [
+
+        `/api/profile/talent/media/${mediaId}/`,
+
+        `/api/media/${mediaId}/delete/`,
+
+        `/api/media/${mediaId}/`,
+
+        `/api/files/${mediaId}/`
+
+      ];
+
+      
+
+      let response;
+
+      let lastError;
+
+      
+
+      for (const endpoint of deleteEndpoints) {
+
+        try {
+
+          console.log(`🧪 Trying delete endpoint: ${endpoint}`);
+
+          response = await apiCallWithRefresh(() => 
+
+            axiosInstance.delete(endpoint)
+
+          );
+
+          console.log(`✅ Delete successful with endpoint: ${endpoint}`);
+
+          break;
+
+        } catch (error) {
+
+          console.log(`❌ Endpoint failed: ${endpoint} - Status: ${error.response?.status}`);
+
+          lastError = error;
+
+        }
+
+      }
+
+      
+
+      if (!response) {
+
+        throw lastError || new Error('All deletion endpoints failed');
+
+      }
+
+      
+
+      if (response.status === 204 || response.status === 200) {
+
+        // Remove the deleted media from the local state
+
+        setMediaFiles(prev => prev.filter(media => media.id !== mediaId));
+
+        setSuccessMessage('Media file deleted successfully!');
+
+      } else {
+
+        setError('Failed to delete media file. Please try again.');
+
+      }
+
+    } catch (err) {
+
+      console.error('❌ Error deleting media file:', err);
+
+      console.error('❌ Error response:', err.response?.data);
+
+      console.error('❌ Error status:', err.response?.status);
+
+      
+
+      const errorMessage = err.response?.data?.detail || 
+
+                          err.response?.data?.message || 
+
+                          'Failed to delete media file. Please try again.';
+
+      setError(errorMessage);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+
+
+  const handleLogout = async () => {
+
+    console.log('🚪 Logout button clicked');
+
+    try {
+
+      console.log('🔄 Attempting to call logout endpoint...');
+
+      // Attempt to call logout endpoint if it exists
+
+      await axiosInstance.post('/api/logout/');
+
+      console.log('✅ Logout endpoint called successfully');
+
+    } catch (err) {
+
+      console.log('⚠️ Logout endpoint failed or doesn\'t exist, continuing with local cleanup:', err.message);
+
+      // If logout endpoint fails or doesn't exist, just continue with local cleanup
+
+    } finally {
+
+      console.log('🧹 Performing local cleanup...');
+
+      console.log('🔐 Calling AuthContext logout...');
+
+      logout();
+
+      
+
+      console.log('🧭 Navigating to login page...');
+
+      // Navigate to login page
+
+      navigate('/login');
+
+    }
+
+  };
+
+
+
+  const renderTabContent = () => {
+
+    const tabs = {
+
+      profile: <ProfileTab userData={userData} handleInputChange={handleInputChange} handleSaveChanges={handleSaveChanges} loading={loading} />,
+
+      media: <MediaTab mediaFiles={mediaFiles} handleMediaUpload={handleMediaUpload} handleDeleteMedia={handleDeleteMedia} />,
+
+      billing: <BillingTab />,
+
+      groups: <GroupsTab userData={userData} />,
+
+      settings: <SettingsTab />,
+
+      security: <SecurityTab />,
+
+      specializations: <SpecializationTab />
+
+    };
+
+    return tabs[activeTab] || null;
+
+  };
+
+
+
+  if (loading) {
+
+    return <Loader />;
+
+  }
+
+
+
+  return (
+
+    <div className="account-container">
+
+      <Sidebar 
+
+        activeTab={activeTab}
+
+        handleTabChange={handleTabChange}
+
+        userData={userData}
+
+        profileImage={profileImage}
+
+        handleProfileImageChange={handleProfileImageChange}
+
+        handleLogout={handleLogout}
+
+      />
+
+      <div className="account-content">
+
+        {error && <div className="error-message">{error}</div>}
+
+        {successMessage && <div className="success-message">{successMessage}</div>}
+
+        {renderTabContent()}
+
+      </div>
+
+    </div>
+
+  );
+
+};
+
+
+
+export default UserAccountPage;
+
+

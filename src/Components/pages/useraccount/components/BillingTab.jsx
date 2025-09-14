@@ -141,7 +141,15 @@ const BillingTab = () => {
   const fetchUserData = async () => {
     try {
       setUserDataLoading(true);
-      const response = await axiosInstance.get('/api/profile/talent/');
+      
+      // Get user type from localStorage to determine correct endpoint
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isBackground = userInfo.is_background;
+      
+      // Use correct endpoint based on user type
+      const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
+      
+      const response = await axiosInstance.get(endpoint);
       console.log('User data received:', response.data);
       setUserData(response.data);
     } catch (err) {
