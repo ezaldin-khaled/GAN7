@@ -46,16 +46,6 @@ const BackgroundAccountPage = () => {
 
   // Fetch user data on component mount with retry mechanism
   useEffect(() => {
-    const ROLES = {
-      TALENT: 'talent',
-      BACKGROUND: 'background'
-    };
-    
-    const ROLE_ENDPOINTS = {
-      [ROLES.TALENT]: 'profile/talent/',
-      [ROLES.BACKGROUND]: 'profile/background/',
-      DEFAULT: 'profile/'
-    };
 
     const fetchUserData = async () => {
       try {
@@ -70,8 +60,8 @@ const BackgroundAccountPage = () => {
 
         // Define endpoints to try - prioritize background endpoint
         const endpoints = [
-          'api/profile/background/',
-          'api/profile/'
+          '/api/profile/background/',
+          '/api/profile/'
         ];
         
         let response = null;
@@ -147,12 +137,16 @@ const BackgroundAccountPage = () => {
           // Use cached user data from localStorage when API endpoints are not available
           const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
           if (cachedUser && (cachedUser.id || cachedUser.account_type)) {
+            // Extract name from email if no name fields are available
+            const emailUsername = cachedUser.email?.split('@')[0] || '';
+            const fullName = cachedUser.name || cachedUser.full_name || emailUsername || 'User';
+            
             setUserData({
               ...cachedUser,
-              fullName: cachedUser.name || `${cachedUser.first_name || ''} ${cachedUser.last_name || ''}`.trim(),
+              fullName: fullName,
               email: cachedUser.email || '',
               role: cachedUser.account_type || '',
-              location: `${cachedUser.city || ''}, ${cachedUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+              location: cachedUser.country || `${cachedUser.city || ''}, ${cachedUser.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
               gender: cachedUser.gender || '',
               dateOfBirth: cachedUser.date_of_birth || '',
               country: cachedUser.country || '',
@@ -245,12 +239,16 @@ const BackgroundAccountPage = () => {
       const responseProfile = response.data.profile || response.data;
       
       if (responseProfile) {
+        // Extract name from email if no name fields are available
+        const emailUsername = responseProfile.email?.split('@')[0] || '';
+        const fullName = responseProfile.full_name || responseProfile.name || emailUsername || 'User';
+        
         setUserData({
           ...responseProfile,
-          fullName: responseProfile.full_name || `${responseProfile.first_name || ''} ${responseProfile.last_name || ''}`.trim(),
+          fullName: fullName,
           email: responseProfile.email || '',
           role: responseProfile.account_type || '',
-          location: `${responseProfile.city || ''}, ${responseProfile.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+          location: responseProfile.country || `${responseProfile.city || ''}, ${responseProfile.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
           gender: responseProfile.gender || '',
           dateOfBirth: responseProfile.date_of_birth || '',
           country: responseProfile.country || '',
@@ -281,10 +279,12 @@ const BackgroundAccountPage = () => {
 
     try {
       setLoading(true);
+      setError(''); // Clear any previous errors
+      
       const response = await axiosInstance.post('/api/profile/background/', formData);
       
       // Update the profile image with the response URL
-      const newProfilePicture = response.data.profile_picture;
+      const newProfilePicture = response.data.profile_picture || response.data.profile?.profile_picture;
       setProfileImage(newProfilePicture);
       
       // Update the AuthContext user data with the new profile picture
@@ -309,10 +309,14 @@ const BackgroundAccountPage = () => {
   const handleItemUpload = async (formData) => {
     try {
       setLoading(true);
+      setError(''); // Clear any previous errors
+      
       // Ensure name field is present in formData
       if (!formData.get('name')) {
         const file = formData.get('image');
-        formData.append('name', file.name);
+        if (file) {
+          formData.append('name', file.name);
+        }
       }
 
       const response = await axiosInstance.post('/api/profile/background/items/', formData);
