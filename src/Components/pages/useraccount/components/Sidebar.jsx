@@ -115,17 +115,9 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
             )}
             <label className="change-photo-btn">
               <FaCamera />
+              <span className="change-photo-text">Change Photo</span>
               <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
             </label>
-            {useFallback && (
-              <div className="add-photo-button-container">
-                <label className="add-photo-btn">
-                  <FaCamera />
-                  <span>Add Photo</span>
-                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleProfileImageChange} />
-                </label>
-              </div>
-            )}
           </div>
           <h2 className="profile-name">{userData.fullName || `${userData.first_name || ''} ${userData.last_name || ''}`}</h2>
           <p className="profile-role">{userData.role || userData.account_type || 'User'}</p>
