@@ -369,12 +369,15 @@ export default function UserProfilePopup({ user, onClose }) {
             `${endpoint}&t=${new Date().getTime()}` : 
             `${endpoint}?t=${new Date().getTime()}`;
             
+          console.log(`🧪 UserProfilePopup fetchMediaFiles - Trying endpoint: ${url}`);
           const response = await axiosInstance.get(url);
+          console.log(`✅ UserProfilePopup fetchMediaFiles - Success with endpoint: ${endpoint}`);
           if (response.data && response.data.media) {
             mediaData = response.data.media;
             break;
           }
         } catch (err) {
+          console.log(`❌ UserProfilePopup fetchMediaFiles - Failed with endpoint: ${endpoint} - Status: ${err.response?.status}`);
           // Continue to next endpoint
         }
       }
@@ -442,9 +445,12 @@ export default function UserProfilePopup({ user, onClose }) {
               `${endpoint}&t=${new Date().getTime()}` : 
               `${endpoint}?t=${new Date().getTime()}`;
               
+            console.log(`🧪 UserProfilePopup fetchUserData - Trying endpoint: ${url}`);
             response = await axiosInstance.get(url);
+            console.log(`✅ UserProfilePopup fetchUserData - Success with endpoint: ${endpoint}`);
             break;
           } catch (err) {
+            console.log(`❌ UserProfilePopup fetchUserData - Failed with endpoint: ${endpoint} - Status: ${err.response?.status}`);
             // Don't treat 500 errors as critical - just continue
             lastError = err;
           }
