@@ -172,6 +172,7 @@ const UserAccountPage = () => {
               `${endpoint}?t=${new Date().getTime()}`;
               
             response = await axiosInstance.get(url);
+            console.log('📊 UserAccountPage fetchUserData - API Response:', response.data);
             break;
           } catch (err) {
             console.error(`Error with endpoint ${endpoint}:`, err);
@@ -186,7 +187,7 @@ const UserAccountPage = () => {
         }
         
         // Map API response to our state structure - Updated to match the actual API response fields
-        setUserData({
+        const mappedUserData = {
           ...response.data,  // Store the complete response data
           fullName: response.data.full_name || `${response.data.first_name || ''} ${response.data.last_name || ''}`.trim(),
           email: response.data.email || '',
@@ -197,7 +198,10 @@ const UserAccountPage = () => {
           country: response.data.country || '',
           phoneNumber: response.data.phone || '',
           bio: response.data.aboutyou || ''
-        });
+        };
+        
+        console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
+        setUserData(mappedUserData);
         
         // Set profile image from API response only
         setProfileImage(response.data.profile_picture || null);
@@ -232,6 +236,8 @@ const UserAccountPage = () => {
           localStorage.removeItem('user');
           navigate('/login');
         } else {
+          console.error('❌ UserAccountPage fetchUserData - Error details:', err);
+          console.error('❌ UserAccountPage fetchUserData - Error response:', err.response);
           setError('Failed to load user data. Please try again later.');
         }
         setLoading(false);

@@ -437,8 +437,9 @@ export default function UserProfilePopup({ user, onClose }) {
               
             console.log(`🧪 UserProfilePopup fetchUserData - Trying endpoint: ${url}`);
             response = await axiosInstance.get(url);
-            console.log(`✅ UserProfilePopup fetchUserData - Success with endpoint: ${endpoint}`);
-            break;
+          console.log(`✅ UserProfilePopup fetchUserData - Success with endpoint: ${endpoint}`);
+          console.log('📊 UserProfilePopup fetchUserData - API Response:', response.data);
+          break;
           } catch (err) {
             console.log(`❌ UserProfilePopup fetchUserData - Failed with endpoint: ${endpoint} - Status: ${err.response?.status}`);
             // Don't treat 500 errors as critical - just continue
@@ -477,6 +478,7 @@ export default function UserProfilePopup({ user, onClose }) {
             subscriptionRequired: false
           };
           
+          console.log('📊 UserProfilePopup fetchUserData - Mapped User Data:', mappedUserData);
           setUserData(mappedUserData);
           
           // Calculate profile score for API data
