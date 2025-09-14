@@ -15,7 +15,7 @@ import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt } from 'react-icons/f
 import Loader from '../../common/Loader';
 
 const BackgroundAccountPage = () => {
-  const { user: authUser, updateUser } = useContext(AuthContext);
+  const { user: authUser, updateUser, logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState({
     fullName: '', email: '', role: '', location: '',
@@ -349,7 +349,6 @@ const BackgroundAccountPage = () => {
       console.log('Logout API call failed or endpoint does not exist');
     } finally {
       // Use AuthContext logout method to update state immediately
-      const { logout } = useContext(AuthContext);
       logout();
       
       // Navigate to login page
