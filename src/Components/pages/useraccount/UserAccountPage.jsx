@@ -130,31 +130,39 @@ const UserAccountPage = () => {
         const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
         const token = localStorage.getItem('access');
         
+        // Debug logging
+        console.log('🔍 User info from localStorage:', userInfo);
+        console.log('🔍 is_background:', userInfo.is_background);
+        console.log('🔍 is_talent:', userInfo.is_talent);
+        
         if (!token) {
           throw new Error('No authentication token found');
         }
 
-        // Define all possible endpoint variations to try
-        // Update the endpoints array in the fetchUserData function
-        const endpoints = [
-        'api/profile/talent/',
-        'api/profile/background/',
-        ];
-        
-        // Remove these lines since these endpoints don't exist according to the error
-        // if (userInfo.is_talent) {
-        //   endpoints.unshift('api/talent/me/', 'api/talent/profile/');
-        // } else if (userInfo.is_background) {
-        //   endpoints.unshift('api/background/me/', 'api/background/profile/');
-        // }
-        
-      
-        // Instead, use this approach based on the available endpoints
-        if (userInfo.is_talent) {
-        endpoints.unshift('api/profile/talent/');
-        } else if (userInfo.is_background) {
-        endpoints.unshift('api/profile/background/');
+        // Determine the correct endpoint based on user type
+        let primaryEndpoint;
+        if (userInfo.is_background) {
+          primaryEndpoint = 'api/profile/background/';
+        } else if (userInfo.is_talent) {
+          primaryEndpoint = 'api/profile/talent/';
+        } else {
+          // Fallback: try both endpoints
+          primaryEndpoint = 'api/profile/talent/';
         }
+        
+        // Define endpoints to try - prioritize the correct one
+        const endpoints = [primaryEndpoint];
+        
+        // Add fallback endpoints if the primary fails
+        if (primaryEndpoint === 'api/profile/background/') {
+          endpoints.push('api/profile/talent/');
+        } else {
+          endpoints.push('api/profile/background/');
+        }
+        
+        // Debug logging
+        console.log('🎯 Primary endpoint selected:', primaryEndpoint);
+        console.log('🎯 All endpoints to try:', endpoints);
         
         // No need to add headers here as they're handled by the interceptor
         
