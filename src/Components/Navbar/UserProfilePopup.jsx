@@ -454,20 +454,24 @@ export default function UserProfilePopup({ user, onClose }) {
           const profileData = response.data.profile || response.data;
           console.log('📊 UserProfilePopup fetchUserData - Extracted Profile Data:', profileData);
           
+          // Extract name from email if no name fields are available
+          const emailUsername = profileData.email?.split('@')[0] || '';
+          const fullName = profileData.full_name || profileData.name || emailUsername || 'User';
+          
           const mappedUserData = {
             ...response.data,  // Store the complete response data
-            firstName: profileData.first_name || profileData.firstName || '',
+            firstName: profileData.first_name || profileData.firstName || emailUsername || '',
             lastName: profileData.last_name || profileData.lastName || '',
-            fullName: profileData.full_name || `${profileData.first_name || profileData.firstName || ''} ${profileData.last_name || profileData.lastName || ''}`.trim(),
+            fullName: fullName,
             email: profileData.email || '',
             role: profileData.account_type || profileData.role || '',
-            location: `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+            location: profileData.country || `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
             gender: profileData.gender || '',
             dateOfBirth: profileData.date_of_birth || profileData.dateOfBirth || '',
             country: profileData.country || '',
             phoneNumber: profileData.phone || profileData.phoneNumber || '',
             bio: profileData.aboutyou || profileData.bio || profileData.description || '',
-            username: profileData.username || profileData.email?.split('@')[0] || '',
+            username: profileData.username || emailUsername || '',
             isVerified: profileData.is_verified || profileData.isVerified || false,
             isSubscribed: profileData.is_subscribed || profileData.isSubscribed || false,
             verifiedDate: profileData.verified_date || profileData.verifiedDate || "2 JAN, 2025",

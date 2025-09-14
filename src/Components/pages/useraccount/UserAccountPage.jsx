@@ -192,12 +192,16 @@ const UserAccountPage = () => {
         const profileData = response.data.profile || response.data;
         console.log('📊 UserAccountPage fetchUserData - Extracted Profile Data:', profileData);
         
+        // Extract name from email if no name fields are available
+        const emailUsername = profileData.email?.split('@')[0] || '';
+        const fullName = profileData.full_name || profileData.name || emailUsername || 'User';
+        
         const mappedUserData = {
           ...response.data,  // Store the complete response data
-          fullName: profileData.full_name || `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim(),
+          fullName: fullName,
           email: profileData.email || '',
           role: profileData.account_type || '',
-          location: `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+          location: profileData.country || `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
           gender: profileData.gender || '',
           dateOfBirth: profileData.date_of_birth || '',
           country: profileData.country || '',
