@@ -222,23 +222,21 @@ export default function UserProfilePopup({ user, onClose }) {
         formData.append('name', file.name);
       }
 
-      console.log('Sending request to:', '/api/profile/talent/media/');
-      
-      // Check if user has a talent profile
+      // Get user type to determine correct endpoint
       const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log('User info:', userInfo);
-      console.log('Is talent:', userInfo.is_talent);
+      const isBackground = userInfo.is_background;
+      const mediaEndpoint = isBackground ? '/api/profile/background/media/' : '/api/profile/talent/media/';
       
-      if (!userInfo.is_talent) {
-        throw new Error('User is not a talent. Only talent users can upload media.');
-      }
+      console.log('🔍 UserProfilePopup - User info:', userInfo);
+      console.log('🎯 UserProfilePopup - Media endpoint selected:', mediaEndpoint);
+      console.log('Sending request to:', mediaEndpoint);
       
       // For file uploads, we need to let the browser set the Content-Type header
       // to multipart/form-data with the proper boundary
       const token = localStorage.getItem('access');
       console.log('Auth token available:', !!token);
       
-      const response = await axiosInstance.post('/api/profile/talent/media/', formData, {
+      const response = await axiosInstance.post(mediaEndpoint, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           // Don't set Content-Type - let browser set it with boundary
@@ -336,18 +334,31 @@ export default function UserProfilePopup({ user, onClose }) {
     try {
       const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
       
-      // Try to fetch media from profile endpoint
-      const endpoints = [
-        'api/profile/talent/',
-        'api/profile/background/',
-      ];
-      
-      // Prioritize endpoints based on user type
-      if (userInfo.is_talent) {
-        endpoints.unshift('api/profile/talent/');
-      } else if (userInfo.is_background) {
-        endpoints.unshift('api/profile/background/');
+      // Determine the correct endpoint based on user type
+      let primaryEndpoint;
+      if (userInfo.is_background) {
+        primaryEndpoint = 'api/profile/background/';
+      } else if (userInfo.is_talent) {
+        primaryEndpoint = 'api/profile/talent/';
+      } else {
+        // Fallback: try both endpoints
+        primaryEndpoint = 'api/profile/talent/';
       }
+      
+      // Define endpoints to try - prioritize the correct one
+      const endpoints = [primaryEndpoint];
+      
+      // Add fallback endpoints if the primary fails
+      if (primaryEndpoint === 'api/profile/background/') {
+        endpoints.push('api/profile/talent/');
+      } else {
+        endpoints.push('api/profile/background/');
+      }
+      
+      // Debug logging
+      console.log('🔍 UserProfilePopup - User info:', userInfo);
+      console.log('🎯 UserProfilePopup - Primary endpoint selected:', primaryEndpoint);
+      console.log('🎯 UserProfilePopup - All endpoints to try:', endpoints);
       
       let mediaData = [];
       
@@ -395,18 +406,31 @@ export default function UserProfilePopup({ user, onClose }) {
 
         // Try to fetch real user data from API endpoints first (same as account page)
         
-        // Define all possible endpoint variations to try
-        const endpoints = [
-          'api/profile/talent/',
-          'api/profile/background/',
-        ];
-        
-        // Prioritize endpoints based on user type
-        if (userInfo.is_talent) {
-          endpoints.unshift('api/profile/talent/');
-        } else if (userInfo.is_background) {
-          endpoints.unshift('api/profile/background/');
+        // Determine the correct endpoint based on user type
+        let primaryEndpoint;
+        if (userInfo.is_background) {
+          primaryEndpoint = 'api/profile/background/';
+        } else if (userInfo.is_talent) {
+          primaryEndpoint = 'api/profile/talent/';
+        } else {
+          // Fallback: try both endpoints
+          primaryEndpoint = 'api/profile/talent/';
         }
+        
+        // Define endpoints to try - prioritize the correct one
+        const endpoints = [primaryEndpoint];
+        
+        // Add fallback endpoints if the primary fails
+        if (primaryEndpoint === 'api/profile/background/') {
+          endpoints.push('api/profile/talent/');
+        } else {
+          endpoints.push('api/profile/background/');
+        }
+        
+        // Debug logging
+        console.log('🔍 UserProfilePopup fetchUserData - User info:', userInfo);
+        console.log('🎯 UserProfilePopup fetchUserData - Primary endpoint selected:', primaryEndpoint);
+        console.log('🎯 UserProfilePopup fetchUserData - All endpoints to try:', endpoints);
         
         let response = null;
         let lastError = null;
