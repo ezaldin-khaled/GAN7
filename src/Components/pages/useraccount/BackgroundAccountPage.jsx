@@ -111,12 +111,19 @@ const BackgroundAccountPage = () => {
         
         console.log('Profile data extracted:', profileData);
         
-        setUserData({
+        // Extract name from email if no name fields are available
+        const emailUsername = profileData.email?.split('@')[0] || '';
+        const fullName = profileData.full_name || profileData.name || emailUsername || 'User';
+        
+        console.log('📊 BackgroundAccountPage - Email username:', emailUsername);
+        console.log('📊 BackgroundAccountPage - Full name:', fullName);
+        
+        const mappedUserData = {
           ...profileData,  // Store the complete profile data
-          fullName: profileData.full_name || `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim(),
+          fullName: fullName,
           email: profileData.email || '',
           role: profileData.account_type || '',
-          location: `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
+          location: profileData.country || `${profileData.city || ''}, ${profileData.country || ''}`.replace(', ,', '').replace(/^, |, $/, ''),
           gender: profileData.gender || '',
           dateOfBirth: profileData.date_of_birth || '',
           country: profileData.country || '',
@@ -124,10 +131,13 @@ const BackgroundAccountPage = () => {
           bio: profileData.aboutyou || '',
           // Include profile_score from the response (available at root level or within profile)
           profile_score: response.data.profile_score || profileData.profile_score
-        });
+        };
+        
+        console.log('📊 BackgroundAccountPage - Mapped User Data:', mappedUserData);
+        setUserData(mappedUserData);
         
         // Set profile image with fallback to a local asset
-        setProfileImage(responseProfile.profile_picture || null);
+        setProfileImage(profileData.profile_picture || null);
         
         setLoading(false);
       } catch (err) {
