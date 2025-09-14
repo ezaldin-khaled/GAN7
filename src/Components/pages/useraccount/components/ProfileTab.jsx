@@ -129,7 +129,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
   return (
     <div className="content-section">
       <h1 className="section-title">
-        📄 Profile Information
+        Profile Information
       </h1>
       
       <div className="profile-score-section">
@@ -138,12 +138,12 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
       <div className="profile-form-section">
         <h3 className="subsection-title">
-          👤 Personal Details
+          Personal Details
         </h3>
         
         <div className="form-row">
           <div className="form-group">
-            <label>🏷️ Full Name</label>
+            <label>Full Name</label>
             <input 
               type="text" 
               name="full_name" 
@@ -154,7 +154,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </div>
           
           <div className="form-group">
-            <label>📧 Email Address</label>
+            <label>Email Address</label>
             <input 
               type="email" 
               name="email" 
@@ -168,7 +168,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
         <div className="form-row">
           <div className="form-group">
-            <label>📞 Phone Number</label>
+            <label>Phone Number</label>
             <input 
               type="tel" 
               name="phone" 
@@ -179,7 +179,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </div>
           
           <div className="form-group">
-            <label>🌍 Country</label>
+            <label>Country</label>
             <input 
               type="text" 
               name="country" 
@@ -192,7 +192,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
         <div className="form-row">
           <div className="form-group">
-            <label>🏢 City</label>
+            <label>City</label>
             <input 
               type="text" 
               name="city" 
@@ -203,7 +203,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </div>
           
           <div className="form-group">
-            <label>📮 Zip Code</label>
+            <label>Zip Code</label>
             <input 
               type="text" 
               name="zipcode" 
@@ -216,7 +216,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
         <div className="form-row">
           <div className="form-group">
-            <label>♀️♂️ Gender</label>
+            <label>Gender</label>
             <select name="gender" value={userData.gender || ''} onChange={handleInputChange}>
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
@@ -227,7 +227,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </div>
           
           <div className="form-group">
-            <label>🎂 Date of Birth</label>
+            <label>Date of Birth</label>
             <input 
               type="date" 
               name="date_of_birth" 
@@ -238,7 +238,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         </div>
 
         <div className="form-group full-width">
-          <label>📝 About You</label>
+          <label>About You</label>
           <textarea 
             name="aboutyou" 
             value={userData.aboutyou || ''} 
@@ -251,9 +251,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
       <div className="social-media-section">
         <h2>Social Media Links</h2>
-        <p className="section-description">
-          Connect your social media profiles to showcase your online presence and build credibility.
-        </p>
         {error && <div className="error-message">{error}</div>}
         {loading ? (
           <div className="loading-state">

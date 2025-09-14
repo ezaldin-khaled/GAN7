@@ -78,7 +78,7 @@
   cursor: not-allowed;
 }
 
-/* Social Media Section Styles - Mobile First */
+/* Social Media Section Styles */
 .social-media-section {
   margin-top: 2rem;
   padding-top: 2rem;
@@ -86,9 +86,9 @@
 }
 
 .social-media-section h2 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: #333;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .social-media-grid {
@@ -146,9 +146,8 @@
 
 .section-title {
   color: #2c3e50;
-  margin-bottom: 30px;
-  font-size: 1.8rem;
-  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
 }
 
 /* Profile Score Integration */
@@ -168,11 +167,11 @@
 }
 
 .subsection-title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: #333;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 /* Button Group - Mobile First */
@@ -202,13 +201,6 @@
   padding: 2rem;
 }
 
-/* Section Description */
-.section-description {
-  color: #666;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
 
 /* Responsive adjustments - Mobile First Approach */
 @media (min-width: 768px) {
