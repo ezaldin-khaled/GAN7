@@ -439,6 +439,7 @@ export default function UserProfilePopup({ user, onClose }) {
             response = await axiosInstance.get(url);
           console.log(`✅ UserProfilePopup fetchUserData - Success with endpoint: ${endpoint}`);
           console.log('📊 UserProfilePopup fetchUserData - API Response:', response.data);
+          console.log('📊 UserProfilePopup fetchUserData - Profile Data:', response.data.profile);
           break;
           } catch (err) {
             console.log(`❌ UserProfilePopup fetchUserData - Failed with endpoint: ${endpoint} - Status: ${err.response?.status}`);
@@ -451,6 +452,7 @@ export default function UserProfilePopup({ user, onClose }) {
         if (response) {
           // Extract profile data from the nested structure
           const profileData = response.data.profile || response.data;
+          console.log('📊 UserProfilePopup fetchUserData - Extracted Profile Data:', profileData);
           
           const mappedUserData = {
             ...response.data,  // Store the complete response data

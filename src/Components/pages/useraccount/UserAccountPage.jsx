@@ -173,6 +173,7 @@ const UserAccountPage = () => {
               
             response = await axiosInstance.get(url);
             console.log('📊 UserAccountPage fetchUserData - API Response:', response.data);
+            console.log('📊 UserAccountPage fetchUserData - Profile Data:', response.data.profile);
             break;
           } catch (err) {
             console.error(`Error with endpoint ${endpoint}:`, err);
@@ -189,6 +190,7 @@ const UserAccountPage = () => {
         // Map API response to our state structure - Updated to match the actual API response fields
         // Extract profile data from the nested structure
         const profileData = response.data.profile || response.data;
+        console.log('📊 UserAccountPage fetchUserData - Extracted Profile Data:', profileData);
         
         const mappedUserData = {
           ...response.data,  // Store the complete response data
