@@ -899,8 +899,8 @@ const UserAccountPage = () => {
               </div>
             )}
 
-            {userData.email_verified && !userData.is_verified && (
-              <div className="banner admin-approval">
+            {userData.email_verified && (
+              <div className="banner email-verified">
                 <div className="banner-icon">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 12l2 2 4-4"/>
@@ -908,11 +908,11 @@ const UserAccountPage = () => {
                   </svg>
                 </div>
                 <div className="banner-content">
-                  <h3>Profile Under Review</h3>
-                  <p>Your email has been verified! Your profile is currently under review by our admin team. You'll receive a notification once it's approved.</p>
+                  <h3>Email Verified</h3>
+                  <p>Your email has been successfully verified!</p>
                   <div className="banner-status">
-                    <span className="status-indicator pending"></span>
-                    <span className="status-text">Pending Admin Approval</span>
+                    <span className="status-indicator verified"></span>
+                    <span className="status-text">Email Verified</span>
                   </div>
                 </div>
               </div>

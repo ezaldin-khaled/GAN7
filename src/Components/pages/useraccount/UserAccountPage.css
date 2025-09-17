@@ -453,6 +453,11 @@ body {
   background: linear-gradient(135deg, #dbeafe, #bfdbfe);
 }
 
+.banner.email-verified {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+
 .banner-icon {
   flex-shrink: 0;
   width: 48px;
@@ -473,6 +478,11 @@ body {
 .banner.admin-approval .banner-icon {
   color: #3b82f6;
   background: rgba(59, 130, 246, 0.1);
+}
+
+.banner.email-verified .banner-icon {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
 }
 
 .banner-content {
@@ -644,6 +654,10 @@ body {
 
 .banner .status-indicator.pending {
   background: #3b82f6;
+}
+
+.banner .status-indicator.verified {
+  background: #10b981;
 }
 
 .banner .status-text {
