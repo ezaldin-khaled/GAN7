@@ -603,7 +603,7 @@ const UserAccountPage = () => {
                 </div>
                 <div className="banner-content">
                   <h3>Email Verification Required</h3>
-                  <p>Please verify your email address to complete your profile setup and access all features.</p>
+                  <p>Email verification required please verify from your email.</p>
                   <button className="banner-action-btn">
                     Send Verification Email
                   </button>

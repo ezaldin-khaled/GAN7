@@ -907,11 +907,12 @@ export default function UserProfilePopup({ user, onClose }) {
                           <div className="state-content">
                             <h4 className="state-title">Email Verification Required</h4>
                             <p className="state-description">
-                              Please verify your email address to complete your profile setup and access all features.
+                              Email verification required please verify from your email.
                             </p>
-                            <button className="state-action-btn">
-                              Send Verification Email
-                            </button>
+                            <div className="state-status">
+                              <span className="status-indicator email-pending"></span>
+                              <span className="status-text">Email Not Verified</span>
+                            </div>
                           </div>
                         </div>
                       )}
