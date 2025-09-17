@@ -469,7 +469,32 @@ const UserAccountPage = () => {
         console.log('✅ Profile image upload successful');
       } else {
         console.warn('⚠️ No profile picture URL found in response');
-        setError('Profile image uploaded but URL not found in response. Please refresh the page.');
+        // Even if no URL in response, the upload might have succeeded
+        // Try to fetch the updated profile to get the new image
+        try {
+          console.log('🔄 Attempting to fetch updated profile...');
+          const profileResponse = await axiosInstance.get(endpoint);
+          const updatedProfilePicture = profileResponse.data.profile_picture || 
+                                      profileResponse.data.profile?.profile_picture;
+          
+          if (updatedProfilePicture) {
+            setProfileImage(updatedProfilePicture);
+            if (authUser) {
+              const updatedUser = {
+                ...authUser,
+                profilePic: updatedProfilePicture
+              };
+              updateUser(updatedUser);
+            }
+            setSuccessMessage('Profile image updated successfully!');
+            console.log('✅ Profile image retrieved from updated profile');
+          } else {
+            setError('Profile image uploaded but URL not found. Please refresh the page to see the changes.');
+          }
+        } catch (fetchError) {
+          console.error('❌ Failed to fetch updated profile:', fetchError);
+          setError('Profile image uploaded but URL not found. Please refresh the page to see the changes.');
+        }
       }
       
       setLoading(false);
@@ -477,6 +502,42 @@ const UserAccountPage = () => {
       console.error('❌ Error uploading profile image:', err);
       console.error('❌ Error response:', err.response?.data);
       console.error('❌ Error status:', err.response?.status);
+      
+      // Special handling for 400 errors - sometimes the upload succeeds but returns validation errors
+      if (err.response?.status === 400) {
+        console.log('🔄 Got 400 error, checking if upload actually succeeded...');
+        
+        // Try to fetch the current profile to see if the image was actually uploaded
+        try {
+          const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+          const isBackground = userInfo.is_background;
+          const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
+          
+          const profileResponse = await axiosInstance.get(endpoint);
+          const currentProfilePicture = profileResponse.data.profile_picture || 
+                                      profileResponse.data.profile?.profile_picture;
+          
+          if (currentProfilePicture && currentProfilePicture !== profileImage) {
+            // The image was actually uploaded successfully!
+            console.log('✅ Upload succeeded despite 400 error! New image:', currentProfilePicture);
+            setProfileImage(currentProfilePicture);
+            
+            if (authUser) {
+              const updatedUser = {
+                ...authUser,
+                profilePic: currentProfilePicture
+              };
+              updateUser(updatedUser);
+            }
+            
+            setSuccessMessage('Profile image updated successfully!');
+            setLoading(false);
+            return;
+          }
+        } catch (fetchError) {
+          console.error('❌ Failed to check if upload succeeded:', fetchError);
+        }
+      }
       
       // More detailed error handling
       let errorMessage = 'Failed to upload profile image. Please try again.';
@@ -494,11 +555,20 @@ const UserAccountPage = () => {
             ? errorData.profile_picture[0] 
             : errorData.profile_picture;
           
+          console.log('🔍 Profile picture error details:', profilePicError);
+          
           // Handle specific error messages
           if (profilePicError.includes('corrupted') || profilePicError.includes('not an image')) {
             errorMessage = 'The selected file appears to be corrupted or not a valid image. Please try a different image file.';
+          } else if (profilePicError.includes('size') || profilePicError.includes('too large')) {
+            errorMessage = 'Image file is too large. Please use an image smaller than 10MB.';
+          } else if (profilePicError.includes('format') || profilePicError.includes('type')) {
+            errorMessage = 'Invalid image format. Please use JPG, PNG, GIF, or WEBP format.';
           } else {
-            errorMessage = profilePicError;
+            // If it's a server validation error but the file seems valid, 
+            // and the image appears after refresh, it might be a temporary server issue
+            console.warn('⚠️ Server validation error but file appears valid:', profilePicError);
+            errorMessage = 'Image upload encountered a server validation issue. Please refresh the page to see if the image was uploaded successfully.';
           }
         } else if (errorData.error) {
           errorMessage = errorData.error;
