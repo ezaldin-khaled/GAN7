@@ -361,6 +361,67 @@ const UserAccountPage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Enhanced file validation
+    console.log('🖼️ File validation:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified
+    });
+
+    // Check if file is actually an image
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file (JPG, PNG, GIF, or WEBP)');
+      return;
+    }
+
+    // Check file size (10MB limit)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setError('Image file size must be less than 10MB');
+      return;
+    }
+
+    // Check for common image formats
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Image must be in JPG, PNG, GIF, or WEBP format');
+      return;
+    }
+
+    // Additional validation: Try to load the image to check if it's actually valid
+    const validateImageFile = (file) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(true);
+        };
+        
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error('File appears to be corrupted or not a valid image'));
+        };
+        
+        img.src = url;
+      });
+    };
+
+    try {
+      await validateImageFile(file);
+      console.log('✅ Image file validation passed');
+    } catch (validationError) {
+      console.error('❌ Image validation failed:', validationError);
+      setError(validationError.message);
+      return;
+    }
+
+    // Clear any previous errors
+    setError('');
+    setSuccessMessage('');
+
     const formData = new FormData();
     formData.append('profile_picture', file);
 
@@ -422,16 +483,30 @@ const UserAccountPage = () => {
       
       if (err.response?.data) {
         const errorData = err.response.data;
+        console.log('🔍 Error data structure:', errorData);
+        
         if (errorData.detail) {
           errorMessage = errorData.detail;
         } else if (errorData.message) {
           errorMessage = errorData.message;
         } else if (errorData.profile_picture) {
-          errorMessage = Array.isArray(errorData.profile_picture) 
+          const profilePicError = Array.isArray(errorData.profile_picture) 
             ? errorData.profile_picture[0] 
             : errorData.profile_picture;
+          
+          // Handle specific error messages
+          if (profilePicError.includes('corrupted') || profilePicError.includes('not an image')) {
+            errorMessage = 'The selected file appears to be corrupted or not a valid image. Please try a different image file.';
+          } else {
+            errorMessage = profilePicError;
+          }
         } else if (errorData.error) {
           errorMessage = errorData.error;
+        } else if (errorData.non_field_errors) {
+          const nonFieldError = Array.isArray(errorData.non_field_errors) 
+            ? errorData.non_field_errors[0] 
+            : errorData.non_field_errors;
+          errorMessage = nonFieldError;
         }
       } else if (err.message) {
         errorMessage = err.message;
