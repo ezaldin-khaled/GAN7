@@ -351,6 +351,59 @@
   }
 }
 
+/* Email Status Styles */
+.email-input-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.email-input-container input.verified {
+  border-color: #10b981;
+  background-color: #f0fdf4;
+}
+
+.email-input-container input.unverified {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+.email-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge.verified {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.status-badge.unverified {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.status-badge svg {
+  flex-shrink: 0;
+}
+
 /* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
   .specialization-form select,

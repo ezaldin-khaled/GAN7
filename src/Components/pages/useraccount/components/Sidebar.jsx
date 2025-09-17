@@ -120,6 +120,39 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
           </div>
           <h2 className="profile-name">{userData.fullName || `${userData.first_name || ''} ${userData.last_name || ''}`}</h2>
           <p className="profile-role">{userData.role || userData.account_type || 'User'}</p>
+          
+          {/* Verification Status */}
+          <div className="verification-status">
+            {!userData.email_verified && (
+              <div className="verification-badge email-pending">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>Email Verification Required</span>
+              </div>
+            )}
+            
+            {userData.email_verified && !userData.is_verified && (
+              <div className="verification-badge admin-pending">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4"/>
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+                <span>Profile Under Review</span>
+              </div>
+            )}
+            
+            {userData.email_verified && userData.is_verified && (
+              <div className="verification-badge verified">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4"/>
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+                <span>Profile Verified</span>
+              </div>
+            )}
+          </div>
         </div>
         
         <div className="sidebar-menu">

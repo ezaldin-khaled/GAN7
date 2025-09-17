@@ -106,8 +106,15 @@ export default function UserProfilePopup({ user, onClose }) {
         key: 'verification',
         label: 'Email Verification',
         weight: 10,
-        check: () => userData.isVerified,
+        check: () => userData.email_verified,
         description: 'Verify your email address'
+      },
+      {
+        key: 'adminApproval',
+        label: 'Admin Approval',
+        weight: 10,
+        check: () => userData.is_verified,
+        description: 'Profile approved by admin'
       },
       {
         key: 'subscription',
@@ -520,7 +527,8 @@ export default function UserProfilePopup({ user, onClose }) {
               phoneNumber: sourceUser.phone || sourceUser.phoneNumber || sourceUser.phone_number || '',
               bio: sourceUser.aboutyou || sourceUser.bio || sourceUser.description || '',
               username: sourceUser.username || sourceUser.email?.split('@')[0] || '',
-              isVerified: sourceUser.is_verified || sourceUser.isVerified || sourceUser.email_verified || false,
+              email_verified: sourceUser.email_verified || false,
+              is_verified: sourceUser.is_verified || false,
               isSubscribed: sourceUser.is_subscribed || sourceUser.isSubscribed || false,
               verifiedDate: sourceUser.verified_date || sourceUser.verifiedDate || "2 JAN, 2025",
               profile_picture: sourceUser.profile_picture || sourceUser.profilePic || null,
@@ -810,9 +818,14 @@ export default function UserProfilePopup({ user, onClose }) {
                 <EnvelopeIcon />
                       <div className="readonly-field-with-icon">{userData?.email}</div>
                     </div>
-                    {userData?.isVerified && (
+                    {userData?.email_verified && (
                       <div className="verified-badge-text">
-                        <VerifiedIcon /> VERIFIED {userData?.verifiedDate}
+                        <VerifiedIcon /> EMAIL VERIFIED {userData?.verifiedDate}
+              </div>
+                    )}
+                    {userData?.is_verified && (
+                      <div className="verified-badge-text">
+                        <VerifiedIcon /> PROFILE APPROVED
               </div>
                     )}
             </div>
@@ -879,6 +892,55 @@ export default function UserProfilePopup({ user, onClose }) {
                     ))}
                   </div>
                   
+                  {/* User Flow States */}
+                  {userData && (
+                    <div className="user-flow-states">
+                      {/* State 1: Email Not Verified */}
+                      {!userData.email_verified && (
+                        <div className="flow-state email-verification-prompt">
+                          <div className="state-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                              <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                          </div>
+                          <div className="state-content">
+                            <h4 className="state-title">Email Verification Required</h4>
+                            <p className="state-description">
+                              Please verify your email address to complete your profile setup and access all features.
+                            </p>
+                            <button className="state-action-btn">
+                              Send Verification Email
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* State 2: Email Verified, Pending Admin Approval */}
+                      {userData.email_verified && !userData.is_verified && (
+                        <div className="flow-state admin-approval-pending">
+                          <div className="state-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M9 12l2 2 4-4"/>
+                              <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                          </div>
+                          <div className="state-content">
+                            <h4 className="state-title">Profile Under Review</h4>
+                            <p className="state-description">
+                              Your email has been verified! Your profile is currently under review by our admin team. 
+                              You'll receive a notification once it's approved.
+                            </p>
+                            <div className="state-status">
+                              <span className="status-indicator pending"></span>
+                              <span className="status-text">Pending Admin Approval</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <div className="breakdown-summary">
                     <div className="summary-stats">
                       <div className="summary-item">

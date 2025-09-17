@@ -206,7 +206,9 @@ const UserAccountPage = () => {
           dateOfBirth: profileData.date_of_birth || '',
           country: profileData.country || '',
           phoneNumber: profileData.phone || '',
-          bio: profileData.aboutyou || ''
+          bio: profileData.aboutyou || '',
+          email_verified: profileData.email_verified || false,
+          is_verified: profileData.is_verified || false
         };
         
         console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
@@ -232,7 +234,9 @@ const UserAccountPage = () => {
               dateOfBirth: cachedUser.date_of_birth || '',
               country: cachedUser.country || '',
               phoneNumber: cachedUser.phone || '',
-              bio: cachedUser.aboutyou || ''
+              bio: cachedUser.aboutyou || '',
+              email_verified: cachedUser.email_verified || false,
+              is_verified: cachedUser.is_verified || false
             });
             setProfileImage(cachedUser.profilePic || null);
             setError(''); // Clear any previous errors
@@ -585,6 +589,49 @@ const UserAccountPage = () => {
       <div className="account-content">
         {error && <div className="error-message">{error}</div>}
         {successMessage && <div className="success-message">{successMessage}</div>}
+        
+        {/* Verification Status Banner */}
+        {userData && (
+          <div className="verification-banner">
+            {!userData.email_verified && (
+              <div className="banner email-verification">
+                <div className="banner-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <div className="banner-content">
+                  <h3>Email Verification Required</h3>
+                  <p>Please verify your email address to complete your profile setup and access all features.</p>
+                  <button className="banner-action-btn">
+                    Send Verification Email
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {userData.email_verified && !userData.is_verified && (
+              <div className="banner admin-approval">
+                <div className="banner-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 12l2 2 4-4"/>
+                    <circle cx="12" cy="12" r="10"/>
+                  </svg>
+                </div>
+                <div className="banner-content">
+                  <h3>Profile Under Review</h3>
+                  <p>Your email has been verified! Your profile is currently under review by our admin team. You'll receive a notification once it's approved.</p>
+                  <div className="banner-status">
+                    <span className="status-indicator pending"></span>
+                    <span className="status-text">Pending Admin Approval</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
         {renderTabContent()}
       </div>
     </div>

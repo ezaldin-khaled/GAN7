@@ -155,14 +155,36 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           
           <div className="form-group">
             <label>Email Address</label>
-            <input 
-              type="email" 
-              name="email" 
-              value={userData.email || ''} 
-              onChange={handleInputChange} 
-              disabled 
-              placeholder="Email address (verified)"
-            />
+            <div className="email-input-container">
+              <input 
+                type="email" 
+                name="email" 
+                value={userData.email || ''} 
+                onChange={handleInputChange} 
+                disabled 
+                placeholder="Email address"
+                className={userData.email_verified ? 'verified' : 'unverified'}
+              />
+              <div className="email-status">
+                {userData.email_verified ? (
+                  <span className="status-badge verified">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 12l2 2 4-4"/>
+                      <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    Email Verified
+                  </span>
+                ) : (
+                  <span className="status-badge unverified">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                      <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    Email Not Verified
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
