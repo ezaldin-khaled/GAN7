@@ -366,33 +366,78 @@ const UserAccountPage = () => {
 
     try {
       setLoading(true);
+      setError(''); // Clear any previous errors
+      setSuccessMessage(''); // Clear any previous success messages
       
       // Get user type to determine correct endpoint
       const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
       const isBackground = userInfo.is_background;
       const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
       
+      console.log('🖼️ Uploading profile image to:', endpoint);
+      console.log('🖼️ File details:', { name: file.name, size: file.size, type: file.type });
+      
       // Use POST instead of PUT for updating the profile picture
       const response = await axiosInstance.post(endpoint, formData);
       
-      // Update the profile image with the response URL
-      const newProfilePicture = response.data.profile_picture;
-      setProfileImage(newProfilePicture);
+      console.log('🖼️ Upload response:', response.data);
       
-      // Update the AuthContext user data with the new profile picture
-      if (authUser) {
-        const updatedUser = {
-          ...authUser,
-          profilePic: newProfilePicture
-        };
-        updateUser(updatedUser);
+      // Extract profile picture URL from response - try multiple possible paths
+      const newProfilePicture = response.data.profile_picture || 
+                               response.data.profile?.profile_picture || 
+                               response.data.profile_picture_url ||
+                               response.data.image_url;
+      
+      console.log('🖼️ Extracted profile picture URL:', newProfilePicture);
+      
+      if (newProfilePicture) {
+        // Update the profile image with the response URL
+        setProfileImage(newProfilePicture);
+        
+        // Update the AuthContext user data with the new profile picture
+        if (authUser) {
+          const updatedUser = {
+            ...authUser,
+            profilePic: newProfilePicture
+          };
+          console.log('🔄 Updating AuthContext with new profile picture:', newProfilePicture);
+          updateUser(updatedUser);
+        }
+        
+        setSuccessMessage('Profile image updated successfully!');
+        console.log('✅ Profile image upload successful');
+      } else {
+        console.warn('⚠️ No profile picture URL found in response');
+        setError('Profile image uploaded but URL not found in response. Please refresh the page.');
       }
       
-      setSuccessMessage('Profile image updated successfully!');
       setLoading(false);
     } catch (err) {
-      console.error('Error uploading profile image:', err);
-      setError(err.response?.data?.detail || err.response?.data?.message || 'Failed to upload profile image. Please try again.');
+      console.error('❌ Error uploading profile image:', err);
+      console.error('❌ Error response:', err.response?.data);
+      console.error('❌ Error status:', err.response?.status);
+      
+      // More detailed error handling
+      let errorMessage = 'Failed to upload profile image. Please try again.';
+      
+      if (err.response?.data) {
+        const errorData = err.response.data;
+        if (errorData.detail) {
+          errorMessage = errorData.detail;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.profile_picture) {
+          errorMessage = Array.isArray(errorData.profile_picture) 
+            ? errorData.profile_picture[0] 
+            : errorData.profile_picture;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };

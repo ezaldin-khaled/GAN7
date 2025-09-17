@@ -22,11 +22,15 @@ const useImageWithRetry = (imageUrl, maxRetries = 5) => {
       if (!isMounted) return;
 
       setIsLoading(true);
+      setUseFallback(false);
       const img = new Image();
+
+      // Add cache busting for new uploads
+      const cacheBustedUrl = url.includes('?') ? `${url}&t=${Date.now()}` : `${url}?t=${Date.now()}`;
 
       img.onload = () => {
         if (isMounted) {
-          setImageSrc(url);
+          setImageSrc(cacheBustedUrl);
           setIsLoading(false);
           setRetryCount(0);
           setUseFallback(false);
@@ -35,7 +39,7 @@ const useImageWithRetry = (imageUrl, maxRetries = 5) => {
 
       img.onerror = () => {
         if (isMounted) {
-          console.warn(`Failed to load image: ${url}, attempt ${retryAttempt + 1}/${maxRetries}`);
+          console.warn(`Failed to load image: ${cacheBustedUrl}, attempt ${retryAttempt + 1}/${maxRetries}`);
           
           if (retryAttempt < maxRetries - 1) {
             // Retry after a short delay (exponential backoff)
@@ -48,7 +52,7 @@ const useImageWithRetry = (imageUrl, maxRetries = 5) => {
             }, delay);
           } else {
             // Max retries reached, use solid color fallback
-            console.error(`Failed to load image after ${maxRetries} attempts: ${url}`);
+            console.error(`Failed to load image after ${maxRetries} attempts: ${cacheBustedUrl}`);
             setImageSrc(null);
             setUseFallback(true);
             setIsLoading(false);
@@ -57,7 +61,7 @@ const useImageWithRetry = (imageUrl, maxRetries = 5) => {
         }
       };
 
-      img.src = url;
+      img.src = cacheBustedUrl;
     };
 
     loadImage(imageUrl);
