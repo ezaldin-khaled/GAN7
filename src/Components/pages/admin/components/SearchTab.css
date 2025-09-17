@@ -204,7 +204,7 @@
   height: 16px;
   cursor: pointer;
   border: 1px solid #d1d5db;
-  border-radius: 3px;
+  border-radius: 50%;
   background-color: white;
   transition: all 0.2s ease;
   position: relative;
@@ -658,7 +658,7 @@
   height: 16px;
   cursor: pointer;
   border: 1px solid #d1d5db;
-  border-radius: 3px;
+  border-radius: 50%;
   background-color: white;
   transition: all 0.2s ease;
   position: relative;
