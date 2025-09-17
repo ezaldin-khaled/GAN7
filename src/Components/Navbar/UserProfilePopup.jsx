@@ -190,20 +190,22 @@ export default function UserProfilePopup({ user, onClose }) {
     setError(null);
 
     try {
-      const response = await axiosInstance.post('/api/auth/verify-email/', {
-        verification_code: verificationCode
+      const response = await axiosInstance.post('/api/verify-code/', {
+        email: userData?.email,
+        code: verificationCode
       });
 
-      if (response.status === 200) {
-        setMediaSuccess('Email verified successfully!');
+      if (response.status === 200 && response.data.success) {
+        setMediaSuccess(response.data.message || 'Email verified successfully!');
         setVerificationCode('');
         // Refresh user data to update verification status
         await fetchUserData();
+      } else {
+        setError(response.data.message || 'Failed to verify email. Please try again.');
       }
     } catch (err) {
       console.error('Error verifying email:', err);
-      const errorMessage = err.response?.data?.detail || 
-                          err.response?.data?.message || 
+      const errorMessage = err.response?.data?.message || 
                           'Failed to verify email. Please check your code and try again.';
       setError(errorMessage);
     } finally {
@@ -216,15 +218,18 @@ export default function UserProfilePopup({ user, onClose }) {
     setError(null);
 
     try {
-      const response = await axiosInstance.post('/api/auth/resend-verification/');
+      const response = await axiosInstance.post('/api/resend-code/', {
+        email: userData?.email
+      });
       
-      if (response.status === 200) {
-        setMediaSuccess('Verification code sent to your email!');
+      if (response.status === 200 && response.data.success) {
+        setMediaSuccess(response.data.message || 'Verification code sent to your email!');
+      } else {
+        setError(response.data.message || 'Failed to resend verification code. Please try again.');
       }
     } catch (err) {
       console.error('Error resending verification code:', err);
-      const errorMessage = err.response?.data?.detail || 
-                          err.response?.data?.message || 
+      const errorMessage = err.response?.data?.message || 
                           'Failed to resend verification code. Please try again.';
       setError(errorMessage);
     } finally {
