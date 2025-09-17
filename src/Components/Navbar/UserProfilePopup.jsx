@@ -47,6 +47,8 @@ export default function UserProfilePopup({ user, onClose }) {
   const [mediaLoading, setMediaLoading] = useState(false);
   const [mediaError, setMediaError] = useState(null);
   const [mediaSuccess, setMediaSuccess] = useState(null);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationLoading, setVerificationLoading] = useState(false);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
@@ -176,6 +178,58 @@ export default function UserProfilePopup({ user, onClose }) {
     
     // Navigate to login page
     navigate('/login');
+  };
+
+  const handleVerifyCode = async () => {
+    if (!verificationCode || verificationCode.length < 4) {
+      setError('Please enter a valid verification code');
+      return;
+    }
+
+    setVerificationLoading(true);
+    setError(null);
+
+    try {
+      const response = await axiosInstance.post('/api/auth/verify-email/', {
+        verification_code: verificationCode
+      });
+
+      if (response.status === 200) {
+        setMediaSuccess('Email verified successfully!');
+        setVerificationCode('');
+        // Refresh user data to update verification status
+        await fetchUserData();
+      }
+    } catch (err) {
+      console.error('Error verifying email:', err);
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          'Failed to verify email. Please check your code and try again.';
+      setError(errorMessage);
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setVerificationLoading(true);
+    setError(null);
+
+    try {
+      const response = await axiosInstance.post('/api/auth/resend-verification/');
+      
+      if (response.status === 200) {
+        setMediaSuccess('Verification code sent to your email!');
+      }
+    } catch (err) {
+      console.error('Error resending verification code:', err);
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          'Failed to resend verification code. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setVerificationLoading(false);
+    }
   };
 
   // File validation function
@@ -907,8 +961,31 @@ export default function UserProfilePopup({ user, onClose }) {
                           <div className="state-content">
                             <h4 className="state-title">Email Verification Required</h4>
                             <p className="state-description">
-                              Email verification required please verify from your email.
+                              Please enter the verification code sent to your email.
                             </p>
+                            <div className="verification-code-container">
+                              <input 
+                                type="text" 
+                                className="verification-code-input"
+                                placeholder="Enter verification code"
+                                maxLength="6"
+                                value={verificationCode}
+                                onChange={(e) => setVerificationCode(e.target.value)}
+                              />
+                              <button 
+                                className="verify-code-btn"
+                                onClick={handleVerifyCode}
+                                disabled={!verificationCode || verificationCode.length < 4}
+                              >
+                                Verify Code
+                              </button>
+                            </div>
+                            <button 
+                              className="resend-code-btn"
+                              onClick={handleResendCode}
+                            >
+                              Resend Code
+                            </button>
                             <div className="state-status">
                               <span className="status-indicator email-pending"></span>
                               <span className="status-text">Email Not Verified</span>

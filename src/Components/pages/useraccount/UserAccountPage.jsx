@@ -38,6 +38,8 @@ const UserAccountPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [mediaFiles, setMediaFiles] = useState([]);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationLoading, setVerificationLoading] = useState(false);
   const navigate = useNavigate();
 
   // Add this useEffect to handle tab close/refresh
@@ -749,6 +751,58 @@ const UserAccountPage = () => {
     }
   };
 
+  const handleVerifyCode = async () => {
+    if (!verificationCode || verificationCode.length < 4) {
+      setError('Please enter a valid verification code');
+      return;
+    }
+
+    setVerificationLoading(true);
+    setError('');
+
+    try {
+      const response = await axiosInstance.post('/api/auth/verify-email/', {
+        verification_code: verificationCode
+      });
+
+      if (response.status === 200) {
+        setSuccessMessage('Email verified successfully!');
+        setVerificationCode('');
+        // Refresh user data to update verification status
+        await fetchUserData();
+      }
+    } catch (err) {
+      console.error('Error verifying email:', err);
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          'Failed to verify email. Please check your code and try again.';
+      setError(errorMessage);
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setVerificationLoading(true);
+    setError('');
+
+    try {
+      const response = await axiosInstance.post('/api/auth/resend-verification/');
+      
+      if (response.status === 200) {
+        setSuccessMessage('Verification code sent to your email!');
+      }
+    } catch (err) {
+      console.error('Error resending verification code:', err);
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          'Failed to resend verification code. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
   const renderTabContent = () => {
     const tabs = {
       profile: <ProfileTab userData={userData} handleInputChange={handleInputChange} handleSaveChanges={handleSaveChanges} loading={loading} />,
@@ -793,9 +847,29 @@ const UserAccountPage = () => {
                 </div>
                 <div className="banner-content">
                   <h3>Email Verification Required</h3>
-                  <p>Email verification required please verify from your email.</p>
-                  <button className="banner-action-btn">
-                    Send Verification Email
+                  <p>Please enter the verification code sent to your email.</p>
+                  <div className="verification-code-container">
+                    <input 
+                      type="text" 
+                      className="verification-code-input"
+                      placeholder="Enter verification code"
+                      maxLength="6"
+                      value={verificationCode}
+                      onChange={(e) => setVerificationCode(e.target.value)}
+                    />
+                    <button 
+                      className="verify-code-btn"
+                      onClick={handleVerifyCode}
+                      disabled={!verificationCode || verificationCode.length < 4}
+                    >
+                      Verify Code
+                    </button>
+                  </div>
+                  <button 
+                    className="resend-code-btn"
+                    onClick={handleResendCode}
+                  >
+                    Resend Code
                   </button>
                 </div>
               </div>
