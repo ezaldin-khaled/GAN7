@@ -589,10 +589,18 @@ body {
   align-self: flex-start;
 }
 
-.resend-code-btn:hover {
+.resend-code-btn:hover:not(:disabled) {
   background: #f59e0b;
   color: white;
   transform: translateY(-1px);
+}
+
+.resend-code-btn:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  border-color: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Mobile Responsive Styles for Verification Code */

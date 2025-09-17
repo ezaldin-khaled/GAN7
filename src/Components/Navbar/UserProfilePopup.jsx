@@ -214,22 +214,40 @@ export default function UserProfilePopup({ user, onClose }) {
   };
 
   const handleResendCode = async () => {
+    // Check if email is available
+    if (!userData?.email) {
+      setError('Email address not found. Please refresh the page and try again.');
+      return;
+    }
+
     setVerificationLoading(true);
     setError(null);
+    setMediaSuccess(null);
+
+    console.log('🔄 Resending verification code to:', userData.email);
 
     try {
       const response = await axiosInstance.post('/api/resend-code/', {
-        email: userData?.email
+        email: userData.email
       });
+      
+      console.log('📧 Resend code response:', response.data);
       
       if (response.status === 200 && response.data.success) {
         setMediaSuccess(response.data.message || 'Verification code sent to your email!');
+        console.log('✅ Verification code sent successfully');
       } else {
-        setError(response.data.message || 'Failed to resend verification code. Please try again.');
+        const errorMsg = response.data.message || 'Failed to resend verification code. Please try again.';
+        setError(errorMsg);
+        console.error('❌ Resend failed:', errorMsg);
       }
     } catch (err) {
-      console.error('Error resending verification code:', err);
+      console.error('❌ Error resending verification code:', err);
+      console.error('❌ Error response:', err.response?.data);
+      console.error('❌ Error status:', err.response?.status);
+      
       const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.detail ||
                           'Failed to resend verification code. Please try again.';
       setError(errorMessage);
     } finally {
@@ -988,8 +1006,9 @@ export default function UserProfilePopup({ user, onClose }) {
                             <button 
                               className="resend-code-btn"
                               onClick={handleResendCode}
+                              disabled={verificationLoading}
                             >
-                              Resend Code
+                              {verificationLoading ? 'Sending...' : 'Resend Code'}
                             </button>
                             <div className="state-status">
                               <span className="status-indicator email-pending"></span>
