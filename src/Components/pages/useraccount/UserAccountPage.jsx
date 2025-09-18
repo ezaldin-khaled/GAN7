@@ -857,6 +857,47 @@ const UserAccountPage = () => {
         {error && <div className="error-message">{error}</div>}
         {successMessage && <div className="success-message">{successMessage}</div>}
         
+        {/* Verification Status Banner - Only show for unverified users */}
+        {userData && !userData.email_verified && (
+          <div className="verification-banner">
+            <div className="banner email-verification">
+              <div className="banner-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div className="banner-content">
+                <h3>Email Verification Required</h3>
+                <p>Please enter the verification code sent to your email.</p>
+                <div className="verification-code-container">
+                  <input 
+                    type="text" 
+                    className="verification-code-input"
+                    placeholder="Enter verification code"
+                    maxLength="6"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                  />
+                  <button 
+                    className="verify-code-btn"
+                    onClick={handleVerifyCode}
+                    disabled={!verificationCode || verificationCode.length < 4}
+                  >
+                    Verify Code
+                  </button>
+                </div>
+                <button 
+                  className="resend-code-btn"
+                  onClick={handleResendCode}
+                  disabled={verificationLoading}
+                >
+                  {verificationLoading ? 'Sending...' : 'Resend Code'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         
         {renderTabContent()}
       </div>
