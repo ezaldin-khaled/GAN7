@@ -282,7 +282,7 @@ const AdminDashboard = () => {
     }
 
     // Calculate pagination info
-    const totalPages = Math.ceil(totalResults / 20);
+    const totalPages = Math.ceil(totalResults / 10);
     const hasNextPage = searchPage < totalPages;
     const hasPrevPage = searchPage > 1;
 
@@ -293,7 +293,7 @@ const AdminDashboard = () => {
             Found {totalResults.toLocaleString()} results
             {totalPages > 1 && (
               <span className="page-info">
-                (Page {searchPage} of {totalPages})
+                (Page {searchPage} of {totalPages} - Showing {((searchPage - 1) * 10) + 1} to {Math.min(searchPage * 10, totalResults)} of {totalResults})
               </span>
             )}
           </div>

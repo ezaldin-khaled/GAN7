@@ -412,7 +412,7 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
   const [searchParams, setSearchParams] = useState({
     profile_type: 'talent',
     page: searchPage,
-    page_size: 20,
+    page_size: 10,
     query: '',
     sort_by: 'relevance',
     sort_order: 'desc',
@@ -883,12 +883,12 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
       )}
 
       {/* Pagination Controls */}
-      {results.length > 0 && totalResults > searchParams.page_size && (
+      {results.length > 0 && totalResults > 10 && (
         <div className="search-pagination" role="navigation" aria-label="Search results pagination">
           <div className="pagination-info">
             <span>
-              Showing {((searchParams.page - 1) * searchParams.page_size) + 1} to{' '}
-              {Math.min(searchParams.page * searchParams.page_size, totalResults)} of{' '}
+              Showing {((searchParams.page - 1) * 10) + 1} to{' '}
+              {Math.min(searchParams.page * 10, totalResults)} of{' '}
               {totalResults.toLocaleString()} results
             </span>
           </div>
@@ -905,7 +905,7 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
             
             <div className="page-numbers">
               {(() => {
-                const totalPages = Math.ceil(totalResults / searchParams.page_size);
+                const totalPages = Math.ceil(totalResults / 10);
                 const currentPage = searchParams.page;
                 const pages = [];
                 
@@ -961,7 +961,7 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
             
             <button
               onClick={() => onPageChange && onPageChange(searchParams.page + 1)}
-              disabled={searchParams.page >= Math.ceil(totalResults / searchParams.page_size)}
+              disabled={searchParams.page >= Math.ceil(totalResults / 10)}
               className="pagination-btn next"
               aria-label="Next page"
             >
