@@ -77,25 +77,24 @@
   margin: 15px 0;
 }
 
-/* Ensure checkbox is perfectly circular - More specific selectors */
+/* Custom Circular Checkbox for SpecializationTab */
 .checkbox-group .checkbox-label input[type="checkbox"],
 .form-group.checkbox-group .checkbox-label input[type="checkbox"],
 .specialization-tab .checkbox-label input[type="checkbox"],
 .specialization-form .checkbox-label input[type="checkbox"] {
-  border-radius: 50% !important;
+  /* Hide the default checkbox completely */
+  opacity: 0 !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
   appearance: none !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   -ms-appearance: none !important;
-  background-image: none !important;
-  background-color: #fff !important;
-  border: 2px solid #ddd !important;
-  width: 20px !important;
-  height: 20px !important;
-  min-width: 20px !important;
-  min-height: 20px !important;
-  max-width: 20px !important;
-  max-height: 20px !important;
 }
 
 .checkbox-label {
