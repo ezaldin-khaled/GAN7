@@ -291,15 +291,6 @@ const AdminDashboard = () => {
     return (
       <>
         <div className="results-header">
-          <div className="results-count">
-            Found {totalResults.toLocaleString()} results
-            <span style={{color: 'red', fontWeight: 'bold'}}> | Currently showing: {searchResults.length} results</span>
-            {totalPages > 1 && (
-              <span className="page-info">
-                (Page {searchPage} of {totalPages} - Showing {((searchPage - 1) * 10) + 1} to {Math.min(searchPage * 10, totalResults)} of {totalResults})
-              </span>
-            )}
-          </div>
           {totalPages > 1 && (
             <div className="pagination" role="navigation" aria-label="Pagination">
               <button
