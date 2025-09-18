@@ -421,6 +421,7 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
 
   // Results state
   const [results, setResults] = useState([]);
+  const [allResults, setAllResults] = useState([]); // Store all results for client-side pagination
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -443,8 +444,20 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
       page: searchPage
     }));
     
-    // If we have results and the page changed, perform a new search
-    if (results.length > 0 && searchPage !== prevPage) {
+    // If we have stored results (client-side pagination), slice them
+    if (allResults.length > 0 && searchPage !== prevPage) {
+      const startIndex = (searchPage - 1) * 10;
+      const endIndex = startIndex + 10;
+      const paginatedResults = allResults.slice(startIndex, endIndex);
+      
+      console.log(`Client-side pagination - Page ${searchPage}: Showing results ${startIndex + 1} to ${endIndex} of ${allResults.length}`);
+      console.log('Paginated results:', paginatedResults);
+      
+      setResults(paginatedResults);
+      onSearchResults(paginatedResults, allResults.length, false, null);
+    }
+    // If we have results but no stored results (server-side pagination), perform a new search
+    else if (results.length > 0 && allResults.length === 0 && searchPage !== prevPage) {
       performSearch();
     }
     
@@ -508,6 +521,7 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
     try {
       setLoading(true);
       setError(null);
+      setAllResults([]); // Clear stored results for new search
 
       console.log('=== PERFORMING SEARCH ===');
       console.log('Search params:', searchParams);
@@ -594,7 +608,7 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
         
         if (response.data && Array.isArray(response.data)) {
           // Transform users data to match search results format
-          const transformedResults = response.data.map((user, index) => ({
+          const allTransformedResults = response.data.map((user, index) => ({
             id: user.id,
             name: user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.username || user.email,
             title: user.username || user.email,
@@ -614,13 +628,24 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
             media_items: user.media_items || []
           }));
           
-          console.log('Transformed results:', transformedResults);
+          console.log('All transformed results:', allTransformedResults);
           
-          setResults(transformedResults);
-          setTotalResults(transformedResults.length);
+          // Store all results for client-side pagination
+          setAllResults(allTransformedResults);
+          setTotalResults(allTransformedResults.length);
+          
+          // Implement client-side pagination
+          const startIndex = (searchParams.page - 1) * 10;
+          const endIndex = startIndex + 10;
+          const paginatedResults = allTransformedResults.slice(startIndex, endIndex);
+          
+          console.log(`Page ${searchParams.page}: Showing results ${startIndex + 1} to ${endIndex} of ${allTransformedResults.length}`);
+          console.log('Paginated results:', paginatedResults);
+          
+          setResults(paginatedResults);
           
           // Pass results to parent component
-          onSearchResults(transformedResults, transformedResults.length, false, null);
+          onSearchResults(paginatedResults, allTransformedResults.length, false, null);
         } else {
           throw new Error('Failed to fetch users data');
         }
