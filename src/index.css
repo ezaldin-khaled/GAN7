@@ -80,21 +80,29 @@ a{
   color: #6D0098;
 }
 
-/* Global Checkbox Styling */
+/* Global Checkbox Styling - Force circular shape */
 input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 20px !important;
+  height: 20px !important;
   cursor: pointer;
-  border: 2px solid #ddd;
-  border-radius: 50%;
-  background-color: #fff;
+  border: 2px solid #ddd !important;
+  border-radius: 50% !important;
+  background-color: #fff !important;
+  background-image: none !important;
   transition: all 0.2s ease;
   position: relative;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  -ms-appearance: none !important;
   margin: 0;
   padding: 0;
+  box-sizing: border-box !important;
+  flex-shrink: 0;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
 }
 
 input[type="checkbox"]:checked {

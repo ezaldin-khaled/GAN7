@@ -121,12 +121,24 @@
   width: 100%;
 }
 
-/* Ensure checkbox is perfectly circular */
-.form-group .checkbox-label input[type="checkbox"] {
+/* Ensure checkbox is perfectly circular - More specific selectors */
+.form-group .checkbox-label input[type="checkbox"],
+.modal-content .checkbox-label input[type="checkbox"],
+.worker-profile-form .checkbox-label input[type="checkbox"] {
   border-radius: 50% !important;
   appearance: none !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
+  -ms-appearance: none !important;
+  background-image: none !important;
+  background-color: #fff !important;
+  border: 2px solid #ddd !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
 }
 
 .checkbox-label {
