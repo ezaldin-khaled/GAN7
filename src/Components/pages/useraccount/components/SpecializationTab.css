@@ -77,6 +77,15 @@
   margin: 15px 0;
 }
 
+/* Ensure checkbox is perfectly circular */
+.checkbox-group .checkbox-label input[type="checkbox"],
+.form-group.checkbox-group .checkbox-label input[type="checkbox"] {
+  border-radius: 50% !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -94,15 +103,17 @@
   height: 20px;
   cursor: pointer;
   border: 2px solid #ddd;
-  border-radius: 50%;
+  border-radius: 50% !important;
   background-color: #fff;
   transition: all 0.2s ease;
   position: relative;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .checkbox-label input[type="checkbox"]:checked {
