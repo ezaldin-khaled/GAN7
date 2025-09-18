@@ -589,8 +589,31 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
         }
 
         if (response.data.success) {
-          setResults(response.data.results);
-          setTotalResults(response.data.count);
+          console.log('Server-side search succeeded, results count:', response.data.results.length);
+          
+          // If server returns all results (not paginated), implement client-side pagination
+          if (response.data.results.length > 10) {
+            console.log('Server returned all results, implementing client-side pagination');
+            setAllResults(response.data.results);
+            setTotalResults(response.data.count);
+            
+            // Implement client-side pagination
+            const startIndex = (searchParams.page - 1) * 10;
+            const endIndex = startIndex + 10;
+            const paginatedResults = response.data.results.slice(startIndex, endIndex);
+            
+            console.log(`Server-side client pagination - Page ${searchParams.page}: Showing results ${startIndex + 1} to ${endIndex} of ${response.data.results.length}`);
+            console.log('Paginated results:', paginatedResults);
+            
+            setResults(paginatedResults);
+            onSearchResults(paginatedResults, response.data.count, false, null);
+          } else {
+            // Server returned paginated results
+            console.log('Server returned paginated results');
+            setResults(response.data.results);
+            setTotalResults(response.data.count);
+            onSearchResults(response.data.results, response.data.count, false, null);
+          }
           
           // Process media if include_media was enabled
           if (searchParams.include_media) {
@@ -599,8 +622,6 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
             console.log('Shareable media:', shareableMedia);
           }
           
-          // Pass results to parent component
-          onSearchResults(response.data.results, response.data.count, false, null);
           return; // Success, exit early
         } else {
           throw new Error('Search failed: ' + (response.data.error || 'Unknown error'));
