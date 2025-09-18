@@ -436,6 +436,12 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
   // Use ref to track previous page to avoid dependency issues
   const prevPageRef = useRef(searchPage);
 
+  // Auto-perform search when component mounts
+  useEffect(() => {
+    console.log('=== SEARCHTAB MOUNTED - AUTO SEARCH ===');
+    performSearch();
+  }, []);
+
   // Sync search page with parent component and trigger search when page changes
   useEffect(() => {
     const prevPage = prevPageRef.current;

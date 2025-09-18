@@ -180,6 +180,7 @@ const AdminDashboard = () => {
 
   const handleSearchResults = (results, total, loading, error) => {
     console.log('=== SEARCH RESULTS RECEIVED ===');
+    console.log('Results count:', results ? results.length : 0);
     console.log('Results:', results);
     console.log('Total:', total);
     console.log('Loading:', loading);
@@ -188,6 +189,7 @@ const AdminDashboard = () => {
     if (results && results.length > 0) {
       console.log('First result structure:', results[0]);
       console.log('Available keys in first result:', Object.keys(results[0]));
+      console.log('SHOULD ONLY SHOW 10 RESULTS, ACTUAL COUNT:', results.length);
     }
     
     setSearchResults(results);
