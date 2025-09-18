@@ -133,17 +133,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
               </div>
             )}
             
-            {userData.email_verified && !userData.is_verified && (
-              <div className="verification-badge admin-pending">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 12l2 2 4-4"/>
-                  <circle cx="12" cy="12" r="10"/>
-                </svg>
-                <span>Profile Under Review</span>
-              </div>
-            )}
-            
-            {userData.email_verified && userData.is_verified && (
+            {userData.email_verified && (
               <div className="verified-symbol">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 12l2 2 4-4"/>
