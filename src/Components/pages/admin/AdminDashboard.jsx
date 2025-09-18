@@ -196,6 +196,13 @@ const AdminDashboard = () => {
     setSearchError(error);
   };
 
+  const handlePageChange = (newPage) => {
+    console.log('=== PAGE CHANGE REQUESTED ===');
+    console.log('Current page:', searchPage);
+    console.log('New page:', newPage);
+    setSearchPage(newPage);
+  };
+
   const handleViewProfile = (user) => {
     console.log('=== ADMIN DASHBOARD HANDLE VIEW PROFILE ===');
     console.log('User data received:', user);
@@ -567,7 +574,7 @@ const AdminDashboard = () => {
             onSearchResults={handleSearchResults} 
             onViewProfile={handleViewProfile}
             searchPage={searchPage}
-            onPageChange={setSearchPage}
+            onPageChange={handlePageChange}
           />
         </aside>
         {/* Main Content */}

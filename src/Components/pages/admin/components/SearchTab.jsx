@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaFilter, FaSort, FaTimes, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import UserSummaryPopup from './UserSummaryPopup';
@@ -431,13 +431,25 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
 
   // Add new state for active filters display
   const [activeFilters, setActiveFilters] = useState([]);
+  
+  // Use ref to track previous page to avoid dependency issues
+  const prevPageRef = useRef(searchPage);
 
-  // Sync search page with parent component
+  // Sync search page with parent component and trigger search when page changes
   useEffect(() => {
+    const prevPage = prevPageRef.current;
     setSearchParams(prev => ({
       ...prev,
       page: searchPage
     }));
+    
+    // If we have results and the page changed, perform a new search
+    if (results.length > 0 && searchPage !== prevPage) {
+      performSearch();
+    }
+    
+    // Update the ref
+    prevPageRef.current = searchPage;
   }, [searchPage]);
 
   const toggleSection = (sectionId) => {
@@ -867,6 +879,95 @@ const SearchTab = ({ onSearchResults, onViewProfile, searchPage = 1, onPageChang
       {error && (
         <div className="search-error" role="alert">
           {error}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {results.length > 0 && totalResults > searchParams.page_size && (
+        <div className="search-pagination" role="navigation" aria-label="Search results pagination">
+          <div className="pagination-info">
+            <span>
+              Showing {((searchParams.page - 1) * searchParams.page_size) + 1} to{' '}
+              {Math.min(searchParams.page * searchParams.page_size, totalResults)} of{' '}
+              {totalResults.toLocaleString()} results
+            </span>
+          </div>
+          
+          <div className="pagination-controls">
+            <button
+              onClick={() => onPageChange && onPageChange(searchParams.page - 1)}
+              disabled={searchParams.page <= 1}
+              className="pagination-btn prev"
+              aria-label="Previous page"
+            >
+              Previous
+            </button>
+            
+            <div className="page-numbers">
+              {(() => {
+                const totalPages = Math.ceil(totalResults / searchParams.page_size);
+                const currentPage = searchParams.page;
+                const pages = [];
+                
+                // Show first page
+                if (currentPage > 3) {
+                  pages.push(
+                    <button
+                      key={1}
+                      onClick={() => onPageChange && onPageChange(1)}
+                      className="page-number"
+                    >
+                      1
+                    </button>
+                  );
+                  if (currentPage > 4) {
+                    pages.push(<span key="ellipsis1" className="ellipsis">...</span>);
+                  }
+                }
+                
+                // Show pages around current page
+                for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => onPageChange && onPageChange(i)}
+                      className={`page-number ${i === currentPage ? 'active' : ''}`}
+                      aria-current={i === currentPage ? 'page' : undefined}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+                
+                // Show last page
+                if (currentPage < totalPages - 2) {
+                  if (currentPage < totalPages - 3) {
+                    pages.push(<span key="ellipsis2" className="ellipsis">...</span>);
+                  }
+                  pages.push(
+                    <button
+                      key={totalPages}
+                      onClick={() => onPageChange && onPageChange(totalPages)}
+                      className="page-number"
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+                
+                return pages;
+              })()}
+            </div>
+            
+            <button
+              onClick={() => onPageChange && onPageChange(searchParams.page + 1)}
+              disabled={searchParams.page >= Math.ceil(totalResults / searchParams.page_size)}
+              className="pagination-btn next"
+              aria-label="Next page"
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -780,4 +780,146 @@
   .no-results {
     padding: 20px;
   }
+}
+
+/* Enhanced Pagination Controls */
+.search-pagination {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-info {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: #7c2cfcc4;
+  color: #7c2cfcc4;
+  background: rgba(124, 44, 252, 0.05);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f9fafb;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 16px;
+}
+
+.page-number {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 40px;
+  text-align: center;
+}
+
+.page-number:hover {
+  border-color: #7c2cfcc4;
+  color: #7c2cfcc4;
+  background: rgba(124, 44, 252, 0.05);
+}
+
+.page-number.active {
+  background: #7c2cfcc4;
+  color: white;
+  border-color: #7c2cfcc4;
+  font-weight: 600;
+}
+
+.page-number.active:hover {
+  background: #6b21a8;
+  border-color: #6b21a8;
+}
+
+.ellipsis {
+  padding: 8px 4px;
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Responsive Pagination */
+@media (max-width: 768px) {
+  .search-pagination {
+    padding: 16px;
+  }
+  
+  .pagination-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .page-numbers {
+    margin: 0;
+    order: -1;
+  }
+  
+  .pagination-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .page-number {
+    min-width: 36px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  
+  .pagination-info {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-numbers {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .page-number {
+    min-width: 32px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
 } 
