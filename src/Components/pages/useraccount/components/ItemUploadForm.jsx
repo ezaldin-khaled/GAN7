@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { FaUpload, FaTimes } from 'react-icons/fa';
-import './GroupsTab.css'; // Reusing existing form styles
+import { FaUpload, FaTimes, FaImage, FaFileUpload } from 'react-icons/fa';
+import './ItemUploadForm.css';
 import axiosInstance from '../../../../api/axios';
 
 const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
@@ -156,7 +156,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
     switch (formData.item_type) {
       case 'prop':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="material">Material</label>
               <input
@@ -165,7 +165,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="material"
                 value={formData.material}
                 onChange={handleInputChange}
-                placeholder="Enter material"
+                placeholder="e.g., Wood, Metal, Plastic"
               />
             </div>
             <div className="form-group">
@@ -176,35 +176,48 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="used_in_movie"
                 value={formData.used_in_movie}
                 onChange={handleInputChange}
-                placeholder="Enter movie name"
+                placeholder="e.g., The Dark Knight, Avengers"
               />
             </div>
             <div className="form-group">
               <label htmlFor="condition">Condition</label>
-              <input
-                type="text"
+              <select
                 id="condition"
                 name="condition"
                 value={formData.condition}
                 onChange={handleInputChange}
-                placeholder="Enter condition"
-              />
+                className="form-select"
+              >
+                <option value="">Select condition</option>
+                <option value="excellent">Excellent</option>
+                <option value="good">Good</option>
+                <option value="fair">Fair</option>
+                <option value="poor">Poor</option>
+              </select>
             </div>
-          </>
+          </div>
         );
       case 'costume':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="size">Size</label>
-              <input
-                type="text"
+              <select
                 id="size"
                 name="size"
                 value={formData.size}
                 onChange={handleInputChange}
-                placeholder="Enter size"
-              />
+                className="form-select"
+              >
+                <option value="">Select size</option>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+                <option value="Custom">Custom</option>
+              </select>
             </div>
             <div className="form-group">
               <label htmlFor="worn_by">Worn By</label>
@@ -214,25 +227,41 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="worn_by"
                 value={formData.worn_by}
                 onChange={handleInputChange}
-                placeholder="Enter who wore it"
+                placeholder="e.g., Robert Downey Jr., Scarlett Johansson"
               />
             </div>
             <div className="form-group">
               <label htmlFor="era">Era</label>
-              <input
-                type="text"
+              <select
                 id="era"
                 name="era"
                 value={formData.era}
                 onChange={handleInputChange}
-                placeholder="Enter era"
-              />
+                className="form-select"
+              >
+                <option value="">Select era</option>
+                <option value="1920s">1920s</option>
+                <option value="1930s">1930s</option>
+                <option value="1940s">1940s</option>
+                <option value="1950s">1950s</option>
+                <option value="1960s">1960s</option>
+                <option value="1970s">1970s</option>
+                <option value="1980s">1980s</option>
+                <option value="1990s">1990s</option>
+                <option value="2000s">2000s</option>
+                <option value="2010s">2010s</option>
+                <option value="2020s">2020s</option>
+                <option value="Futuristic">Futuristic</option>
+                <option value="Medieval">Medieval</option>
+                <option value="Victorian">Victorian</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
-          </>
+          </div>
         );
       case 'location':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="address">Address</label>
               <input
@@ -241,7 +270,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
-                placeholder="Enter address"
+                placeholder="e.g., 123 Hollywood Blvd, Los Angeles, CA"
               />
             </div>
             <div className="form-group">
@@ -252,7 +281,8 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="capacity"
                 value={formData.capacity}
                 onChange={handleInputChange}
-                placeholder="Enter capacity"
+                placeholder="Maximum number of people"
+                min="1"
               />
             </div>
             <div className="form-group">
@@ -266,11 +296,11 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 Indoor Location
               </label>
             </div>
-          </>
+          </div>
         );
       case 'memorabilia':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="signed_by">Signed By</label>
               <input
@@ -279,24 +309,34 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="signed_by"
                 value={formData.signed_by}
                 onChange={handleInputChange}
-                placeholder="Enter who signed it"
+                placeholder="e.g., Tom Hanks, Meryl Streep"
               />
             </div>
             <div className="form-group">
               <label htmlFor="authenticity_certificate">Authenticity Certificate</label>
-              <input
-                type="file"
-                id="authenticity_certificate"
-                name="authenticity_certificate"
-                onChange={handleCertificateChange}
-                accept=".pdf,.doc,.docx"
-              />
+              <div className="file-upload-container">
+                <input
+                  type="file"
+                  id="authenticity_certificate"
+                  name="authenticity_certificate"
+                  onChange={handleCertificateChange}
+                  accept=".pdf,.doc,.docx"
+                  className="file-input"
+                />
+                <label htmlFor="authenticity_certificate" className="file-upload-label">
+                  <FaFileUpload />
+                  Upload Certificate
+                </label>
+                <span className="file-name">
+                  {formData.authenticity_certificate ? formData.authenticity_certificate.name : 'No file chosen'}
+                </span>
+              </div>
             </div>
-          </>
+          </div>
         );
       case 'vehicle':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="make">Make</label>
               <input
@@ -305,7 +345,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="make"
                 value={formData.make}
                 onChange={handleInputChange}
-                placeholder="Enter make"
+                placeholder="e.g., Ford, BMW, Tesla"
               />
             </div>
             <div className="form-group">
@@ -316,7 +356,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="model"
                 value={formData.model}
                 onChange={handleInputChange}
-                placeholder="Enter model"
+                placeholder="e.g., Mustang, X5, Model S"
               />
             </div>
             <div className="form-group">
@@ -327,51 +367,77 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="year"
                 value={formData.year}
                 onChange={handleInputChange}
-                placeholder="Enter year"
+                placeholder="e.g., 2020"
+                min="1900"
+                max="2024"
               />
             </div>
-          </>
+          </div>
         );
       case 'artistic_material':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="type">Type</label>
-              <input
-                type="text"
+              <select
                 id="type"
                 name="type"
                 value={formData.type}
                 onChange={handleInputChange}
-                placeholder="Enter type"
-              />
+                className="form-select"
+              >
+                <option value="">Select type</option>
+                <option value="paint">Paint</option>
+                <option value="canvas">Canvas</option>
+                <option value="brushes">Brushes</option>
+                <option value="sculpture_material">Sculpture Material</option>
+                <option value="fabric">Fabric</option>
+                <option value="wood">Wood</option>
+                <option value="metal">Metal</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div className="form-group">
               <label htmlFor="condition">Condition</label>
-              <input
-                type="text"
+              <select
                 id="condition"
                 name="condition"
                 value={formData.condition}
                 onChange={handleInputChange}
-                placeholder="Enter condition"
-              />
+                className="form-select"
+              >
+                <option value="">Select condition</option>
+                <option value="excellent">Excellent</option>
+                <option value="good">Good</option>
+                <option value="fair">Fair</option>
+                <option value="poor">Poor</option>
+              </select>
             </div>
-          </>
+          </div>
         );
       case 'music_item':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="instrument_type">Instrument Type</label>
-              <input
-                type="text"
+              <select
                 id="instrument_type"
                 name="instrument_type"
                 value={formData.instrument_type}
                 onChange={handleInputChange}
-                placeholder="Enter instrument type"
-              />
+                className="form-select"
+              >
+                <option value="">Select instrument</option>
+                <option value="guitar">Guitar</option>
+                <option value="piano">Piano</option>
+                <option value="drums">Drums</option>
+                <option value="violin">Violin</option>
+                <option value="bass">Bass</option>
+                <option value="saxophone">Saxophone</option>
+                <option value="trumpet">Trumpet</option>
+                <option value="microphone">Microphone</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div className="form-group">
               <label htmlFor="used_by">Used By</label>
@@ -381,14 +447,14 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="used_by"
                 value={formData.used_by}
                 onChange={handleInputChange}
-                placeholder="Enter who used it"
+                placeholder="e.g., John Mayer, Taylor Swift"
               />
             </div>
-          </>
+          </div>
         );
       case 'rare_item':
         return (
-          <>
+          <div data-type="specific">
             <div className="form-group">
               <label htmlFor="provenance">Provenance</label>
               <textarea
@@ -396,7 +462,8 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 name="provenance"
                 value={formData.provenance}
                 onChange={handleInputChange}
-                placeholder="Enter provenance details"
+                placeholder="Describe the item's history, origin, and authenticity..."
+                rows="4"
               />
             </div>
             <div className="form-group">
@@ -407,10 +474,10 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                   checked={formData.is_one_of_a_kind}
                   onChange={handleInputChange}
                 />
-                One of a Kind
+                One of a Kind Item
               </label>
             </div>
-          </>
+          </div>
         );
       default:
         return null;
@@ -440,15 +507,15 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
               className="form-select"
               required
             >
-              <option value="">Select item type</option>
-              <option value="prop">Prop</option>
-              <option value="costume">Costume</option>
-              <option value="location">Location</option>
-              <option value="memorabilia">Memorabilia</option>
-              <option value="vehicle">Vehicle</option>
-              <option value="artistic_material">Artistic Material</option>
-              <option value="music_item">Music Item</option>
-              <option value="rare_item">Rare Item</option>
+              <option value="">Choose an item type</option>
+              <option value="prop">🎬 Prop</option>
+              <option value="costume">👗 Costume</option>
+              <option value="location">🏢 Location</option>
+              <option value="memorabilia">⭐ Memorabilia</option>
+              <option value="vehicle">🚗 Vehicle</option>
+              <option value="artistic_material">🎨 Artistic Material</option>
+              <option value="music_item">🎵 Music Item</option>
+              <option value="rare_item">💎 Rare Item</option>
             </select>
           </div>
 
@@ -530,6 +597,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                 required
               />
               <label htmlFor="item_image" className="file-upload-label">
+                <FaImage />
                 Choose Image
               </label>
               <span className="file-name">
@@ -544,6 +612,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                   className="remove-image" 
                   onClick={() => setItemImage(null)}
                 >
+                  <FaTimes />
                   Remove
                 </button>
               </div>
@@ -552,6 +621,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
 
           <div className="form-actions">
             <button type="button" className="cancel-btn" onClick={onClose}>
+              <FaTimes />
               Cancel
             </button>
             <button type="submit" className="submit-btn" disabled={loading}>
@@ -560,7 +630,12 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                   <span className="spinner-small"></span>
                   Uploading...
                 </>
-              ) : 'Upload Item'}
+              ) : (
+                <>
+                  <FaUpload />
+                  Upload Item
+                </>
+              )}
             </button>
           </div>
         </form>
