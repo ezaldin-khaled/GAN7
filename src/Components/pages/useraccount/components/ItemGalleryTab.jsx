@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaBox, FaTrash, FaUpload, FaPlus, FaImage } from 'react-icons/fa';
-import axiosInstance from '../../../api/axios';
+import axiosInstance from '../../../../api/axios';
 import ItemUploadForm from './ItemUploadForm';
 
 const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }) => {
