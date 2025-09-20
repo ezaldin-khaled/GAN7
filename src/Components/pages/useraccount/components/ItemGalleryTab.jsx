@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaBox, FaTrash, FaUpload, FaPlus, FaImage } from 'react-icons/fa';
-import axios from 'axios';
+import axiosInstance from '../../../api/axios';
 import ItemUploadForm from './ItemUploadForm';
-
-// Update to match UserAccountPage base URL
-const API_URL = '/';
 
 const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
@@ -32,15 +29,10 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
   const fetchItems = async () => {
     try {
       setFetchingItems(true);
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
       
-      console.log('🔍 Fetching background items with token:', token ? 'Present' : 'Missing');
+      console.log('🔍 Fetching background items...');
       
-      const response = await axios.get(`${API_URL}api/profile/background/items/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/api/profile/background/items/');
       
       console.log('📥 Production Assets Pro items API response:', response.data);
       console.log('📋 Items structure:', JSON.stringify(response.data, null, 2));
@@ -124,13 +116,8 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
     
     try {
       setLoading(true);
-      const token = localStorage.getItem('access') || localStorage.getItem('token');
       
-      await axios.delete(`${API_URL}api/profile/background/items/${itemId}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.delete(`/api/profile/background/items/${itemId}/`);
       
       // Refresh the items list
       await fetchItems();
