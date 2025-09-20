@@ -47,10 +47,19 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
         const itemTypes = Object.keys(response.data.items);
         setAvailableItemTypes(itemTypes);
         
-        // Flatten all item types into a single array
-        const allItemTypes = Object.values(response.data.items);
-        itemsData = allItemTypes.flat();
-        console.log('📦 Flattened items from all types:', itemsData);
+        // Flatten all item types into a single array while preserving item type
+        itemsData = [];
+        Object.entries(response.data.items).forEach(([itemType, itemsOfType]) => {
+          if (Array.isArray(itemsOfType)) {
+            itemsOfType.forEach(item => {
+              itemsData.push({
+                ...item,
+                item_type: itemType // Preserve the item type for deletion
+              });
+            });
+          }
+        });
+        console.log('📦 Flattened items from all types with item_type:', itemsData);
         setApiResponseStructure(`Items by type: ${itemTypes.join(', ')}`);
       } else if (Array.isArray(response.data)) {
         itemsData = response.data;
@@ -121,12 +130,28 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
     });
   };
 
-  const handleDeleteItem = async (itemId) => {
+  const handleDeleteItem = async (itemId, itemType = null) => {
     if (!isItemGallery) return;
     
-    // Show confirmation dialog
-    const itemName = items.find(item => (item.id || item.item_id) === itemId)?.name || 'this item';
-    const confirmed = window.confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`);
+    // Find the specific item to delete
+    const itemToDelete = items.find(item => {
+      const matchesId = (item.id || item.item_id) === itemId;
+      if (itemType) {
+        return matchesId && item.item_type === itemType;
+      }
+      return matchesId;
+    });
+    
+    if (!itemToDelete) {
+      setError('Item not found in the current list.');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+    
+    // Show confirmation dialog with more details
+    const itemName = itemToDelete.name || 'this item';
+    const itemCategory = itemToDelete.item_type || 'unknown type';
+    const confirmed = window.confirm(`Are you sure you want to delete "${itemName}" (${itemCategory})? This action cannot be undone.`);
     
     if (!confirmed) {
       return;
@@ -136,11 +161,26 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
       setLoading(true);
       setError('');
       
-      console.log(`🗑️ Attempting to delete item with ID: ${itemId}`);
+      console.log(`🗑️ Attempting to delete item:`, {
+        id: itemId,
+        name: itemName,
+        type: itemCategory,
+        fullItem: itemToDelete
+      });
       
-      await axiosInstance.delete(`/api/profile/background/items/${itemId}/`);
+      // Try different delete approaches
+      let deleteUrl = `/api/profile/background/items/${itemId}/`;
       
-      console.log(`✅ Item ${itemId} deleted successfully`);
+      // If we have item type, try including it in the request
+      if (itemType) {
+        deleteUrl = `/api/profile/background/items/${itemId}/?item_type=${itemType}`;
+      }
+      
+      console.log(`🗑️ Using delete URL: ${deleteUrl}`);
+      
+      await axiosInstance.delete(deleteUrl);
+      
+      console.log(`✅ Item ${itemId} (${itemName}) deleted successfully`);
       
       // Refresh the items list
       await fetchItems();
@@ -158,7 +198,7 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
       
       // Provide more specific error messages
       if (err.response?.status === 404) {
-        setError('Item not found. It may have already been deleted.');
+        setError('Item not found. It may have already been deleted or the ID is ambiguous.');
         // Refresh items to update the list
         await fetchItems();
       } else if (err.response?.status === 403) {
@@ -341,7 +381,7 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
                         {isItemGallery && itemId && (
                           <button 
                             className="delete-btn" 
-                            onClick={() => handleDeleteItem(itemId)}
+                            onClick={() => handleDeleteItem(itemId, file.item_type)}
                           >
                             <FaTrash />
                           </button>
