@@ -228,22 +228,7 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
         </div>
       )}
 
-      {fetchingItems && isItemGallery ? (
-        <div className="loading-spinner">
-          <div style={{ 
-            display: 'inline-block',
-            width: '20px',
-            height: '20px',
-            border: '2px solid #f3f3f3',
-            borderTop: '2px solid #8236fc',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            marginRight: '10px'
-          }}></div>
-          <span>Loading items...</span>
-        </div>
-      ) : (
-        <div>
+      <div>
           <div className="gallery-grid">
             {/* Ensure we have valid arrays to work with */}
             {(() => {
@@ -333,7 +318,6 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
             })()}
           </div>
         </div>
-      )}
 
       {showUploadForm && (
         <ItemUploadForm
