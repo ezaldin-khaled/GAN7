@@ -30,11 +30,46 @@ nav{
 ul li{
     display: inline-block;
     list-style: none;
-    margin: 10px 20px;
+    margin: 10px 15px;
     font-size: 16px;
     vertical-align: middle;
     line-height: 1.4;
     font-weight: 400;
+}
+
+ul li a, ul li button {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+}
+
+ul li a {
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+ul li a:hover {
+    color: #ddd;
+    transform: translateY(-1px);
+}
+
+.gallery-link {
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.gallery-link:hover {
+    color: #ddd;
+    transform: translateY(-1px);
 }
 
 .nav-link-btn {
@@ -43,11 +78,12 @@ ul li{
     color: #fff;
     font-size: 16px;
     cursor: pointer;
-    padding: 0;
+    padding: 8px 12px;
     font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     transition: all 0.3s ease;
     font-weight: 400;
     letter-spacing: 0.3px;
+    border-radius: 6px;
 }
 
 .nav-link-btn:hover {
@@ -272,7 +308,7 @@ ul li:has(.avatar-btn) {
         width: 140px;
     }
     nav ul li{
-        margin: 10px 15px;
+        margin: 10px 12px;
     }
     .menu-icon{
         display: none;

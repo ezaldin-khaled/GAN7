@@ -16,7 +16,6 @@ import axiosInstance from '../../../api/axios';
 import UsersTab from './components/UsersTab';
 import ItemsTab from './components/ItemsTab';
 import SearchTab from './components/SearchTab';
-import RestrictedUsersTab from './components/RestrictedUsersTab';
 import SharedMediaTab from './components/SharedMediaTab';
 import UserSummaryPopup from './components/UserSummaryPopup';
 import Loader from '../../common/Loader';
@@ -37,7 +36,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('overview');
-  const [activeExpressiveTab, setActiveExpressiveTab] = useState('items');
   // Stats are now fetched from the AnalyticsOverview component via API
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -478,25 +476,7 @@ const AdminDashboard = () => {
       case 'visual':
         return <UsersTab />;
       case 'expressive':
-        return (
-          <div className="expressive-tabs">
-            <div className="expressive-tab-buttons">
-              <button 
-                className={activeExpressiveTab === 'items' ? 'active' : ''} 
-                onClick={() => setActiveExpressiveTab('items')}
-              >
-                Items
-              </button>
-              <button 
-                className={activeExpressiveTab === 'restricted' ? 'active' : ''} 
-                onClick={() => setActiveExpressiveTab('restricted')}
-              >
-                Restricted Users
-              </button>
-            </div>
-            {activeExpressiveTab === 'items' ? <ItemsTab /> : <RestrictedUsersTab />}
-          </div>
-        );
+        return <ItemsTab />;
       case 'hybrid':
         return renderSearchResults();
       case 'shared-media':
