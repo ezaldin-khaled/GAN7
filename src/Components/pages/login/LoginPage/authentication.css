@@ -3,8 +3,23 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  list-style: none;
-  list-style-type: none;
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Remove all list styles globally */
+ul, ol, li {
+  list-style: none !important;
+  list-style-type: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove any pseudo-elements that might create dots */
+*::before,
+*::after {
+  list-style: none !important;
+  list-style-type: none !important;
 }
 
 body {
@@ -153,8 +168,72 @@ body {
   font-size: 0.95rem;
   color: #4a5568;
   font-weight: 500;
-  list-style: none;
-  list-style-type: none;
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Target all possible label elements */
+label {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Remove any dots from form elements */
+form, form * {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Specific targeting for any elements that might show dots */
+.auth-container *,
+.auth-content *,
+.form-group * {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Override any inherited styles that might cause dots */
+.auth-container,
+.auth-container *,
+.auth-card,
+.auth-card *,
+.auth-content,
+.auth-content *,
+form,
+form *,
+label,
+label *,
+.form-label,
+.form-group,
+.form-group * {
+  list-style: none !important;
+  list-style-type: none !important;
+  -webkit-list-style: none !important;
+  -moz-list-style: none !important;
+}
+
+/* Remove any browser default styling that might add dots */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+/* Ensure no pseudo-elements create dots */
+.auth-container *::before,
+.auth-container *::after,
+.auth-content *::before,
+.auth-content *::after,
+form *::before,
+form *::after,
+label *::before,
+label *::after {
+  list-style: none !important;
+  list-style-type: none !important;
+  content: none !important;
 }
 
 .form-row {
