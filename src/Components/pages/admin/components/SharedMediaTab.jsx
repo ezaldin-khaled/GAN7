@@ -49,20 +49,28 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
     });
 
     useEffect(() => {
+        console.log('=== SharedMediaTab useEffect ===');
+        console.log('selectedUser:', selectedUser);
+        console.log('searchResults:', searchResults);
+        
         if (selectedUser && selectedUser.id) {
             if (searchResults && searchResults.length > 0) {
                 const userInResults = searchResults.find(result => result.id === selectedUser.id);
+                console.log('userInResults:', userInResults);
                 
                 if (userInResults) {
                     if (userInResults.media_items || userInResults.media) {
+                        console.log('Processing user media from search results');
                         processUserMedia(userInResults);
                         return;
                     }
                 }
             }
             
+            console.log('Fetching user media from API');
             fetchUserMedia(selectedUser);
         } else {
+            console.log('No selectedUser, clearing shared media');
             setSharedMedia([]);
             setLoading(false);
         }
@@ -258,13 +266,19 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
 
     const processUserMedia = (userData) => {
         try {
+            console.log('=== processUserMedia ===');
+            console.log('userData:', userData);
+            
             let mediaItems = [];
             
             if (userData.media_items && Array.isArray(userData.media_items)) {
                 mediaItems = userData.media_items;
+                console.log('Using media_items:', mediaItems.length, 'items');
             } else if (userData.media && Array.isArray(userData.media)) {
                 mediaItems = userData.media;
+                console.log('Using media:', mediaItems.length, 'items');
             } else {
+                console.log('No media items found in userData');
                 setSharedMedia([]);
                 setLoading(false);
                 return;
@@ -547,207 +561,101 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
             <div className="shared-media-grid">
                 {sharedMedia && sharedMedia.length > 0 ? (
                     sharedMedia.map(media => {
+                        // Debug logging for user data
+                        console.log('Media user data:', media.user);
+                        console.log('Selected user data:', selectedUser);
+                        
+                        // Get user display name with better fallback logic
+                        const getUserDisplayName = () => {
+                            if (media.user?.first_name && media.user?.last_name) {
+                                return `${media.user.first_name} ${media.user.last_name}`;
+                            }
+                            if (media.user?.first_name) return media.user.first_name;
+                            if (media.user?.last_name) return media.user.last_name;
+                            if (media.user?.email) return media.user.email.split('@')[0];
+                            if (selectedUser?.username) return selectedUser.username;
+                            if (selectedUser?.name) return selectedUser.name;
+                            if (selectedUser?.first_name && selectedUser?.last_name) {
+                                return `${selectedUser.first_name} ${selectedUser.last_name}`;
+                            }
+                            return 'User';
+                        };
+
                         return (
-                            <div key={media.id} className="media-card" style={{ position: 'relative', zIndex: 5 }}>
+                            <div key={media.id} className="media-card">
+                                {/* Media Preview */}
                                 <div className="media-preview">
                                     {media.media_type === 'image' ? (
-                                        <img 
-                                            src={media.media_file} 
-                                            alt={media.name || 'Media'}
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                                e.target.nextSibling.style.display = 'block';
-                                            }}
-                                        />
+                                        <img src={media.media_file} alt={media.name || 'Media'} />
                                     ) : media.media_type === 'video' ? (
-                                        <video 
-                                            src={media.media_file}
-                                            controls
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                                e.target.nextSibling.style.display = 'block';
-                                            }}
-                                        />
+                                        <video src={media.media_file} controls />
                                     ) : (
                                         <div className="media-placeholder">
-                                            <p>Unsupported media type: {media.media_type}</p>
+                                            <p>Unsupported media type</p>
                                         </div>
                                     )}
-                                    <div className="media-error" style={{ display: 'none' }}>
-                                        <p>Media failed to load</p>
-                                    </div>
+                                    
+                                    {/* Status Badge */}
                                     {isMediaShared(media) && (
-                                        <div className="shared-badge" style={{
-                                            position: 'absolute',
-                                            top: '10px',
-                                            right: '10px',
-                                            background: 'rgba(76, 175, 80, 0.9)',
-                                            color: 'white',
-                                            padding: '4px 8px',
-                                            borderRadius: '12px',
-                                            fontSize: '11px',
-                                            fontWeight: '500',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            backdropFilter: 'blur(5px)',
-                                            zIndex: 10
-                                        }}>
-                                            <FaShare /> 
-                                            {media.category && media.category !== 'general' ? 
-                                                media.category.charAt(0).toUpperCase() + media.category.slice(1) : 
-                                                'Shared'
-                                            }
+                                        <div className="status-badge">
+                                            <FaShare />
+                                            <span>Shared</span>
                                         </div>
-                                    )}
-                                    {isMediaShared(media) && (
-                                        <div className="shared-overlay" style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            right: 0,
-                                            bottom: 0,
-                                            background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(56, 142, 60, 0.1) 100%)',
-                                            border: '2px solid rgba(76, 175, 80, 0.4)',
-                                            borderRadius: '12px 12px 0 0',
-                                            pointerEvents: 'none',
-                                            zIndex: 5
-                                        }}></div>
                                     )}
                                 </div>
-                                <div className="media-info" style={{
-                                    opacity: isMediaShared(media) ? 0.85 : 1,
-                                    filter: isMediaShared(media) ? 'grayscale(10%)' : 'none',
-                                    background: isMediaShared(media) 
-                                        ? 'linear-gradient(180deg, #f8fff8 0%, #f0f8f0 100%)' 
-                                        : 'linear-gradient(180deg, #ffffff 0%, #fafbfc 100%)'
-                                }}>
-                                    <div className="user-info">
+
+                                {/* Card Content */}
+                                <div className="card-content">
+                                    {/* User Info */}
+                                    <div className="user-section">
                                         <div className="user-avatar">
                                             {media.user?.profile_image ? (
-                                                <img 
-                                                    src={media.user.profile_image} 
-                                                    alt={`${media.user.first_name || ''} ${media.user.last_name || ''}`.trim() || 'User Avatar'}
-                                                    onError={(e) => {
-                                                        e.target.style.display = 'none';
-                                                        e.target.nextSibling.style.display = 'flex';
-                                                    }}
-                                                />
-                                            ) : null}
-                                            <div className="avatar-placeholder" style={{ display: media.user?.profile_image ? 'none' : 'flex' }}>
-                                                {media.user?.first_name?.[0]?.toUpperCase() || 
-                                                 media.user?.last_name?.[0]?.toUpperCase() || 
-                                                 media.user?.email?.[0]?.toUpperCase() || 
-                                                 'U'}
-                                            </div>
+                                                <img src={media.user.profile_image} alt="User" />
+                                            ) : (
+                                                <div className="avatar-initial">
+                                                    {getUserDisplayName()[0]?.toUpperCase() || 'U'}
+                                                </div>
+                                            )}
                                         </div>
-                                        <div className="user-details">
-                                            <h4 className="user-name">
-                                                {media.user?.first_name && media.user?.last_name 
-                                                    ? `${media.user.first_name} ${media.user.last_name}`
-                                                    : media.user?.first_name || media.user?.last_name
-                                                    ? `${media.user.first_name || ''} ${media.user.last_name || ''}`.trim()
-                                                    : media.user?.email?.split('@')[0] || selectedUser?.username || selectedUser?.name || 'Unknown User'}
-                                            </h4>
-                                            <span className="share-date">
-                                                {media.created_at ? new Date(media.created_at).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric'
-                                                }) : 'Unknown date'}
+                                        <div className="user-info">
+                                            <h4 className="user-name">{getUserDisplayName()}</h4>
+                                            <span className="upload-date">
+                                                {media.created_at ? new Date(media.created_at).toLocaleDateString() : 'Unknown date'}
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="media-content">
-                                        <h4 className="media-title">{media.name || 'Untitled Media'}</h4>
-                                        <p className="caption">{media.media_info || 'No description available'}</p>
+
+                                    {/* Media Info */}
+                                    <div className="media-section">
+                                        <h3 className="media-title">{media.name || 'Untitled Media'}</h3>
+                                        <p className="media-description">{media.media_info || 'No description'}</p>
                                         
-                                        {/* Show sharing details if media is shared */}
-                                        {isMediaShared(media) && media.caption && (
-                                            <div className="sharing-details" style={{
-                                                background: '#f8f9fa',
-                                                padding: '8px 12px',
-                                                borderRadius: '6px',
-                                                marginTop: '8px',
-                                                borderLeft: '3px solid #28a745'
-                                            }}>
-                                                <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#666' }}>
-                                                    <strong>Shared Caption:</strong>
-                                                </p>
-                                                <p style={{ margin: '0', fontSize: '13px', color: '#333' }}>
-                                                    {media.caption}
-                                                </p>
-                                                {media.shared_by && (
-                                                    <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: '#666' }}>
-                                                        Shared by: {media.shared_by.name || 'Admin'}
-                                                    </p>
-                                                )}
-                                                {media.shared_at && (
-                                                    <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: '#666' }}>
-                                                        Shared: {new Date(media.shared_at).toLocaleDateString()}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
-                                        
-                                        <div className="media-meta">
-                                            <span className="category">{media.category || 'General'}</span>
-                                            <span className="content-type">{CONTENT_TYPES[media.content_type] || media.content_type || 'Talent Media'}</span>
+                                        {/* Category Tags */}
+                                        <div className="media-tags">
+                                            <span className="tag category">{media.category || 'General'}</span>
+                                            <span className="tag type">{CONTENT_TYPES[media.content_type] || 'Media'}</span>
                                         </div>
                                     </div>
-                                    <div className="media-actions">
+
+                                    {/* Actions */}
+                                    <div className="action-section">
                                         {!isMediaShared(media) ? (
-                                        <button 
-                                            className="share-btn"
-                                                type="button"
-                                                onClick={(e) => {
-                                                    preventShareClick(e, media);
-                                                }}
+                                            <button 
+                                                className="action-btn share-btn"
+                                                onClick={(e) => preventShareClick(e, media)}
                                             >
-                                                <FaShare /> Share to Gallery
+                                                <FaShare />
+                                                Share to Gallery
                                             </button>
                                         ) : (
-                                            <button 
-                                                className="shared-btn"
-                                                disabled={true}
-                                                title="This media has already been shared to the gallery"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    showErrorMessage('This media has already been shared to the gallery.');
-                                                }}
-                                                style={{
-                                                    background: '#6c757d !important',
-                                                    color: '#ffffff !important',
-                                                    border: '1px solid #6c757d !important',
-                                                    padding: '8px 16px',
-                                                    borderRadius: '4px',
-                                                    fontSize: '12px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '6px',
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    cursor: 'not-allowed !important',
-                                                    opacity: 0.6,
-                                                    position: 'relative',
-                                                    zIndex: 20,
-                                                    pointerEvents: 'none',
-                                                    userSelect: 'none',
-                                                    transition: 'none'
-                                                }}
-                                            >
-                                                <FaShare /> Already Shared
-                                        </button>
+                                            <button className="action-btn shared-btn" disabled>
+                                                <FaShare />
+                                                Already Shared
+                                            </button>
                                         )}
                                         <button 
-                                            className="delete-btn"
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                handleDeleteMedia(media.id);
-                                            }}
+                                            className="action-btn remove-btn"
+                                            onClick={() => handleDeleteMedia(media.id)}
                                         >
                                             Remove
                                         </button>
