@@ -607,46 +607,54 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
                                             left: 0,
                                             right: 0,
                                             bottom: 0,
-                                            background: 'rgba(76, 175, 80, 0.1)',
-                                            border: '2px solid rgba(76, 175, 80, 0.3)',
-                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(56, 142, 60, 0.1) 100%)',
+                                            border: '2px solid rgba(76, 175, 80, 0.4)',
+                                            borderRadius: '12px 12px 0 0',
                                             pointerEvents: 'none',
                                             zIndex: 5
                                         }}></div>
                                     )}
                                 </div>
                                 <div className="media-info" style={{
-                                    opacity: isMediaShared(media) ? 0.7 : 1,
-                                    filter: isMediaShared(media) ? 'grayscale(20%)' : 'none'
+                                    opacity: isMediaShared(media) ? 0.85 : 1,
+                                    filter: isMediaShared(media) ? 'grayscale(10%)' : 'none',
+                                    background: isMediaShared(media) 
+                                        ? 'linear-gradient(180deg, #f8fff8 0%, #f0f8f0 100%)' 
+                                        : 'linear-gradient(180deg, #ffffff 0%, #fafbfc 100%)'
                                 }}>
                                     <div className="user-info">
                                         <div className="user-avatar">
                                             {media.user?.profile_image ? (
                                                 <img 
                                                     src={media.user.profile_image} 
-                                                    alt={`${media.user.first_name} ${media.user.last_name}`}
+                                                    alt={`${media.user.first_name || ''} ${media.user.last_name || ''}`.trim() || 'User Avatar'}
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';
-                                                        e.target.nextSibling.style.display = 'block';
+                                                        e.target.nextSibling.style.display = 'flex';
                                                     }}
                                                 />
-                                            ) : (
-                                                <div className="avatar-placeholder">
-                                                    {media.user?.first_name?.[0] || 'U'}
-                                                </div>
-                                            )}
-                                            <div className="avatar-placeholder" style={{ display: 'none' }}>
-                                                {media.user?.first_name?.[0] || 'U'}
+                                            ) : null}
+                                            <div className="avatar-placeholder" style={{ display: media.user?.profile_image ? 'none' : 'flex' }}>
+                                                {media.user?.first_name?.[0]?.toUpperCase() || 
+                                                 media.user?.last_name?.[0]?.toUpperCase() || 
+                                                 media.user?.email?.[0]?.toUpperCase() || 
+                                                 'U'}
                                             </div>
                                         </div>
                                         <div className="user-details">
                                             <h4 className="user-name">
                                                 {media.user?.first_name && media.user?.last_name 
                                                     ? `${media.user.first_name} ${media.user.last_name}`
-                                                    : media.user?.email || 'Unknown User'}
+                                                    : media.user?.first_name || media.user?.last_name
+                                                    ? `${media.user.first_name || ''} ${media.user.last_name || ''}`.trim()
+                                                    : media.user?.email || selectedUser?.username || selectedUser?.name || 'Unknown User'}
                                             </h4>
                                             <span className="share-date">
-                                                {media.created_at ? new Date(media.created_at).toLocaleDateString() : 'Unknown date'}
+                                                {media.created_at ? new Date(media.created_at).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                }) : 'Unknown date'}
                                             </span>
                                         </div>
                                     </div>
