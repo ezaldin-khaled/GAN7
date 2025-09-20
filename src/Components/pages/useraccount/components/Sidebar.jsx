@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome, FaBars, FaTimes } from 'react-icons/fa';
+import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome, FaBars, FaTimes, FaCrown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useImageWithRetry from '../../../../hooks/useImageWithRetry';
+import axiosInstance from '../../../../api/axios';
 
 // Default menu items for talent users
 const defaultMenuItems = [
@@ -27,12 +28,55 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [currentSubscription, setCurrentSubscription] = useState(null);
   
   // Use the retry hook for profile image loading
   const { imageSrc, isLoading, retryCount, useFallback } = useImageWithRetry(
     profileImage, 
     5 // 5 retries
   );
+
+  // Fetch current subscription to display plan name
+  useEffect(() => {
+    const fetchCurrentSubscription = async () => {
+      try {
+        const response = await axiosInstance.get('/api/payments/subscriptions/');
+        if (response.data.length > 0) {
+          // Use the most recent active subscription (or first one if multiple)
+          const activeSubscriptions = response.data.filter(sub => sub.is_active);
+          if (activeSubscriptions.length > 0) {
+            setCurrentSubscription(activeSubscriptions[0]);
+          } else {
+            setCurrentSubscription(response.data[0]);
+          }
+        }
+      } catch (err) {
+        console.log('No subscription data available or error fetching:', err.message);
+        // Don't set error state, just leave subscription as null
+      }
+    };
+
+    fetchCurrentSubscription();
+  }, []);
+
+  // Function to get plan display name
+  const getPlanDisplayName = () => {
+    if (!currentSubscription) {
+      return userData?.account_type || 'Free Plan';
+    }
+    
+    // Try to get plan name from subscription
+    const planName = currentSubscription.plan_name || currentSubscription.plan?.name;
+    if (planName) {
+      // Format plan names for better display
+      const formattedName = planName
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+      return formattedName;
+    }
+    
+    return userData?.account_type || 'Active Plan';
+  };
 
   // Detect screen size and update mobile state
   useEffect(() => {
@@ -119,7 +163,10 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
             </label>
           </div>
           <h2 className="profile-name">{userData.fullName || `${userData.first_name || ''} ${userData.last_name || ''}`}</h2>
-          <p className="profile-role">{userData.role || userData.account_type || 'User'}</p>
+          <div className="profile-role">
+            <FaCrown className="plan-icon" />
+            <span>{getPlanDisplayName()}</span>
+          </div>
           
           {/* Verification Status */}
           <div className="verification-status">
