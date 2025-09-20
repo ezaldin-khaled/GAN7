@@ -298,11 +298,11 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
                     shared_post_id: sharingInfo.shared_post_id || null,
                     caption: sharingInfo.caption || '',
                     user: {
-                        id: userData.id,
-                        first_name: userData.user?.first_name || userData.first_name || 'Unknown',
-                        last_name: userData.user?.last_name || userData.last_name || 'User',
+                        id: userData.id || userData.user?.id,
+                        first_name: userData.user?.first_name || userData.first_name || userData.name?.split(' ')[0] || userData.username || 'Unknown',
+                        last_name: userData.user?.last_name || userData.last_name || userData.name?.split(' ').slice(1).join(' ') || '',
                         email: userData.user?.email || userData.email || 'unknown@example.com',
-                        profile_image: userData.user?.profile_image || userData.profile_image || null
+                        profile_image: userData.user?.profile_image || userData.profile_image || userData.avatar || null
                     }
                 };
             });
@@ -381,11 +381,11 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
                     shared_post_id: sharingInfo.shared_post_id || null,
                     caption: sharingInfo.caption || '',
                     user: {
-                        id: user.id,
-                        first_name: user.first_name || profileData.user?.first_name || 'Unknown',
-                        last_name: user.last_name || profileData.user?.last_name || 'User',
-                        email: user.email || profileData.user?.email || 'unknown@example.com',
-                        profile_image: user.profile_image || profileData.user?.profile_image || null
+                        id: user.id || profileData.user?.id || profileData.id,
+                        first_name: user.first_name || profileData.user?.first_name || profileData.first_name || user.name?.split(' ')[0] || user.username || profileData.name?.split(' ')[0] || 'Unknown',
+                        last_name: user.last_name || profileData.user?.last_name || profileData.last_name || user.name?.split(' ').slice(1).join(' ') || profileData.name?.split(' ').slice(1).join(' ') || '',
+                        email: user.email || profileData.user?.email || profileData.email || 'unknown@example.com',
+                        profile_image: user.profile_image || profileData.user?.profile_image || profileData.profile_image || user.avatar || profileData.avatar || null
                     }
                 };
             });
@@ -647,7 +647,7 @@ const SharedMediaTab = ({ selectedUser, searchResults }) => {
                                                     ? `${media.user.first_name} ${media.user.last_name}`
                                                     : media.user?.first_name || media.user?.last_name
                                                     ? `${media.user.first_name || ''} ${media.user.last_name || ''}`.trim()
-                                                    : media.user?.email || selectedUser?.username || selectedUser?.name || 'Unknown User'}
+                                                    : media.user?.email?.split('@')[0] || selectedUser?.username || selectedUser?.name || 'Unknown User'}
                                             </h4>
                                             <span className="share-date">
                                                 {media.created_at ? new Date(media.created_at).toLocaleDateString('en-US', {

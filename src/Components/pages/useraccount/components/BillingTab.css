@@ -429,3 +429,95 @@
     transform: scale(1);
   }
 }
+
+/* Restricted Countries Notice */
+.restricted-countries-notice {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+  overflow: hidden;
+}
+
+.notice-header {
+  background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.notice-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.notice-content {
+  padding: 20px;
+}
+
+.notice-content p {
+  margin: 0 0 15px 0;
+  color: #856404;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.notice-content p:last-of-type {
+  margin-bottom: 0;
+}
+
+.contact-email {
+  margin-top: 15px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.contact-email strong {
+  color: #856404;
+  font-size: 14px;
+}
+
+.contact-email a {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.contact-email a:hover {
+  color: #004499;
+  text-decoration: underline;
+}
+
+/* Responsive Design for Restricted Countries Notice */
+@media (max-width: 768px) {
+  .restricted-countries-notice {
+    margin-bottom: 20px;
+  }
+  
+  .notice-header {
+    padding: 12px 16px;
+  }
+  
+  .notice-header h3 {
+    font-size: 16px;
+  }
+  
+  .notice-content {
+    padding: 16px;
+  }
+  
+  .notice-content p {
+    font-size: 13px;
+  }
+  
+  .contact-email {
+    padding: 10px 12px;
+  }
+}

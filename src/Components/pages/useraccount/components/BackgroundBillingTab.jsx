@@ -529,6 +529,20 @@ const BackgroundBillingTab = () => {
     <div className="content-section">
       <h1 className="section-title">Production Assets Pro Plans</h1>
       {error && <div className="error-message">{error}</div>}
+      
+      {/* Restricted Countries Notice */}
+      <div className="restricted-countries-notice">
+        <div className="notice-header">
+          <h3>🌍 Restricted Countries Notice</h3>
+        </div>
+        <div className="notice-content">
+          <p><strong>Restricted Countries:</strong> Syria, Iran, North Korea, Cuba, Venezuela, Sudan, Myanmar, Belarus, Russia, Crimea, Donetsk, Luhansk, Afghanistan, Yemen, Libya, Iraq, Somalia, Central African Republic, Democratic Republic of the Congo, South Sudan, Eritrea, Burundi, Zimbabwe, Mali, Burkina Faso, Niger, Chad, Guinea-Bissau, Guinea, Sierra Leone, Liberia, Comoros, Madagascar, Mauritania, Western Sahara</p>
+          <p>If you are from these countries, please send an email to us so we can find a way that fits your country and we are able to give you the subscription.</p>
+          <div className="contact-email">
+            <strong>📧 Contact us:</strong> <a href="mailto:info@gan7club.com">info@gan7club.com</a>
+          </div>
+        </div>
+      </div>
 
       {currentSubscription ? (
         <div className="current-plan">
