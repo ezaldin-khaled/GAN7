@@ -73,6 +73,16 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
       console.log('🎯 Items data type:', typeof itemsData);
       console.log('🎯 Items data length:', itemsData?.length);
       
+      // Log item IDs for debugging
+      if (Array.isArray(itemsData) && itemsData.length > 0) {
+        console.log('🆔 Available item IDs:', itemsData.map(item => item.id || item.item_id || 'No ID'));
+        console.log('🆔 Item details:', itemsData.map(item => ({
+          id: item.id || item.item_id,
+          name: item.name || item.title || item.item_name,
+          type: item.item_type || item.type
+        })));
+      }
+      
       // Ensure itemsData is always an array
       const finalItems = Array.isArray(itemsData) ? itemsData : [];
       setItems(finalItems);
@@ -114,10 +124,23 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
   const handleDeleteItem = async (itemId) => {
     if (!isItemGallery) return;
     
+    // Show confirmation dialog
+    const itemName = items.find(item => (item.id || item.item_id) === itemId)?.name || 'this item';
+    const confirmed = window.confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`);
+    
+    if (!confirmed) {
+      return;
+    }
+    
     try {
       setLoading(true);
+      setError('');
+      
+      console.log(`🗑️ Attempting to delete item with ID: ${itemId}`);
       
       await axiosInstance.delete(`/api/profile/background/items/${itemId}/`);
+      
+      console.log(`✅ Item ${itemId} deleted successfully`);
       
       // Refresh the items list
       await fetchItems();
@@ -130,7 +153,26 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
       
     } catch (err) {
       console.error('❌ Error deleting item:', err);
-      setError('Failed to delete item. Please try again.');
+      console.error('Error response:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+      
+      // Provide more specific error messages
+      if (err.response?.status === 404) {
+        setError('Item not found. It may have already been deleted.');
+        // Refresh items to update the list
+        await fetchItems();
+      } else if (err.response?.status === 403) {
+        setError('You do not have permission to delete this item.');
+      } else if (err.response?.status === 500) {
+        setError('Server error. Please try again later.');
+      } else {
+        setError('Failed to delete item. Please try again.');
+      }
+      
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        setError('');
+      }, 5000);
     } finally {
       setLoading(false);
     }
