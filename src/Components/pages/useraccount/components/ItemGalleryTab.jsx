@@ -168,19 +168,63 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
         fullItem: itemToDelete
       });
       
-      // Try different delete approaches
-      let deleteUrl = `/api/profile/background/items/${itemId}/`;
+      // Try multiple delete endpoint patterns
+      const deleteEndpoints = [
+        `/api/profile/background/items/${itemId}/`,
+        `/api/profile/background/items/${itemId}/?item_type=${itemType}`,
+        `/api/profile/background/items/${itemType}/${itemId}/`,
+        `/api/background/items/${itemId}/`,
+        `/api/items/${itemId}/`,
+        `/api/profile/items/${itemId}/`
+      ];
       
-      // If we have item type, try including it in the request
-      if (itemType) {
-        deleteUrl = `/api/profile/background/items/${itemId}/?item_type=${itemType}`;
+      let response;
+      let lastError;
+      let successfulEndpoint;
+      
+      // First try DELETE requests
+      for (const endpoint of deleteEndpoints) {
+        try {
+          console.log(`🧪 Trying DELETE endpoint: ${endpoint}`);
+          response = await axiosInstance.delete(endpoint);
+          successfulEndpoint = endpoint;
+          console.log(`✅ Delete successful with endpoint: ${endpoint}`);
+          break;
+        } catch (error) {
+          console.log(`❌ DELETE endpoint failed: ${endpoint} - Status: ${error.response?.status}`);
+          lastError = error;
+        }
       }
       
-      console.log(`🗑️ Using delete URL: ${deleteUrl}`);
+      // If DELETE requests failed, try POST with delete action
+      if (!response) {
+        console.log(`🔄 DELETE requests failed, trying POST with delete action...`);
+        const postEndpoints = [
+          `/api/profile/background/items/${itemId}/delete/`,
+          `/api/profile/background/items/${itemType}/${itemId}/delete/`,
+          `/api/background/items/${itemId}/delete/`,
+          `/api/items/${itemId}/delete/`
+        ];
+        
+        for (const endpoint of postEndpoints) {
+          try {
+            console.log(`🧪 Trying POST delete endpoint: ${endpoint}`);
+            response = await axiosInstance.post(endpoint, { action: 'delete' });
+            successfulEndpoint = endpoint;
+            console.log(`✅ POST delete successful with endpoint: ${endpoint}`);
+            break;
+          } catch (error) {
+            console.log(`❌ POST delete endpoint failed: ${endpoint} - Status: ${error.response?.status}`);
+            lastError = error;
+          }
+        }
+      }
       
-      await axiosInstance.delete(deleteUrl);
+      if (!response) {
+        throw lastError || new Error('All deletion endpoints failed');
+      }
       
-      console.log(`✅ Item ${itemId} (${itemName}) deleted successfully`);
+      console.log(`✅ Item ${itemId} (${itemName}) deleted successfully using endpoint: ${successfulEndpoint}`);
       
       // Refresh the items list
       await fetchItems();
