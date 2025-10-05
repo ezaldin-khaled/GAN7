@@ -192,6 +192,7 @@ ul li a:hover {
     justify-content: center;
     transition: all 0.2s ease;
     margin: 0;
+    margin-inline-start: 50px;
     vertical-align: middle;
     position: relative;
 }
