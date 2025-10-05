@@ -110,6 +110,7 @@ ul li a:hover {
     letter-spacing: 0.5px;
     position: relative;
     overflow: hidden;
+    margin-inline-start: 55px;
 }
 
 .btn::before {
