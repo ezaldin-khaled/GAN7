@@ -221,7 +221,7 @@ const BackgroundAccountPage = () => {
         email: userData.email,
         country: userData.country,
         city: userData.city,
-        zipcode: userData.zipcode,
+        residency: userData.residency,
         phone: userData.phone,
         gender: userData.gender,
         date_of_birth: userData.date_of_birth,
