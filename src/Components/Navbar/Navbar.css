@@ -255,6 +255,14 @@ ul li:has(.avatar-btn) {
     border-radius: 50%;
 }
 
+.avatar-placeholder-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
 .avatar-placeholder {
     width: 100%;
     height: 100%;
@@ -272,6 +280,10 @@ ul li:has(.avatar-btn) {
 
 /* Mobile-specific avatar placeholder styles */
 @media (max-width: 768px) {
+    .avatar-placeholder-img {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
     .avatar-placeholder {
         font-size: 20px;
         background: linear-gradient(135deg, #6D0098, #8B5A9E);

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaBars } from 'react-icons/fa';
 import logo from'../../assets/10.png'
+import userPlaceholder from '../../assets/ewew/user placeholder.jpg'
 import '../Navbar/Navbar.css'
 import { Link } from 'react-scroll';
 import UserProfilePopup from './UserProfilePopup';
@@ -131,9 +132,20 @@ function Navbar() {
               />
             ) : null}
             {!(finalUser.profilePic || finalUser.profile_picture) && (
-              <div className="avatar-placeholder">
-                {finalUser.name ? finalUser.name.charAt(0).toUpperCase() : 'U'}
-              </div>
+              <>
+                <img 
+                  src={userPlaceholder} 
+                  alt="User Placeholder" 
+                  className="avatar-placeholder-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="avatar-placeholder" style={{display: 'none'}}>
+                  {finalUser.name ? finalUser.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+              </>
             )}
           </button>
         </li>
