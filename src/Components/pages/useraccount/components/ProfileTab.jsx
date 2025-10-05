@@ -127,16 +127,15 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
   };
 
   return (
-    <div className="content-section">
-      <h1 className="section-title">
-        Profile Information
-      </h1>
+    <>
+      <ProfileScore profileScore={userData.profile_score} />
       
-      <div className="profile-score-section">
-        <ProfileScore profileScore={userData.profile_score} />
-      </div>
+      <div className="content-section">
+        <h1 className="section-title">
+          Profile Information
+        </h1>
 
-      <div className="profile-form-section">
+        <div className="profile-form-section">
         <h3 className="subsection-title">
           Personal Details
         </h3>
@@ -360,16 +359,17 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         )}
       </div>
 
-      <div className="button-group">
-        <button 
-          className="save-button" 
-          onClick={handleSaveChanges}
-          disabled={profileLoading || loading}
-        >
-          {profileLoading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}
-        </button>
+        <div className="button-group">
+          <button 
+            className="save-button" 
+            onClick={handleSaveChanges}
+            disabled={profileLoading || loading}
+          >
+            {profileLoading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
