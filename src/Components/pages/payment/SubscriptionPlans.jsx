@@ -475,6 +475,11 @@ const SubscriptionPlans = () => {
               key={plan.id}
               className={`plan-card ${selectedPlan?.id === plan.id ? 'selected' : ''} ${isCurrentPlan ? 'current' : ''}`}
             >
+              {plan.name === 'PLATINUM' && (
+                <div className="professional-banner">
+                  <span className="banner-text">⭐ Recommended for Professionals</span>
+                </div>
+              )}
               <h3>{plan.name}</h3>
               <div className="price">
                 <span className="annual-price">
