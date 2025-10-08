@@ -23,32 +23,6 @@ const SecurityTab = () => {
         <button className="save-button">Update Password</button>
       </div>
       
-      <div className="security-section">
-        <h2>Two-Factor Authentication</h2>
-        <div className="setting-option">
-          <label className="toggle-switch">
-            <input type="checkbox" />
-            <span className="toggle-slider"></span>
-          </label>
-          <div>
-            <h3>Enable 2FA</h3>
-            <p>Add an extra layer of security to your account</p>
-          </div>
-        </div>
-        <button className="secondary-button">Set Up 2FA</button>
-      </div>
-
-      <div className="security-section">
-        <h2>Login Sessions</h2>
-        <div className="session-item">
-          <div>
-            <h3>Current Session</h3>
-            <p>Windows - Chrome - May 15, 2023</p>
-          </div>
-          <span className="session-active">Active Now</span>
-        </div>
-        <button className="danger-button">Log Out All Other Devices</button>
-      </div>
     </div>
   );
 };

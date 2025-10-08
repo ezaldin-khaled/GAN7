@@ -11,7 +11,6 @@ const defaultMenuItems = [
   { id: 'billing', icon: FaCreditCard, label: 'Plans & Billing' },
   { id: 'groups', icon: FaUsers, label: 'Groups' },
   { id: 'specializations', icon: FaUser, label: 'Specializations' },
-  { id: 'settings', icon: FaCog, label: 'Account Settings' },
   { id: 'security', icon: FaShieldAlt, label: 'Security' }
 ];
 
@@ -20,7 +19,6 @@ const backgroundMenuItems = [
   { id: 'profile', icon: FaUser, label: 'Profile Information' },
   { id: 'media', icon: FaBox, label: 'Item Gallery' },
   { id: 'billing', icon: FaCreditCard, label: 'Plans' },
-  { id: 'settings', icon: FaCog, label: 'Account Settings' },
   { id: 'security', icon: FaShieldAlt, label: 'Security' }
 ];
 

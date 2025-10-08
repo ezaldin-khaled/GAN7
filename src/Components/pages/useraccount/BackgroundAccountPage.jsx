@@ -9,7 +9,6 @@ import Sidebar from './components/Sidebar';
 import ProfileTab from './components/ProfileTab';
 import MediaTab from './components/ItemGalleryTab'; // Using the new ItemGalleryTab instead of MediaTab
 import BillingTab from './components/BackgroundBillingTab'; // Using the specialized billing tab for background users
-import SettingsTab from './components/SettingsTab';
 import SecurityTab from './components/SecurityTab';
 import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt } from 'react-icons/fa';
 import Loader from '../../common/Loader';
@@ -483,7 +482,6 @@ const BackgroundAccountPage = () => {
     { id: 'profile', icon: FaUser, label: 'Profile Information' },
     { id: 'media', icon: FaImage, label: 'Item Gallery' },
     { id: 'billing', icon: FaCreditCard, label: 'Plans' },
-    { id: 'settings', icon: FaCog, label: 'Account Settings' },
     { id: 'security', icon: FaShieldAlt, label: 'Security' }
   ];
 
@@ -492,7 +490,6 @@ const BackgroundAccountPage = () => {
       profile: <ProfileTab userData={userData} handleInputChange={handleInputChange} handleSaveChanges={handleSaveChanges} loading={loading} />,
       media: <MediaTab mediaFiles={itemFiles} handleMediaUpload={handleItemUpload} isItemGallery={true} />,
       billing: <BillingTab />,
-      settings: <SettingsTab />,
       security: <SecurityTab />
     };
     return tabs[activeTab] || null;
