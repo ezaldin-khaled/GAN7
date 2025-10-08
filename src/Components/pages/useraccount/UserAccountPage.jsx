@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import './UserAccountPage.css';
 import './EnhancedTabStyles.css'; // Import the enhanced styles
 import axiosInstance from '../../../api/axios';
@@ -10,7 +10,6 @@ import ProfileTab from './components/ProfileTab';
 import MediaTab from './components/MediaTab';
 import BillingTab from './components/BillingTab';
 import GroupsTab from './components/GroupsTab';
-import SettingsTab from './components/SettingsTab';
 import SecurityTab from './components/SecurityTab';
 import SpecializationTab from './components/SpecializationTab';
 import Loader from '../../common/Loader';
@@ -20,7 +19,6 @@ const tabs = [
   { label: 'Media', component: MediaTab },
   { label: 'Billing', component: BillingTab },
   { label: 'Groups', component: GroupsTab },
-  { label: 'Settings', component: SettingsTab },
   { label: 'Security', component: SecurityTab },
   { label: 'specializations', component: SpecializationTab }
 ];
@@ -58,7 +56,7 @@ const UserAccountPage = () => {
   }, []);
 
   // Enhanced token refresh function
-  const refreshToken = async () => {
+  const refreshToken = useCallback(async () => {
     try {
       const refreshTokenValue = localStorage.getItem('refresh');
       if (!refreshTokenValue) {
@@ -82,10 +80,10 @@ const UserAccountPage = () => {
       window.location.href = '/login';
       throw error;
     }
-  };
+  }, []);
 
   // Enhanced API call with automatic token refresh
-  const apiCallWithRefresh = async (apiCall) => {
+  const apiCallWithRefresh = useCallback(async (apiCall) => {
     try {
       return await apiCall();
     } catch (error) {
@@ -102,30 +100,27 @@ const UserAccountPage = () => {
       }
       throw error;
     }
+  }, [refreshToken]);
+
+  // Add these constants at the top of the file, after the imports
+  const ROLES = {
+    TALENT: 'talent',
+    BACKGROUND: 'background'
+  };
+  
+  const ROLE_ENDPOINTS = {
+    [ROLES.TALENT]: 'profile/talent/',
+    [ROLES.BACKGROUND]: 'profile/background/',
+    DEFAULT: 'profile/'
   };
 
-  // Fetch user data on component mount with retry mechanism
-  useEffect(() => {
-    // Add these constants at the top of the file, after the imports
-    const ROLES = {
-      TALENT: 'talent',
-      BACKGROUND: 'background'
-    };
-    
-    const ROLE_ENDPOINTS = {
-      [ROLES.TALENT]: 'profile/talent/',
-      [ROLES.BACKGROUND]: 'profile/background/',
-      DEFAULT: 'profile/'
-    };
-
-    const VALIDATE_ROLE = (userInfo) => {
-      const role = (userInfo.role || userInfo.user_type || '').toLowerCase();
-      return Object.values(ROLES).includes(role) ? role : null;
-    };
-    
-    // Update the fetchUserData function inside useEffect
-    // Update the fetchUserData function to use the correct endpoints based on the login response
-    const fetchUserData = async () => {
+  const VALIDATE_ROLE = (userInfo) => {
+    const role = (userInfo.role || userInfo.user_type || '').toLowerCase();
+    return Object.values(ROLES).includes(role) ? role : null;
+  };
+  
+  // Update the fetchUserData function to use the correct endpoints based on the login response
+  const fetchUserData = useCallback(async () => {
       try {
         setLoading(true);
         // Parse user info from localStorage, including is_talent flag
@@ -257,10 +252,12 @@ const UserAccountPage = () => {
         }
         setLoading(false);
       }
-    };
+    }, [navigate]);
 
+  // Fetch user data on component mount with retry mechanism
+  useEffect(() => {
     fetchUserData();
-  }, [navigate]);
+  }, [navigate, fetchUserData]);
 
   // Update the media files fetch effect
   useEffect(() => {
@@ -289,7 +286,7 @@ const UserAccountPage = () => {
 
       fetchMediaFiles();
     }
-  }, [activeTab]);
+  }, [activeTab, apiCallWithRefresh]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -832,7 +829,6 @@ const UserAccountPage = () => {
       media: <MediaTab mediaFiles={mediaFiles} handleMediaUpload={handleMediaUpload} handleDeleteMedia={handleDeleteMedia} />,
       billing: <BillingTab />,
       groups: <GroupsTab userData={userData} />,
-      settings: <SettingsTab />,
       security: <SecurityTab />,
       specializations: <SpecializationTab />
     };
