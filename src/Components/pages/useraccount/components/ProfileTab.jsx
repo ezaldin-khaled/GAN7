@@ -34,7 +34,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         throw new Error('No authentication token found');
       }
 
-      const response = await axiosInstance.get('/profile/social-media/', {
+      const response = await axiosInstance.get('/api/profile/social-media/', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -151,7 +151,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         return;
       }
 
-      const response = await axiosInstance.post('/profile/social-media/', socialMediaLinks, {
+      const response = await axiosInstance.post('/api/profile/social-media/', socialMediaLinks, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
