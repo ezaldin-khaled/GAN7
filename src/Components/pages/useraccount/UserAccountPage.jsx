@@ -320,20 +320,32 @@ const UserAccountPage = () => {
       const isBackground = userInfo.is_background;
       const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
       
+      // Clean the payload - remove undefined/null values and ensure proper data types
       const payload = {
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        email: userData.email,
-        country: userData.country,
-        city: userData.city,
-        residency: userData.residency,
-        phone: userData.phone,
-        gender: userData.gender,
-        date_of_birth: userData.date_of_birth,
-        aboutyou: userData.aboutyou || userData.bio
+        first_name: userData.first_name || '',
+        last_name: userData.last_name || '',
+        email: userData.email || '',
+        country: userData.country || '',
+        city: userData.city || '',
+        residency: userData.residency || '',
+        phone: userData.phone || '',
+        gender: userData.gender || '',
+        date_of_birth: userData.date_of_birth || '',
+        aboutyou: userData.aboutyou || userData.bio || ''
         // Note: Social media fields are handled separately via /api/profile/social-media/ endpoint
       };
       
+      // Remove empty string values that might cause validation issues
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === '' || payload[key] === null || payload[key] === undefined) {
+          delete payload[key];
+        }
+      });
+      
+      // Debug logging
+      console.log('🔍 Profile update payload:', payload);
+      console.log('🔍 Endpoint:', endpoint);
+      console.log('🔍 User type - isBackground:', isBackground);
       
       const response = await axiosInstance.post(endpoint, payload);
       
@@ -358,8 +370,24 @@ const UserAccountPage = () => {
       
       setLoading(false);
     } catch (err) {
-      console.error('Error updating profile:', err);
-      setError(err.response?.data?.message || 'Failed to update profile. Please try again.');
+      console.error('❌ Error updating profile:', err);
+      console.error('❌ Error response:', err.response?.data);
+      console.error('❌ Error status:', err.response?.status);
+      console.error('❌ Error details:', err.response?.data?.detail || err.response?.data?.errors);
+      
+      // Show more specific error messages
+      let errorMessage = 'Failed to update profile. Please try again.';
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      } else if (err.response?.data?.errors) {
+        errorMessage = `Validation errors: ${JSON.stringify(err.response.data.errors)}`;
+      } else if (err.response?.status === 400) {
+        errorMessage = 'Invalid data provided. Please check your input and try again.';
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };
