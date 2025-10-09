@@ -17,6 +17,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Fetch social media data
   useEffect(() => {
@@ -33,7 +34,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         throw new Error('No authentication token found');
       }
 
-      const response = await axiosInstance.get('/api/profile/social-media/', {
+      const response = await axiosInstance.get('/profile/social-media/', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -124,6 +125,57 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
     };
 
     return patterns[platform].test(url);
+  };
+
+  const saveSocialMediaLinks = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const token = localStorage.getItem('access');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Validate all URLs before saving
+      const validationErrors = [];
+      Object.entries(socialMediaLinks).forEach(([platform, url]) => {
+        if (url && !validateSocialMediaUrl(url, platform)) {
+          validationErrors.push(`${platform}: Invalid URL format`);
+        }
+      });
+
+      if (validationErrors.length > 0) {
+        setError(`Please fix the following URL formats: ${validationErrors.join(', ')}`);
+        setLoading(false);
+        return;
+      }
+
+      const response = await axiosInstance.post('/profile/social-media/', socialMediaLinks, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data) {
+        console.log('Social media links saved successfully');
+        setSuccessMessage('Social media links saved successfully!');
+        // Clear success message after 3 seconds
+        setTimeout(() => setSuccessMessage(''), 3000);
+      }
+    } catch (err) {
+      console.error('Error saving social media data:', err);
+      if (err.response?.status === 400) {
+        setError('Invalid social media URL format. Please check your links.');
+      } else if (err.response?.status === 403) {
+        setError('You do not have permission to update social media links.');
+      } else {
+        setError('Failed to save social media links. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -424,6 +476,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       <div className="social-media-section">
         <h2>Social Media Links</h2>
         {error && <div className="error-message">{error}</div>}
+        {successMessage && <div className="success-message">{successMessage}</div>}
         {loading ? (
           <div className="loading-state">
             <LoadingSpinner text="Loading social media data..." />
@@ -432,79 +485,170 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           <div className="social-media-grid">
             <div className="form-group">
               <label>Facebook</label>
-              <input 
-                type="url" 
-                name="facebook" 
-                value={socialMediaLinks.facebook} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.facebook || "https://facebook.com/yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="facebook" 
+                  value={socialMediaLinks.facebook} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://facebook.com/yourusername"
+                />
+                {socialMediaLinks.facebook && (
+                  <a 
+                    href={socialMediaLinks.facebook} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit Facebook profile"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
             
             <div className="form-group">
               <label>Twitter</label>
-              <input 
-                type="url" 
-                name="twitter" 
-                value={socialMediaLinks.twitter} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.twitter || "https://twitter.com/yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="twitter" 
+                  value={socialMediaLinks.twitter} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://twitter.com/yourusername"
+                />
+                {socialMediaLinks.twitter && (
+                  <a 
+                    href={socialMediaLinks.twitter} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit Twitter profile"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
             
             <div className="form-group">
               <label>Instagram</label>
-              <input 
-                type="url" 
-                name="instagram" 
-                value={socialMediaLinks.instagram} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.instagram || "https://instagram.com/yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="instagram" 
+                  value={socialMediaLinks.instagram} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://instagram.com/yourusername"
+                />
+                {socialMediaLinks.instagram && (
+                  <a 
+                    href={socialMediaLinks.instagram} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit Instagram profile"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
             
             <div className="form-group">
               <label>LinkedIn</label>
-              <input 
-                type="url" 
-                name="linkedin" 
-                value={socialMediaLinks.linkedin} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.linkedin || "https://linkedin.com/in/yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="linkedin" 
+                  value={socialMediaLinks.linkedin} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://linkedin.com/in/yourusername"
+                />
+                {socialMediaLinks.linkedin && (
+                  <a 
+                    href={socialMediaLinks.linkedin} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit LinkedIn profile"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
             
             <div className="form-group">
               <label>YouTube</label>
-              <input 
-                type="url" 
-                name="youtube" 
-                value={socialMediaLinks.youtube} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.youtube || "https://youtube.com/yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="youtube" 
+                  value={socialMediaLinks.youtube} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://youtube.com/yourusername"
+                />
+                {socialMediaLinks.youtube && (
+                  <a 
+                    href={socialMediaLinks.youtube} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit YouTube channel"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
             
             <div className="form-group">
               <label>TikTok</label>
-              <input 
-                type="url" 
-                name="tiktok" 
-                value={socialMediaLinks.tiktok} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.tiktok || "https://tiktok.com/@yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="tiktok" 
+                  value={socialMediaLinks.tiktok} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://tiktok.com/@yourusername"
+                />
+                {socialMediaLinks.tiktok && (
+                  <a 
+                    href={socialMediaLinks.tiktok} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit TikTok profile"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
             
             <div className="form-group">
               <label>Snapchat</label>
-              <input 
-                type="url" 
-                name="snapchat" 
-                value={socialMediaLinks.snapchat} 
-                onChange={handleSocialMediaChange}
-                placeholder={socialMediaLinks.snapchat || "https://snapchat.com/add/yourusername"}
-              />
+              <div className="social-media-input-container">
+                <input 
+                  type="url" 
+                  name="snapchat" 
+                  value={socialMediaLinks.snapchat} 
+                  onChange={handleSocialMediaChange}
+                  placeholder="https://snapchat.com/add/yourusername"
+                />
+                {socialMediaLinks.snapchat && (
+                  <a 
+                    href={socialMediaLinks.snapchat} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="social-media-link"
+                    title="Visit Snapchat profile"
+                  >
+                    🔗
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -513,10 +657,13 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       <div className="button-group">
         <button 
           className="save-button" 
-          onClick={handleSaveChanges}
+          onClick={async () => {
+            await handleSaveChanges();
+            await saveSocialMediaLinks();
+          }}
           disabled={profileLoading || loading}
         >
-          {profileLoading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}
+          {profileLoading || loading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}
         </button>
       </div>
     </div>
