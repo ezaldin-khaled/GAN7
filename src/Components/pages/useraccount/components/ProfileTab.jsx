@@ -19,58 +19,20 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Fetch social media data
+  // Initialize social media data from userData
   useEffect(() => {
-    fetchSocialMediaData();
-  }, []);
-
-  const fetchSocialMediaData = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
-      const token = localStorage.getItem('access');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      const response = await axiosInstance.get('/api/profile/social-media/', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+    if (userData) {
+      setSocialMediaLinks({
+        facebook: userData.facebook || '',
+        twitter: userData.twitter || '',
+        instagram: userData.instagram || '',
+        linkedin: userData.linkedin || '',
+        youtube: userData.youtube || '',
+        tiktok: userData.tiktok || '',
+        snapchat: userData.snapchat || ''
       });
-
-      if (response.data) {
-        setSocialMediaLinks({
-          facebook: response.data.facebook || '',
-          twitter: response.data.twitter || '',
-          instagram: response.data.instagram || '',
-          linkedin: response.data.linkedin || '',
-          youtube: response.data.youtube || '',
-          tiktok: response.data.tiktok || '',
-          snapchat: response.data.snapchat || ''
-        });
-      }
-    } catch (err) {
-      console.error('Error fetching social media data:', err);
-      if (err.response?.status === 404) {
-        console.log('No social media data found - this is normal for new users');
-        // Don't set error for 404, just use empty defaults
-      } else if (err.response?.status === 403) {
-        console.log('Access denied to social media endpoint - user may not have permission');
-        // Don't set error for 403, just use empty defaults
-      } else if (err.response?.status >= 500) {
-        console.log('Server error fetching social media data - using defaults');
-        // Don't set error for server errors, just use empty defaults
-      } else {
-        console.log('Failed to load social media data - using defaults');
-        // Only show error for unexpected client errors
-        setError('Failed to load social media data');
-      }
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [userData]);
 
   // Update formatted date whenever userData changes
   useEffect(() => {
@@ -102,7 +64,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       ...prev,
       [name]: value
     }));
-    // Also update the userData through the parent component's handler
+    // Update the userData through the parent component's handler
     handleInputChange({
       target: {
         name,
@@ -127,56 +89,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
     return patterns[platform].test(url);
   };
 
-  const saveSocialMediaLinks = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
-      const token = localStorage.getItem('access');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      // Validate all URLs before saving
-      const validationErrors = [];
-      Object.entries(socialMediaLinks).forEach(([platform, url]) => {
-        if (url && !validateSocialMediaUrl(url, platform)) {
-          validationErrors.push(`${platform}: Invalid URL format`);
-        }
-      });
-
-      if (validationErrors.length > 0) {
-        setError(`Please fix the following URL formats: ${validationErrors.join(', ')}`);
-        setLoading(false);
-        return;
-      }
-
-      const response = await axiosInstance.post('/api/profile/social-media/', socialMediaLinks, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.data) {
-        console.log('Social media links saved successfully');
-        setSuccessMessage('Social media links saved successfully!');
-        // Clear success message after 3 seconds
-        setTimeout(() => setSuccessMessage(''), 3000);
-      }
-    } catch (err) {
-      console.error('Error saving social media data:', err);
-      if (err.response?.status === 400) {
-        setError('Invalid social media URL format. Please check your links.');
-      } else if (err.response?.status === 403) {
-        setError('You do not have permission to update social media links.');
-      } else {
-        setError('Failed to save social media links. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>
@@ -657,10 +569,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       <div className="button-group">
         <button 
           className="save-button" 
-          onClick={async () => {
-            await handleSaveChanges();
-            await saveSocialMediaLinks();
-          }}
+          onClick={handleSaveChanges}
           disabled={profileLoading || loading}
         >
           {profileLoading || loading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}

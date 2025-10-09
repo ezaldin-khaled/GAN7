@@ -205,7 +205,15 @@ const UserAccountPage = () => {
           phoneNumber: profileData.phone || '',
           bio: profileData.aboutyou || '',
           email_verified: profileData.email_verified || false,
-          is_verified: profileData.is_verified || false
+          is_verified: profileData.is_verified || false,
+          // Social media fields
+          facebook: profileData.facebook || '',
+          twitter: profileData.twitter || '',
+          instagram: profileData.instagram || '',
+          linkedin: profileData.linkedin || '',
+          youtube: profileData.youtube || '',
+          tiktok: profileData.tiktok || '',
+          snapchat: profileData.snapchat || ''
         };
         
         console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
@@ -233,7 +241,15 @@ const UserAccountPage = () => {
               phoneNumber: cachedUser.phone || '',
               bio: cachedUser.aboutyou || '',
               email_verified: cachedUser.email_verified || false,
-              is_verified: cachedUser.is_verified || false
+              is_verified: cachedUser.is_verified || false,
+              // Social media fields
+              facebook: cachedUser.facebook || '',
+              twitter: cachedUser.twitter || '',
+              instagram: cachedUser.instagram || '',
+              linkedin: cachedUser.linkedin || '',
+              youtube: cachedUser.youtube || '',
+              tiktok: cachedUser.tiktok || '',
+              snapchat: cachedUser.snapchat || ''
             });
             setProfileImage(cachedUser.profilePic || null);
             setError(''); // Clear any previous errors
@@ -323,7 +339,15 @@ const UserAccountPage = () => {
         phone: userData.phone,
         gender: userData.gender,
         date_of_birth: userData.date_of_birth,
-        aboutyou: userData.aboutyou || userData.bio
+        aboutyou: userData.aboutyou || userData.bio,
+        // Social media fields
+        facebook: userData.facebook || '',
+        twitter: userData.twitter || '',
+        instagram: userData.instagram || '',
+        linkedin: userData.linkedin || '',
+        youtube: userData.youtube || '',
+        tiktok: userData.tiktok || '',
+        snapchat: userData.snapchat || ''
       };
       
       
@@ -341,7 +365,15 @@ const UserAccountPage = () => {
           dateOfBirth: response.data.profile.date_of_birth,
           country: response.data.profile.country,
           phoneNumber: response.data.profile.phone,
-          bio: response.data.profile.aboutyou
+          bio: response.data.profile.aboutyou,
+          // Social media fields
+          facebook: response.data.profile.facebook || '',
+          twitter: response.data.profile.twitter || '',
+          instagram: response.data.profile.instagram || '',
+          linkedin: response.data.profile.linkedin || '',
+          youtube: response.data.profile.youtube || '',
+          tiktok: response.data.profile.tiktok || '',
+          snapchat: response.data.profile.snapchat || ''
         });
 
         setProfileImage(response.data.profile.profile_picture || null);
