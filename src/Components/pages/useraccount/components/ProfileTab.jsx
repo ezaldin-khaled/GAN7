@@ -7,7 +7,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
   const [formattedDob, setFormattedDob] = useState('');
   const [socialMediaLinks, setSocialMediaLinks] = useState({
     facebook: '',
-    twitter: '',
     instagram: '',
     linkedin: '',
     youtube: '',
@@ -42,7 +41,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       if (response.data) {
         setSocialMediaLinks({
           facebook: response.data.facebook || '',
-          twitter: response.data.twitter || '',
           instagram: response.data.instagram || '',
           linkedin: response.data.linkedin || '',
           youtube: response.data.youtube || '',
@@ -113,7 +111,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
     
     const patterns = {
       facebook: /^(https?:\/\/)?(www\.)?facebook\.com\/[a-zA-Z0-9.]+$/,
-      twitter: /^(https?:\/\/)?(www\.)?twitter\.com\/[a-zA-Z0-9_]+$/,
       instagram: /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9._]+$/,
       linkedin: /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-]+$/,
       youtube: /^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|c\/|user\/)?[a-zA-Z0-9-]+|youtu\.be\/[a-zA-Z0-9-]+)$/,
@@ -505,29 +502,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
               </div>
             </div>
             
-            <div className="form-group">
-              <label>Twitter</label>
-              <div className="social-media-input-container">
-                <input 
-                  type="url" 
-                  name="twitter" 
-                  value={socialMediaLinks.twitter} 
-                  onChange={handleSocialMediaChange}
-                  placeholder="https://twitter.com/yourusername"
-                />
-                {socialMediaLinks.twitter && (
-                  <a 
-                    href={socialMediaLinks.twitter} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="social-media-link"
-                    title="Visit Twitter profile"
-                  >
-                    🔗
-                  </a>
-                )}
-              </div>
-            </div>
             
             <div className="form-group">
               <label>Instagram</label>

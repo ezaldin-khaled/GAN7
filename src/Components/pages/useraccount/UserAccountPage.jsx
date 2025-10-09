@@ -236,7 +236,6 @@ const UserAccountPage = () => {
               is_verified: cachedUser.is_verified || false,
               // Social media fields
               facebook: cachedUser.facebook || '',
-              twitter: cachedUser.twitter || '',
               instagram: cachedUser.instagram || '',
               linkedin: cachedUser.linkedin || '',
               youtube: cachedUser.youtube || '',
