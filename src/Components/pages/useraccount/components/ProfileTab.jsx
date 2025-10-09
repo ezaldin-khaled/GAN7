@@ -55,15 +55,18 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       if (err.response?.status === 404) {
         console.log('No social media data found - this is normal for new users');
         // Don't set error for 404, just use empty defaults
+        setError(''); // Ensure error is cleared for normal 404 case
       } else if (err.response?.status === 403) {
         console.log('Access denied to social media endpoint - user may not have permission');
         // Don't set error for 403, just use empty defaults
+        setError(''); // Ensure error is cleared for permission issues
       } else if (err.response?.status >= 500) {
         console.log('Server error fetching social media data - using defaults');
         // Don't set error for server errors, just use empty defaults
+        setError(''); // Ensure error is cleared for server errors
       } else {
         console.log('Failed to load social media data - using defaults');
-        // Only show error for unexpected client errors
+        // Only show error for unexpected client errors (like network issues)
         setError('Failed to load social media data');
       }
     } finally {
@@ -101,13 +104,8 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       ...prev,
       [name]: value
     }));
-    // Update the userData through the parent component's handler
-    handleInputChange({
-      target: {
-        name,
-        value
-      }
-    });
+    // Note: Social media data is handled separately and not sent to the parent userData
+    // to avoid conflicts with the talent/background profile endpoints
   };
 
   const validateSocialMediaUrl = (url, platform) => {
@@ -159,6 +157,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
       if (response.data) {
         console.log('Social media links saved successfully');
+        setError(''); // Clear any existing errors
         setSuccessMessage('Social media links saved successfully!');
         // Clear success message after 3 seconds
         setTimeout(() => setSuccessMessage(''), 3000);

@@ -332,6 +332,7 @@ const UserAccountPage = () => {
         gender: userData.gender,
         date_of_birth: userData.date_of_birth,
         aboutyou: userData.aboutyou || userData.bio
+        // Note: Social media fields are handled separately via /api/profile/social-media/ endpoint
       };
       
       
