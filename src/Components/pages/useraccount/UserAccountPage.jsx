@@ -205,15 +205,7 @@ const UserAccountPage = () => {
           phoneNumber: profileData.phone || '',
           bio: profileData.aboutyou || '',
           email_verified: profileData.email_verified || false,
-          is_verified: profileData.is_verified || false,
-          // Social media fields
-          facebook: profileData.facebook || '',
-          twitter: profileData.twitter || '',
-          instagram: profileData.instagram || '',
-          linkedin: profileData.linkedin || '',
-          youtube: profileData.youtube || '',
-          tiktok: profileData.tiktok || '',
-          snapchat: profileData.snapchat || ''
+          is_verified: profileData.is_verified || false
         };
         
         console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
@@ -339,15 +331,7 @@ const UserAccountPage = () => {
         phone: userData.phone,
         gender: userData.gender,
         date_of_birth: userData.date_of_birth,
-        aboutyou: userData.aboutyou || userData.bio,
-        // Social media fields
-        facebook: userData.facebook || '',
-        twitter: userData.twitter || '',
-        instagram: userData.instagram || '',
-        linkedin: userData.linkedin || '',
-        youtube: userData.youtube || '',
-        tiktok: userData.tiktok || '',
-        snapchat: userData.snapchat || ''
+        aboutyou: userData.aboutyou || userData.bio
       };
       
       
@@ -365,15 +349,7 @@ const UserAccountPage = () => {
           dateOfBirth: response.data.profile.date_of_birth,
           country: response.data.profile.country,
           phoneNumber: response.data.profile.phone,
-          bio: response.data.profile.aboutyou,
-          // Social media fields
-          facebook: response.data.profile.facebook || '',
-          twitter: response.data.profile.twitter || '',
-          instagram: response.data.profile.instagram || '',
-          linkedin: response.data.profile.linkedin || '',
-          youtube: response.data.profile.youtube || '',
-          tiktok: response.data.profile.tiktok || '',
-          snapchat: response.data.profile.snapchat || ''
+          bio: response.data.profile.aboutyou
         });
 
         setProfileImage(response.data.profile.profile_picture || null);
