@@ -807,6 +807,7 @@ export default function UserProfilePopup({ user, onClose }) {
           {/* Enhanced Profile Score Section */}
           <div className="profile-stats">
             <div className="profile-score-section">
+              {console.log('📊 UserProfilePopup display - profileScore:', profileScore)}
               <div className="score-visual">
                 <div className="score-circle">
                   <svg className="score-ring" viewBox="0 0 120 120">

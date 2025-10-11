@@ -3,6 +3,10 @@ import { FaCrown, FaCheckCircle, FaUser, FaImages, FaCogs, FaTrophy, FaLightbulb
 import './ProfileScore.css';
 
 const ProfileScore = ({ profileScore }) => {
+  // Debug logging to track score values
+  console.log('📊 ProfileScore component - Received profileScore:', profileScore);
+  console.log('📊 ProfileScore component - Will display:', profileScore?.score || profileScore?.total || 0);
+  
   if (!profileScore) {
     return null;
   }
