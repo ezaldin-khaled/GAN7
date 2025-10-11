@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Elements } from '@stripe/react-stripe-js';
 import axiosInstance from '../../../api/axios';
 import { stripePromise } from '../../../config/stripe';
@@ -418,7 +419,7 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subscription-plans-container">
-      <h2>Choose Your Plan</h2>
+      <h2>{t('subscription.chooseYourPlan')}</h2>
       
       {/* Debug Panel for Development */}
       {process.env.NODE_ENV === 'development' && (
@@ -499,7 +500,7 @@ const SubscriptionPlans = () => {
                 onClick={() => isUpgrade ? handleUpgradeClick(plan) : handleCheckout(plan)}
                 disabled={isCurrentPlan}
               >
-                {isCurrentPlan ? 'Current Plan' : isUpgrade ? 'Upgrade Plan' : 'Subscribe Now'}
+                {isCurrentPlan ? t('subscription.currentPlan') : isUpgrade ? t('subscription.upgrade') : t('subscription.subscribeNow')}
               </button>
             </div>
           );

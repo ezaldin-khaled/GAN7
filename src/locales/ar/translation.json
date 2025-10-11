@@ -151,6 +151,7 @@
     "plans": "الخطط",
     "currentPlan": "الخطة الحالية",
     "upgrade": "ترقية",
+    "upgradePlan": "ترقية الخطة",
     "downgrade": "تخفيض",
     "cancel": "إلغاء الاشتراك",
     "billing": "الفواتير",
@@ -161,7 +162,9 @@
     "silver": "فضي",
     "gold": "ذهبي",
     "platinum": "بلاتيني",
-    "productionAssetsPro": "أصول الإنتاج المحترفة"
+    "productionAssetsPro": "أصول الإنتاج المحترفة",
+    "chooseYourPlan": "اختر خطتك",
+    "subscribeNow": "اشترك الآن"
   },
   "profile": {
     "personalInfo": "المعلومات الشخصية",

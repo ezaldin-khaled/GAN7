@@ -151,6 +151,7 @@
     "plans": "Plans",
     "currentPlan": "Current Plan",
     "upgrade": "Upgrade",
+    "upgradeplan": "Upgrade Plan",
     "downgrade": "Downgrade",
     "cancel": "Cancel Subscription",
     "billing": "Billing",
@@ -161,7 +162,9 @@
     "silver": "Silver",
     "gold": "Gold",
     "platinum": "Platinum",
-    "productionAssetsPro": "Production Assets Pro"
+    "productionAssetsPro": "Production Assets Pro",
+    "chooseYourPlan": "Choose Your Plan",
+    "subscribeNow": "Subscribe Now"
   },
   "profile": {
     "personalInfo": "Personal Information",
