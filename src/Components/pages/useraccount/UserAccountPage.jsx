@@ -215,7 +215,12 @@ const UserAccountPage = () => {
         };
         
         console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
-        console.log('📊 UserAccountPage fetchUserData - Profile Score (capped):', mappedUserData.profile_score);
+        console.log('📊 UserAccountPage - Raw API profile_score:', response.data.profile_score);
+        console.log('📊 UserAccountPage - Capped profile_score:', mappedUserData.profile_score);
+        if (mappedUserData.profile_score) {
+          console.log('📊 UserAccountPage - Score value:', mappedUserData.profile_score.score);
+          console.log('📊 UserAccountPage - Total value:', mappedUserData.profile_score.total);
+        }
         setUserData(mappedUserData);
         
         // Set profile image from API response only

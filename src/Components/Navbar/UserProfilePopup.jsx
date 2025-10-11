@@ -573,6 +573,7 @@ export default function UserProfilePopup({ user, onClose }) {
           };
           
           console.log('📊 UserProfilePopup fetchUserData - Mapped User Data:', mappedUserData);
+          console.log('📊 UserProfilePopup - Raw API profile_score:', response.data.profile_score);
           setUserData(mappedUserData);
           
           // Use real profile score from API if available, otherwise calculate it
@@ -580,7 +581,7 @@ export default function UserProfilePopup({ user, onClose }) {
             // Cap the API score at 100 (ensure it never exceeds 100)
             const apiScore = Math.max(0, Math.min(Math.round(response.data.profile_score.score), 100));
             setProfileScore(apiScore);
-            console.log('📊 Using real profile score from API:', apiScore);
+            console.log('📊 UserProfilePopup - Using API score:', apiScore, '(raw:', response.data.profile_score.score, ')');
             
             // If breakdown is available from API, use it; otherwise calculate it
             if (response.data.profile_score?.breakdown) {
@@ -591,11 +592,12 @@ export default function UserProfilePopup({ user, onClose }) {
             }
           } else {
             // Fallback to calculated score (already capped at 100)
+            console.log('⚠️ UserProfilePopup - API profile_score.score is missing, calculating locally');
             const scoreData = calculateProfileScore(mappedUserData);
             const cappedScore = Math.max(0, Math.min(scoreData.score, 100));
             setProfileScore(cappedScore);
             setScoreBreakdown(scoreData.breakdown);
-            console.log('📊 Using calculated profile score:', cappedScore);
+            console.log('📊 UserProfilePopup - Using calculated score:', cappedScore);
           }
         } else {
           // Fallback to cached user data from localStorage if API calls failed
