@@ -30,17 +30,17 @@ const ProfileScore = ({ profileScore }) => {
     return Math.min((score / maxScore) * 100, 100);
   };
 
-  const getTotalScoreColor = (total) => {
-    if (total >= 400) return '#10B981';
-    if (total >= 300) return '#F59E0B';
-    if (total >= 200) return '#EF4444';
+  const getTotalScoreColor = (score) => {
+    if (score >= 80) return '#10B981';
+    if (score >= 60) return '#F59E0B';
+    if (score >= 40) return '#EF4444';
     return '#6B7280';
   };
 
-  const getScoreLevel = (total) => {
-    if (total >= 400) return 'Expert';
-    if (total >= 300) return 'Advanced';
-    if (total >= 200) return 'Intermediate';
+  const getScoreLevel = (score) => {
+    if (score >= 80) return 'Expert';
+    if (score >= 60) return 'Advanced';
+    if (score >= 40) return 'Intermediate';
     return 'Beginner';
   };
 
@@ -63,14 +63,14 @@ const ProfileScore = ({ profileScore }) => {
       <div className="total-score-card">
         <div className="total-score-content">
           <div className="total-score-main">
-            <span className="total-score-value" style={{ color: getTotalScoreColor(profileScore.total) }}>
-              {profileScore.total}
+            <span className="total-score-value" style={{ color: getTotalScoreColor(profileScore.score || profileScore.total) }}>
+              {profileScore.score || profileScore.total || 0}
             </span>
-            <span className="total-score-label">Total Points</span>
+            <span className="total-score-label">Profile Score</span>
           </div>
           <div className="total-score-level">
-            <span className="level-badge" style={{ backgroundColor: getTotalScoreColor(profileScore.total) }}>
-              {getScoreLevel(profileScore.total)}
+            <span className="level-badge" style={{ backgroundColor: getTotalScoreColor(profileScore.score || profileScore.total) }}>
+              {getScoreLevel(profileScore.score || profileScore.total)}
             </span>
           </div>
         </div>
@@ -79,19 +79,19 @@ const ProfileScore = ({ profileScore }) => {
             <div 
               className="progress-fill" 
               style={{ 
-                width: `${getScoreProgress(profileScore.total, 500)}%`,
-                backgroundColor: getTotalScoreColor(profileScore.total)
+                width: `${getScoreProgress(profileScore.score || profileScore.total, 100)}%`,
+                backgroundColor: getTotalScoreColor(profileScore.score || profileScore.total)
               }}
             ></div>
           </div>
-          <span className="progress-text">500 max points</span>
+          <span className="progress-text">100 max points</span>
         </div>
       </div>
 
       {/* Score Categories Grid */}
       <div className="score-categories">
         {Object.entries(profileScore).filter(([key, value]) => 
-          key !== 'total' && key !== 'details' && key !== 'improvement_tips' && typeof value === 'number'
+          key !== 'score' && key !== 'total' && key !== 'details' && key !== 'improvement_tips' && typeof value === 'number'
         ).map(([category, score]) => {
           const IconComponent = getScoreIcon(category);
           const progress = getScoreProgress(score, 100);
