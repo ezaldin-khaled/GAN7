@@ -8,10 +8,8 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
   const [socialMediaLinks, setSocialMediaLinks] = useState({
     facebook: '',
     instagram: '',
-    linkedin: '',
     youtube: '',
-    tiktok: '',
-    snapchat: ''
+    tiktok: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,10 +40,8 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         setSocialMediaLinks({
           facebook: response.data.facebook || '',
           instagram: response.data.instagram || '',
-          linkedin: response.data.linkedin || '',
           youtube: response.data.youtube || '',
-          tiktok: response.data.tiktok || '',
-          snapchat: response.data.snapchat || ''
+          tiktok: response.data.tiktok || ''
         });
       }
     } catch (err) {
@@ -112,10 +108,8 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
     const patterns = {
       facebook: /^(https?:\/\/)?(www\.)?facebook\.com\/[a-zA-Z0-9.]+$/,
       instagram: /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9._]+$/,
-      linkedin: /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-]+$/,
       youtube: /^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|c\/|user\/)?[a-zA-Z0-9-]+|youtu\.be\/[a-zA-Z0-9-]+)$/,
-      tiktok: /^(https?:\/\/)?(www\.)?tiktok\.com\/@[a-zA-Z0-9._]+$/,
-      snapchat: /^(https?:\/\/)?(www\.)?snapchat\.com\/add\/[a-zA-Z0-9._]+$/
+      tiktok: /^(https?:\/\/)?(www\.)?tiktok\.com\/@[a-zA-Z0-9._]+$/
     };
 
     return patterns[platform].test(url);
@@ -526,31 +520,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
                 )}
               </div>
             </div>
-            
-            <div className="form-group">
-              <label>LinkedIn</label>
-              <div className="social-media-input-container">
-                <input 
-                  type="url" 
-                  name="linkedin" 
-                  value={socialMediaLinks.linkedin} 
-                  onChange={handleSocialMediaChange}
-                  placeholder="https://linkedin.com/in/yourusername"
-                />
-                {socialMediaLinks.linkedin && (
-                  <a 
-                    href={socialMediaLinks.linkedin} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="social-media-link"
-                    title="Visit LinkedIn profile"
-                  >
-                    🔗
-                  </a>
-                )}
-              </div>
-            </div>
-            
             <div className="form-group">
               <label>YouTube</label>
               <div className="social-media-input-container">
@@ -592,30 +561,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
                     rel="noopener noreferrer"
                     className="social-media-link"
                     title="Visit TikTok profile"
-                  >
-                    🔗
-                  </a>
-                )}
-              </div>
-            </div>
-            
-            <div className="form-group">
-              <label>Snapchat</label>
-              <div className="social-media-input-container">
-                <input 
-                  type="url" 
-                  name="snapchat" 
-                  value={socialMediaLinks.snapchat} 
-                  onChange={handleSocialMediaChange}
-                  placeholder="https://snapchat.com/add/yourusername"
-                />
-                {socialMediaLinks.snapchat && (
-                  <a 
-                    href={socialMediaLinks.snapchat} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="social-media-link"
-                    title="Visit Snapchat profile"
                   >
                     🔗
                   </a>

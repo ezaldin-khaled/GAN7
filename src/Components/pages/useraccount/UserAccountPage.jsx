@@ -237,10 +237,8 @@ const UserAccountPage = () => {
               // Social media fields
               facebook: cachedUser.facebook || '',
               instagram: cachedUser.instagram || '',
-              linkedin: cachedUser.linkedin || '',
               youtube: cachedUser.youtube || '',
-              tiktok: cachedUser.tiktok || '',
-              snapchat: cachedUser.snapchat || ''
+              tiktok: cachedUser.tiktok || ''
             });
             setProfileImage(cachedUser.profilePic || null);
             setError(''); // Clear any previous errors
