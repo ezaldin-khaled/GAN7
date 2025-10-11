@@ -5,11 +5,14 @@ import './ProfileScore.css';
 const ProfileScore = ({ profileScore }) => {
   // Debug logging to track score values
   console.log('📊 ProfileScore component - Received profileScore:', profileScore);
-  console.log('📊 ProfileScore component - Will display:', profileScore?.score || profileScore?.total || 0);
   
   if (!profileScore) {
     return null;
   }
+
+  // Extract the score value - ALWAYS use the 'score' field (0-100) to match UserProfilePopup
+  const scoreValue = profileScore.score || 0;
+  console.log('📊 ProfileScore component - Using score value:', scoreValue);
 
   const getScoreColor = (score, maxScore = 100) => {
     const percentage = (score / maxScore) * 100;
@@ -67,14 +70,14 @@ const ProfileScore = ({ profileScore }) => {
       <div className="total-score-card">
         <div className="total-score-content">
           <div className="total-score-main">
-            <span className="total-score-value" style={{ color: getTotalScoreColor(profileScore.score || profileScore.total) }}>
-              {profileScore.score || profileScore.total || 0}
+            <span className="total-score-value" style={{ color: getTotalScoreColor(scoreValue) }}>
+              {scoreValue}
             </span>
             <span className="total-score-label">Profile Score</span>
           </div>
           <div className="total-score-level">
-            <span className="level-badge" style={{ backgroundColor: getTotalScoreColor(profileScore.score || profileScore.total) }}>
-              {getScoreLevel(profileScore.score || profileScore.total)}
+            <span className="level-badge" style={{ backgroundColor: getTotalScoreColor(scoreValue) }}>
+              {getScoreLevel(scoreValue)}
             </span>
           </div>
         </div>
@@ -83,8 +86,8 @@ const ProfileScore = ({ profileScore }) => {
             <div 
               className="progress-fill" 
               style={{ 
-                width: `${getScoreProgress(profileScore.score || profileScore.total, 100)}%`,
-                backgroundColor: getTotalScoreColor(profileScore.score || profileScore.total)
+                width: `${getScoreProgress(scoreValue, 100)}%`,
+                backgroundColor: getTotalScoreColor(scoreValue)
               }}
             ></div>
           </div>

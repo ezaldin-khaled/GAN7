@@ -576,28 +576,18 @@ export default function UserProfilePopup({ user, onClose }) {
           console.log('📊 UserProfilePopup - Raw API profile_score:', response.data.profile_score);
           setUserData(mappedUserData);
           
-          // Use real profile score from API if available, otherwise calculate it
-          if (response.data.profile_score?.score !== undefined && response.data.profile_score?.score !== null) {
-            // Cap the API score at 100 (ensure it never exceeds 100)
-            const apiScore = Math.max(0, Math.min(Math.round(response.data.profile_score.score), 100));
-            setProfileScore(apiScore);
-            console.log('📊 UserProfilePopup - Using API score:', apiScore, '(raw:', response.data.profile_score.score, ')');
-            
-            // If breakdown is available from API, use it; otherwise calculate it
-            if (response.data.profile_score?.breakdown) {
-              setScoreBreakdown(response.data.profile_score.breakdown);
-            } else {
-              const scoreData = calculateProfileScore(mappedUserData);
-              setScoreBreakdown(scoreData.breakdown);
-            }
+          // ALWAYS use the API score from mappedUserData.profileScore (already capped at 100)
+          // This ensures consistency with UserAccountPage which uses userData.profile_score.score
+          const displayScore = mappedUserData.profileScore || 0;
+          setProfileScore(displayScore);
+          console.log('📊 UserProfilePopup - Using score:', displayScore);
+          
+          // Use breakdown from API if available, otherwise calculate it for display purposes only
+          if (response.data.profile_score?.breakdown) {
+            setScoreBreakdown(response.data.profile_score.breakdown);
           } else {
-            // Fallback to calculated score (already capped at 100)
-            console.log('⚠️ UserProfilePopup - API profile_score.score is missing, calculating locally');
             const scoreData = calculateProfileScore(mappedUserData);
-            const cappedScore = Math.max(0, Math.min(scoreData.score, 100));
-            setProfileScore(cappedScore);
             setScoreBreakdown(scoreData.breakdown);
-            console.log('📊 UserProfilePopup - Using calculated score:', cappedScore);
           }
         } else {
           // Fallback to cached user data from localStorage if API calls failed
