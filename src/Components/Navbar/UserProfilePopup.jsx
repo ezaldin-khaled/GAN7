@@ -143,7 +143,7 @@ export default function UserProfilePopup({ user, onClose }) {
       maxScore += criterion.weight;
     });
 
-    const finalScore = Math.round((totalScore / maxScore) * 100);
+    const finalScore = Math.min(Math.round((totalScore / maxScore) * 100), 100);
     
     return {
       score: finalScore,
@@ -563,7 +563,7 @@ export default function UserProfilePopup({ user, onClose }) {
             profile_picture: profileData.profile_picture || profileData.profilePic || null,
             cover_photo: profileData.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
             // Additional fields
-            profileScore: response.data.profile_score?.score || 0,
+            profileScore: Math.min(Math.round(response.data.profile_score?.score || 0), 100),
             accountTier: response.data.subscription_status?.tier || 0,
             profileCompletion: response.data.profile_score?.completion_percentage || 0,
             subscriptionMessage: response.data.subscription_status?.message || '',
@@ -575,10 +575,28 @@ export default function UserProfilePopup({ user, onClose }) {
           console.log('📊 UserProfilePopup fetchUserData - Mapped User Data:', mappedUserData);
           setUserData(mappedUserData);
           
-          // Calculate profile score for API data
-          const scoreData = calculateProfileScore(mappedUserData);
-          setProfileScore(scoreData.score);
-          setScoreBreakdown(scoreData.breakdown);
+          // Use real profile score from API if available, otherwise calculate it
+          if (response.data.profile_score?.score !== undefined && response.data.profile_score?.score !== null) {
+            // Cap the API score at 100 (ensure it never exceeds 100)
+            const apiScore = Math.max(0, Math.min(Math.round(response.data.profile_score.score), 100));
+            setProfileScore(apiScore);
+            console.log('📊 Using real profile score from API:', apiScore);
+            
+            // If breakdown is available from API, use it; otherwise calculate it
+            if (response.data.profile_score?.breakdown) {
+              setScoreBreakdown(response.data.profile_score.breakdown);
+            } else {
+              const scoreData = calculateProfileScore(mappedUserData);
+              setScoreBreakdown(scoreData.breakdown);
+            }
+          } else {
+            // Fallback to calculated score (already capped at 100)
+            const scoreData = calculateProfileScore(mappedUserData);
+            const cappedScore = Math.max(0, Math.min(scoreData.score, 100));
+            setProfileScore(cappedScore);
+            setScoreBreakdown(scoreData.breakdown);
+            console.log('📊 Using calculated profile score:', cappedScore);
+          }
         } else {
           // Fallback to cached user data from localStorage if API calls failed
           const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -623,9 +641,10 @@ export default function UserProfilePopup({ user, onClose }) {
             
             setUserData(mappedUserData);
             
-            // Calculate profile score for cached data
+            // Calculate profile score for cached data (cap at 100)
             const scoreData = calculateProfileScore(mappedUserData);
-            setProfileScore(scoreData.score);
+            const cappedScore = Math.max(0, Math.min(scoreData.score, 100));
+            setProfileScore(cappedScore);
             setScoreBreakdown(scoreData.breakdown);
           } else {
             setError('Unable to load profile data. Please try logging in again.');
@@ -1201,7 +1220,7 @@ export default function UserProfilePopup({ user, onClose }) {
                   )}
 
                   {/* Profile Score Section */}
-                  {userData?.profileScore && (
+                  {userData?.profileScore !== undefined && userData?.profileScore !== null && (
                     <div className="form-group">
                       <label>Profile Score</label>
                       <div className="readonly-field">{userData?.profileScore}/100</div>
