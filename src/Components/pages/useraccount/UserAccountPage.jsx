@@ -207,9 +207,9 @@ const UserAccountPage = () => {
           email_verified: profileData.email_verified || false,
           is_verified: profileData.is_verified || false,
           // Cap profile_score at 100 to match UserProfilePopup behavior
+          // The 'total' field contains the actual score (0-100)
           profile_score: response.data.profile_score ? {
             ...response.data.profile_score,
-            score: Math.max(0, Math.min(response.data.profile_score.score || 0, 100)),
             total: Math.max(0, Math.min(response.data.profile_score.total || 0, 100))
           } : null
         };
@@ -218,7 +218,6 @@ const UserAccountPage = () => {
         console.log('📊 UserAccountPage - Raw API profile_score:', response.data.profile_score);
         console.log('📊 UserAccountPage - Capped profile_score:', mappedUserData.profile_score);
         if (mappedUserData.profile_score) {
-          console.log('📊 UserAccountPage - Score value:', mappedUserData.profile_score.score);
           console.log('📊 UserAccountPage - Total value:', mappedUserData.profile_score.total);
         }
         setUserData(mappedUserData);
@@ -374,9 +373,9 @@ const UserAccountPage = () => {
           phoneNumber: response.data.profile.phone,
           bio: response.data.profile.aboutyou,
           // Cap profile_score at 100 to match UserProfilePopup behavior
+          // The 'total' field contains the actual score (0-100)
           profile_score: response.data.profile_score ? {
             ...response.data.profile_score,
-            score: Math.max(0, Math.min(response.data.profile_score.score || 0, 100)),
             total: Math.max(0, Math.min(response.data.profile_score.total || 0, 100))
           } : null
         });

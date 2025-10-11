@@ -563,7 +563,8 @@ export default function UserProfilePopup({ user, onClose }) {
             profile_picture: profileData.profile_picture || profileData.profilePic || null,
             cover_photo: profileData.cover_photo || '/home/illusion/Downloads/Gemini_Generated_Image_7yteyb7yteyb7yte.jpg',
             // Additional fields
-            profileScore: Math.min(Math.round(response.data.profile_score?.score || 0), 100),
+            // Use 'total' field which contains the actual score points (0-100)
+            profileScore: Math.min(Math.round(response.data.profile_score?.total || 0), 100),
             accountTier: response.data.subscription_status?.tier || 0,
             profileCompletion: response.data.profile_score?.completion_percentage || 0,
             subscriptionMessage: response.data.subscription_status?.message || '',

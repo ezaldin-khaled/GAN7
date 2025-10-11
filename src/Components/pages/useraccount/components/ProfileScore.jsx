@@ -10,9 +10,9 @@ const ProfileScore = ({ profileScore }) => {
     return null;
   }
 
-  // Extract the score value - ALWAYS use the 'score' field (0-100) to match UserProfilePopup
-  const scoreValue = profileScore.score || 0;
-  console.log('📊 ProfileScore component - Using score value:', scoreValue);
+  // Extract the score value - ALWAYS use the 'total' field (0-100) which contains the actual points
+  const scoreValue = profileScore.total || 0;
+  console.log('📊 ProfileScore component - Using total value:', scoreValue);
 
   const getScoreColor = (score, maxScore = 100) => {
     const percentage = (score / maxScore) * 100;
