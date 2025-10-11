@@ -175,17 +175,17 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       
     <div className="content-section">
       <h1 className="section-title">
-        Profile Information
+        {t('profileTab.title')}
       </h1>
 
       <div className="profile-form-section">
         <h3 className="subsection-title">
-          Personal Details
+          {t('profileTab.personalDetails')}
         </h3>
         
         <div className="form-row">
           <div className="form-group">
-            <label>Full Name</label>
+            <label>{t('profileTab.fullName')}</label>
             <input 
               type="text" 
               name="full_name" 
@@ -196,7 +196,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </div>
           
           <div className="form-group">
-            <label>Email Address</label>
+            <label>{t('profileTab.emailAddress')}</label>
             <div className="email-input-container">
               <input 
                 type="email" 
@@ -212,7 +212,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
         <div className="form-row">
           <div className="form-group">
-            <label>Phone Number</label>
+            <label>{t('profileTab.phoneNumber')}</label>
             <input 
               type="tel" 
               name="phone" 
@@ -465,7 +465,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
       </div>
 
       <div className="social-media-section">
-        <h2>Social Media Links</h2>
+        <h2>{t('profileTab.socialMediaLinks')}</h2>
         {error && <div className="error-message">{error}</div>}
         {successMessage && <div className="success-message">{successMessage}</div>}
         {loading ? (
@@ -582,7 +582,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           }}
           disabled={profileLoading || loading}
         >
-          {profileLoading || loading ? <LoadingSpinner text="Saving..." /> : 'Save Changes'}
+          {profileLoading || loading ? <LoadingSpinner text={t('profileTab.saving')} /> : t('profileTab.saveChanges')}
         </button>
       </div>
     </div>

@@ -315,5 +315,22 @@
     "free": "Free",
     "freePlan": "Free Plan",
     "basicFeatures": "Basic features for individual users"
+  },
+  "profileTab": {
+    "title": "Profile Information",
+    "personalDetails": "Personal Details",
+    "fullName": "Full Name",
+    "enterFullName": "Enter your full name",
+    "emailAddress": "Email Address",
+    "phoneNumber": "Phone Number",
+    "country": "Country",
+    "city": "City",
+    "countryOfResidence": "Country of Residence",
+    "gender": "Gender",
+    "dateOfBirth": "Date of Birth",
+    "aboutYou": "About You",
+    "socialMediaLinks": "Social Media Links",
+    "saveChanges": "Save Changes",
+    "saving": "Saving..."
   }
-} 
+}

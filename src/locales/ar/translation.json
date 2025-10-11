@@ -315,5 +315,22 @@
     "free": "مجاني",
     "freePlan": "خطة مجانية",
     "basicFeatures": "ميزات أساسية للمستخدمين الأفراد"
+  },
+  "profileTab": {
+    "title": "معلومات الملف الشخصي",
+    "personalDetails": "التفاصيل الشخصية",
+    "fullName": "الاسم الكامل",
+    "enterFullName": "أدخل اسمك الكامل",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "phoneNumber": "رقم الهاتف",
+    "country": "البلد",
+    "city": "المدينة",
+    "countryOfResidence": "بلد الإقامة",
+    "gender": "الجنس",
+    "dateOfBirth": "تاريخ الميلاد",
+    "aboutYou": "عنك",
+    "socialMediaLinks": "روابط وسائل التواصل الاجتماعي",
+    "saveChanges": "حفظ التغييرات",
+    "saving": "جاري الحفظ..."
   }
 } 
