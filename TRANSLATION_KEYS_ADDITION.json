@@ -1,0 +1,46 @@
+{
+  "profileTab": {
+    "title": "Profile Information",
+    "personalDetails": "Personal Details",
+    "fullName": "Full Name",
+    "enterFullName": "Enter your full name",
+    "emailAddress": "Email Address",
+    "emailPlaceholder": "Email address",
+    "phoneNumber": "Phone Number",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "country": "Country",
+    "enterCountry": "Enter your country",
+    "city": "City",
+    "enterCity": "Enter your city",
+    "countryOfResidence": "Country of Residence",
+    "selectCountryOfResidence": "Select your country of residence",
+    "gender": "Gender",
+    "selectGender": "Select your gender",
+    "dateOfBirth": "Date of Birth",
+    "aboutYou": "About You",
+    "aboutYouPlaceholder": "Tell us about yourself, your experience, skills, and what makes you unique...",
+    "socialMediaLinks": "Social Media Links",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "tiktok": "TikTok",
+    "profileUrlPlaceholder": "Paste your profile URL here",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "successMessage": "Profile updated successfully!",
+    "errorMessage": "Failed to update profile"
+  },
+  "countries": {
+    "ae": "United Arab Emirates",
+    "us": "United States",
+    "gb": "United Kingdom",
+    "ca": "Canada",
+    "au": "Australia",
+    "de": "Germany",
+    "fr": "France",
+    "es": "Spain",
+    "it": "Italy",
+    "nl": "Netherlands"
+  }
+}
+

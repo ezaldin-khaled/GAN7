@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import LoadingSpinner from './LoadingSpinner';
 import ProfileScore from './ProfileScore';
 import axiosInstance from '../../../../api/axios';
 
 const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: profileLoading }) => {
+  const { t } = useTranslation();
   const [formattedDob, setFormattedDob] = useState('');
   const [socialMediaLinks, setSocialMediaLinks] = useState({
     facebook: '',
