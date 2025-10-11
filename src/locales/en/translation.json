@@ -303,6 +303,7 @@
   },
   "billing": {
     "plansAndBilling": "Plans & Billing",
+    "productionAssetsProPlans": "Production Assets Pro Plans",
     "restrictedCountriesNotice": "Restricted Countries Notice",
     "restrictedCountries": "Restricted Countries",
     "restrictedCountriesMessage": "If you are from these countries, please send an email to us so we can find a way that fits your country and we are able to give you the subscription.",

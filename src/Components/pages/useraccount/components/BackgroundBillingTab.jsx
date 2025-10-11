@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../../api/axios';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
@@ -27,6 +28,7 @@ const ensureAllPlansAvailable = (apiPlans) => {
 };
 
 const BackgroundBillingTab = () => {
+  const { t } = useTranslation();
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -533,13 +535,13 @@ const BackgroundBillingTab = () => {
       {/* Restricted Countries Notice */}
       <div className="restricted-countries-notice">
         <div className="notice-header">
-          <h3>🌍 Restricted Countries Notice</h3>
+          <h3>🌍 {t('billing.restrictedCountriesNotice')}</h3>
         </div>
         <div className="notice-content">
-          <p><strong>Restricted Countries:</strong> Syria, Iran, North Korea, Cuba, Venezuela, Sudan, Myanmar, Belarus, Russia, Crimea, Donetsk, Luhansk, Afghanistan, Yemen, Libya, Iraq, Somalia, Central African Republic, Democratic Republic of the Congo, South Sudan, Eritrea, Burundi, Zimbabwe, Mali, Burkina Faso, Niger, Chad, Guinea-Bissau, Guinea, Sierra Leone, Liberia, Comoros, Madagascar, Mauritania, Western Sahara</p>
-          <p>If you are from these countries, please send an email to us so we can find a way that fits your country and we are able to give you the subscription.</p>
+          <p><strong>{t('billing.restrictedCountries')}:</strong> Syria, Iran, North Korea, Cuba, Venezuela, Sudan, Myanmar, Belarus, Russia, Crimea, Donetsk, Luhansk, Afghanistan, Yemen, Libya, Iraq, Somalia, Central African Republic, Democratic Republic of the Congo, South Sudan, Eritrea, Burundi, Zimbabwe, Mali, Burkina Faso, Niger, Chad, Guinea-Bissau, Guinea, Sierra Leone, Liberia, Comoros, Madagascar, Mauritania, Western Sahara</p>
+          <p>{t('billing.restrictedCountriesMessage')}</p>
           <div className="contact-email">
-            <strong>📧 Contact us:</strong> <a href="mailto:info@gan7club.com">info@gan7club.com</a>
+            <strong>📧 {t('billing.contactUs')}:</strong> <a href="mailto:info@gan7club.com">info@gan7club.com</a>
           </div>
         </div>
       </div>
