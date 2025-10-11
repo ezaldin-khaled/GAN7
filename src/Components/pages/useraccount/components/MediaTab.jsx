@@ -204,6 +204,25 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
     <div className="content-section">
       <h1 className="section-title">Media Gallery</h1>
       
+      {/* Terms Notice */}
+      <div className="media-terms-notice" style={{ 
+        backgroundColor: '#fff3cd', 
+        border: '1px solid #ffc107', 
+        borderRadius: '8px', 
+        padding: '12px 16px', 
+        marginBottom: '20px',
+        color: '#856404',
+        fontSize: '14px',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '10px'
+      }}>
+        <span style={{ fontSize: '18px', flexShrink: 0 }}>⚠️</span>
+        <span>
+          <strong>Notice:</strong> The media you upload may be used by the admins for commercial purposes.
+        </span>
+      </div>
+      
       <div className="upload-area">
         <div className="upload-box" onClick={() => document.getElementById('media-upload').click()}>
           <FaUpload className="upload-icon" />
