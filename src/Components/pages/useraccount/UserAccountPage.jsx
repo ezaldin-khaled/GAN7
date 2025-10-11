@@ -205,10 +205,17 @@ const UserAccountPage = () => {
           phoneNumber: profileData.phone || '',
           bio: profileData.aboutyou || '',
           email_verified: profileData.email_verified || false,
-          is_verified: profileData.is_verified || false
+          is_verified: profileData.is_verified || false,
+          // Cap profile_score at 100 to match UserProfilePopup behavior
+          profile_score: response.data.profile_score ? {
+            ...response.data.profile_score,
+            score: Math.max(0, Math.min(response.data.profile_score.score || 0, 100)),
+            total: Math.max(0, Math.min(response.data.profile_score.total || 0, 100))
+          } : null
         };
         
         console.log('📊 UserAccountPage fetchUserData - Mapped User Data:', mappedUserData);
+        console.log('📊 UserAccountPage fetchUserData - Profile Score (capped):', mappedUserData.profile_score);
         setUserData(mappedUserData);
         
         // Set profile image from API response only
@@ -350,6 +357,7 @@ const UserAccountPage = () => {
       // Update local state with the response data structure
       if (response.data.profile) {
         setUserData({
+          ...response.data,  // Include all response data (like profile_score)
           ...response.data.profile,
           fullName: response.data.profile.full_name,
           email: response.data.profile.email,
@@ -359,7 +367,13 @@ const UserAccountPage = () => {
           dateOfBirth: response.data.profile.date_of_birth,
           country: response.data.profile.country,
           phoneNumber: response.data.profile.phone,
-          bio: response.data.profile.aboutyou
+          bio: response.data.profile.aboutyou,
+          // Cap profile_score at 100 to match UserProfilePopup behavior
+          profile_score: response.data.profile_score ? {
+            ...response.data.profile_score,
+            score: Math.max(0, Math.min(response.data.profile_score.score || 0, 100)),
+            total: Math.max(0, Math.min(response.data.profile_score.total || 0, 100))
+          } : null
         });
 
         setProfileImage(response.data.profile.profile_picture || null);
