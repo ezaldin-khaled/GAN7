@@ -248,5 +248,57 @@
     "submit": "Submit now",
     "sending": "Sending....",
     "success": "Form Submitted Successfully"
+  },
+  "gallery": {
+    "seeMore": "See more"
+  },
+  "galleryPage": {
+    "title": "Shared Media Gallery",
+    "subtitle": "Discover amazing talent through media shared by our admin team",
+    "loadingGallery": "Loading shared media gallery...",
+    "sharedMedia": "Shared Media",
+    "noDescription": "No description available",
+    "noMediaShared": "No media has been shared to the gallery yet.",
+    "unexpectedDataFormat": "Received an unexpected data format from the server.",
+    "endpointNotFound": "Shared media endpoint not found (404). Please ensure the backend API is properly configured.",
+    "authRequired": "Authentication required to view shared media. Please log in.",
+    "noPermission": "You do not have permission to view shared media.",
+    "serverError": "Server error (500). The shared media endpoint may be down or not implemented yet.",
+    "failedToLoad": "Failed to load shared media",
+    "mediaFailedToLoad": "Media failed to load",
+    "sharedBy": "Shared by",
+    "unknownDate": "Unknown date",
+    "noMediaYet": "No media yet",
+    "categories": {
+      "all": "All",
+      "featured": "Featured",
+      "trending": "Trending",
+      "spotlight": "Spotlight",
+      "inspiration": "Inspiration",
+      "general": "General"
+    }
+  },
+  "foot": {
+    "copyright": "© 2025 GAN. All rights reserved",
+    "termsOfServices": "Terms of Services",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "profileScore": {
+    "title": "Profile Score",
+    "viewTips": "View improvement tips",
+    "overallScore": "Overall Score",
+    "overallScoreDesc": "Your overall profile strength",
+    "overallScoreTip": "Complete your profile information and add more media to improve your score.",
+    "engagementRate": "Engagement Rate",
+    "engagementRateDesc": "Based on user interactions",
+    "engagementRateTip": "Post more regularly and respond to comments to increase engagement.",
+    "activityLevel": "Activity Level",
+    "activityLevelDesc": "Your recent platform activity",
+    "activityLevelTip": "Maintain your current activity level to keep your score high.",
+    "contentQuality": "Content Quality",
+    "contentQualityDesc": "Based on media quality and diversity",
+    "contentQualityTip": "Add more high-quality images and videos to improve content quality.",
+    "high": "High",
+    "good": "Good"
   }
 } 

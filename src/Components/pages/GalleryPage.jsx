@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Navbar from '../Navbar/Navbar';
 import Loader from '../common/Loader';
 import axiosInstance from '../../api/axios';
 import './GalleryPage.css';
 
 const GalleryPage = () => {
+  const { t } = useTranslation();
   const [mediaItems, setMediaItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,8 +28,8 @@ const GalleryPage = () => {
       if (response.data && Array.isArray(response.data)) {
         const transformedMedia = response.data.map(item => ({
           id: item.id,
-          title: item.caption || 'Shared Media',
-          description: item.caption || 'No description available',
+          title: item.caption || t('galleryPage.sharedMedia'),
+          description: item.caption || t('galleryPage.noDescription'),
           imageUrl: item.content_info?.thumbnail_url || item.content_info?.media_url,
           mediaUrl: item.content_info?.media_url,
           mediaType: item.content_info?.media_type || 'image',
@@ -41,24 +43,24 @@ const GalleryPage = () => {
         setMediaItems(transformedMedia);
 
         if (transformedMedia.length === 0) {
-          setError('No media has been shared to the gallery yet.');
+          setError(t('galleryPage.noMediaShared'));
         }
       } else {
-        setError('Received an unexpected data format from the server.');
+        setError(t('galleryPage.unexpectedDataFormat'));
         setMediaItems([]);
       }
     } catch (err) {
       console.error('Error fetching shared media:', err);
       if (err.response?.status === 404) {
-        setError('Shared media endpoint not found (404). Please ensure the backend API is properly configured.');
+        setError(t('galleryPage.endpointNotFound'));
       } else if (err.response?.status === 401) {
-        setError('Authentication required to view shared media. Please log in.');
+        setError(t('galleryPage.authRequired'));
       } else if (err.response?.status === 403) {
-        setError('You do not have permission to view shared media.');
+        setError(t('galleryPage.noPermission'));
       } else if (err.response?.status === 500) {
-        setError('Server error (500). The shared media endpoint may be down or not implemented yet.');
+        setError(t('galleryPage.serverError'));
       } else {
-        setError(`Failed to load shared media: ${err.message}`);
+        setError(`${t('galleryPage.failedToLoad')}: ${err.message}`);
       }
       setMediaItems([]);
     } finally {
@@ -78,7 +80,7 @@ const GalleryPage = () => {
         <Navbar />
         <div className="gallery-container">
           <Loader />
-          <p style={{ textAlign: 'center', color: 'white', marginTop: '20px' }}>Loading shared media gallery...</p>
+          <p style={{ textAlign: 'center', color: 'white', marginTop: '20px' }}>{t('galleryPage.loadingGallery')}</p>
         </div>
       </div>
     );
@@ -89,8 +91,8 @@ const GalleryPage = () => {
       <Navbar />
       <div className="gallery-container">
         <div className="gallery-header">
-          <h1>Shared Media Gallery</h1>
-          <p>Discover amazing talent through media shared by our admin team</p>
+          <h1>{t('galleryPage.title')}</h1>
+          <p>{t('galleryPage.subtitle')}</p>
         </div>
 
         <div className="gallery-filters">
@@ -100,7 +102,7 @@ const GalleryPage = () => {
               className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category)}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {t(`galleryPage.categories.${category}`)}
             </button>
           ))}
         </div>
@@ -138,16 +140,16 @@ const GalleryPage = () => {
                   />
                 )}
                 <div className="media-error" style={{ display: 'none' }}>
-                  <p>Media failed to load</p>
+                  <p>{t('galleryPage.mediaFailedToLoad')}</p>
                 </div>
                 <div className="gallery-item-overlay">
                   <div className="gallery-item-info">
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                     <div className="media-meta">
-                      <span className="shared-by">Shared by {item.sharedBy}</span>
+                      <span className="shared-by">{t('galleryPage.sharedBy')} {item.sharedBy}</span>
                       <span className="share-date">
-                        {item.sharedAt ? new Date(item.sharedAt).toLocaleDateString() : 'Unknown date'}
+                        {item.sharedAt ? new Date(item.sharedAt).toLocaleDateString() : t('galleryPage.unknownDate')}
                       </span>
                     </div>
                     {item.tags && item.tags.length > 0 && (
@@ -172,7 +174,7 @@ const GalleryPage = () => {
             fontSize: '1.2rem',
             opacity: 0.8
           }}>
-            No media yet
+            {t('galleryPage.noMediaYet')}
           </div>
         )}
       </div>

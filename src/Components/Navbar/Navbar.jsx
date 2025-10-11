@@ -224,9 +224,9 @@ function Navbar() {
         <li>
           <a href="/gallery" className="gallery-link">{t('navigation.gallery')}</a>
         </li>
-        {/* <li>
+        <li>
           <LanguageSwitcher />
-        </li> */}
+        </li>
         {renderAuthSection()}
       </ul>
     </nav>

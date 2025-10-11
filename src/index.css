@@ -18,6 +18,21 @@ body{
   color: #333;
   font-weight: 400;
 }
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  font-family: 'Cairo', "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+[dir="rtl"] body {
+  text-align: right;
+  font-family: 'Cairo', "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+[dir="rtl"] .btn img {
+  margin-left: 0;
+  margin-right: 10px;
+}
 a{
   text-decoration: none;
   color: inherit;
