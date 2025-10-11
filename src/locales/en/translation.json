@@ -300,5 +300,19 @@
     "contentQualityTip": "Add more high-quality images and videos to improve content quality.",
     "high": "High",
     "good": "Good"
+  },
+  "billing": {
+    "plansAndBilling": "Plans & Billing",
+    "restrictedCountriesNotice": "Restricted Countries Notice",
+    "restrictedCountries": "Restricted Countries",
+    "restrictedCountriesMessage": "If you are from these countries, please send an email to us so we can find a way that fits your country and we are able to give you the subscription.",
+    "contactUs": "Contact us",
+    "currentPlan": "Current Plan",
+    "activePlan": "Active Plan",
+    "validUntil": "Valid until",
+    "active": "Active",
+    "free": "Free",
+    "freePlan": "Free Plan",
+    "basicFeatures": "Basic features for individual users"
   }
 } 

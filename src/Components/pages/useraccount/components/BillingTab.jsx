@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
@@ -12,6 +13,7 @@ const ensureAllPlansAvailable = (apiPlans) => {
 };
 
 const BillingTab = () => {
+  const { t } = useTranslation();
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -421,19 +423,19 @@ const BillingTab = () => {
 
   return (
     <div className="content-section">
-      <h1 className="section-title">Plans & Billing</h1>
+      <h1 className="section-title">{t('billing.plansAndBilling')}</h1>
       {error && <div className="error-message">{error}</div>}
       
       {/* Restricted Countries Notice */}
       <div className="restricted-countries-notice">
         <div className="notice-header">
-          <h3>🌍 Restricted Countries Notice</h3>
+          <h3>🌍 {t('billing.restrictedCountriesNotice')}</h3>
         </div>
         <div className="notice-content">
-          <p><strong>Restricted Countries:</strong> Syria, Iran, North Korea, Cuba, Venezuela, Sudan, Myanmar, Belarus, Russia, Crimea, Donetsk, Luhansk, Afghanistan, Yemen, Libya, Iraq, Somalia, Central African Republic, Democratic Republic of the Congo, South Sudan, Eritrea, Burundi, Zimbabwe, Mali, Burkina Faso, Niger, Chad, Guinea-Bissau, Guinea, Sierra Leone, Liberia, Comoros, Madagascar, Mauritania, Western Sahara</p>
-          <p>If you are from these countries, please send an email to us so we can find a way that fits your country and we are able to give you the subscription.</p>
+          <p><strong>{t('billing.restrictedCountries')}:</strong> Syria, Iran, North Korea, Cuba, Venezuela, Sudan, Myanmar, Belarus, Russia, Crimea, Donetsk, Luhansk, Afghanistan, Yemen, Libya, Iraq, Somalia, Central African Republic, Democratic Republic of the Congo, South Sudan, Eritrea, Burundi, Zimbabwe, Mali, Burkina Faso, Niger, Chad, Guinea-Bissau, Guinea, Sierra Leone, Liberia, Comoros, Madagascar, Mauritania, Western Sahara</p>
+          <p>{t('billing.restrictedCountriesMessage')}</p>
           <div className="contact-email">
-            <strong>📧 Contact us:</strong> <a href="mailto:info@gan7club.com">info@gan7club.com</a>
+            <strong>📧 {t('billing.contactUs')}:</strong> <a href="mailto:info@gan7club.com">info@gan7club.com</a>
           </div>
         </div>
       </div>
@@ -442,13 +444,13 @@ const BillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon pulse" />
           <div className="plan-info">
-            <h3>Current Plan: {userData?.account_type || 'Active Plan'}</h3>
+            <h3>{t('billing.currentPlan')}: {userData?.account_type || t('billing.activePlan')}</h3>
             <div className="end-date">
-              <p><strong>Valid until:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
+              <p><strong>{t('billing.validUntil')}:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
             </div>
             <div className="plan-status">
               <span className="status-dot"></span>
-              Active
+              {t('billing.active')}
             </div>
           </div>
         </div>
@@ -456,11 +458,11 @@ const BillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon" />
           <div className="plan-info">
-            <h3>Current Plan: {userData?.account_type || 'Free'}</h3>
-            <p>Basic features for individual users</p>
+            <h3>{t('billing.currentPlan')}: {userData?.account_type || t('billing.free')}</h3>
+            <p>{t('billing.basicFeatures')}</p>
             <div className="plan-status free">
               <span className="status-dot"></span>
-              Free Plan
+              {t('billing.freePlan')}
             </div>
           </div>
         </div>

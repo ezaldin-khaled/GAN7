@@ -300,5 +300,19 @@
     "contentQualityTip": "أضف المزيد من الصور ومقاطع الفيديو عالية الجودة لتحسين جودة المحتوى.",
     "high": "عالي",
     "good": "جيد"
+  },
+  "billing": {
+    "plansAndBilling": "الخطط والفواتير",
+    "restrictedCountriesNotice": "إشعار البلدان المقيدة",
+    "restrictedCountries": "البلدان المقيدة",
+    "restrictedCountriesMessage": "إذا كنت من هذه البلدان، يرجى إرسال بريد إلكتروني إلينا حتى نتمكن من إيجاد طريقة تناسب بلدك ونكون قادرين على تزويدك بالاشتراك.",
+    "contactUs": "اتصل بنا",
+    "currentPlan": "الخطة الحالية",
+    "activePlan": "خطة نشطة",
+    "validUntil": "صالح حتى",
+    "active": "نشط",
+    "free": "مجاني",
+    "freePlan": "خطة مجانية",
+    "basicFeatures": "ميزات أساسية للمستخدمين الأفراد"
   }
 } 
