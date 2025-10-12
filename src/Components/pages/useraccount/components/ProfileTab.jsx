@@ -223,31 +223,31 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </div>
           
           <div className="form-group">
-            <label>Country</label>
+            <label>{t('profileTab.country')}</label>
             <input 
               type="text" 
               name="country" 
               value={userData.country || ''} 
               onChange={handleInputChange}
-              placeholder="Enter your country"
+              placeholder={t('profileTab.enterCountry')}
             />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group">
-            <label>City</label>
+            <label>{t('profileTab.city')}</label>
             <input 
               type="text" 
               name="city" 
               value={userData.city || ''} 
               onChange={handleInputChange}
-              placeholder="Enter your city"
+              placeholder={t('profileTab.enterCity')}
             />
           </div>
           
           <div className="form-group">
-            <label>Country of Residence</label>
+            <label>{t('profileTab.countryOfResidence')}</label>
             <select 
               name="residency" 
               value={userData.residency || ''} 

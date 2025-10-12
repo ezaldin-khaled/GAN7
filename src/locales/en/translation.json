@@ -334,6 +334,8 @@
     "aboutYou": "About You",
     "socialMediaLinks": "Social Media Links",
     "saveChanges": "Save Changes",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "enterCountry": "Enter your country",
+    "enterCity": "Enter your city"
   }
 }

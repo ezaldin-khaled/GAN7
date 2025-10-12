@@ -334,6 +334,8 @@
     "aboutYou": "عنك",
     "socialMediaLinks": "روابط وسائل التواصل الاجتماعي",
     "saveChanges": "حفظ التغييرات",
-    "saving": "جاري الحفظ..."
+    "saving": "جاري الحفظ...",
+    "enterCountry": "أدخل بلدك",
+    "enterCity": "أدخل مدينتك"
   }
 } 
