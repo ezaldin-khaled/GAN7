@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
 import { 
   FaBell, 
@@ -23,18 +24,19 @@ import EmailTab from './components/EmailTab';
 import AnalyticsOverview from './components/AnalyticsOverview';
 import './AdminDashboard.css';
 
-const TABS = [
-  { id: 'overview', label: 'Overview', count: null },
-  { id: 'visual', label: 'User Management', count: 5 },
-  { id: 'expressive', label: 'Restricted Users', count: 5 },
-  { id: 'hybrid', label: 'Search Results', count: 5 },
-  { id: 'shared-media', label: 'Shared Media', count: 0 },
-  { id: 'email', label: 'Email', count: 0 },
-];
-
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+  
+  const TABS = [
+    { id: 'overview', label: t('adminDashboard.overview'), count: null },
+    { id: 'visual', label: t('adminDashboard.userManagement'), count: 5 },
+    { id: 'expressive', label: t('adminDashboard.restrictedUsers'), count: 5 },
+    { id: 'hybrid', label: t('adminDashboard.searchResults'), count: 5 },
+    { id: 'shared-media', label: t('adminDashboard.sharedMedia'), count: 0 },
+    { id: 'email', label: t('adminDashboard.email'), count: 0 },
+  ];
   const [activeTab, setActiveTab] = useState('overview');
   // Stats are now fetched from the AnalyticsOverview component via API
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -393,39 +395,39 @@ const AdminDashboard = () => {
             <AnalyticsOverview />
             
             <div className="quick-actions">
-              <h3>Quick Actions</h3>
+              <h3>{t('adminDashboard.quickActions')}</h3>
               <div className="action-buttons">
                 <button 
                   className="action-btn primary" 
                   onClick={() => setActiveTab('visual')}
-                  title="Manage user accounts and profiles"
+                  title={t('adminDashboard.manageUserAccounts')}
                 >
                   <FaUsers />
-                  Manage Users
+                  {t('adminDashboard.manageUsers')}
                 </button>
                 <button 
                   className="action-btn success" 
                   onClick={() => setActiveTab('shared-media')}
-                  title="Review and approve shared media content"
+                  title={t('adminDashboard.reviewApproveMedia')}
                 >
                   <FaImages />
-                  Review Media
+                  {t('adminDashboard.reviewMedia')}
                 </button>
                 <button 
                   className="action-btn info" 
                   onClick={() => setActiveTab('email')}
-                  title="Send emails to users and manage communications"
+                  title={t('adminDashboard.sendEmailsToUsers')}
                 >
                   <FaEnvelope />
-                  Send Email
+                  {t('adminDashboard.sendEmail')}
                 </button>
                 <button 
                   className="action-btn warning" 
                   onClick={() => setActiveTab('visual')}
-                  title="View pending approvals and items requiring attention"
+                  title={t('adminDashboard.viewPendingApprovals')}
                 >
                   <FaExclamationTriangle />
-                  View Pending
+                  {t('adminDashboard.viewPending')}
                 </button>
               </div>
             </div>
@@ -528,16 +530,16 @@ const AdminDashboard = () => {
     <div className="dashboard-root">
       {/* Top Bar */}
       <header className="dashboard-topbar">
-        <div className="dashboard-title">Talent Dashboard</div>
+        <div className="dashboard-title">{t('adminDashboard.title')}</div>
         <div className="dashboard-topbar-actions">
           <button className="dashboard-bell-btn"><FaBell /></button>
           <div className="dashboard-user-dropdown">
             <FaUserCircle className="user-avatar" />
-            <span>Admin User</span>
+            <span>{t('adminDashboard.adminUser')}</span>
           </div>
           <button className="dashboard-logout-btn" onClick={handleLogout}>
             <FaSignOutAlt />
-            <span>Logout</span>
+            <span>{t('adminDashboard.logout')}</span>
           </button>
         </div>
       </header>

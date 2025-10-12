@@ -92,7 +92,9 @@
     "september": "September",
     "october": "October",
     "november": "November",
-    "december": "December"
+    "december": "December",
+    "creatingAccount": "Creating account...",
+    "createAccountButton": "Create account"
   },
   "services": {
     "talent": "Talent",
@@ -391,6 +393,14 @@
     "success": "Subscription Successful!",
     "thankYou": "Thank you for subscribing"
   },
+  "verificationBanner": {
+    "emailVerificationRequired": "Email Verification Required",
+    "enterVerificationCode": "Please enter the verification code sent to your email.",
+    "verifyCode": "Verify Code",
+    "resendCode": "Resend Code",
+    "sending": "Sending...",
+    "verificationCodePlaceholder": "Enter verification code"
+  },
   "userPopup": {
     "basicInformation": "Basic Information",
     "emailVerification": "Email Verification",
@@ -610,7 +620,26 @@
     "debugInfo": "Debug Info",
     "currentURL": "Current URL",
     "userAgent": "User Agent",
-    "reactRouterVersion": "React Router Version"
+    "reactRouterVersion": "React Router Version",
+    "manageUsers": "Manage Users",
+    "reviewMedia": "Review Media",
+    "sendEmail": "Send Email",
+    "viewPending": "View Pending",
+    "manageUserAccounts": "Manage user accounts and profiles",
+    "reviewApproveMedia": "Review and approve shared media content",
+    "sendEmailsToUsers": "Send emails to users and manage communications",
+    "viewPendingApprovals": "View pending approvals and items requiring attention",
+    "logout": "Logout",
+    "searchUsers": "Search users...",
+    "excludeAdmins": "Exclude Admins",
+    "addUser": "Add User",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDeleteUser": "Are you sure you want to delete this user?",
+    "cannotDeleteOwnAccount": "You cannot delete your own account",
+    "cannotDeleteAdminUsers": "You cannot delete other admin users",
+    "failedToDeleteUser": "Failed to delete user",
+    "failedToFetchUsers": "Failed to fetch users"
   },
   "specialization": {
     "title": "Specialization Information",

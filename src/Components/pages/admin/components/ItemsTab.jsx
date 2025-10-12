@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaUsers } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 import './RestrictedUsersTab.css';
@@ -10,6 +11,7 @@ const SUBSCRIPTION_PLANS = {
 };
 
 const ItemsTab = () => {
+  const { t } = useTranslation();
   // Restricted users state
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
@@ -177,7 +179,7 @@ const ItemsTab = () => {
   return (
     <div className="restricted-users-tab">
       <div className="tab-header">
-        <h2>Restricted Users Management</h2>
+        <h2>{t('adminDashboard.restrictedUsersManagement')}</h2>
       </div>
 
       {usersError && (
@@ -193,15 +195,15 @@ const ItemsTab = () => {
 
       <div className="stats-container">
         <div className="stat-box">
-          <h3>Total Users</h3>
+          <h3>{t('adminDashboard.totalUsers')}</h3>
           <p>{stats.total_count}</p>
         </div>
         <div className="stat-box">
-          <h3>Approved</h3>
+          <h3>{t('adminDashboard.approved')}</h3>
           <p>{stats.approved_count}</p>
         </div>
         <div className="stat-box">
-          <h3>Pending</h3>
+          <h3>{t('adminDashboard.pending')}</h3>
           <p>{stats.pending_count}</p>
         </div>
       </div>
@@ -212,16 +214,16 @@ const ItemsTab = () => {
           onClick={handleScanUsers}
           disabled={actionLoading}
         >
-          Scan Users
+          {t('adminDashboard.scanUsers')}
         </button>
         <div className="restricted-countries">
-          <span>Restricted Countries: </span>
+          <span>{t('adminDashboard.restrictedCountries')}: </span>
           {restrictedCountries.join(', ')}
         </div>
       </div>
 
       {usersLoading ? (
-        <div className="loading">Loading restricted users...</div>
+        <div className="loading">{t('adminDashboard.loadingRestrictedUsers')}</div>
       ) : (
         <div className="users-table">
           <table>

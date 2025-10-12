@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import './UserAccountPage.css';
 import './EnhancedTabStyles.css'; // Import the enhanced styles
 import axiosInstance from '../../../api/axios';
@@ -24,6 +25,7 @@ const tabs = [
 ];
 
 const UserAccountPage = () => {
+  const { t } = useTranslation();
   const { user: authUser, updateUser, logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState({
@@ -916,13 +918,13 @@ const UserAccountPage = () => {
                 </svg>
               </div>
               <div className="banner-content">
-                <h3>Email Verification Required</h3>
-                <p>Please enter the verification code sent to your email.</p>
+                <h3>{t('verificationBanner.emailVerificationRequired')}</h3>
+                <p>{t('verificationBanner.enterVerificationCode')}</p>
                 <div className="verification-code-container">
                   <input 
                     type="text" 
                     className="verification-code-input"
-                    placeholder="Enter verification code"
+                    placeholder={t('verificationBanner.verificationCodePlaceholder')}
                     maxLength="6"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value)}
@@ -932,7 +934,7 @@ const UserAccountPage = () => {
                     onClick={handleVerifyCode}
                     disabled={!verificationCode || verificationCode.length < 4}
                   >
-                    Verify Code
+                    {t('verificationBanner.verifyCode')}
                   </button>
                 </div>
                 <button 
@@ -940,7 +942,7 @@ const UserAccountPage = () => {
                   onClick={handleResendCode}
                   disabled={verificationLoading}
                 >
-                  {verificationLoading ? 'Sending...' : 'Resend Code'}
+                  {verificationLoading ? t('verificationBanner.sending') : t('verificationBanner.resendCode')}
                 </button>
               </div>
             </div>

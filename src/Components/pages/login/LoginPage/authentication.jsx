@@ -893,7 +893,7 @@ const AuthPage = () => {
                 </div>
 
                 <button type="submit" className="auth-button" disabled={isLoading}>
-                  {isLoading ? 'Creating account...' : 'Create account'}
+                  {isLoading ? t('auth.creatingAccount') : t('auth.createAccountButton')}
                 </button>
                 
                 <p className="auth-switch">

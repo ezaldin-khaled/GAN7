@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaSearch, FaEdit, FaTrash, FaUserShield, FaPlus } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 
 const UsersTab = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,7 +25,7 @@ const UsersTab = () => {
       setUsers(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch users');
+      setError(t('adminDashboard.failedToFetchUsers'));
       setLoading(false);
     }
   };
@@ -38,17 +40,17 @@ const UsersTab = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm(t('adminDashboard.confirmDeleteUser'))) {
       try {
         await axiosInstance.delete(`/api/dashboard/users/${userId}/`);
         fetchUsers();
       } catch (err) {
         if (err.response?.status === 400) {
-          setError('You cannot delete your own account');
+          setError(t('adminDashboard.cannotDeleteOwnAccount'));
         } else if (err.response?.status === 403) {
-          setError('You cannot delete other admin users');
+          setError(t('adminDashboard.cannotDeleteAdminUsers'));
         } else {
-          setError('Failed to delete user');
+          setError(t('adminDashboard.failedToDeleteUser'));
         }
       }
     }
@@ -62,13 +64,13 @@ const UsersTab = () => {
   return (
     <div className="users-tab">
       <div className="tab-header">
-        <h2>User Management</h2>
+        <h2>{t('adminDashboard.userManagement')}</h2>
         <div className="header-actions">
           <div className="search-box">
             <FaSearch className="search-icon" />
             <input
               type="text"
-              placeholder="Search users..."
+              placeholder={t('adminDashboard.searchUsers')}
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -80,10 +82,10 @@ const UsersTab = () => {
                 checked={excludeAdmins}
                 onChange={(e) => setExcludeAdmins(e.target.checked)}
               />
-              Exclude Admins
+              {t('adminDashboard.excludeAdmins')}
             </label>
             <button className="create-btn" onClick={() => setShowCreateModal(true)}>
-              <FaPlus /> Create User
+              <FaPlus /> {t('adminDashboard.addUser')}
             </button>
           </div>
         </div>

@@ -92,7 +92,9 @@
     "september": "سبتمبر",
     "october": "أكتوبر",
     "november": "نوفمبر",
-    "december": "ديسمبر"
+    "december": "ديسمبر",
+    "creatingAccount": "جاري إنشاء الحساب...",
+    "createAccountButton": "إنشاء حساب"
   },
   "services": {
     "talent": "المواهب",
@@ -391,6 +393,14 @@
     "success": "تم الاشتراك بنجاح!",
     "thankYou": "شكراً لك على الاشتراك"
   },
+  "verificationBanner": {
+    "emailVerificationRequired": "التحقق من البريد الإلكتروني مطلوب",
+    "enterVerificationCode": "يرجى إدخال رمز التحقق المرسل إلى بريدك الإلكتروني.",
+    "verifyCode": "تحقق من الرمز",
+    "resendCode": "إعادة إرسال الرمز",
+    "sending": "جاري الإرسال...",
+    "verificationCodePlaceholder": "أدخل رمز التحقق"
+  },
   "userPopup": {
     "basicInformation": "المعلومات الأساسية",
     "emailVerification": "التحقق من البريد الإلكتروني",
@@ -610,7 +620,26 @@
     "debugInfo": "معلومات التصحيح",
     "currentURL": "الرابط الحالي",
     "userAgent": "وكيل المستخدم",
-    "reactRouterVersion": "إصدار React Router"
+    "reactRouterVersion": "إصدار React Router",
+    "manageUsers": "إدارة المستخدمين",
+    "reviewMedia": "مراجعة الوسائط",
+    "sendEmail": "إرسال بريد إلكتروني",
+    "viewPending": "عرض المعلق",
+    "manageUserAccounts": "إدارة حسابات المستخدمين والملفات الشخصية",
+    "reviewApproveMedia": "مراجعة والموافقة على محتوى الوسائط المشتركة",
+    "sendEmailsToUsers": "إرسال رسائل البريد الإلكتروني إلى المستخدمين وإدارة الاتصالات",
+    "viewPendingApprovals": "عرض الموافقات المعلقة والعناصر التي تتطلب الانتباه",
+    "logout": "تسجيل الخروج",
+    "searchUsers": "البحث عن المستخدمين...",
+    "excludeAdmins": "استبعاد المشرفين",
+    "addUser": "إضافة مستخدم",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "confirmDeleteUser": "هل أنت متأكد من حذف هذا المستخدم؟",
+    "cannotDeleteOwnAccount": "لا يمكنك حذف حسابك الخاص",
+    "cannotDeleteAdminUsers": "لا يمكنك حذف المستخدمين المشرفين الآخرين",
+    "failedToDeleteUser": "فشل حذف المستخدم",
+    "failedToFetchUsers": "فشل جلب المستخدمين"
   },
   "specialization": {
     "title": "معلومات التخصص",
