@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axiosInstance from '../../../api/axios';
 import './SubscriptionSuccess.css';
 
 const SubscriptionSuccess = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -98,8 +100,8 @@ const SubscriptionSuccess = () => {
       <div className="success-container">
         <div className="success-card">
           <div className="loading-spinner"></div>
-          <h2>Verifying Subscription...</h2>
-          <p>Please wait while we verify your subscription status.</p>
+          <h2>{t('subscriptionSuccess.verifying')}</h2>
+          <p>{t('subscriptionSuccess.pleaseWait')}</p>
           
           {/* Debug Panel for Development */}
           {process.env.NODE_ENV === 'development' && (
@@ -126,7 +128,7 @@ const SubscriptionSuccess = () => {
       <div className="success-container">
         <div className="success-card">
           <div className="error-icon">✗</div>
-          <h2>Verification Failed</h2>
+          <h2>{t('subscriptionSuccess.verificationFailed')}</h2>
           <p>{error}</p>
           
           {/* Debug Panel for Development */}
@@ -149,13 +151,13 @@ const SubscriptionSuccess = () => {
               className="primary-button"
               onClick={() => navigate('/account')}
             >
-              Go to Account
+              {t('subscriptionSuccess.goToAccount')}
             </button>
             <button
               className="secondary-button"
               onClick={() => navigate('/subscription')}
             >
-              View Plans
+              {t('subscriptionSuccess.viewPlans')}
             </button>
           </div>
         </div>

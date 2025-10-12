@@ -337,5 +337,14 @@
     "saving": "Saving...",
     "enterCountry": "Enter your country",
     "enterCity": "Enter your city"
+  },
+  "subscriptionSuccess": {
+    "verifying": "Verifying Subscription...",
+    "pleaseWait": "Please wait while we verify your subscription status.",
+    "verificationFailed": "Verification Failed",
+    "goToAccount": "Go to Account",
+    "viewPlans": "View Plans",
+    "success": "Subscription Successful!",
+    "thankYou": "Thank you for subscribing"
   }
 }

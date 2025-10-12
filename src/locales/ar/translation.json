@@ -337,5 +337,14 @@
     "saving": "جاري الحفظ...",
     "enterCountry": "أدخل بلدك",
     "enterCity": "أدخل مدينتك"
+  },
+  "subscriptionSuccess": {
+    "verifying": "جاري التحقق من الاشتراك...",
+    "pleaseWait": "يرجى الانتظار بينما نتحقق من حالة اشتراكك.",
+    "verificationFailed": "فشل التحقق",
+    "goToAccount": "الذهاب إلى الحساب",
+    "viewPlans": "عرض الخطط",
+    "success": "تم الاشتراك بنجاح!",
+    "thankYou": "شكراً لك على الاشتراك"
   }
 } 
