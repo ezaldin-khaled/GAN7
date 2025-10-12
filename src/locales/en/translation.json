@@ -77,7 +77,22 @@
     "userNotFound": "User not found. Please check your credentials.",
     "loginFailed": "Login failed. Please try again.",
     "networkError": "Network error. Please check your connection and try again.",
-    "unexpectedError": "An unexpected error occurred. Please try again later."
+    "unexpectedError": "An unexpected error occurred. Please try again later.",
+    "month": "Month",
+    "day": "Day",
+    "year": "Year",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
   },
   "services": {
     "talent": "Talent",

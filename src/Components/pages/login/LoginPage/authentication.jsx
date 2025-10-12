@@ -413,7 +413,7 @@ const AuthPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="date_of_birth" className="form-label">Date of Birth</label>
+                  <label htmlFor="date_of_birth" className="form-label">{t('auth.dateOfBirth')}</label>
                   <div className="date-of-birth-container">
                     <select 
                       id="birth_month"
@@ -430,19 +430,19 @@ const AuthPage = () => {
                       disabled={isLoading}
                       className="date-select"
                     >
-                      <option value="" disabled>Month</option>
-                      <option value="01">January</option>
-                      <option value="02">February</option>
-                      <option value="03">March</option>
-                      <option value="04">April</option>
-                      <option value="05">May</option>
-                      <option value="06">June</option>
-                      <option value="07">July</option>
-                      <option value="08">August</option>
-                      <option value="09">September</option>
-                      <option value="10">October</option>
-                      <option value="11">November</option>
-                      <option value="12">December</option>
+                      <option value="" disabled>{t('auth.month')}</option>
+                      <option value="01">{t('auth.january')}</option>
+                      <option value="02">{t('auth.february')}</option>
+                      <option value="03">{t('auth.march')}</option>
+                      <option value="04">{t('auth.april')}</option>
+                      <option value="05">{t('auth.may')}</option>
+                      <option value="06">{t('auth.june')}</option>
+                      <option value="07">{t('auth.july')}</option>
+                      <option value="08">{t('auth.august')}</option>
+                      <option value="09">{t('auth.september')}</option>
+                      <option value="10">{t('auth.october')}</option>
+                      <option value="11">{t('auth.november')}</option>
+                      <option value="12">{t('auth.december')}</option>
                     </select>
                     
                     <select 
@@ -460,7 +460,7 @@ const AuthPage = () => {
                       disabled={isLoading}
                       className="date-select"
                     >
-                      <option value="" disabled>Day</option>
+                      <option value="" disabled>{t('auth.day')}</option>
                       {[...Array(31)].map((_, i) => (
                         <option key={i+1} value={String(i+1).padStart(2, '0')}>
                           {i+1}
@@ -483,7 +483,7 @@ const AuthPage = () => {
                       disabled={isLoading}
                       className="date-select"
                     >
-                      <option value="" disabled>Year</option>
+                      <option value="" disabled>{t('auth.year')}</option>
                       {[...Array(100)].map((_, i) => {
                         const year = new Date().getFullYear() - i;
                         return (
@@ -897,8 +897,8 @@ const AuthPage = () => {
                 </button>
                 
                 <p className="auth-switch">
-                  Already have an account? 
-                  <button type="button" onClick={toggleLoginRegister} disabled={isLoading}>Log In</button>
+                  {t('auth.alreadyHaveAccount')} 
+                  <button type="button" onClick={toggleLoginRegister} disabled={isLoading}>{t('auth.login')}</button>
                 </p>
               </form>
             </>
