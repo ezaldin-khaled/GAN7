@@ -74,38 +74,38 @@ export default function UserProfilePopup({ user, onClose }) {
       },
       {
         key: 'profilePicture',
-        label: 'Profile Picture',
+        label: t('userPopup.profilePicture'),
         weight: 15,
         check: () => userData.profile_picture,
-        description: 'Upload a profile picture'
+        description: t('userPopup.uploadProfilePicture')
       },
       {
         key: 'bio',
-        label: 'Bio/About',
+        label: t('userPopup.bioAbout'),
         weight: 15,
         check: () => userData.bio && userData.bio.length > 20,
-        description: 'Write a compelling bio (20+ characters)'
+        description: t('userPopup.writeCompellingBio')
       },
       {
         key: 'location',
-        label: 'Location',
+        label: t('userPopup.location'),
         weight: 10,
         check: () => userData.country || userData.location,
-        description: 'Add your location'
+        description: t('userPopup.addLocation')
       },
       {
         key: 'contact',
-        label: 'Contact Info',
+        label: t('userPopup.contactInfo'),
         weight: 10,
         check: () => userData.phoneNumber,
-        description: 'Add phone number'
+        description: t('userPopup.addPhoneNumber')
       },
       {
         key: 'personalDetails',
-        label: 'Personal Details',
+        label: t('userPopup.personalDetails'),
         weight: 10,
         check: () => userData.gender && userData.dateOfBirth,
-        description: 'Gender and date of birth'
+        description: t('userPopup.genderAndDob')
       },
       {
         key: 'verification',
@@ -185,7 +185,7 @@ export default function UserProfilePopup({ user, onClose }) {
 
   const handleVerifyCode = async () => {
     if (!verificationCode || verificationCode.length < 4) {
-      setError('Please enter a valid verification code');
+      setError(t('userPopup.validVerificationCode'));
       return;
     }
 
@@ -199,17 +199,17 @@ export default function UserProfilePopup({ user, onClose }) {
       });
 
       if (response.status === 200 && response.data.success) {
-        setMediaSuccess(response.data.message || 'Email verified successfully!');
+        setMediaSuccess(response.data.message || t('userPopup.emailVerifiedSuccess'));
         setVerificationCode('');
         // Refresh user data to update verification status
         await fetchUserData();
       } else {
-        setError(response.data.message || 'Failed to verify email. Please try again.');
+        setError(response.data.message || t('userPopup.failedToVerify'));
       }
     } catch (err) {
       console.error('Error verifying email:', err);
       const errorMessage = err.response?.data?.message || 
-                          'Failed to verify email. Please check your code and try again.';
+                          t('userPopup.failedToVerifyCheck');
       setError(errorMessage);
     } finally {
       setVerificationLoading(false);
@@ -219,7 +219,7 @@ export default function UserProfilePopup({ user, onClose }) {
   const handleResendCode = async () => {
     // Check if email is available
     if (!userData?.email) {
-      setError('Email address not found. Please refresh the page and try again.');
+      setError(t('userPopup.emailNotFound'));
       return;
     }
 
@@ -237,10 +237,10 @@ export default function UserProfilePopup({ user, onClose }) {
       console.log('📧 Resend code response:', response.data);
       
       if (response.status === 200 && response.data.success) {
-        setMediaSuccess(response.data.message || 'Verification code sent to your email!');
+        setMediaSuccess(response.data.message || t('userPopup.verificationCodeSent'));
         console.log('✅ Verification code sent successfully');
       } else {
-        const errorMsg = response.data.message || 'Failed to resend verification code. Please try again.';
+        const errorMsg = response.data.message || t('userPopup.failedToResend');
         setError(errorMsg);
         console.error('❌ Resend failed:', errorMsg);
       }
@@ -251,7 +251,7 @@ export default function UserProfilePopup({ user, onClose }) {
       
       const errorMessage = err.response?.data?.message || 
                           err.response?.data?.detail ||
-                          'Failed to resend verification code. Please try again.';
+                          t('userPopup.failedToResend');
       setError(errorMessage);
     } finally {
       setVerificationLoading(false);
@@ -264,10 +264,10 @@ export default function UserProfilePopup({ user, onClose }) {
     const maxVideoSize = 100 * 1024 * 1024; // 100MB
     
     if (file.type.startsWith('image/') && file.size > maxImageSize) {
-      throw new Error('Image must be less than 10MB');
+      throw new Error(t('userPopup.imageSizeLimit'));
     }
     if (file.type.startsWith('video/') && file.size > maxVideoSize) {
-      throw new Error('Video must be less than 100MB');
+      throw new Error(t('userPopup.videoSizeLimit'));
     }
     
     // Check file types
@@ -275,10 +275,10 @@ export default function UserProfilePopup({ user, onClose }) {
     const allowedVideoTypes = ['video/mp4', 'video/mov', 'video/avi'];
     
     if (file.type.startsWith('image/') && !allowedImageTypes.includes(file.type)) {
-      throw new Error('Image must be JPG, PNG, or WEBP format');
+      throw new Error(t('userPopup.imageFormatError'));
     }
     if (file.type.startsWith('video/') && !allowedVideoTypes.includes(file.type)) {
-      throw new Error('Video must be MP4, MOV, or AVI format');
+      throw new Error(t('userPopup.videoFormatError'));
     }
   };
 
