@@ -836,17 +836,17 @@ export default function UserProfilePopup({ user, onClose }) {
               </div>
               <div className="score-content">
                 <div className="score-header">
-                  <h3 className="score-title">Profile Score</h3>
+                  <h3 className="score-title">{t('userPopup.profileScore')}</h3>
                   <p className="score-subtitle">{profileScore}/100</p>
                 </div>
                 <p className="score-message">
                   {profileScore >= 80 
-                    ? "Excellent! Your profile is well-completed and attractive to potential opportunities."
+                    ? t('userPopup.scoreMessages.excellent')
                     : profileScore >= 60 
-                    ? "Good progress! Complete a few more sections to boost your profile appeal."
+                    ? t('userPopup.scoreMessages.good')
                     : profileScore >= 40
-                    ? "Getting there! Add more information to make your profile stand out."
-                    : "Let's improve your profile! Complete the missing sections below to increase your score."
+                    ? t('userPopup.scoreMessages.gettingThere')
+                    : t('userPopup.scoreMessages.improve')
                   }
                 </p>
                 {profileScore < 100 && (
@@ -854,7 +854,7 @@ export default function UserProfilePopup({ user, onClose }) {
                     className="improve-score-btn"
                     onClick={handleOpenUserAccount}
                   >
-                    Improve Profile
+                    {t('userPopup.improveProfile')}
                   </button>
                 )}
               </div>
@@ -867,25 +867,25 @@ export default function UserProfilePopup({ user, onClose }) {
               className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
               onClick={() => setActiveTab('overview')}
             >
-              Overview
+              {t('userPopup.overview')}
             </button>
             <button 
               className={`tab-btn ${activeTab === 'score' ? 'active' : ''}`}
               onClick={() => setActiveTab('score')}
             >
-              Score ({profileScore}%)
+              {t('userPopup.profileScore')} ({profileScore}%)
             </button>
             <button 
               className={`tab-btn ${activeTab === 'media' ? 'active' : ''}`}
               onClick={() => setActiveTab('media')}
             >
-              Media ({mediaFiles.length})
+              {t('userPopup.media')} ({mediaFiles.length})
             </button>
             <button 
               className={`tab-btn ${activeTab === 'details' ? 'active' : ''}`}
               onClick={() => setActiveTab('details')}
             >
-              Details
+              {t('userPopup.details')}
             </button>
           </div>
 
@@ -896,35 +896,35 @@ export default function UserProfilePopup({ user, onClose }) {
                 <div className="profile-popup-form">
             <div className="form-row">
               <div className="form-group">
-                <label>Name</label>
+                <label>{t('userPopup.name')}</label>
                       <div className="readonly-field">{userData?.firstName}</div>
               </div>
               <div className="form-group">
-                      <label>Last Name</label>
+                      <label>{t('userPopup.lastName')}</label>
                       <div className="readonly-field">{userData?.lastName}</div>
               </div>
             </div>
 
             <div className="form-group">
-              <label>Email address</label>
+              <label>{t('userPopup.emailAddress')}</label>
                     <div className="input-with-icon readonly">
                 <EnvelopeIcon />
                       <div className="readonly-field-with-icon">{userData?.email}</div>
                     </div>
                     {userData?.email_verified && (
                       <div className="verified-badge-text">
-                        <VerifiedIcon /> EMAIL VERIFIED {userData?.verifiedDate}
+                        <VerifiedIcon /> {t('userPopup.emailVerifiedBadge')} {userData?.verifiedDate}
               </div>
                     )}
                     {userData?.is_verified && (
                       <div className="verified-badge-text">
-                        <VerifiedIcon /> PROFILE APPROVED
+                        <VerifiedIcon /> {t('userPopup.profileApprovedBadge')}
               </div>
                     )}
             </div>
 
             <div className="form-group">
-              <label>Country</label>
+              <label>{t('userPopup.country')}</label>
                     <div className="input-with-icon readonly">
                   <div className="country-flag"></div>
                       <div className="readonly-field-with-icon">{userData?.country}</div>
@@ -932,7 +932,7 @@ export default function UserProfilePopup({ user, onClose }) {
             </div>
 
             <div className="form-group">
-                <label>Username</label>
+                <label>{t('userPopup.username')}</label>
                     <div className="input-with-prefix readonly">
                     <span>untitled.com/</span>
                       <div className="readonly-field-with-prefix">{userData?.username}</div>
@@ -946,9 +946,9 @@ export default function UserProfilePopup({ user, onClose }) {
             {activeTab === 'score' && (
               <div className="score-tab">
                 <div className="score-breakdown">
-                  <h3 className="breakdown-title">Profile Score Breakdown</h3>
+                  <h3 className="breakdown-title">{t('userPopup.scoreBreakdownTitle')}</h3>
                   <p className="breakdown-subtitle">
-                    Complete these sections to improve your profile score and attract more opportunities.
+                    {t('userPopup.scoreBreakdownSubtitle')}
                   </p>
                   
                   <div className="breakdown-list">
@@ -968,7 +968,7 @@ export default function UserProfilePopup({ user, onClose }) {
                         <div className="breakdown-content">
                           <div className="breakdown-header">
                             <h4 className="breakdown-label">{item.label}</h4>
-                            <span className="breakdown-weight">{item.weight} points</span>
+                            <span className="breakdown-weight">{item.weight} {t('userPopup.points')}</span>
                           </div>
                           <p className="breakdown-description">{item.description}</p>
                           <div className="breakdown-progress">
@@ -989,11 +989,11 @@ export default function UserProfilePopup({ user, onClose }) {
                   <div className="breakdown-summary">
                     <div className="summary-stats">
                       <div className="summary-item">
-                        <span className="summary-label">Current Score</span>
+                        <span className="summary-label">{t('userPopup.currentScore')}</span>
                         <span className="summary-value">{profileScore}/100</span>
                       </div>
                       <div className="summary-item">
-                        <span className="summary-label">Completed</span>
+                        <span className="summary-label">{t('userPopup.completed')}</span>
                         <span className="summary-value">
                           {scoreBreakdown.filter(item => item.isComplete).length}/{scoreBreakdown.length}
                         </span>
@@ -1040,7 +1040,7 @@ export default function UserProfilePopup({ user, onClose }) {
                         <polyline points="7,10 12,15 17,10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
                       </svg>
-                      Upload Media
+                      {t('userPopup.uploadMedia')}
                     </label>
                   </div>
                   
@@ -1140,8 +1140,8 @@ export default function UserProfilePopup({ user, onClose }) {
                 ) : (
                   <div className="no-media">
                     <div className="no-media-icon">📁</div>
-                    <p>No media files uploaded yet</p>
-                    <p>Click "Upload Media" to add images or videos</p>
+                    <p>{t('userPopup.noMediaUploaded')}</p>
+                    <p>{t('userPopup.clickUploadMedia')}</p>
                   </div>
                 )}
               </div>

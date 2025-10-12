@@ -432,7 +432,29 @@
     "imageSizeLimit": "يجب أن يكون حجم الصورة أقل من 10 ميجابايت",
     "videoSizeLimit": "يجب أن يكون حجم الفيديو أقل من 100 ميجابايت",
     "imageFormatError": "يجب أن تكون الصورة بصيغة JPG أو PNG أو WEBP",
-    "videoFormatError": "يجب أن يكون الفيديو بصيغة MP4 أو MOV أو AVI"
+    "videoFormatError": "يجب أن يكون الفيديو بصيغة MP4 أو MOV أو AVI",
+    "name": "الاسم",
+    "lastName": "اسم العائلة",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "emailVerifiedBadge": "تم التحقق من البريد الإلكتروني",
+    "profileApprovedBadge": "تمت الموافقة على الملف الشخصي",
+    "country": "البلد",
+    "username": "اسم المستخدم",
+    "improveProfile": "تحسين الملف الشخصي",
+    "scoreBreakdownTitle": "تفصيل نقاط الملف الشخصي",
+    "scoreBreakdownSubtitle": "أكمل هذه الأقسام لتحسين نقاط ملفك الشخصي وجذب المزيد من الفرص.",
+    "points": "نقطة",
+    "currentScore": "النقاط الحالية",
+    "completed": "مكتمل",
+    "details": "التفاصيل",
+    "noMediaUploaded": "لم يتم رفع أي ملفات وسائط بعد",
+    "clickUploadMedia": "انقر على \"رفع الوسائط\" لإضافة الصور أو الفيديوهات",
+    "scoreMessages": {
+      "excellent": "ممتاز! ملفك الشخصي مكتمل بشكل جيد وجذاب للفرص المحتملة.",
+      "good": "تقدم جيد! أكمل بعض الأقسام الإضافية لتعزيز جاذبية ملفك الشخصي.",
+      "gettingThere": "في الطريق! أضف المزيد من المعلومات لجعل ملفك الشخصي متميزاً.",
+      "improve": "لنحسن ملفك الشخصي! أكمل الأقسام المفقودة أدناه لزيادة نقاطك."
+    }
   },
   "sidebar": {
     "profileInformation": "معلومات الملف الشخصي",

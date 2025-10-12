@@ -432,7 +432,29 @@
     "imageSizeLimit": "Image must be less than 10MB",
     "videoSizeLimit": "Video must be less than 100MB",
     "imageFormatError": "Image must be JPG, PNG, or WEBP format",
-    "videoFormatError": "Video must be MP4, MOV, or AVI format"
+    "videoFormatError": "Video must be MP4, MOV, or AVI format",
+    "name": "Name",
+    "lastName": "Last Name",
+    "emailAddress": "Email address",
+    "emailVerifiedBadge": "EMAIL VERIFIED",
+    "profileApprovedBadge": "PROFILE APPROVED",
+    "country": "Country",
+    "username": "Username",
+    "improveProfile": "Improve Profile",
+    "scoreBreakdownTitle": "Profile Score Breakdown",
+    "scoreBreakdownSubtitle": "Complete these sections to improve your profile score and attract more opportunities.",
+    "points": "points",
+    "currentScore": "Current Score",
+    "completed": "Completed",
+    "details": "Details",
+    "noMediaUploaded": "No media files uploaded yet",
+    "clickUploadMedia": "Click \"Upload Media\" to add images or videos",
+    "scoreMessages": {
+      "excellent": "Excellent! Your profile is well-completed and attractive to potential opportunities.",
+      "good": "Good progress! Complete a few more sections to boost your profile appeal.",
+      "gettingThere": "Getting there! Add more information to make your profile stand out.",
+      "improve": "Let's improve your profile! Complete the missing sections below to increase your score."
+    }
   },
   "sidebar": {
     "profileInformation": "Profile Information",
