@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useTranslation } from 'react-i18next';
 import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -37,6 +38,7 @@ const ArchiveIcon = () => (
   );
 
 export default function UserProfilePopup({ user, onClose }) {
+  const { t } = useTranslation();
   const [userData, setUserData] = useState(null);
   const [stats, setStats] = useState(null);
   const [mediaFiles, setMediaFiles] = useState([]);
@@ -65,7 +67,7 @@ export default function UserProfilePopup({ user, onClose }) {
     const criteria = [
       {
         key: 'basicInfo',
-        label: 'Basic Information',
+        label: t('userPopup.basicInformation'),
         weight: 20,
         check: () => userData.firstName && userData.lastName && userData.email,
         description: 'First name, last name, and email'
@@ -107,24 +109,24 @@ export default function UserProfilePopup({ user, onClose }) {
       },
       {
         key: 'verification',
-        label: 'Email Verification',
+        label: t('userPopup.emailVerification'),
         weight: 10,
         check: () => userData.email_verified,
         description: 'Verify your email address'
       },
       {
         key: 'adminApproval',
-        label: 'Admin Approval',
+        label: t('userPopup.adminApproval'),
         weight: 10,
         check: () => userData.is_verified,
-        description: 'Profile approved by admin'
+        description: t('userPopup.profileApproved')
       },
       {
         key: 'subscription',
-        label: 'Subscription',
+        label: t('userPopup.subscription'),
         weight: 10,
         check: () => userData.isSubscribed,
-        description: 'Active subscription'
+        description: t('userPopup.activeSubscription')
       }
     ];
 
@@ -1268,7 +1270,7 @@ export default function UserProfilePopup({ user, onClose }) {
             )}
             </div>
         </div>
-        <button className="popup-action-btn logout-btn" onClick={handleLogout}><LogoutIcon /> Logout</button>
+        <button className="popup-action-btn logout-btn" onClick={handleLogout}><LogoutIcon /> {t('navigation.logout')}</button>
       </div>
     </div>
   );

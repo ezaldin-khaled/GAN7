@@ -361,5 +361,13 @@
     "viewPlans": "View Plans",
     "success": "Subscription Successful!",
     "thankYou": "Thank you for subscribing"
+  },
+  "userPopup": {
+    "basicInformation": "Basic Information",
+    "emailVerification": "Email Verification",
+    "adminApproval": "Admin Approval",
+    "profileApproved": "Profile approved by admin",
+    "subscription": "Subscription",
+    "activeSubscription": "Active subscription"
   }
 }

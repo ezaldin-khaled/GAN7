@@ -361,5 +361,13 @@
     "viewPlans": "عرض الخطط",
     "success": "تم الاشتراك بنجاح!",
     "thankYou": "شكراً لك على الاشتراك"
+  },
+  "userPopup": {
+    "basicInformation": "المعلومات الأساسية",
+    "emailVerification": "التحقق من البريد الإلكتروني",
+    "adminApproval": "موافقة المشرف",
+    "profileApproved": "تمت الموافقة على الملف الشخصي من قبل المشرف",
+    "subscription": "الاشتراك",
+    "activeSubscription": "اشتراك نشط"
   }
 } 
