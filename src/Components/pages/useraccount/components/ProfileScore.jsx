@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaCrown, FaCheckCircle, FaUser, FaImages, FaCogs, FaTrophy, FaLightbulb, FaArrowUp } from 'react-icons/fa';
 import './ProfileScore.css';
 
 const ProfileScore = ({ profileScore }) => {
+  const { t } = useTranslation();
   // Debug logging to track score values
   console.log('📊 ProfileScore component - Received profileScore:', profileScore);
   
@@ -45,10 +47,21 @@ const ProfileScore = ({ profileScore }) => {
   };
 
   const getScoreLevel = (score) => {
-    if (score >= 80) return 'Expert';
-    if (score >= 60) return 'Advanced';
-    if (score >= 40) return 'Intermediate';
-    return 'Beginner';
+    if (score >= 80) return t('profileScore.levels.expert');
+    if (score >= 60) return t('profileScore.levels.advanced');
+    if (score >= 40) return t('profileScore.levels.intermediate');
+    return t('profileScore.levels.beginner');
+  };
+
+  const getCategoryName = (category) => {
+    const categoryMap = {
+      'account_tier': t('profileScore.categories.accountTier'),
+      'verification': t('profileScore.categories.verification'),
+      'profile_completion': t('profileScore.categories.profileCompletion'),
+      'media_content': t('profileScore.categories.mediaContent'),
+      'specialization': t('profileScore.categories.specialization')
+    };
+    return categoryMap[category] || category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
   return (
@@ -60,8 +73,8 @@ const ProfileScore = ({ profileScore }) => {
             <FaTrophy />
           </div>
           <div className="score-header-text">
-            <h2>Profile Score</h2>
-            <p>Track your profile completeness and achievements</p>
+            <h2>{t('profileScore.title')}</h2>
+            <p>{t('profileScore.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -73,7 +86,7 @@ const ProfileScore = ({ profileScore }) => {
             <span className="total-score-value" style={{ color: getTotalScoreColor(scoreValue) }}>
               {scoreValue}
             </span>
-            <span className="total-score-label">Profile Score</span>
+            <span className="total-score-label">{t('profileScore.profileScoreLabel')}</span>
           </div>
           <div className="total-score-level">
             <span className="level-badge" style={{ backgroundColor: getTotalScoreColor(scoreValue) }}>
@@ -91,7 +104,7 @@ const ProfileScore = ({ profileScore }) => {
               }}
             ></div>
           </div>
-          <span className="progress-text">100 max points</span>
+          <span className="progress-text">100 {t('profileScore.maxPoints')}</span>
         </div>
       </div>
 
@@ -111,8 +124,8 @@ const ProfileScore = ({ profileScore }) => {
                   <IconComponent />
                 </div>
                 <div className="category-info">
-                  <h4>{category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</h4>
-                  <span className="category-score" style={{ color }}>{score} pts</span>
+                  <h4>{getCategoryName(category)}</h4>
+                  <span className="category-score" style={{ color }}>{score} {t('profileScore.points')}</span>
                 </div>
               </div>
               
@@ -130,7 +143,7 @@ const ProfileScore = ({ profileScore }) => {
               </div>
               
               <div className="category-detail">
-                <p>{profileScore.details?.[category] || 'Complete this section to earn more points'}</p>
+                <p>{profileScore.details?.[category] || t('profileScore.defaultTip')}</p>
               </div>
             </div>
           );
@@ -144,7 +157,7 @@ const ProfileScore = ({ profileScore }) => {
             <div className="improvement-icon">
               <FaLightbulb />
             </div>
-            <h3>Improvement Tips</h3>
+            <h3>{t('profileScore.improvementTips')}</h3>
           </div>
           <div className="improvement-tips-list">
             {profileScore.improvement_tips.map((tip, index) => (

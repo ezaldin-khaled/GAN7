@@ -303,6 +303,10 @@
   },
   "profileScore": {
     "title": "نقاط الملف الشخصي",
+    "subtitle": "تتبع اكتمال ملفك الشخصي وإنجازاتك",
+    "profileScoreLabel": "نقاط الملف الشخصي",
+    "maxPoints": "نقطة كحد أقصى",
+    "points": "نقطة",
     "viewTips": "عرض نصائح التحسين",
     "overallScore": "النقاط الإجمالية",
     "overallScoreDesc": "قوة ملفك الشخصي الإجمالية",
@@ -317,7 +321,22 @@
     "contentQualityDesc": "بناءً على جودة وتنوع الوسائط",
     "contentQualityTip": "أضف المزيد من الصور ومقاطع الفيديو عالية الجودة لتحسين جودة المحتوى.",
     "high": "عالي",
-    "good": "جيد"
+    "good": "جيد",
+    "levels": {
+      "expert": "خبير",
+      "advanced": "متقدم",
+      "intermediate": "متوسط",
+      "beginner": "مبتدئ"
+    },
+    "categories": {
+      "accountTier": "مستوى الحساب",
+      "verification": "التحقق",
+      "profileCompletion": "اكتمال الملف الشخصي",
+      "mediaContent": "محتوى الوسائط",
+      "specialization": "التخصص"
+    },
+    "defaultTip": "أكمل هذا القسم لكسب المزيد من النقاط",
+    "improvementTips": "نصائح التحسين"
   },
   "billing": {
     "plansAndBilling": "الخطط والفواتير",

@@ -303,6 +303,10 @@
   },
   "profileScore": {
     "title": "Profile Score",
+    "subtitle": "Track your profile completeness and achievements",
+    "profileScoreLabel": "Profile Score",
+    "maxPoints": "max points",
+    "points": "pts",
     "viewTips": "View improvement tips",
     "overallScore": "Overall Score",
     "overallScoreDesc": "Your overall profile strength",
@@ -317,7 +321,22 @@
     "contentQualityDesc": "Based on media quality and diversity",
     "contentQualityTip": "Add more high-quality images and videos to improve content quality.",
     "high": "High",
-    "good": "Good"
+    "good": "Good",
+    "levels": {
+      "expert": "Expert",
+      "advanced": "Advanced",
+      "intermediate": "Intermediate",
+      "beginner": "Beginner"
+    },
+    "categories": {
+      "accountTier": "Account Tier",
+      "verification": "Verification",
+      "profileCompletion": "Profile Completion",
+      "mediaContent": "Media Content",
+      "specialization": "Specialization"
+    },
+    "defaultTip": "Complete this section to earn more points",
+    "improvementTips": "Improvement Tips"
   },
   "billing": {
     "plansAndBilling": "Plans & Billing",
