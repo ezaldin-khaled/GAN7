@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaImage, FaTrash, FaUpload } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
 
 const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
+  const { t } = useTranslation();
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -371,8 +373,8 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
         ) : (
           <div className="no-media-message">
             <FaImage className="empty-icon" />
-            <p>No media files uploaded yet</p>
-            <p>Upload images or videos to get started</p>
+            <p>{t('media.noMediaYet')}</p>
+            <p>{t('media.uploadYourFirst')}</p>
           </div>
         )}
       </div>

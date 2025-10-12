@@ -1,26 +1,29 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaShieldAlt } from 'react-icons/fa';
 
 const SecurityTab = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="content-section">
-      <h1 className="section-title">Security</h1>
+      <h1 className="section-title">{t('security.title')}</h1>
       
       <div className="security-section">
-        <h2>Change Password</h2>
+        <h2>{t('security.changePassword')}</h2>
         <div className="form-group">
-          <label>Current Password</label>
-          <input type="password" placeholder="Enter current password" />
+          <label>{t('security.currentPassword')}</label>
+          <input type="password" placeholder={t('security.currentPassword')} />
         </div>
         <div className="form-group">
-          <label>New Password</label>
-          <input type="password" placeholder="Enter new password" />
+          <label>{t('security.newPassword')}</label>
+          <input type="password" placeholder={t('security.newPassword')} />
         </div>
         <div className="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" placeholder="Confirm new password" />
+          <label>{t('security.confirmNewPassword')}</label>
+          <input type="password" placeholder={t('security.confirmNewPassword')} />
         </div>
-        <button className="save-button">Update Password</button>
+        <button className="save-button">{t('security.updatePassword')}</button>
       </div>
       
     </div>

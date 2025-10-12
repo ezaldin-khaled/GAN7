@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import axiosInstance from '../../../../api/axios'; // Import the configured axios instance
 import ProfileScore from './ProfileScore';
@@ -10,6 +11,7 @@ import TestImagesUpload from './TestImagesUpload';
 import './TestImagesUpload.css';
 
 const SpecializationTab = () => {
+  const { t } = useTranslation();
   const [workerType, setWorkerType] = useState('visual_worker');
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -1006,20 +1008,20 @@ const SpecializationTab = () => {
 
   return (
     <div className="specialization-tab">
-      <h2>Specialization Information</h2>
+      <h2>{t('specialization.title')}</h2>
       <ProfileScore />
       <form onSubmit={handleSubmit} className="specialization-form">
         <div className="form-group">
-          <label htmlFor="worker_type">Worker Type</label>
+          <label htmlFor="worker_type">{t('specialization.workerType')}</label>
           <select
             id="worker_type"
             value={workerType}
             onChange={(e) => setWorkerType(e.target.value)}
             required
           >
-            <option value="visual_worker">Visual Worker</option>
-            <option value="expressive_worker">Expressive Worker</option>
-            <option value="hybrid_worker">Hybrid Worker</option>
+            <option value="visual_worker">{t('specialization.visualWorker')}</option>
+            <option value="expressive_worker">{t('specialization.expressiveWorker')}</option>
+            <option value="hybrid_worker">{t('specialization.hybridWorker')}</option>
           </select>
         </div>
 
@@ -1036,14 +1038,14 @@ const SpecializationTab = () => {
         {/* Show test images section only for expressive workers */}
         {workerType === 'expressive_worker' && (
           <div className="form-section">
-            <h3>Test Images</h3>
+            <h3>{t('specialization.testImages')}</h3>
             {['actor', 'comparse', 'host'].includes(formData.performer_type) ? (
               <>
                 <p className="section-description">
-                  <strong>Required:</strong> Exactly 4 test images are required for {formData.performer_type} performers.
+                  <strong>{t('specialization.required')}:</strong> {t('specialization.exactlyRequired', { type: formData.performer_type })}
                 </p>
                 <p className="section-description">
-                  Current: {testImages.files.length}/4 images uploaded
+                  {t('specialization.currentUploaded', { count: testImages.files.length })}
                 </p>
                 {testImages.files.length !== 4 && (
                   <p className="error-message">

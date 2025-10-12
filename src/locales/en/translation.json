@@ -535,5 +535,40 @@
     "currentURL": "Current URL",
     "userAgent": "User Agent",
     "reactRouterVersion": "React Router Version"
+  },
+  "specialization": {
+    "title": "Specialization Information",
+    "workerType": "Worker Type",
+    "visualWorker": "Visual Worker",
+    "expressiveWorker": "Expressive Worker",
+    "hybridWorker": "Hybrid Worker",
+    "testImages": "Test Images",
+    "required": "Required",
+    "exactlyRequired": "Exactly 4 test images are required for {{type}} performers.",
+    "currentUploaded": "Current: {{count}}/4 images uploaded",
+    "mustUploadExactly": "You must upload exactly 4 test images.",
+    "uploadImages": "Upload Images",
+    "saveSpecialization": "Save Specialization",
+    "saving": "Saving..."
+  },
+  "media": {
+    "title": "Media Gallery",
+    "uploadMedia": "Upload Media",
+    "images": "Images",
+    "videos": "Videos",
+    "myMedia": "My Media",
+    "noMediaYet": "No media uploaded yet",
+    "uploadYourFirst": "Upload your first media file to get started!",
+    "delete": "Delete",
+    "loading": "Loading media..."
+  },
+  "security": {
+    "title": "Security Settings",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "updating": "Updating..."
   }
 }

@@ -535,5 +535,40 @@
     "currentURL": "الرابط الحالي",
     "userAgent": "وكيل المستخدم",
     "reactRouterVersion": "إصدار React Router"
+  },
+  "specialization": {
+    "title": "معلومات التخصص",
+    "workerType": "نوع العامل",
+    "visualWorker": "عامل بصري",
+    "expressiveWorker": "عامل تعبيري",
+    "hybridWorker": "عامل هجين",
+    "testImages": "صور الاختبار",
+    "required": "مطلوب",
+    "exactlyRequired": "مطلوب بالضبط 4 صور اختبار لفناني {{type}}.",
+    "currentUploaded": "الحالي: {{count}}/4 صور تم رفعها",
+    "mustUploadExactly": "يجب رفع 4 صور اختبار بالضبط.",
+    "uploadImages": "رفع الصور",
+    "saveSpecialization": "حفظ التخصص",
+    "saving": "جاري الحفظ..."
+  },
+  "media": {
+    "title": "معرض الوسائط",
+    "uploadMedia": "رفع الوسائط",
+    "images": "الصور",
+    "videos": "الفيديوهات",
+    "myMedia": "وسائطي",
+    "noMediaYet": "لم يتم رفع أي وسائط بعد",
+    "uploadYourFirst": "قم برفع ملف الوسائط الأول لتبدأ!",
+    "delete": "حذف",
+    "loading": "جاري تحميل الوسائط..."
+  },
+  "security": {
+    "title": "إعدادات الأمان",
+    "changePassword": "تغيير كلمة المرور",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "updatePassword": "تحديث كلمة المرور",
+    "updating": "جاري التحديث..."
   }
 } 
