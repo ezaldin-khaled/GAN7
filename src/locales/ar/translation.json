@@ -570,5 +570,17 @@
     "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
     "updatePassword": "تحديث كلمة المرور",
     "updating": "جاري التحديث..."
+  },
+  "items": {
+    "title": "معرض العناصر",
+    "uploadItem": "رفع عنصر",
+    "addNewItem": "إضافة عنصر جديد",
+    "noItemsYet": "لم يتم رفع أي عناصر بعد",
+    "uploadYourFirst": "قم برفع عناصر لعرض أصول الإنتاج الخاصة بك",
+    "filterByType": "تصفية حسب النوع",
+    "allTypes": "جميع الأنواع",
+    "delete": "حذف",
+    "loading": "جاري تحميل العناصر...",
+    "itemDeleted": "تم حذف العنصر بنجاح"
   }
 } 

@@ -570,5 +570,17 @@
     "confirmNewPassword": "Confirm New Password",
     "updatePassword": "Update Password",
     "updating": "Updating..."
+  },
+  "items": {
+    "title": "Item Gallery",
+    "uploadItem": "Upload Item",
+    "addNewItem": "Add New Item",
+    "noItemsYet": "No items uploaded yet",
+    "uploadYourFirst": "Upload items to showcase your production assets",
+    "filterByType": "Filter by type",
+    "allTypes": "All Types",
+    "delete": "Delete",
+    "loading": "Loading items...",
+    "itemDeleted": "Item deleted successfully"
   }
 }

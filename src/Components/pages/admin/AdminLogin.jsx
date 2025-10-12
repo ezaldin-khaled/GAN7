@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axiosInstance from '../../../api/axios';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
+  const { t } = useTranslation();
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
