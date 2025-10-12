@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import axiosInstance from '../../../../api/axios';
 import Loader from '../../../common/Loader';
@@ -6,6 +7,7 @@ import './TestImagesUpload.css';
 import { FaUpload, FaTimes, FaImage } from 'react-icons/fa';
 
 const TestImagesUpload = ({ onClose, onImagesSelected }) => {
+  const { t } = useTranslation();
   const [testImages, setTestImages] = useState([]);
   const [error, setError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -15,12 +17,12 @@ const TestImagesUpload = ({ onClose, onImagesSelected }) => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setError('Please upload a valid image file');
+      setError(t('testImages.validImage'));
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      setError('Image file size should be less than 10MB');
+      setError(t('testImages.fileSize'));
       return;
     }
 
@@ -50,7 +52,7 @@ const TestImagesUpload = ({ onClose, onImagesSelected }) => {
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
       if (file.size > 10 * 1024 * 1024) {
-        setError('Image file size should be less than 10MB');
+        setError(t('testImages.fileSize'));
         return;
       }
       const newImages = [...testImages];
@@ -63,14 +65,14 @@ const TestImagesUpload = ({ onClose, onImagesSelected }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (testImages.length === 0) {
-      setError('Please upload at least one test image');
+      setError(t('testImages.atLeastOne'));
       return;
     }
 
     // Create test images data
     const testImagesData = testImages.map((image, index) => ({
-      name: `Test Image ${index + 1}`,
-      media_info: "Test image for talent profile",
+      name: `${t('testImages.testImage')} ${index + 1}`,
+      media_info: t('testImages.testImage'),
       is_test_image: true,
       is_about_yourself_video: false,
       test_image_number: index + 1
@@ -94,7 +96,7 @@ const TestImagesUpload = ({ onClose, onImagesSelected }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
-          <h3>Upload Test Images</h3>
+          <h3>{t('testImages.title')}</h3>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
         {error && <div className="error-message">{error}</div>}
@@ -137,17 +139,17 @@ const TestImagesUpload = ({ onClose, onImagesSelected }) => {
                 ) : (
                   <div className="upload-placeholder">
                     <FaImage className="upload-icon" />
-                    <p>Click or drag image here</p>
-                    <p className="upload-hint">Max size: 10MB</p>
+                    <p>{t('testImages.dragDrop')}</p>
+                    <p className="upload-hint">{t('testImages.fileSize')}</p>
                   </div>
                 )}
               </div>
             ))}
           </div>
           <div className="modal-actions">
-            <button type="button" onClick={onClose}>Cancel</button>
+            <button type="button" onClick={onClose}>{t('testImages.close')}</button>
             <button type="submit" disabled={testImages.length === 0}>
-              Add Images
+              {t('testImages.uploadButton')}
             </button>
           </div>
         </form>

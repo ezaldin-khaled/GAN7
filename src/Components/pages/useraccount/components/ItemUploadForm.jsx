@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaUpload, FaTimes, FaImage, FaFileUpload } from 'react-icons/fa';
 import './ItemUploadForm.css';
 import axiosInstance from '../../../../api/axios';
 
 const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     item_type: '',
     name: '',
@@ -73,13 +75,13 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
     
     // Validate required fields
     if (!formData.item_type || !formData.name || !formData.price || !itemImage) {
-      setError('Please fill in all required fields');
+      setError(t('itemUpload.fillAllFields'));
       return;
     }
 
     // Validate price is a positive number
     if (isNaN(formData.price) || parseFloat(formData.price) <= 0) {
-      setError('Please enter a valid price');
+      setError(t('itemUpload.validPrice'));
       return;
     }
 
@@ -148,7 +150,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
     } catch (err) {
       console.error('Error uploading item:', err);
       console.error('Error response:', err.response?.data);
-      setError(err.response?.data?.message || err.response?.data?.detail || 'Failed to upload item. Please try again.');
+      setError(err.response?.data?.message || err.response?.data?.detail || t('items.uploadError'));
     }
   };
 
@@ -158,29 +160,29 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
         return (
           <div data-type="specific">
             <div className="form-group">
-              <label htmlFor="material">Material</label>
+              <label htmlFor="material">{t('itemUpload.propFields.material')}</label>
               <input
                 type="text"
                 id="material"
                 name="material"
                 value={formData.material}
                 onChange={handleInputChange}
-                placeholder="e.g., Wood, Metal, Plastic"
+                placeholder={t('itemUpload.propFields.material')}
               />
             </div>
             <div className="form-group">
-              <label htmlFor="used_in_movie">Used in Movie</label>
+              <label htmlFor="used_in_movie">{t('itemUpload.propFields.usedInMovie')}</label>
               <input
                 type="text"
                 id="used_in_movie"
                 name="used_in_movie"
                 value={formData.used_in_movie}
                 onChange={handleInputChange}
-                placeholder="e.g., The Dark Knight, Avengers"
+                placeholder={t('itemUpload.propFields.usedInMovie')}
               />
             </div>
             <div className="form-group">
-              <label htmlFor="condition">Condition</label>
+              <label htmlFor="condition">{t('itemUpload.propFields.condition')}</label>
               <select
                 id="condition"
                 name="condition"
@@ -488,7 +490,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
-          <h2>Upload New Item</h2>
+          <h2>{t('itemUpload.title')}</h2>
           <button className="close-modal" onClick={onClose}>
             <FaTimes />
           </button>
@@ -498,7 +500,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="item_type">Item Type *</label>
+            <label htmlFor="item_type">{t('itemUpload.itemType')} *</label>
             <select
               id="item_type"
               name="item_type"
@@ -507,44 +509,44 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
               className="form-select"
               required
             >
-              <option value="">Choose an item type</option>
-              <option value="prop">🎬 Prop</option>
-              <option value="costume">👗 Costume</option>
-              <option value="location">🏢 Location</option>
-              <option value="memorabilia">⭐ Memorabilia</option>
-              <option value="vehicle">🚗 Vehicle</option>
-              <option value="artistic_material">🎨 Artistic Material</option>
-              <option value="music_item">🎵 Music Item</option>
-              <option value="rare_item">💎 Rare Item</option>
+              <option value="">{t('itemUpload.selectItemType')}</option>
+              <option value="prop">🎬 {t('itemUpload.itemTypes.prop')}</option>
+              <option value="costume">👗 {t('itemUpload.itemTypes.costume')}</option>
+              <option value="location">🏢 {t('itemUpload.itemTypes.location')}</option>
+              <option value="memorabilia">⭐ {t('itemUpload.itemTypes.memorabilia')}</option>
+              <option value="vehicle">🚗 {t('itemUpload.itemTypes.vehicle')}</option>
+              <option value="artistic_material">🎨 {t('itemUpload.itemTypes.artistic_material')}</option>
+              <option value="music_item">🎵 {t('itemUpload.itemTypes.music_item')}</option>
+              <option value="rare_item">💎 {t('itemUpload.itemTypes.rare_item')}</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label htmlFor="name">Item Name *</label>
+            <label htmlFor="name">{t('itemUpload.name')} *</label>
             <input
               type="text"
               id="name"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="Enter item name"
+              placeholder={t('itemUpload.name')}
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">{t('itemUpload.description')}</label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Describe your item"
+              placeholder={t('itemUpload.description')}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="price">Price *</label>
+            <label htmlFor="price">{t('itemUpload.price')} *</label>
             <input
               type="number"
               id="price"
@@ -598,10 +600,10 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
               />
               <label htmlFor="item_image" className="file-upload-label">
                 <FaImage />
-                Choose Image
+                {t('itemUpload.chooseImage')}
               </label>
               <span className="file-name">
-                {itemImage ? itemImage.name : 'No file chosen'}
+                {itemImage ? itemImage.name : t('common.no') + ' file chosen'}
               </span>
             </div>
             {itemImage && (
@@ -613,7 +615,7 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
                   onClick={() => setItemImage(null)}
                 >
                   <FaTimes />
-                  Remove
+                  {t('common.remove')}
                 </button>
               </div>
             )}
@@ -622,18 +624,18 @@ const ItemUploadForm = ({ onClose, onSubmit, loading }) => {
           <div className="form-actions">
             <button type="button" className="cancel-btn" onClick={onClose}>
               <FaTimes />
-              Cancel
+              {t('common.cancel')}
             </button>
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <>
                   <span className="spinner-small"></span>
-                  Uploading...
+                  {t('itemUpload.uploading')}
                 </>
               ) : (
                 <>
                   <FaUpload />
-                  Upload Item
+                  {t('itemUpload.submit')}
                 </>
               )}
             </button>

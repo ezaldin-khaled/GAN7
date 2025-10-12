@@ -581,6 +581,129 @@
     "allTypes": "جميع الأنواع",
     "delete": "حذف",
     "loading": "جاري تحميل العناصر...",
-    "itemDeleted": "تم حذف العنصر بنجاح"
+    "itemDeleted": "تم حذف العنصر بنجاح",
+    "failedToLoad": "فشل تحميل العناصر. يرجى المحاولة مرة أخرى لاحقاً.",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا العنصر؟",
+    "deleting": "جاري الحذف...",
+    "uploadSuccess": "تم رفع العنصر بنجاح!",
+    "uploadError": "فشل رفع العنصر. يرجى المحاولة مرة أخرى."
+  },
+  "itemUpload": {
+    "title": "رفع عنصر جديد",
+    "selectItemType": "اختر نوع العنصر",
+    "itemType": "نوع العنصر",
+    "name": "الاسم",
+    "description": "الوصف",
+    "price": "السعر",
+    "forRent": "متاح للإيجار",
+    "forSale": "متاح للبيع",
+    "image": "صورة العنصر",
+    "chooseImage": "اختر صورة",
+    "required": "مطلوب",
+    "cancel": "إلغاء",
+    "submit": "رفع العنصر",
+    "uploading": "جاري الرفع...",
+    "fillAllFields": "يرجى ملء جميع الحقول المطلوبة",
+    "validPrice": "يرجى إدخال سعر صحيح",
+    "itemTypes": {
+      "prop": "دعامة",
+      "costume": "زي",
+      "location": "موقع",
+      "memorabilia": "تذكارات",
+      "vehicle": "مركبة",
+      "artistic_material": "مادة فنية",
+      "music_item": "آلة موسيقية",
+      "rare_item": "عنصر نادر"
+    },
+    "propFields": {
+      "material": "المادة",
+      "usedInMovie": "استخدم في فيلم",
+      "condition": "الحالة"
+    },
+    "costumeFields": {
+      "size": "المقاس",
+      "wornBy": "ارتداه",
+      "era": "العصر/الفترة"
+    },
+    "locationFields": {
+      "address": "العنوان",
+      "capacity": "السعة",
+      "isIndoor": "موقع داخلي"
+    },
+    "memorabiliaFields": {
+      "signedBy": "موقع من",
+      "authenticityCertificate": "شهادة الأصالة"
+    },
+    "vehicleFields": {
+      "make": "الصانع",
+      "model": "الطراز",
+      "year": "السنة"
+    },
+    "artisticMaterialFields": {
+      "type": "النوع",
+      "condition": "الحالة"
+    },
+    "musicItemFields": {
+      "instrumentType": "نوع الآلة",
+      "usedBy": "استخدمه"
+    },
+    "rareItemFields": {
+      "provenance": "المنشأ",
+      "isOneOfAKind": "فريد من نوعه"
+    }
+  },
+  "testImages": {
+    "title": "رفع صور الاختبار",
+    "uploadImages": "رفع صور الاختبار",
+    "dragDrop": "اسحب وأفلت الصورة هنا أو انقر للتصفح",
+    "validImage": "يرجى رفع ملف صورة صحيح",
+    "fileSize": "يجب أن يكون حجم ملف الصورة أقل من 10 ميجابايت",
+    "atLeastOne": "يرجى رفع صورة اختبار واحدة على الأقل",
+    "testImage": "صورة اختبار",
+    "removeImage": "إزالة",
+    "uploadButton": "رفع الصور",
+    "close": "إغلاق",
+    "uploading": "جاري الرفع..."
+  },
+  "workerProfile": {
+    "visualWorker": "عامل بصري",
+    "expressiveWorker": "عامل تعبيري",
+    "hybridWorker": "عامل هجين",
+    "primaryCategory": "الفئة الرئيسية",
+    "yearsExperience": "سنوات الخبرة",
+    "experienceLevel": "مستوى الخبرة",
+    "portfolioLink": "رابط المحفظة",
+    "availability": "التوفر",
+    "rateRange": "نطاق الأجر",
+    "willingToRelocate": "مستعد للانتقال",
+    "city": "المدينة",
+    "country": "البلد",
+    "performerType": "نوع الأداء",
+    "height": "الطول (سم)",
+    "weight": "الوزن (كجم)",
+    "hairColor": "لون الشعر",
+    "eyeColor": "لون العين",
+    "bodyType": "نوع الجسم",
+    "hybridType": "النوع الهجين",
+    "skinTone": "لون البشرة",
+    "fitnessLevel": "مستوى اللياقة",
+    "riskLevels": "مستويات المخاطرة",
+    "saveProfile": "حفظ الملف الشخصي",
+    "saving": "جاري الحفظ...",
+    "cancel": "إلغاء",
+    "selectCategory": "اختر فئة",
+    "selectLevel": "اختر مستوى الخبرة",
+    "selectAvailability": "اختر التوفر",
+    "selectRange": "اختر نطاق الأجر",
+    "selectType": "اختر النوع"
+  },
+  "accountTabs": {
+    "profile": "الملف الشخصي",
+    "media": "الوسائط",
+    "billing": "الفواتير",
+    "groups": "المجموعات",
+    "specializations": "التخصصات",
+    "security": "الأمان",
+    "items": "العناصر"
   }
 } 

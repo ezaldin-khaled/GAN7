@@ -581,6 +581,129 @@
     "allTypes": "All Types",
     "delete": "Delete",
     "loading": "Loading items...",
-    "itemDeleted": "Item deleted successfully"
+    "itemDeleted": "Item deleted successfully",
+    "failedToLoad": "Failed to load items. Please try again later.",
+    "deleteConfirm": "Are you sure you want to delete this item?",
+    "deleting": "Deleting...",
+    "uploadSuccess": "Item uploaded successfully!",
+    "uploadError": "Failed to upload item. Please try again."
+  },
+  "itemUpload": {
+    "title": "Upload New Item",
+    "selectItemType": "Select Item Type",
+    "itemType": "Item Type",
+    "name": "Name",
+    "description": "Description",
+    "price": "Price",
+    "forRent": "Available for Rent",
+    "forSale": "Available for Sale",
+    "image": "Item Image",
+    "chooseImage": "Choose Image",
+    "required": "Required",
+    "cancel": "Cancel",
+    "submit": "Upload Item",
+    "uploading": "Uploading...",
+    "fillAllFields": "Please fill in all required fields",
+    "validPrice": "Please enter a valid price",
+    "itemTypes": {
+      "prop": "Prop",
+      "costume": "Costume",
+      "location": "Location",
+      "memorabilia": "Memorabilia",
+      "vehicle": "Vehicle",
+      "artistic_material": "Artistic Material",
+      "music_item": "Music Item",
+      "rare_item": "Rare Item"
+    },
+    "propFields": {
+      "material": "Material",
+      "usedInMovie": "Used in Movie",
+      "condition": "Condition"
+    },
+    "costumeFields": {
+      "size": "Size",
+      "wornBy": "Worn By",
+      "era": "Era/Period"
+    },
+    "locationFields": {
+      "address": "Address",
+      "capacity": "Capacity",
+      "isIndoor": "Indoor Location"
+    },
+    "memorabiliaFields": {
+      "signedBy": "Signed By",
+      "authenticityCertificate": "Authenticity Certificate"
+    },
+    "vehicleFields": {
+      "make": "Make",
+      "model": "Model",
+      "year": "Year"
+    },
+    "artisticMaterialFields": {
+      "type": "Type",
+      "condition": "Condition"
+    },
+    "musicItemFields": {
+      "instrumentType": "Instrument Type",
+      "usedBy": "Used By"
+    },
+    "rareItemFields": {
+      "provenance": "Provenance",
+      "isOneOfAKind": "One of a Kind"
+    }
+  },
+  "testImages": {
+    "title": "Upload Test Images",
+    "uploadImages": "Upload Test Images",
+    "dragDrop": "Drag and drop image here or click to browse",
+    "validImage": "Please upload a valid image file",
+    "fileSize": "Image file size should be less than 10MB",
+    "atLeastOne": "Please upload at least one test image",
+    "testImage": "Test Image",
+    "removeImage": "Remove",
+    "uploadButton": "Upload Images",
+    "close": "Close",
+    "uploading": "Uploading..."
+  },
+  "workerProfile": {
+    "visualWorker": "Visual Worker",
+    "expressiveWorker": "Expressive Worker",
+    "hybridWorker": "Hybrid Worker",
+    "primaryCategory": "Primary Category",
+    "yearsExperience": "Years of Experience",
+    "experienceLevel": "Experience Level",
+    "portfolioLink": "Portfolio Link",
+    "availability": "Availability",
+    "rateRange": "Rate Range",
+    "willingToRelocate": "Willing to Relocate",
+    "city": "City",
+    "country": "Country",
+    "performerType": "Performer Type",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "hairColor": "Hair Color",
+    "eyeColor": "Eye Color",
+    "bodyType": "Body Type",
+    "hybridType": "Hybrid Type",
+    "skinTone": "Skin Tone",
+    "fitnessLevel": "Fitness Level",
+    "riskLevels": "Risk Levels",
+    "saveProfile": "Save Profile",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "selectCategory": "Select a category",
+    "selectLevel": "Select experience level",
+    "selectAvailability": "Select availability",
+    "selectRange": "Select rate range",
+    "selectType": "Select type"
+  },
+  "accountTabs": {
+    "profile": "Profile",
+    "media": "Media",
+    "billing": "Billing",
+    "groups": "Groups",
+    "specializations": "Specializations",
+    "security": "Security",
+    "items": "Items"
   }
 }
