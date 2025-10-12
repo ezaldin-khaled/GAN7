@@ -191,7 +191,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
               name="full_name" 
               value={userData.full_name || `${userData.first_name || ''} ${userData.last_name || ''}`} 
               onChange={handleInputChange}
-              placeholder="Enter your full name"
+              placeholder={t('profileTab.enterFullName')}
             />
           </div>
           
@@ -431,18 +431,18 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
 
         <div className="form-row">
           <div className="form-group">
-            <label>Gender</label>
+            <label>{t('profileTab.gender')}</label>
             <select name="gender" value={userData.gender || ''} onChange={handleInputChange}>
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-              <option value="prefer_not_to_say">Prefer not to say</option>
+              <option value="">{t('profileTab.selectGender')}</option>
+              <option value="Male">{t('auth.male')}</option>
+              <option value="Female">{t('auth.female')}</option>
+              <option value="Other">{t('auth.other')}</option>
+              <option value="prefer_not_to_say">{t('auth.preferNotToSay')}</option>
             </select>
           </div>
           
           <div className="form-group">
-            <label>Date of Birth</label>
+            <label>{t('profileTab.dateOfBirth')}</label>
             <input 
               type="date" 
               name="date_of_birth" 
@@ -453,13 +453,13 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         </div>
 
         <div className="form-group full-width">
-          <label>About You</label>
+          <label>{t('profileTab.aboutYou')}</label>
           <textarea 
             name="aboutyou" 
             value={userData.aboutyou || ''} 
             onChange={handleInputChange} 
             rows="4"
-            placeholder="Tell us about yourself, your interests, and what makes you unique..."
+            placeholder={t('profileTab.aboutYouPlaceholder')}
           />
         </div>
       </div>
@@ -470,7 +470,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         {successMessage && <div className="success-message">{successMessage}</div>}
         {loading ? (
           <div className="loading-state">
-            <LoadingSpinner text="Loading social media data..." />
+            <LoadingSpinner text={t('profileTab.loadingSocialMedia')} />
           </div>
         ) : (
           <div className="social-media-grid">
@@ -482,7 +482,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
                   name="facebook" 
                   value={socialMediaLinks.facebook} 
                   onChange={handleSocialMediaChange}
-                  placeholder="https://facebook.com/yourusername"
+                  placeholder={t('profileTab.facebookPlaceholder')}
                 />
                 {socialMediaLinks.facebook && (
                   <a 
@@ -507,7 +507,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
                   name="instagram" 
                   value={socialMediaLinks.instagram} 
                   onChange={handleSocialMediaChange}
-                  placeholder="https://instagram.com/yourusername"
+                  placeholder={t('profileTab.instagramPlaceholder')}
                 />
                 {socialMediaLinks.instagram && (
                   <a 
@@ -530,7 +530,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
                   name="youtube" 
                   value={socialMediaLinks.youtube} 
                   onChange={handleSocialMediaChange}
-                  placeholder="https://youtube.com/yourusername"
+                  placeholder={t('profileTab.youtubePlaceholder')}
                 />
                 {socialMediaLinks.youtube && (
                   <a 
@@ -554,7 +554,7 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
                   name="tiktok" 
                   value={socialMediaLinks.tiktok} 
                   onChange={handleSocialMediaChange}
-                  placeholder="https://tiktok.com/@yourusername"
+                  placeholder={t('profileTab.tiktokPlaceholder')}
                 />
                 {socialMediaLinks.tiktok && (
                   <a 
