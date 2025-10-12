@@ -1,32 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaImage, FaCreditCard, FaCog, FaShieldAlt, FaCamera, FaSignOutAlt, FaUsers, FaBox, FaHome, FaBars, FaTimes, FaCrown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import useImageWithRetry from '../../../../hooks/useImageWithRetry';
 import axiosInstance from '../../../../api/axios';
 
-// Default menu items for talent users
-const defaultMenuItems = [
-  { id: 'profile', icon: FaUser, label: 'Profile Information' },
-  { id: 'media', icon: FaImage, label: 'Media Gallery' },
-  { id: 'billing', icon: FaCreditCard, label: 'Plans & Billing' },
-  { id: 'groups', icon: FaUsers, label: 'Groups' },
-  { id: 'specializations', icon: FaUser, label: 'Specializations' },
-  { id: 'security', icon: FaShieldAlt, label: 'Security' }
+// Default menu items for talent users - labels will be translated
+const getDefaultMenuItems = (t) => [
+  { id: 'profile', icon: FaUser, label: t('sidebar.profileInformation') },
+  { id: 'media', icon: FaImage, label: t('sidebar.mediaGallery') },
+  { id: 'billing', icon: FaCreditCard, label: t('sidebar.plansAndBilling') },
+  { id: 'groups', icon: FaUsers, label: t('sidebar.groups') },
+  { id: 'specializations', icon: FaUser, label: t('sidebar.specializations') },
+  { id: 'security', icon: FaShieldAlt, label: t('sidebar.security') }
 ];
 
 // Menu items for background users (no groups tab, renamed media to items)
-const backgroundMenuItems = [
-  { id: 'profile', icon: FaUser, label: 'Profile Information' },
-  { id: 'media', icon: FaBox, label: 'Item Gallery' },
-  { id: 'billing', icon: FaCreditCard, label: 'Plans' },
-  { id: 'security', icon: FaShieldAlt, label: 'Security' }
+const getBackgroundMenuItems = (t) => [
+  { id: 'profile', icon: FaUser, label: t('sidebar.profileInformation') },
+  { id: 'media', icon: FaBox, label: t('sidebar.itemGallery') },
+  { id: 'billing', icon: FaCreditCard, label: t('sidebar.plans') },
+  { id: 'security', icon: FaShieldAlt, label: t('sidebar.security') }
 ];
 
-const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handleProfileImageChange, handleLogout, menuItems = defaultMenuItems, isBackground = false }) => {
+const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handleProfileImageChange, handleLogout, menuItems, isBackground = false }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentSubscription, setCurrentSubscription] = useState(null);
+  
+  // Get translated menu items
+  const defaultMenuItems = getDefaultMenuItems(t);
+  const backgroundMenuItems = getBackgroundMenuItems(t);
+  const finalMenuItems = menuItems || (isBackground ? backgroundMenuItems : defaultMenuItems);
   
   // Use the retry hook for profile image loading
   const { imageSrc, isLoading, retryCount, useFallback } = useImageWithRetry(
@@ -60,7 +67,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
   // Function to get plan display name
   const getPlanDisplayName = () => {
     if (!currentSubscription) {
-      return userData?.account_type || 'Free Plan';
+      return userData?.account_type || t('sidebar.freePlan');
     }
     
     // Try to get plan name from subscription
@@ -73,7 +80,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
       return formattedName;
     }
     
-    return userData?.account_type || 'Active Plan';
+    return userData?.account_type || t('sidebar.activePlan');
   };
 
   // Detect screen size and update mobile state
@@ -152,7 +159,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
             )}
             {isLoading && retryCount > 0 && (
               <div className="image-loading-indicator">
-                Retrying... ({retryCount}/5)
+                {t('sidebar.retrying')} ({retryCount}/5)
               </div>
             )}
             <label className="change-photo-btn">
@@ -169,7 +176,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
         </div>
         
         <div className="sidebar-menu">
-          {menuItems.map(({ id, icon: Icon, label }) => (
+          {finalMenuItems.map(({ id, icon: Icon, label }) => (
             <button 
               key={id} 
               className={`menu-item ${activeTab === id ? 'active' : ''}`} 
@@ -181,7 +188,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
           ))}
           <button className="menu-item back-to-main-btn" onClick={handleBackToMain}>
             <FaHome className="menu-icon" />
-            <span>Back to Main Page</span>
+            <span>{t('sidebar.backToMainPage')}</span>
           </button>
           <button 
             className="menu-item logout-btn" 
@@ -197,7 +204,7 @@ const Sidebar = ({ activeTab, handleTabChange, userData, profileImage, handlePro
             }}
           >
             <FaSignOutAlt className="menu-icon" />
-            <span>Logout</span>
+            <span>{t('sidebar.logout')}</span>
           </button>
         </div>
       </div>

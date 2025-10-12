@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import './GroupsTab.css';
 
 export const CreateBandModal = ({ 
@@ -13,43 +14,45 @@ export const CreateBandModal = ({
   handleSubmitBand,
   setUploadedImage
 }) => {
+  const { t } = useTranslation();
+  
   if (!showCreateModal) return null;
   
   return (
     <div className="modal-overlay">
       <div className="modal-content mod-tsxt">
         <div className="modal-header mod-tsxt">
-          <h2>Create New Band</h2>
+          <h2>{t('groups.createBandTitle')}</h2>
         </div>
         <form onSubmit={handleSubmitBand}>
           {/* Form groups */}
           <div className="form-group">
-            <label htmlFor="name">Band Name *</label>
+            <label htmlFor="name">{t('groups.bandName')} *</label>
             <input
               type="text"
               id="name"
               name="name"
               value={newBand.name}
               onChange={handleInputChange}
-              placeholder="Enter band name"
+              placeholder={t('groups.enterBandName')}
               required
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="description">Description *</label>
+            <label htmlFor="description">{t('groups.description')} *</label>
             <textarea
               id="description"
               name="description"
               value={newBand.description}
               onChange={handleInputChange}
-              placeholder="Tell us about your band"
+              placeholder={t('groups.tellUsAboutBand')}
               required
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="genre">Band Type</label>
+            <label htmlFor="genre">{t('groups.bandType')}</label>
             <select
               id="genre"
               name="genre"
@@ -57,29 +60,29 @@ export const CreateBandModal = ({
               onChange={handleInputChange}
               className="form-select"
             >
-              <option value="">Select a band type</option>
-              <option value="musical">Musical Bands/Troupes</option>
-              <option value="theatrical">Theatrical Troupes</option>
-              <option value="stunt">Stunt/Performance Teams</option>
-              <option value="dance">Dance Troupes</option>
-              <option value="event">Event Squads</option>
+              <option value="">{t('groups.selectBandType')}</option>
+              <option value="musical">{t('groups.musicalBands')}</option>
+              <option value="theatrical">{t('groups.theatricalTroupes')}</option>
+              <option value="stunt">{t('groups.stuntTeams')}</option>
+              <option value="dance">{t('groups.danceTroupes')}</option>
+              <option value="event">{t('groups.eventSquads')}</option>
             </select>
           </div>
           
           <div className="form-group">
-            <label htmlFor="location">Location</label>
+            <label htmlFor="location">{t('groups.location')}</label>
             <input
               type="text"
               id="location"
               name="location"
               value={newBand.location}
               onChange={handleInputChange}
-              placeholder="City, Country"
+              placeholder={t('groups.cityCountry')}
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="contact_email">Contact Email</label>
+            <label htmlFor="contact_email">{t('groups.contactEmail')}</label>
             <input
               type="email"
               id="contact_email"
@@ -91,7 +94,7 @@ export const CreateBandModal = ({
           </div>
           
           <div className="form-group">
-            <label htmlFor="contact_phone">Contact Phone</label>
+            <label htmlFor="contact_phone">{t('groups.contactPhone')}</label>
             <input
               type="tel"
               id="contact_phone"
@@ -103,7 +106,7 @@ export const CreateBandModal = ({
           </div>
           
           <div className="form-group">
-            <label htmlFor="website">Website</label>
+            <label htmlFor="website">{t('groups.website')}</label>
             <input
               type="url"
               id="website"
@@ -115,7 +118,7 @@ export const CreateBandModal = ({
           </div>
           
           <div className="form-group">
-            <label htmlFor="profile_picture">Band Image</label>
+            <label htmlFor="profile_picture">{t('groups.bandImage')}</label>
             <div className="file-upload-container">
               <input
                 type="file"
@@ -126,10 +129,10 @@ export const CreateBandModal = ({
                 className="file-input"
               />
               <label htmlFor="profile_picture" className="file-upload-label mod-tsxt">
-                Choose Image
+                {t('groups.chooseImage')}
               </label>
               <span className="file-name">
-                {uploadedImage ? uploadedImage.name : 'No file chosen'}
+                {uploadedImage ? uploadedImage.name : t('groups.noFileChosen')}
               </span>
             </div>
             {uploadedImage && (
@@ -140,7 +143,7 @@ export const CreateBandModal = ({
                   className="remove-image" 
                   onClick={() => setUploadedImage(null)}
                 >
-                  Remove
+                  {t('groups.remove')}
                 </button>
               </div>
             )}
@@ -148,15 +151,15 @@ export const CreateBandModal = ({
           
           <div className="form-actions">
             <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-              Cancel
+              {t('groups.cancel')}
             </button>
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <>
                   <span className="spinner-small"></span>
-                  Creating...
+                  {t('groups.creating')}
                 </>
-              ) : 'Create Band'}
+              ) : t('groups.createBand')}
             </button>
           </div>
         </form>
@@ -180,6 +183,8 @@ export const ManageBandModal = ({
   handleRemoveMember,
   membersToRemove
 }) => {
+  const { t } = useTranslation();
+  
   if (!showManageModal || !selectedBand) return null;
   
   // Add a state to toggle between band details and member management
@@ -195,21 +200,21 @@ export const ManageBandModal = ({
     <div className="modal-overlay">
       <div className="modal-content mod-tsxt">
         <div className="modal-header mod-tsxt">
-          <h2>Manage Band: {selectedBand.name}</h2>
+          <h2>{t('groups.manageBand')}: {selectedBand.name}</h2>
           <div className="tab-navigation">
             <button 
               type="button" 
               className={`tab-button ${!showMembersTab ? 'active' : ''}`}
               onClick={() => setShowMembersTab(false)}
             >
-              Band Details
+              {t('groups.bandDetails')}
             </button>
             <button 
               type="button" 
               className={`tab-button ${showMembersTab ? 'active' : ''}`}
               onClick={() => setShowMembersTab(true)}
             >
-              Members
+              {t('groups.members')}
             </button>
           </div>
         </div>
@@ -217,33 +222,33 @@ export const ManageBandModal = ({
         {!showMembersTab ? (
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="edit-name">Band Name *</label>
+              <label htmlFor="edit-name">{t('groups.bandName')} *</label>
               <input
                 type="text"
                 id="edit-name"
                 name="name"
                 value={editBand.name}
                 onChange={handleEditInputChange}
-                placeholder="Enter band name"
+                placeholder={t('groups.enterBandName')}
                 required
               />
             </div>
             
             {/* Other band details form fields */}
             <div className="form-group">
-              <label htmlFor="edit-description">Description *</label>
+              <label htmlFor="edit-description">{t('groups.description')} *</label>
               <textarea
                 id="edit-description"
                 name="description"
                 value={editBand.description}
                 onChange={handleEditInputChange}
-                placeholder="Tell us about your band"
+                placeholder={t('groups.tellUsAboutBand')}
                 required
               />
             </div>
             
             <div className="form-group">
-              <label htmlFor="edit-genre">Band Type</label>
+              <label htmlFor="edit-genre">{t('groups.bandType')}</label>
               <select
                 id="edit-genre"
                 name="genre"
@@ -252,32 +257,32 @@ export const ManageBandModal = ({
                 className="form-select"
                 disabled={true} // Band type cannot be changed after creation
               >
-                <option value="">Select a band type</option>
-                <option value="musical">Musical Bands/Troupes</option>
-                <option value="theatrical">Theatrical Troupes</option>
-                <option value="stunt">Stunt/Performance Teams</option>
-                <option value="dance">Dance Troupes</option>
-                <option value="event">Event Squads</option>
+                <option value="">{t('groups.selectBandType')}</option>
+                <option value="musical">{t('groups.musicalBands')}</option>
+                <option value="theatrical">{t('groups.theatricalTroupes')}</option>
+                <option value="stunt">{t('groups.stuntTeams')}</option>
+                <option value="dance">{t('groups.danceTroupes')}</option>
+                <option value="event">{t('groups.eventSquads')}</option>
               </select>
               {editBand.genre && (
-                <small className="form-note">Band type cannot be changed after creation</small>
+                <small className="form-note">{t('groups.bandTypeCannotBeChanged')}</small>
               )}
             </div>
             
             <div className="form-group">
-              <label htmlFor="edit-location">Location</label>
+              <label htmlFor="edit-location">{t('groups.location')}</label>
               <input
                 type="text"
                 id="edit-location"
                 name="location"
                 value={editBand.location}
                 onChange={handleEditInputChange}
-                placeholder="City, Country"
+                placeholder={t('groups.cityCountry')}
               />
             </div>
             
             <div className="form-group">
-              <label htmlFor="edit-contact_email">Contact Email</label>
+              <label htmlFor="edit-contact_email">{t('groups.contactEmail')}</label>
               <input
                 type="email"
                 id="edit-contact_email"
@@ -289,7 +294,7 @@ export const ManageBandModal = ({
             </div>
             
             <div className="form-group">
-              <label htmlFor="edit-website">Website</label>
+              <label htmlFor="edit-website">{t('groups.website')}</label>
               <input
                 type="url"
                 id="edit-website"
@@ -301,7 +306,7 @@ export const ManageBandModal = ({
             </div>
             
             <div className="form-group">
-              <label htmlFor="edit-profile_picture">Band Image</label>
+              <label htmlFor="edit-profile_picture">{t('groups.bandImage')}</label>
               <div className="file-upload-container">
                 <input
                   type="file"
@@ -312,10 +317,10 @@ export const ManageBandModal = ({
                   className="file-input"
                 />
                 <label htmlFor="edit-profile_picture" className="file-upload-label mod-tsxt">
-                  Choose New Image
+                  {t('groups.chooseNewImage')}
                 </label>
                 <span className="file-name">
-                  {editImage ? editImage.name : 'No new image chosen'}
+                  {editImage ? editImage.name : t('groups.noNewImageChosen')}
                 </span>
               </div>
               {selectedBand.profile_picture && !editImage && (
@@ -338,7 +343,7 @@ export const ManageBandModal = ({
                     className="remove-image" 
                     onClick={() => setEditImage(null)}
                   >
-                    Remove
+                    {t('groups.remove')}
                   </button>
                 </div>
               )}
@@ -346,30 +351,30 @@ export const ManageBandModal = ({
             
             <div className="form-actions">
               <button type="button" className="cancel-btn" onClick={handleCloseManageModal}>
-                Cancel
+                {t('groups.cancel')}
               </button>
               <button type="submit" className="submit-btn" disabled={loading}>
                 {loading ? (
                   <>
                     <span className="spinner-small"></span>
-                    Updating...
+                    {t('groups.updating')}
                   </>
-                ) : 'Update Band'}
+                ) : t('groups.updateBand')}
               </button>
             </div>
           </form>
         ) : (
           <div className="members-management">
-            <h3>Band Members</h3>
+            <h3>{t('groups.bandMembers')}</h3>
             
             {selectedBand.members && selectedBand.members.length > 0 ? (
               <>
                 <div className="members-table">
                   <div className="members-table-header">
-                    <div className="member-col">Member</div>
-                    <div className="role-col">Role</div>
-                    <div className="joined-col">Joined</div>
-                    <div className="actions-col">Actions</div>
+                    <div className="member-col">{t('groups.member')}</div>
+                    <div className="role-col">{t('groups.role')}</div>
+                    <div className="joined-col">{t('groups.joined')}</div>
+                    <div className="actions-col">{t('groups.actions')}</div>
                   </div>
                   
                   <div className="members-table-body">
@@ -380,7 +385,7 @@ export const ManageBandModal = ({
                             {member.profile_picture ? (
                               <img 
                                 src={member.profile_picture} 
-                                alt={member.username || member.full_name || member.email || 'Member'}
+                                alt={member.username || member.full_name || member.email || t('groups.member')}
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                 }}
@@ -392,14 +397,14 @@ export const ManageBandModal = ({
                             )}
                           </div>
                           <div className="member-details">
-                            <span className="member-username">{member.username || member.full_name || member.email || 'Unknown Member'}</span>
+                            <span className="member-username">{member.username || member.full_name || member.email || t('groups.unknownMember')}</span>
                             {member.email && <span className="member-email">{member.email}</span>}
                           </div>
                         </div>
                         
                         <div className="role-col">
                           {member.position === "Creator" ? (
-                            <span className="creator-badge">Creator</span>
+                            <span className="creator-badge">{t('groups.creator')}</span>
                           ) : (
                             <select 
                               value={member.role}
@@ -407,8 +412,8 @@ export const ManageBandModal = ({
                               disabled={loading}
                               className="role-select"
                             >
-                              <option value="member">Member</option>
-                              <option value="admin">Admin</option>
+                              <option value="member">{t('groups.member')}</option>
+                              <option value="admin">{t('adminDashboard.adminUser')}</option>
                             </select>
                           )}
                         </div>
@@ -425,7 +430,7 @@ export const ManageBandModal = ({
                               onClick={() => handleRemoveMember(member.id)}
                               disabled={loading}
                             >
-                              {membersToRemove?.includes(member.id) ? 'Marked for Removal' : 'Remove'}
+                              {membersToRemove?.includes(member.id) ? t('groups.markedForRemoval') : t('groups.remove')}
                             </button>
                           )}
                         </div>
@@ -436,25 +441,25 @@ export const ManageBandModal = ({
                 
                 <div className="admin-limits-info">
                   <p>
-                    <strong>Admin Limits:</strong> 
-                    {selectedBand.members.length < 5 ? " 1 admin (creator only)" : 
-                     selectedBand.members.length < 25 ? " 2 admins maximum" : 
-                     " 3 admins maximum"}
+                    <strong>{t('groups.adminLimits')}:</strong> 
+                    {selectedBand.members.length < 5 ? ` 1 ${t('groups.adminLimitsMessage')}` : 
+                     selectedBand.members.length < 25 ? ` 2 ${t('groups.adminLimitsMessage')}` : 
+                     ` 3 ${t('groups.adminLimitsMessage')}`}
                   </p>
                   <p className="note">
-                    Note: The band creator's role cannot be changed, and they cannot be removed from the band.
+                    {t('groups.creatorRoleNote')}
                   </p>
                 </div>
               </>
             ) : (
               <div className="empty-members">
-                <p>No members found in this band.</p>
+                <p>{t('groups.noMembersFound')}</p>
               </div>
             )}
             
             <div className="form-actions">
               <button type="button" className="cancel-btn" onClick={handleCloseManageModal}>
-                Close
+                {t('groups.close')}
               </button>
               <button 
                 type="button" 
@@ -465,9 +470,9 @@ export const ManageBandModal = ({
                 {loading ? (
                   <>
                     <span className="spinner-small"></span>
-                    Saving...
+                    {t('groups.saving')}
                   </>
-                ) : 'Save Changes'}
+                ) : t('groups.saveChanges')}
               </button>
             </div>
           </div>

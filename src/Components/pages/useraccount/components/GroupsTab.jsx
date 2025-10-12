@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FaUsers, FaPlus, FaEdit, FaTrash, FaLock, FaCrown, FaSync, FaKey } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import { CreateBandModal, ManageBandModal } from './GroupModals';
 import axiosInstance from '../../../../api/axios';
 import './GroupsTab.css';
 import '../EnhancedTabStyles.css'; // Import the enhanced styles
 
-// Hardcoded band types as specified in API documentation
-const BAND_TYPES = [
-    { value: 'musical', label: 'Musical Bands/Troupes' },
-    { value: 'theatrical', label: 'Theatrical Troupes' },
-    { value: 'stunt', label: 'Stunt/Performance Teams' },
-    { value: 'dance', label: 'Dance Troupes' },
-    { value: 'event', label: 'Event Squads' }
-];
-
 const GroupsTab = ({ userData }) => {
+  const { t } = useTranslation();
   const [bands, setBands] = useState([]);
   const [joinedBands, setJoinedBands] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -1223,19 +1216,19 @@ const GroupsTab = ({ userData }) => {
         <div className="lock-icon">
           <FaLock />
         </div>
-        <h2>Band Subscription Required</h2>
+        <h2>{t('groups.bandSubscriptionRequired')}</h2>
         <p>
-          {subscriptionStatus?.message || 'You need a band subscription to create and manage bands, but you can still join existing bands with an invitation code.'}
+          {subscriptionStatus?.message || t('groups.subscriptionMessage')}
         </p>
         
         {/* Join Band Section for Unsubscribed Users */}
         <div className="join-band-section">
-          <h3>🎵 Join an Existing Band</h3>
-          <p>Have an invitation code? You can join bands even without a subscription!</p>
+          <h3>🎵 {t('groups.joinExistingBand')}</h3>
+          <p>{t('groups.haveInvitationCode')}</p>
           <div className="invitation-form">
             <input 
               type="text" 
-              placeholder="Enter invitation code" 
+              placeholder={t('groups.enterInvitationCode')}
               value={invitationCode} 
               onChange={(e) => setInvitationCode(e.target.value)}
               className="invitation-input"
@@ -1245,27 +1238,27 @@ const GroupsTab = ({ userData }) => {
               onClick={handleJoinWithCode}
               disabled={loading || !invitationCode.trim()}
             >
-              Join Band
+              {t('groups.joinBand')}
             </button>
           </div>
         </div>
         
         <div className="subscription-features">
-          <h3>What you get with Band Subscription:</h3>
+          <h3>{t('groups.whatYouGet')}</h3>
           <ul>
-            <li>✓ Create unlimited bands</li>
-            <li>✓ Invite members with codes</li>
-            <li>✓ Manage band profiles</li>
-            <li>✓ Collaborate with other musicians</li>
-            <li>✓ Access to band management tools</li>
-            <li>✓ Earn band scores and improve visibility</li>
+            <li>✓ {t('groups.createUnlimitedBands')}</li>
+            <li>✓ {t('groups.inviteMembersWithCodes')}</li>
+            <li>✓ {t('groups.manageBandProfiles')}</li>
+            <li>✓ {t('groups.collaborateWithMusicians')}</li>
+            <li>✓ {t('groups.accessManagementTools')}</li>
+            <li>✓ {t('groups.earnBandScores')}</li>
           </ul>
         </div>
         <button 
           className="upgrade-button"
           onClick={() => window.location.href = '/account?tab=billing'}
         >
-          <FaCrown /> Upgrade to Band Subscription
+          <FaCrown /> {t('groups.upgradeToBandSubscription')}
         </button>
       </div>
     </div>
@@ -1316,7 +1309,7 @@ const GroupsTab = ({ userData }) => {
 
   return (
     <div className="content-section">
-      <h1 className="section-title">Bands</h1>
+      <h1 className="section-title">{t('groups.bands')}</h1>
       
       {/* Limited View for Unsubscribed Users */}
       {!hasBandSubscription && !isInBand && (
@@ -1329,8 +1322,8 @@ const GroupsTab = ({ userData }) => {
           borderLeft: '4px solid #ff9500',
           fontWeight: '500'
         }}>
-          <strong>🎵 Limited Access Mode</strong><br/>
-          You can join bands with invitation codes, but you need a subscription to create and manage bands.
+          <strong>🎵 {t('groups.limitedAccessMode')}</strong><br/>
+          {t('groups.limitedAccessMessage')}
           <button 
             onClick={() => window.location.href = '/account?tab=billing'}
             style={{
@@ -1345,7 +1338,7 @@ const GroupsTab = ({ userData }) => {
               fontWeight: '600'
             }}
           >
-            Upgrade Now
+            {t('groups.upgradeNow')}
           </button>
         </div>
       )}
@@ -1367,7 +1360,7 @@ const GroupsTab = ({ userData }) => {
             fontSize: '2rem',
             fontWeight: '700'
           }}>
-            🎵 Join a Band
+            🎵 {t('groups.joinBand')}
           </h2>
           <p style={{ 
             color: '#424242', 
@@ -1375,7 +1368,7 @@ const GroupsTab = ({ userData }) => {
             fontSize: '1.1rem',
             lineHeight: '1.6'
           }}>
-            Have an invitation code? Enter it below to join a band instantly!
+            {t('groups.haveInvitationCode')}
           </p>
           <div className="join-form-container" style={{
             maxWidth: '500px',
@@ -1443,7 +1436,7 @@ const GroupsTab = ({ userData }) => {
                   e.target.style.boxShadow = '0 4px 15px rgba(33, 150, 243, 0.3)';
                 }}
               >
-                {loading ? 'Joining...' : 'Join Band'}
+                {loading ? t('groups.joining') : t('groups.joinBand')}
               </button>
             </div>
             {invitationCode && !invitationCode.trim() && (
@@ -1452,7 +1445,7 @@ const GroupsTab = ({ userData }) => {
                 marginTop: '8px', 
                 fontSize: '14px' 
               }}>
-                Please enter a valid invitation code
+                {t('groups.pleaseEnterValidCode')}
               </p>
             )}
           </div>
@@ -1566,14 +1559,14 @@ const GroupsTab = ({ userData }) => {
         )}
         
         <div className="groups-header">
-          <h2>My Bands</h2>
+          <h2>{t('groups.myBands')}</h2>
           {subscriptionStatus?.can_create_band && (
             <button 
               className="create-group-btn" 
               onClick={handleCreateBand}
               disabled={loading}
             >
-              <FaPlus /> Create New Band
+              <FaPlus /> {t('groups.createNewBand')}
             </button>
           )}
         </div>
@@ -1583,19 +1576,19 @@ const GroupsTab = ({ userData }) => {
           <div className="subscription-status-info">
             <div className="status-card">
               <div className="status-header">
-                <h3>Subscription Status</h3>
+                <h3>{t('groups.subscriptionStatus')}</h3>
                 <div className="status-controls">
                 <span className={`status-badge ${subscriptionStatus.has_bands_subscription ? 'active' : 'inactive'}`}>
-                  {subscriptionStatus.has_bands_subscription ? 'Active' : 'Inactive'}
+                  {subscriptionStatus.has_bands_subscription ? t('groups.active') : t('groups.inactive')}
                 </span>
                 </div>
               </div>
               <p className="status-message">{String(subscriptionStatus.message || '')}</p>
               {subscriptionStatus.subscription && (
                 <div className="subscription-details">
-                  <p><strong>Plan:</strong> {String(subscriptionStatus.subscription.plan_name || '')}</p>
-                  <p><strong>Status:</strong> {String(subscriptionStatus.subscription.status || '')}</p>
-                  <p><strong>Expires:</strong> {subscriptionStatus.subscription.current_period_end ? new Date(subscriptionStatus.subscription.current_period_end).toLocaleDateString() : 'N/A'}</p>
+                  <p><strong>{t('groups.plan')}:</strong> {String(subscriptionStatus.subscription.plan_name || '')}</p>
+                  <p><strong>{t('groups.status')}:</strong> {String(subscriptionStatus.subscription.status || '')}</p>
+                  <p><strong>{t('groups.expires')}:</strong> {subscriptionStatus.subscription.current_period_end ? new Date(subscriptionStatus.subscription.current_period_end).toLocaleDateString() : 'N/A'}</p>
                 </div>
               )}
             </div>
@@ -1606,7 +1599,7 @@ const GroupsTab = ({ userData }) => {
           {loading ? (
             <div className="loading-container">
               <div className="loading-spinner"></div>
-              <p>Loading your bands...</p>
+              <p>{t('groups.loadingYourBands')}</p>
             </div>
           ) : bands && bands.length > 0 ? (
             bands.map(band => (
@@ -1638,10 +1631,10 @@ const GroupsTab = ({ userData }) => {
                     className="manage-band-btn" 
                     onClick={() => handleManageBand(band)}
                   >
-                    <FaEdit /> Manage
+                    <FaEdit /> {t('groups.manage')}
                   </button>
                   <button className="delete-group-btn" onClick={() => handleDeleteBand(band.id)}>
-                    <FaTrash /> Delete
+                    <FaTrash /> {t('groups.delete')}
                   </button>
                 </div>
                 
@@ -1651,7 +1644,7 @@ const GroupsTab = ({ userData }) => {
           ) : (
             <div className="empty-state">
               <FaUsers className="empty-icon" />
-              <p>You haven't created any bands yet</p>
+              <p>{t('groups.haventCreatedBands')}</p>
             </div>
           )}
         </div>
@@ -1659,12 +1652,12 @@ const GroupsTab = ({ userData }) => {
         {/* Removed "Bands I've Joined" section */}
         
         <div className="media-section">
-          <h2>Band Media</h2>
+          <h2>{t('groups.bandMedia')}</h2>
           <div className="media-grid">
             {loading ? (
               <div className="loading-container">
                 <div className="loading-spinner"></div>
-                <p>Loading media...</p>
+                <p>{t('groups.loadingMedia')}</p>
               </div>
             ) : bands && bands.length > 0 && bands[0].media && bands[0].media.length > 0 ? (
               bands[0].media.map((mediaItem, index) => (
@@ -1673,7 +1666,7 @@ const GroupsTab = ({ userData }) => {
                     {mediaItem.file_type === 'image' ? (
                       <img 
                         src={mediaItem.file_url} 
-                        alt={mediaItem.name || 'Band media'}
+                        alt={mediaItem.name || t('groups.bandMedia')}
                         onError={(e) => {
                           e.target.style.display = 'none';
                         }}
@@ -1695,16 +1688,16 @@ const GroupsTab = ({ userData }) => {
                     )}
                   </div>
                   <div className="media-info">
-                    <h3>{String(mediaItem.name || 'Untitled')}</h3>
-                    <p>{String(mediaItem.description || 'No description available')}</p>
-                    <p className="media-type">{String(mediaItem.file_type || 'Unknown type')}</p>
+                    <h3>{String(mediaItem.name || t('groups.untitled'))}</h3>
+                    <p>{String(mediaItem.description || t('groups.noDescription'))}</p>
+                    <p className="media-type">{String(mediaItem.file_type || t('groups.unknownType'))}</p>
                   </div>
                   <div className="media-actions">
                     <a href={mediaItem.file_url} target="_blank" rel="noopener noreferrer" className="view-media-btn">
-                      View
+                      {t('groups.view')}
                     </a>
                     <button className="delete-media-btn">
-                      <FaTrash /> Delete
+                      <FaTrash /> {t('groups.delete')}
                     </button>
                   </div>
                 </div>
@@ -1712,9 +1705,9 @@ const GroupsTab = ({ userData }) => {
             ) : (
               <div className="empty-state">
                 <FaUsers className="empty-icon" />
-                <p>No media available for your bands</p>
+                <p>{t('groups.noMediaAvailable')}</p>
                 <button className="upload-media-btn">
-                  Upload Media
+                  {t('groups.uploadMedia')}
                 </button>
               </div>
             )}
@@ -1818,8 +1811,8 @@ const GroupsTab = ({ userData }) => {
       {hasBandSubscription && (
         <div className="code-generator-card" style={{marginTop: '40px', marginBottom: '40px'}}>
           <div className="card-header">
-            <h2>🎯 Invitation Code Generator</h2>
-            <p>Generate invitation codes to invite others to join your bands</p>
+            <h2>🎯 {t('groups.invitationCodeGenerator')}</h2>
+            <p>{t('groups.generateInvitationCodes')}</p>
           </div>
           
           <div className="card-content">
@@ -1827,14 +1820,14 @@ const GroupsTab = ({ userData }) => {
             {bands && bands.length > 0 ? (
               <>
                 <div className="band-selector">
-                  <label htmlFor="band-select">Select Band:</label>
+                  <label htmlFor="band-select">{t('groups.selectBand')}</label>
                   <select 
                     id="band-select"
                     value={selectedBandForCode || ''} 
                     onChange={(e) => setSelectedBandForCode(e.target.value)}
                     className="band-select"
                   >
-                    <option value="">Choose a band to generate code for</option>
+                    <option value="">{t('groups.chooseBandForCode')}</option>
                     {bands.map(band => (
                       <option key={band.id} value={band.id}>{band.name}</option>
                     ))}
@@ -1847,7 +1840,7 @@ const GroupsTab = ({ userData }) => {
                     onClick={() => handleGenerateInvitationCode(selectedBandForCode)}
                     disabled={loading || !selectedBandForCode}
                   >
-                    <FaKey /> Generate Invitation Code
+                    <FaKey /> {t('groups.generateInvitationCode')}
                   </button>
                 </div>
                 
@@ -1855,8 +1848,8 @@ const GroupsTab = ({ userData }) => {
                 {generatedCode && selectedBandForCode && (
                   <div className="generated-code-container">
                     <div className="code-header">
-                      <h4>✅ Invitation Code Generated Successfully!</h4>
-                      <p>Share this code with others to invite them to your band</p>
+                      <h4>✅ {t('groups.invitationCodeGeneratedSuccess')}</h4>
+                      <p>{t('groups.shareCodeMessage')}</p>
                     </div>
                     <div className="code-display">
                       <span className="code">{generatedCode}</span>
@@ -1864,19 +1857,19 @@ const GroupsTab = ({ userData }) => {
                         className="copy-code-btn"
                         onClick={() => {
                           navigator.clipboard.writeText(generatedCode);
-                          alert('Code copied to clipboard!');
+                          alert(t('groups.codeCopied'));
                         }}
-                        title="Copy to clipboard"
+                        title={t('groups.copyToClipboard')}
                       >
-                        📋 Copy
+                        📋 {t('groups.copyToClipboard')}
                       </button>
                     </div>
                     <div className="code-info">
                       <p className="code-instructions">
-                        <strong>Instructions:</strong> Share this code with others. They can use it to join your band instantly.
+                        <strong>{t('groups.instructions')}</strong> {t('groups.shareCodeInstructions')}
                       </p>
                       <p className="code-expiry">
-                        <strong>⏰ Expires:</strong> This code will expire after 24 hours for security.
+                        <strong>⏰ {t('groups.codeExpires')}</strong> {t('groups.codeExpiryMessage')}
                       </p>
                     </div>
                   </div>
@@ -1885,14 +1878,14 @@ const GroupsTab = ({ userData }) => {
             ) : (
               <div className="no-bands-message">
                 <div className="no-bands-icon">🎸</div>
-                <h3>No Bands Created Yet</h3>
-                <p>You need to create a band first before you can generate invitation codes.</p>
+                <h3>{t('groups.noBandsCreatedYet')}</h3>
+                <p>{t('groups.createBandFirstMessage')}</p>
                 <button 
                   className="create-band-btn"
                   onClick={handleCreateBand}
                   disabled={loading}
                 >
-                  <FaPlus /> Create Your First Band
+                  <FaPlus /> {t('groups.createYourFirstBand')}
                 </button>
               </div>
             )}

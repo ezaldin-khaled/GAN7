@@ -161,7 +161,7 @@ const AdminLogin = () => {
   return (
     <div className="admin-login-container">
       <div className="admin-login-card">
-        <h1>Dashboard Login</h1>
+        <h1>{t('adminDashboard.dashboardLogin')}</h1>
         {error && <div className="login-error">{error}</div>}
         
         {/* Debug Info */}
@@ -172,15 +172,15 @@ const AdminLogin = () => {
           fontSize: '12px',
           fontFamily: 'monospace'
         }}>
-          <strong>Debug Info:</strong><br/>
-          Current URL: {window.location.href}<br/>
-          User Agent: {navigator.userAgent}<br/>
-          React Router Version: {React.version}
+          <strong>{t('adminDashboard.debugInfo')}:</strong><br/>
+          {t('adminDashboard.currentURL')}: {window.location.href}<br/>
+          {t('adminDashboard.userAgent')}: {navigator.userAgent}<br/>
+          {t('adminDashboard.reactRouterVersion')}: {React.version}
         </div>
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.email')}</label>
             <input
               type="email"
               id="email"
@@ -193,7 +193,7 @@ const AdminLogin = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('adminDashboard.password')}</label>
             <input
               type="password"
               id="password"
@@ -213,7 +213,7 @@ const AdminLogin = () => {
             {isLoading ? (
               <div className="button-spinner"></div>
             ) : (
-              'Login'
+              t('adminDashboard.login')
             )}
           </button>
         </form>
