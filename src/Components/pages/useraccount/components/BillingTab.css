@@ -359,6 +359,7 @@
   margin-top: 8px;
   font-size: 0.9em;
   color: #3fff6c;
+  direction: ltr;
 }
 
 .plan-status.free {
@@ -609,9 +610,8 @@
   direction: rtl;
 }
 
-[dir="rtl"] .plan-status {
-  direction: rtl;
-  justify-content: flex-end;
+[dir="rtl"] .plan-info {
+  text-align: right;
 }
 
 [dir="rtl"] .current-plan-marker {
