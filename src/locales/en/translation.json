@@ -872,5 +872,327 @@
     "specializations": "Specializations",
     "security": "Security",
     "items": "Items"
+  },
+  "specialization-form": {
+    "visualWorker": {
+      "primaryCategories": {
+        "photographer": "Photographer",
+        "cinematographer": "Cinematographer",
+        "director": "Director",
+        "editor": "Video/Film Editor",
+        "animator": "Animator",
+        "graphic_designer": "Graphic Designer",
+        "makeup_artist": "Makeup Artist",
+        "costume_designer": "Costume Designer",
+        "set_designer": "Set Designer",
+        "lighting_designer": "Lighting Designer",
+        "visual_artist": "Visual Artist",
+        "composer": "Music Composer",
+        "sound_designer": "Sound Designer",
+        "other": "Other Visual Creator"
+      },
+      "experienceLevels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "professional": "Professional",
+        "expert": "Expert"
+      },
+      "availability": {
+        "full_time": "Full Time",
+        "part_time": "Part Time",
+        "weekends": "Weekends Only",
+        "flexible": "Flexible"
+      },
+      "rateRanges": {
+        "low": "Budget Friendly",
+        "mid": "Mid-Range",
+        "high": "Premium",
+        "negotiable": "Negotiable"
+      }
+    },
+    "expressiveWorker": {
+      "performerTypes": {
+        "actor": "Actor",
+        "comparse": "Comparse",
+        "voice_actor": "Voice Actor",
+        "singer": "Singer",
+        "dancer": "Dancer",
+        "musician": "Musician",
+        "comedian": "Comedian",
+        "host": "TV/Event Host",
+        "narrator": "Narrator",
+        "puppeteer": "Puppeteer",
+        "other": "Other Performer"
+      },
+      "hairColors": {
+        "blonde": "Blonde",
+        "brown": "Brown",
+        "black": "Black",
+        "red": "Red",
+        "gray": "Gray/Silver",
+        "other": "Other"
+      },
+      "hairTypes": {
+        "straight": "Straight",
+        "wavy": "Wavy",
+        "curly": "Curly",
+        "coily": "Coily",
+        "bald": "Bald",
+        "other": "Other"
+      },
+      "skinTones": {
+        "fair": "Fair",
+        "light": "Light",
+        "medium": "Medium",
+        "olive": "Olive",
+        "brown": "Brown",
+        "dark": "Dark"
+      },
+      "eyeColors": {
+        "blue": "Blue",
+        "green": "Green",
+        "brown": "Brown",
+        "hazel": "Hazel",
+        "black": "Black",
+        "other": "Other"
+      },
+      "eyeSizes": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "eyePatterns": {
+        "normal": "Normal",
+        "protruding": "Protruding",
+        "sunken": "Sunken",
+        "almond": "Almond",
+        "round": "Round",
+        "other": "Other"
+      },
+      "faceShapes": {
+        "oval": "Oval",
+        "round": "Round",
+        "square": "Square",
+        "heart": "Heart",
+        "diamond": "Diamond",
+        "long": "Long",
+        "other": "Other"
+      },
+      "foreheadShapes": {
+        "broad": "Broad",
+        "narrow": "Narrow",
+        "rounded": "Rounded",
+        "straight": "Straight",
+        "other": "Other"
+      },
+      "lipShapes": {
+        "thin": "Thin",
+        "full": "Full",
+        "heart": "Heart-shaped",
+        "round": "Round",
+        "bow": "Cupid's Bow",
+        "other": "Other"
+      },
+      "eyebrowPatterns": {
+        "arched": "Arched",
+        "straight": "Straight",
+        "curved": "Curved",
+        "thick": "Thick",
+        "thin": "Thin",
+        "other": "Other"
+      },
+      "beardLengths": {
+        "none": "None",
+        "stubble": "Stubble",
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long",
+        "other": "Other"
+      },
+      "distinctiveFacialMarks": {
+        "none": "None",
+        "mole": "Mole",
+        "scar": "Scar",
+        "birthmark": "Birthmark",
+        "freckles": "Freckles",
+        "other": "Other"
+      },
+      "distinctiveBodyMarks": {
+        "none": "None",
+        "tattoo": "Tattoo",
+        "scar": "Scar",
+        "birthmark": "Birthmark",
+        "other": "Other"
+      },
+      "voiceTypes": {
+        "normal": "Normal",
+        "thin": "Thin",
+        "rough": "Rough",
+        "deep": "Deep",
+        "soft": "Soft",
+        "nasal": "Nasal",
+        "other": "Other"
+      },
+      "bodyTypes": {
+        "athletic": "Athletic",
+        "slim": "Slim",
+        "muscular": "Muscular",
+        "average": "Average",
+        "plus_size": "Plus Size",
+        "other": "Other"
+      },
+      "availability": {
+        "full_time": "Full Time",
+        "part_time": "Part Time",
+        "evenings": "Evenings Only",
+        "weekends": "Weekends Only"
+      }
+    },
+    "hybridWorker": {
+      "hybridTypes": {
+        "model": "Fashion/Commercial Model",
+        "stunt_performer": "Stunt Performer",
+        "body_double": "Body Double",
+        "motion_capture": "Motion Capture Artist",
+        "background_actor": "Production Assets Actor",
+        "specialty_performer": "Specialty Performer",
+        "other": "Other Physical Performer"
+      },
+      "hairColors": {
+        "blonde": "Blonde",
+        "brown": "Brown",
+        "black": "Black",
+        "red": "Red",
+        "gray": "Gray/Silver",
+        "other": "Other"
+      },
+      "hairTypes": {
+        "straight": "Straight",
+        "wavy": "Wavy",
+        "curly": "Curly",
+        "coily": "Coily",
+        "bald": "Bald",
+        "other": "Other"
+      },
+      "eyeColors": {
+        "blue": "Blue",
+        "green": "Green",
+        "brown": "Brown",
+        "hazel": "Hazel",
+        "black": "Black",
+        "other": "Other"
+      },
+      "eyeSizes": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "eyePatterns": {
+        "normal": "Normal",
+        "protruding": "Protruding",
+        "sunken": "Sunken",
+        "almond": "Almond",
+        "round": "Round",
+        "other": "Other"
+      },
+      "faceShapes": {
+        "oval": "Oval",
+        "round": "Round",
+        "square": "Square",
+        "heart": "Heart",
+        "diamond": "Diamond",
+        "long": "Long",
+        "other": "Other"
+      },
+      "foreheadShapes": {
+        "broad": "Broad",
+        "narrow": "Narrow",
+        "rounded": "Rounded",
+        "straight": "Straight",
+        "other": "Other"
+      },
+      "lipShapes": {
+        "thin": "Thin",
+        "full": "Full",
+        "heart": "Heart-shaped",
+        "round": "Round",
+        "bow": "Cupid's Bow",
+        "other": "Other"
+      },
+      "eyebrowPatterns": {
+        "arched": "Arched",
+        "straight": "Straight",
+        "curved": "Curved",
+        "thick": "Thick",
+        "thin": "Thin",
+        "other": "Other"
+      },
+      "beardLengths": {
+        "none": "None",
+        "stubble": "Stubble",
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long",
+        "other": "Other"
+      },
+      "distinctiveFacialMarks": {
+        "none": "None",
+        "mole": "Mole",
+        "scar": "Scar",
+        "birthmark": "Birthmark",
+        "freckles": "Freckles",
+        "other": "Other"
+      },
+      "distinctiveBodyMarks": {
+        "none": "None",
+        "tattoo": "Tattoo",
+        "scar": "Scar",
+        "birthmark": "Birthmark",
+        "other": "Other"
+      },
+      "voiceTypes": {
+        "normal": "Normal",
+        "thin": "Thin",
+        "rough": "Rough",
+        "deep": "Deep",
+        "soft": "Soft",
+        "nasal": "Nasal",
+        "other": "Other"
+      },
+      "skinTones": {
+        "fair": "Fair",
+        "light": "Light",
+        "medium": "Medium",
+        "olive": "Olive",
+        "brown": "Brown",
+        "dark": "Dark"
+      },
+      "bodyTypes": {
+        "athletic": "Athletic",
+        "slim": "Slim",
+        "muscular": "Muscular",
+        "average": "Average",
+        "plus_size": "Plus Size",
+        "other": "Other"
+      },
+      "fitnessLevels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "elite": "Elite Athlete"
+      },
+      "riskLevels": {
+        "low": "Low Risk Only",
+        "moderate": "Moderate Risk",
+        "high": "High Risk",
+        "extreme": "Extreme Stunts"
+      },
+      "availability": {
+        "full_time": "Full Time",
+        "part_time": "Part Time",
+        "evenings": "Evenings Only",
+        "weekends": "Weekends Only"
+      }
+    }
   }
 }

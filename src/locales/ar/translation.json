@@ -872,5 +872,327 @@
     "specializations": "التخصصات",
     "security": "الأمان",
     "items": "العناصر"
+  },
+  "specialization-form": {
+    "visualWorker": {
+      "primaryCategories": {
+        "photographer": "مصور فوتوغرافي",
+        "cinematographer": "مصور سينمائي",
+        "director": "مخرج",
+        "editor": "محرر فيديو/أفلام",
+        "animator": "رسام متحرك",
+        "graphic_designer": "مصمم جرافيك",
+        "makeup_artist": "فنان مكياج",
+        "costume_designer": "مصمم أزياء",
+        "set_designer": "مصمم ديكور",
+        "lighting_designer": "مصمم إضاءة",
+        "visual_artist": "فنان بصري",
+        "composer": "ملحن موسيقي",
+        "sound_designer": "مصمم صوت",
+        "other": "منشئ محتوى بصري آخر"
+      },
+      "experienceLevels": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "professional": "محترف",
+        "expert": "خبير"
+      },
+      "availability": {
+        "full_time": "دوام كامل",
+        "part_time": "دوام جزئي",
+        "weekends": "عطلات نهاية الأسبوع فقط",
+        "flexible": "مرن"
+      },
+      "rateRanges": {
+        "low": "صديق للميزانية",
+        "mid": "متوسط المدى",
+        "high": "مميز",
+        "negotiable": "قابل للتفاوض"
+      }
+    },
+    "expressiveWorker": {
+      "performerTypes": {
+        "actor": "ممثل",
+        "comparse": "كومبارس",
+        "voice_actor": "ممثل صوتي",
+        "singer": "مغني",
+        "dancer": "راقص",
+        "musician": "موسيقي",
+        "comedian": "ممثل كوميدي",
+        "host": "مقدم تلفزيوني/فعاليات",
+        "narrator": "راوي",
+        "puppeteer": "محرك دمى",
+        "other": "فنان أداء آخر"
+      },
+      "hairColors": {
+        "blonde": "أشقر",
+        "brown": "بني",
+        "black": "أسود",
+        "red": "أحمر",
+        "gray": "رمادي/فضي",
+        "other": "آخر"
+      },
+      "hairTypes": {
+        "straight": "مستقيم",
+        "wavy": "مموج",
+        "curly": "مجعد",
+        "coily": "شديد التجعيد",
+        "bald": "أصلع",
+        "other": "آخر"
+      },
+      "skinTones": {
+        "fair": "فاتح",
+        "light": "خفيف",
+        "medium": "متوسط",
+        "olive": "زيتوني",
+        "brown": "بني",
+        "dark": "داكن"
+      },
+      "eyeColors": {
+        "blue": "أزرق",
+        "green": "أخضر",
+        "brown": "بني",
+        "hazel": "عسلي",
+        "black": "أسود",
+        "other": "آخر"
+      },
+      "eyeSizes": {
+        "small": "صغيرة",
+        "medium": "متوسطة",
+        "large": "كبيرة"
+      },
+      "eyePatterns": {
+        "normal": "عادي",
+        "protruding": "بارزة",
+        "sunken": "غائرة",
+        "almond": "لوزية",
+        "round": "مستديرة",
+        "other": "آخر"
+      },
+      "faceShapes": {
+        "oval": "بيضاوي",
+        "round": "مستدير",
+        "square": "مربع",
+        "heart": "قلب",
+        "diamond": "ماسي",
+        "long": "طويل",
+        "other": "آخر"
+      },
+      "foreheadShapes": {
+        "broad": "عريضة",
+        "narrow": "ضيقة",
+        "rounded": "مستديرة",
+        "straight": "مستقيمة",
+        "other": "آخر"
+      },
+      "lipShapes": {
+        "thin": "رقيقة",
+        "full": "ممتلئة",
+        "heart": "على شكل قلب",
+        "round": "مستديرة",
+        "bow": "قوس كيوبيد",
+        "other": "آخر"
+      },
+      "eyebrowPatterns": {
+        "arched": "مقوسة",
+        "straight": "مستقيمة",
+        "curved": "منحنية",
+        "thick": "كثيفة",
+        "thin": "رفيعة",
+        "other": "آخر"
+      },
+      "beardLengths": {
+        "none": "بدون",
+        "stubble": "شعيرات خفيفة",
+        "short": "قصيرة",
+        "medium": "متوسطة",
+        "long": "طويلة",
+        "other": "آخر"
+      },
+      "distinctiveFacialMarks": {
+        "none": "بدون",
+        "mole": "شامة",
+        "scar": "ندبة",
+        "birthmark": "وحمة",
+        "freckles": "نمش",
+        "other": "آخر"
+      },
+      "distinctiveBodyMarks": {
+        "none": "بدون",
+        "tattoo": "وشم",
+        "scar": "ندبة",
+        "birthmark": "وحمة",
+        "other": "آخر"
+      },
+      "voiceTypes": {
+        "normal": "عادي",
+        "thin": "رفيع",
+        "rough": "خشن",
+        "deep": "عميق",
+        "soft": "ناعم",
+        "nasal": "أنفي",
+        "other": "آخر"
+      },
+      "bodyTypes": {
+        "athletic": "رياضي",
+        "slim": "نحيف",
+        "muscular": "عضلي",
+        "average": "متوسط",
+        "plus_size": "ممتلئ",
+        "other": "آخر"
+      },
+      "availability": {
+        "full_time": "دوام كامل",
+        "part_time": "دوام جزئي",
+        "evenings": "المساء فقط",
+        "weekends": "عطلات نهاية الأسبوع فقط"
+      }
+    },
+    "hybridWorker": {
+      "hybridTypes": {
+        "model": "عارض أزياء/تجاري",
+        "stunt_performer": "فنان حركات بهلوانية",
+        "body_double": "بديل جسد",
+        "motion_capture": "فنان التقاط الحركة",
+        "background_actor": "ممثل أصول إنتاجية",
+        "specialty_performer": "فنان أداء متخصص",
+        "other": "فنان أداء جسدي آخر"
+      },
+      "hairColors": {
+        "blonde": "أشقر",
+        "brown": "بني",
+        "black": "أسود",
+        "red": "أحمر",
+        "gray": "رمادي/فضي",
+        "other": "آخر"
+      },
+      "hairTypes": {
+        "straight": "مستقيم",
+        "wavy": "مموج",
+        "curly": "مجعد",
+        "coily": "شديد التجعيد",
+        "bald": "أصلع",
+        "other": "آخر"
+      },
+      "eyeColors": {
+        "blue": "أزرق",
+        "green": "أخضر",
+        "brown": "بني",
+        "hazel": "عسلي",
+        "black": "أسود",
+        "other": "آخر"
+      },
+      "eyeSizes": {
+        "small": "صغيرة",
+        "medium": "متوسطة",
+        "large": "كبيرة"
+      },
+      "eyePatterns": {
+        "normal": "عادي",
+        "protruding": "بارزة",
+        "sunken": "غائرة",
+        "almond": "لوزية",
+        "round": "مستديرة",
+        "other": "آخر"
+      },
+      "faceShapes": {
+        "oval": "بيضاوي",
+        "round": "مستدير",
+        "square": "مربع",
+        "heart": "قلب",
+        "diamond": "ماسي",
+        "long": "طويل",
+        "other": "آخر"
+      },
+      "foreheadShapes": {
+        "broad": "عريضة",
+        "narrow": "ضيقة",
+        "rounded": "مستديرة",
+        "straight": "مستقيمة",
+        "other": "آخر"
+      },
+      "lipShapes": {
+        "thin": "رقيقة",
+        "full": "ممتلئة",
+        "heart": "على شكل قلب",
+        "round": "مستديرة",
+        "bow": "قوس كيوبيد",
+        "other": "آخر"
+      },
+      "eyebrowPatterns": {
+        "arched": "مقوسة",
+        "straight": "مستقيمة",
+        "curved": "منحنية",
+        "thick": "كثيفة",
+        "thin": "رفيعة",
+        "other": "آخر"
+      },
+      "beardLengths": {
+        "none": "بدون",
+        "stubble": "شعيرات خفيفة",
+        "short": "قصيرة",
+        "medium": "متوسطة",
+        "long": "طويلة",
+        "other": "آخر"
+      },
+      "distinctiveFacialMarks": {
+        "none": "بدون",
+        "mole": "شامة",
+        "scar": "ندبة",
+        "birthmark": "وحمة",
+        "freckles": "نمش",
+        "other": "آخر"
+      },
+      "distinctiveBodyMarks": {
+        "none": "بدون",
+        "tattoo": "وشم",
+        "scar": "ندبة",
+        "birthmark": "وحمة",
+        "other": "آخر"
+      },
+      "voiceTypes": {
+        "normal": "عادي",
+        "thin": "رفيع",
+        "rough": "خشن",
+        "deep": "عميق",
+        "soft": "ناعم",
+        "nasal": "أنفي",
+        "other": "آخر"
+      },
+      "skinTones": {
+        "fair": "فاتح",
+        "light": "خفيف",
+        "medium": "متوسط",
+        "olive": "زيتوني",
+        "brown": "بني",
+        "dark": "داكن"
+      },
+      "bodyTypes": {
+        "athletic": "رياضي",
+        "slim": "نحيف",
+        "muscular": "عضلي",
+        "average": "متوسط",
+        "plus_size": "ممتلئ",
+        "other": "آخر"
+      },
+      "fitnessLevels": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم",
+        "elite": "رياضي نخبة"
+      },
+      "riskLevels": {
+        "low": "مخاطر منخفضة فقط",
+        "moderate": "مخاطر متوسطة",
+        "high": "مخاطر عالية",
+        "extreme": "حركات بهلوانية خطيرة"
+      },
+      "availability": {
+        "full_time": "دوام كامل",
+        "part_time": "دوام جزئي",
+        "evenings": "المساء فقط",
+        "weekends": "عطلات نهاية الأسبوع فقط"
+      }
+    }
   }
 } 
