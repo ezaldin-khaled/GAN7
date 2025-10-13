@@ -120,6 +120,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
 [dir="rtl"] .profile-popup-card .popup-header-buttons {
     right: auto !important;
     left: 16px !important;
+    margin-left: 15px;
     flex-direction: row-reverse !important;
     justify-content: flex-start !important;
 }

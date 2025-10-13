@@ -196,18 +196,6 @@
     "privacy": "Privacy",
     "security": "Security"
   },
-  "media": {
-    "upload": "Upload",
-    "gallery": "Gallery",
-    "images": "Images",
-    "videos": "Videos",
-    "documents": "Documents",
-    "addMedia": "Add Media",
-    "removeMedia": "Remove Media",
-    "editMedia": "Edit Media",
-    "viewMedia": "View Media",
-    "noMedia": "No media files uploaded yet"
-  },
   "forms": {
     "required": "This field is required",
     "invalidEmail": "Please enter a valid email address",
@@ -720,9 +708,17 @@
   },
   "media": {
     "title": "Media Gallery",
+    "upload": "Upload",
     "uploadMedia": "Upload Media",
+    "gallery": "Gallery",
     "images": "Images",
     "videos": "Videos",
+    "documents": "Documents",
+    "addMedia": "Add Media",
+    "removeMedia": "Remove Media",
+    "editMedia": "Edit Media",
+    "viewMedia": "View Media",
+    "noMedia": "No media files uploaded yet",
     "myMedia": "My Media",
     "noMediaYet": "No media uploaded yet",
     "uploadYourFirst": "Upload your first media file to get started!",
