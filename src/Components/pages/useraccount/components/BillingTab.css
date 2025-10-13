@@ -569,3 +569,51 @@
     padding: 10px 12px;
   }
 }
+
+/* RTL Support */
+[dir="rtl"] .plan-icon {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+[dir="rtl"] .feature-item svg {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+[dir="rtl"] .feature-item:hover {
+  transform: translateX(-4px);
+}
+
+[dir="rtl"] .section-icon {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+[dir="rtl"] .features-list.highlight .feature-item:hover {
+  transform: translateX(-8px);
+}
+
+[dir="rtl"] .loading-icon {
+  margin-right: 0;
+  margin-left: 16px;
+}
+
+[dir="rtl"] .popular-badge {
+  right: auto;
+  left: -32px;
+  transform: rotate(-45deg);
+}
+
+[dir="rtl"] .current-plan {
+  direction: rtl;
+}
+
+[dir="rtl"] .plan-status {
+  direction: rtl;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] .current-plan-marker {
+  justify-content: flex-end;
+}
