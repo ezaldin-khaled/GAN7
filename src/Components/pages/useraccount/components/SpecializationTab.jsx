@@ -116,7 +116,7 @@ const SpecializationTab = () => {
       if (err.response?.status === 404) {
         console.log('No specialization data found');
       } else {
-        setError('Failed to load specialization data');
+        setError(t('specialization.failedToLoad'));
       }
     }
   };
@@ -214,12 +214,12 @@ const SpecializationTab = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setError('Please upload a valid image file');
+      setError(t('specialization.pleaseUploadValidImage'));
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      setError('Image file size should be less than 10MB');
+      setError(t('specialization.imageSizeLimit'));
       return;
     }
 
@@ -234,12 +234,12 @@ const SpecializationTab = () => {
     if (!file) return;
 
     if (!file.type.startsWith('video/')) {
-      setError('Please upload a valid video file');
+      setError(t('specialization.pleaseUploadValidVideo'));
       return;
     }
 
     if (file.size > 100 * 1024 * 1024) { // 100MB limit
-      setError('Video file size should be less than 100MB');
+      setError(t('specialization.videoSizeLimit'));
       return;
     }
 
@@ -280,19 +280,19 @@ const SpecializationTab = () => {
   };
 
   const getSubmitButtonText = () => {
-    if (loading) return 'Saving...';
+    if (loading) return t('specialization.saving');
     
     if (!uploadedVideos.about_yourself) {
-      return 'Upload About Yourself Video';
+      return t('specialization.uploadAboutYourselfVideo');
     }
     
     if (workerType === 'expressive_worker' && 
         ['actor', 'comparse', 'host'].includes(formData.performer_type) && 
         testImages.files.length !== 4) {
-      return `Upload ${4 - testImages.files.length} more test images`;
+      return t('specialization.uploadMoreTestImages', { count: 4 - testImages.files.length });
     }
     
-    return 'Save Specialization';
+    return t('specialization.saveSpecialization');
   };
 
   const handleSubmit = async (e) => {
@@ -548,13 +548,13 @@ const SpecializationTab = () => {
       console.error('Request headers:', err.config?.headers);
       
       if (err.message.includes('No authentication token found')) {
-        setError('Please log in again to continue.');
+        setError(t('specialization.pleaseLoginAgain'));
       } else if (err.response?.status === 401) {
-        setError('Authentication failed. Please log in again.');
+        setError(t('specialization.authenticationFailed'));
       } else if (err.response?.status === 500) {
-        setError('Server error. Please try again later.');
+        setError(t('specialization.serverError'));
       } else {
-        setError(err.response?.data?.message || err.message || 'Failed to save specialization');
+        setError(err.response?.data?.message || err.message || t('specialization.failedToSave'));
       }
       
       console.error('Error saving specialization:', err);
@@ -579,13 +579,13 @@ const SpecializationTab = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to upload test images');
+        throw new Error(errorData.detail || t('specialization.failedToUploadTestImages'));
       }
 
       setSuccess('Test images uploaded successfully!');
       setShowUploadModal(false);
     } catch (err) {
-      setError(err.message || 'Failed to upload test images');
+      setError(err.message || t('specialization.failedToUploadTestImages'));
     } finally {
       setLoading(false);
     }
@@ -601,7 +601,7 @@ const SpecializationTab = () => {
         onChange={handleInputChange}
         required
       >
-        <option value="">Select {label.toLowerCase()}</option>
+        <option value="">{t('specialization.selectOption', { label: label.toLowerCase() })}</option>
         {options.map(option => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -622,7 +622,7 @@ const SpecializationTab = () => {
         onChange={handleInputChange}
         min={min}
         step={step}
-        placeholder={unit ? `Enter ${label.toLowerCase()} (${unit})` : `Enter ${label.toLowerCase()}`}
+        placeholder={unit ? t('specialization.enterValueWithUnit', { label: label.toLowerCase(), unit }) : t('specialization.enterValue', { label: label.toLowerCase() })}
         required
       />
     </div>
@@ -630,7 +630,7 @@ const SpecializationTab = () => {
 
   const renderImageUploadSection = () => (
     <div className="form-section">
-      <h3>Profile Pictures</h3>
+      <h3>{t('specialization.profilePictures')}</h3>
       <div className="image-upload-grid">
         <div 
           className="image-upload-item"
@@ -656,7 +656,7 @@ const SpecializationTab = () => {
           }}
         >
           <FaImage className="upload-icon" />
-          <label>Face Picture</label>
+          <label>{t('specialization.facePicture')}</label>
           <input
             id="face-picture-input"
             type="file"
@@ -672,12 +672,12 @@ const SpecializationTab = () => {
                 alt="Face preview" 
                 style={{ maxWidth: '100%', maxHeight: '150px' }}
               />
-              <div className="upload-success">Uploaded</div>
+              <div className="upload-success">{t('specialization.uploaded')}</div>
             </div>
           ) : (
             <div className="upload-placeholder">
-              <p>Click or drag image here</p>
-              <p className="upload-hint">Max size: 10MB</p>
+              <p>{t('specialization.clickOrDragImage')}</p>
+              <p className="upload-hint">{t('specialization.maxSizeImage')}</p>
             </div>
           )}
         </div>
@@ -706,7 +706,7 @@ const SpecializationTab = () => {
           }}
         >
           <FaImage className="upload-icon" />
-          <label>Mid-Range Picture</label>
+          <label>{t('specialization.midRangePicture')}</label>
           <input
             id="mid-range-input"
             type="file"
@@ -722,12 +722,12 @@ const SpecializationTab = () => {
                 alt="Mid-range preview" 
                 style={{ maxWidth: '100%', maxHeight: '150px' }}
               />
-              <div className="upload-success">Uploaded</div>
+              <div className="upload-success">{t('specialization.uploaded')}</div>
             </div>
           ) : (
             <div className="upload-placeholder">
-              <p>Click or drag image here</p>
-              <p className="upload-hint">Max size: 10MB</p>
+              <p>{t('specialization.clickOrDragImage')}</p>
+              <p className="upload-hint">{t('specialization.maxSizeImage')}</p>
             </div>
           )}
         </div>
@@ -756,7 +756,7 @@ const SpecializationTab = () => {
           }}
         >
           <FaImage className="upload-icon" />
-          <label>Full Body Picture</label>
+          <label>{t('specialization.fullBodyPicture')}</label>
           <input
             id="full-body-input"
             type="file"
@@ -772,12 +772,12 @@ const SpecializationTab = () => {
                 alt="Full body preview" 
                 style={{ maxWidth: '100%', maxHeight: '150px' }}
               />
-              <div className="upload-success">Uploaded</div>
+              <div className="upload-success">{t('specialization.uploaded')}</div>
             </div>
           ) : (
             <div className="upload-placeholder">
-              <p>Click or drag image here</p>
-              <p className="upload-hint">Max size: 10MB</p>
+              <p>{t('specialization.clickOrDragImage')}</p>
+              <p className="upload-hint">{t('specialization.maxSizeImage')}</p>
             </div>
           )}
         </div>
@@ -793,11 +793,11 @@ const SpecializationTab = () => {
 
     return (
       <div className="form-section">
-        <h3>Video Requirements</h3>
+        <h3>{t('specialization.videoRequirements')}</h3>
         
         {requiresTestVideos && (
           <div className="video-upload-section">
-            <h4>Test Videos (30 seconds each)</h4>
+            <h4>{t('specialization.testVideosLabel')}</h4>
             <div className="video-grid">
               {[1, 2, 3, 4].map((index) => (
                 <div 
@@ -825,7 +825,7 @@ const SpecializationTab = () => {
                   }}
                 >
                   <FaVideo className="upload-icon" />
-                  <label>Test Video {index}</label>
+                  <label>{t('specialization.testVideo', { index })}</label>
                   <input
                     id={`test-video-input-${index}`}
                     type="file"
@@ -835,11 +835,11 @@ const SpecializationTab = () => {
                     style={{ display: 'none' }}
                   />
                   {uploadedVideos.test_videos.find(v => v.index === index) ? (
-                    <div className="upload-success">Uploaded</div>
+                    <div className="upload-success">{t('specialization.uploaded')}</div>
                   ) : (
                     <div className="upload-placeholder">
-                      <p>Click or drag video here</p>
-                      <p className="upload-hint">Max size: 100MB</p>
+                      <p>{t('specialization.clickOrDragVideo')}</p>
+                      <p className="upload-hint">{t('specialization.maxSizeVideo')}</p>
                     </div>
                   )}
                 </div>
@@ -849,7 +849,7 @@ const SpecializationTab = () => {
         )}
 
         <div className="video-upload-section">
-          <h4>About Yourself Video (60 seconds)</h4>
+          <h4>{t('specialization.aboutYourselfVideo')}</h4>
           <div 
             className="video-upload-item"
             onClick={() => document.getElementById('about-yourself-input').click()}
@@ -874,7 +874,7 @@ const SpecializationTab = () => {
             }}
           >
             <FaVideo className="upload-icon" />
-            <label>About Yourself</label>
+            <label>{t('specialization.aboutYourself')}</label>
             <input
               id="about-yourself-input"
               type="file"
@@ -884,7 +884,7 @@ const SpecializationTab = () => {
               style={{ display: 'none' }}
             />
             {uploadedVideos.about_yourself ? (
-              <div className="upload-success">Uploaded</div>
+              <div className="upload-success">{t('specialization.uploaded')}</div>
             ) : (
               <div className="upload-placeholder">
                 <p>Click or drag video here</p>
@@ -899,13 +899,13 @@ const SpecializationTab = () => {
 
   const renderVisualWorkerFields = () => (
     <>
-      {renderSelectField('primary_category', 'Primary Category', TALENT_SPECIALIZATION_DATA.visual_worker.primary_categories)}
-      {renderSelectField('experience_level', 'Experience Level', TALENT_SPECIALIZATION_DATA.visual_worker.experience_levels)}
-      {renderSelectField('availability', 'Availability', TALENT_SPECIALIZATION_DATA.visual_worker.availability_choices)}
-      {renderSelectField('rate_range', 'Rate Range', TALENT_SPECIALIZATION_DATA.visual_worker.rate_ranges)}
-      {renderNumberField('years_experience', 'Years of Experience')}
+      {renderSelectField('primary_category', t('specialization.primaryCategory'), TALENT_SPECIALIZATION_DATA.visual_worker.primary_categories)}
+      {renderSelectField('experience_level', t('specialization.experienceLevel'), TALENT_SPECIALIZATION_DATA.visual_worker.experience_levels)}
+      {renderSelectField('availability', t('specialization.availability'), TALENT_SPECIALIZATION_DATA.visual_worker.availability_choices)}
+      {renderSelectField('rate_range', t('specialization.rateRange'), TALENT_SPECIALIZATION_DATA.visual_worker.rate_ranges)}
+      {renderNumberField('years_experience', t('specialization.yearsExperience'))}
       <div className="form-group">
-        <label htmlFor="portfolio_link">Portfolio Link</label>
+        <label htmlFor="portfolio_link">{t('specialization.portfolioLink')}</label>
         <input
           type="url"
           id="portfolio_link"
@@ -922,7 +922,7 @@ const SpecializationTab = () => {
             checked={formData.willing_to_relocate || false}
             onChange={handleInputChange}
           />
-          Willing to Relocate
+          {t('specialization.willingToRelocate')}
         </label>
       </div>
     </>
@@ -930,26 +930,26 @@ const SpecializationTab = () => {
 
   const renderExpressiveWorkerFields = () => (
     <>
-      {renderSelectField('performer_type', 'Performer Type', TALENT_SPECIALIZATION_DATA.expressive_worker.performer_types)}
-      {renderSelectField('hair_color', 'Hair Color', TALENT_SPECIALIZATION_DATA.expressive_worker.hair_colors)}
-      {renderSelectField('hair_type', 'Hair Type', TALENT_SPECIALIZATION_DATA.expressive_worker.hair_types)}
-      {renderSelectField('skin_tone', 'Skin Tone', TALENT_SPECIALIZATION_DATA.expressive_worker.skin_tones)}
-      {renderSelectField('eye_color', 'Eye Color', TALENT_SPECIALIZATION_DATA.expressive_worker.eye_colors)}
-      {renderSelectField('eye_size', 'Eye Size', TALENT_SPECIALIZATION_DATA.expressive_worker.eye_sizes)}
-      {renderSelectField('eye_pattern', 'Eye Pattern', TALENT_SPECIALIZATION_DATA.expressive_worker.eye_patterns)}
-      {renderSelectField('face_shape', 'Face Shape', TALENT_SPECIALIZATION_DATA.expressive_worker.face_shapes)}
-      {renderSelectField('forehead_shape', 'Forehead Shape', TALENT_SPECIALIZATION_DATA.expressive_worker.forehead_shapes)}
-      {renderSelectField('lip_shape', 'Lip Shape', TALENT_SPECIALIZATION_DATA.expressive_worker.lip_shapes)}
-      {renderSelectField('eyebrow_pattern', 'Eyebrow Pattern', TALENT_SPECIALIZATION_DATA.expressive_worker.eyebrow_patterns)}
-      {renderSelectField('beard_length', 'Beard Length', TALENT_SPECIALIZATION_DATA.expressive_worker.beard_lengths)}
-      {renderSelectField('distinctive_facial_marks', 'Distinctive Facial Marks', TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_facial_marks)}
-      {renderSelectField('distinctive_body_marks', 'Distinctive Body Marks', TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_body_marks)}
-      {renderSelectField('voice_type', 'Voice Type', TALENT_SPECIALIZATION_DATA.expressive_worker.voice_types)}
-      {renderSelectField('body_type', 'Body Type', TALENT_SPECIALIZATION_DATA.expressive_worker.body_types)}
-      {renderSelectField('availability', 'Availability', TALENT_SPECIALIZATION_DATA.expressive_worker.availability_choices)}
-      {renderNumberField('height', 'Height', 0, 0.1, 'cm')}
-      {renderNumberField('weight', 'Weight', 0, 0.1, 'kg')}
-      {renderNumberField('years_experience', 'Years of Experience')}
+      {renderSelectField('performer_type', t('specialization.performerType'), TALENT_SPECIALIZATION_DATA.expressive_worker.performer_types)}
+      {renderSelectField('hair_color', t('specialization.hairColor'), TALENT_SPECIALIZATION_DATA.expressive_worker.hair_colors)}
+      {renderSelectField('hair_type', t('specialization.hairType'), TALENT_SPECIALIZATION_DATA.expressive_worker.hair_types)}
+      {renderSelectField('skin_tone', t('specialization.skinTone'), TALENT_SPECIALIZATION_DATA.expressive_worker.skin_tones)}
+      {renderSelectField('eye_color', t('specialization.eyeColor'), TALENT_SPECIALIZATION_DATA.expressive_worker.eye_colors)}
+      {renderSelectField('eye_size', t('specialization.eyeSize'), TALENT_SPECIALIZATION_DATA.expressive_worker.eye_sizes)}
+      {renderSelectField('eye_pattern', t('specialization.eyePattern'), TALENT_SPECIALIZATION_DATA.expressive_worker.eye_patterns)}
+      {renderSelectField('face_shape', t('specialization.faceShape'), TALENT_SPECIALIZATION_DATA.expressive_worker.face_shapes)}
+      {renderSelectField('forehead_shape', t('specialization.foreheadShape'), TALENT_SPECIALIZATION_DATA.expressive_worker.forehead_shapes)}
+      {renderSelectField('lip_shape', t('specialization.lipShape'), TALENT_SPECIALIZATION_DATA.expressive_worker.lip_shapes)}
+      {renderSelectField('eyebrow_pattern', t('specialization.eyebrowPattern'), TALENT_SPECIALIZATION_DATA.expressive_worker.eyebrow_patterns)}
+      {renderSelectField('beard_length', t('specialization.beardLength'), TALENT_SPECIALIZATION_DATA.expressive_worker.beard_lengths)}
+      {renderSelectField('distinctive_facial_marks', t('specialization.distinctiveFacialMarks'), TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_facial_marks)}
+      {renderSelectField('distinctive_body_marks', t('specialization.distinctiveBodyMarks'), TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_body_marks)}
+      {renderSelectField('voice_type', t('specialization.voiceType'), TALENT_SPECIALIZATION_DATA.expressive_worker.voice_types)}
+      {renderSelectField('body_type', t('specialization.bodyType'), TALENT_SPECIALIZATION_DATA.expressive_worker.body_types)}
+      {renderSelectField('availability', t('specialization.availability'), TALENT_SPECIALIZATION_DATA.expressive_worker.availability_choices)}
+      {renderNumberField('height', t('specialization.height'), 0, 0.1, 'cm')}
+      {renderNumberField('weight', t('specialization.weight'), 0, 0.1, 'kg')}
+      {renderNumberField('years_experience', t('specialization.yearsExperience'))}
       <div className="form-group checkbox-group">
         <label className="checkbox-label">
           <input
@@ -958,7 +958,7 @@ const SpecializationTab = () => {
             checked={formData.willing_to_relocate || false}
             onChange={handleInputChange}
           />
-          Willing to Relocate
+          {t('specialization.willingToRelocate')}
         </label>
       </div>
     </>
@@ -966,28 +966,28 @@ const SpecializationTab = () => {
 
   const renderHybridWorkerFields = () => (
     <>
-      {renderSelectField('hybrid_type', 'Hybrid Type', TALENT_SPECIALIZATION_DATA.hybrid_worker.hybrid_types)}
-      {renderSelectField('hair_color', 'Hair Color', TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_colors)}
-      {renderSelectField('hair_type', 'Hair Type', TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_types)}
-      {renderSelectField('eye_color', 'Eye Color', TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_colors)}
-      {renderSelectField('eye_size', 'Eye Size', TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_sizes)}
-      {renderSelectField('eye_pattern', 'Eye Pattern', TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_patterns)}
-      {renderSelectField('face_shape', 'Face Shape', TALENT_SPECIALIZATION_DATA.hybrid_worker.face_shapes)}
-      {renderSelectField('forehead_shape', 'Forehead Shape', TALENT_SPECIALIZATION_DATA.hybrid_worker.forehead_shapes)}
-      {renderSelectField('lip_shape', 'Lip Shape', TALENT_SPECIALIZATION_DATA.hybrid_worker.lip_shapes)}
-      {renderSelectField('eyebrow_pattern', 'Eyebrow Pattern', TALENT_SPECIALIZATION_DATA.hybrid_worker.eyebrow_patterns)}
-      {renderSelectField('beard_length', 'Beard Length', TALENT_SPECIALIZATION_DATA.hybrid_worker.beard_lengths)}
-      {renderSelectField('distinctive_facial_marks', 'Distinctive Facial Marks', TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_facial_marks)}
-      {renderSelectField('distinctive_body_marks', 'Distinctive Body Marks', TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_body_marks)}
-      {renderSelectField('voice_type', 'Voice Type', TALENT_SPECIALIZATION_DATA.hybrid_worker.voice_types)}
-      {renderSelectField('skin_tone', 'Skin Tone', TALENT_SPECIALIZATION_DATA.hybrid_worker.skin_tones)}
-      {renderSelectField('body_type', 'Body Type', TALENT_SPECIALIZATION_DATA.hybrid_worker.body_types)}
-      {renderSelectField('fitness_level', 'Fitness Level', TALENT_SPECIALIZATION_DATA.hybrid_worker.fitness_levels)}
-      {renderSelectField('risk_levels', 'Risk Level', TALENT_SPECIALIZATION_DATA.hybrid_worker.risk_levels)}
-      {renderSelectField('availability', 'Availability', TALENT_SPECIALIZATION_DATA.hybrid_worker.availability_choices)}
-      {renderNumberField('height', 'Height', 0, 0.1, 'cm')}
-      {renderNumberField('weight', 'Weight', 0, 0.1, 'kg')}
-      {renderNumberField('years_experience', 'Years of Experience')}
+      {renderSelectField('hybrid_type', t('specialization.hybridType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.hybrid_types)}
+      {renderSelectField('hair_color', t('specialization.hairColor'), TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_colors)}
+      {renderSelectField('hair_type', t('specialization.hairType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_types)}
+      {renderSelectField('eye_color', t('specialization.eyeColor'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_colors)}
+      {renderSelectField('eye_size', t('specialization.eyeSize'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_sizes)}
+      {renderSelectField('eye_pattern', t('specialization.eyePattern'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_patterns)}
+      {renderSelectField('face_shape', t('specialization.faceShape'), TALENT_SPECIALIZATION_DATA.hybrid_worker.face_shapes)}
+      {renderSelectField('forehead_shape', t('specialization.foreheadShape'), TALENT_SPECIALIZATION_DATA.hybrid_worker.forehead_shapes)}
+      {renderSelectField('lip_shape', t('specialization.lipShape'), TALENT_SPECIALIZATION_DATA.hybrid_worker.lip_shapes)}
+      {renderSelectField('eyebrow_pattern', t('specialization.eyebrowPattern'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eyebrow_patterns)}
+      {renderSelectField('beard_length', t('specialization.beardLength'), TALENT_SPECIALIZATION_DATA.hybrid_worker.beard_lengths)}
+      {renderSelectField('distinctive_facial_marks', t('specialization.distinctiveFacialMarks'), TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_facial_marks)}
+      {renderSelectField('distinctive_body_marks', t('specialization.distinctiveBodyMarks'), TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_body_marks)}
+      {renderSelectField('voice_type', t('specialization.voiceType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.voice_types)}
+      {renderSelectField('skin_tone', t('specialization.skinTone'), TALENT_SPECIALIZATION_DATA.hybrid_worker.skin_tones)}
+      {renderSelectField('body_type', t('specialization.bodyType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.body_types)}
+      {renderSelectField('fitness_level', t('specialization.fitnessLevel'), TALENT_SPECIALIZATION_DATA.hybrid_worker.fitness_levels)}
+      {renderSelectField('risk_levels', t('specialization.riskLevel'), TALENT_SPECIALIZATION_DATA.hybrid_worker.risk_levels)}
+      {renderSelectField('availability', t('specialization.availability'), TALENT_SPECIALIZATION_DATA.hybrid_worker.availability_choices)}
+      {renderNumberField('height', t('specialization.height'), 0, 0.1, 'cm')}
+      {renderNumberField('weight', t('specialization.weight'), 0, 0.1, 'kg')}
+      {renderNumberField('years_experience', t('specialization.yearsExperience'))}
       <div className="form-group checkbox-group">
         <label className="checkbox-label">
           <input
@@ -996,7 +996,7 @@ const SpecializationTab = () => {
             checked={formData.willing_to_relocate || false}
             onChange={handleInputChange}
           />
-          Willing to Relocate
+          {t('specialization.willingToRelocate')}
         </label>
       </div>
     </>
@@ -1049,12 +1049,12 @@ const SpecializationTab = () => {
                 </p>
                 {testImages.files.length !== 4 && (
                   <p className="error-message">
-                    Please upload exactly 4 test images to continue.
+                    {t('specialization.uploadExactly4Images')}
                   </p>
                 )}
                 {testImages.files.length > 0 && (
                   <div className="test-images-preview">
-                    <h4>Uploaded Test Images:</h4>
+                    <h4>{t('specialization.uploadedTestImages')}</h4>
                     <div className="test-images-grid">
                       {testImages.files.map((image, index) => (
                         <div key={index} className="test-image-item">
@@ -1063,7 +1063,7 @@ const SpecializationTab = () => {
                             alt={`Test image ${index + 1}`}
                             style={{ maxWidth: '100px', maxHeight: '100px' }}
                           />
-                          <span>Image {index + 1}</span>
+                          <span>{t('specialization.imageNumber', { number: index + 1 })}</span>
                         </div>
                       ))}
                     </div>
@@ -1072,7 +1072,7 @@ const SpecializationTab = () => {
               </>
             ) : (
               <p className="section-description">
-                Upload your test images to showcase your abilities. You can upload up to 4 images.
+                {t('specialization.uploadTestImagesDescription')}
               </p>
             )}
             
@@ -1082,7 +1082,7 @@ const SpecializationTab = () => {
               onClick={() => setShowUploadModal(true)}
             >
               <FaPlus className="button-icon" />
-              Upload Test Images
+              {t('specialization.uploadTestImagesButton')}
             </button>
           </div>
         )}
