@@ -116,6 +116,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     flex-wrap: nowrap !important;
 }
 
+/* RTL Support for Header Buttons */
+[dir="rtl"] .profile-popup-card .popup-header-buttons {
+    right: auto !important;
+    left: 16px !important;
+    flex-direction: row-reverse !important;
+    justify-content: flex-start !important;
+}
+
 .profile-popup-card .popup-header-buttons .close-btn,
 .profile-popup-card .popup-header-buttons .account-btn {
     background: rgba(0,0,0,0.4) !important; 
@@ -201,6 +209,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     gap: 16px;
 }
 
+/* RTL Support for Profile Header */
+[dir="rtl"] .profile-header-left {
+    flex-direction: row-reverse;
+}
+
 .profile-pic-small {
     width: 120px;
     height: 120px;
@@ -266,6 +279,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 20px;
     border: 1px solid rgba(52, 211, 153, 0.3);
     backdrop-filter: blur(4px);
+}
+
+/* RTL Support for Subscribed Badge */
+[dir="rtl"] .subscribed-badge {
+    flex-direction: row-reverse;
 }
 
 .dot { 
@@ -481,6 +499,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     gap: 8px;
 }
 
+/* RTL Support for Media Info */
+[dir="rtl"] .media-info {
+    flex-direction: row-reverse;
+}
+
 .media-details {
     flex: 1;
     min-width: 0;
@@ -625,6 +648,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     overflow: hidden;
 }
 
+/* RTL Support for Profile Score Section */
+[dir="rtl"] .profile-score-section {
+    flex-direction: row-reverse;
+}
+
 
 @keyframes shimmer {
     0%, 100% { background-position: 200% 0; }
@@ -682,6 +710,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     display: flex;
     align-items: baseline;
     gap: 12px;
+}
+
+/* RTL Support for Score Header */
+[dir="rtl"] .score-header {
+    flex-direction: row-reverse;
 }
 
 .score-title {
@@ -770,6 +803,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     transition: all 0.3s ease;
 }
 
+/* RTL Support for Breakdown Items */
+[dir="rtl"] .breakdown-item {
+    flex-direction: row-reverse;
+}
+
 .breakdown-item.complete {
     border-color: rgba(34, 197, 94, 0.2);
     background: rgba(34, 197, 94, 0.02);
@@ -818,6 +856,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+}
+
+/* RTL Support for Breakdown Header */
+[dir="rtl"] .breakdown-header {
+    flex-direction: row-reverse;
 }
 
 .breakdown-label {
@@ -892,6 +935,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     border: 1px solid rgba(139, 90, 43, 0.1);
 }
 
+/* RTL Support for Breakdown Summary */
+[dir="rtl"] .breakdown-summary {
+    flex-direction: row-reverse;
+}
+
 .summary-stats {
     display: flex;
     gap: 24px;
@@ -953,6 +1001,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     border: 1px solid;
     background: #fdfbf7;
     transition: all 0.3s ease;
+}
+
+/* RTL Support for Flow State */
+[dir="rtl"] .flow-state {
+    flex-direction: row-reverse;
 }
 
 .flow-state.email-verification-prompt {
@@ -1034,6 +1087,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
   gap: 10px;
   align-items: center;
   margin: 10px 0;
+}
+
+/* RTL Support for Verification Code */
+[dir="rtl"] .verification-code-container {
+  flex-direction: row-reverse;
 }
 
 .verification-code-input {
@@ -1150,6 +1208,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     margin-top: 8px;
 }
 
+/* RTL Support for State Status */
+[dir="rtl"] .state-status {
+    flex-direction: row-reverse;
+}
+
 .status-indicator {
     width: 8px;
     height: 8px;
@@ -1234,6 +1297,42 @@ input:focus, select:focus {
     transition: all 0.3s ease;
 }
 
+/* RTL Support for Input Icons */
+[dir="rtl"] .input-with-icon .icon-input,
+[dir="rtl"] .input-with-icon .country-flag {
+    left: auto;
+    right: 16px;
+}
+
+[dir="rtl"] .input-with-icon input,
+[dir="rtl"] .input-with-icon select,
+[dir="rtl"] .readonly-field-with-icon {
+    padding-left: 16px;
+    padding-right: 44px;
+    text-align: right;
+}
+
+[dir="rtl"] .input-with-prefix {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .input-with-prefix span {
+    border-right: none;
+    border-left: 1px solid rgba(139, 90, 43, 0.1);
+}
+
+[dir="rtl"] .input-with-prefix input,
+[dir="rtl"] .readonly-field-with-prefix {
+    text-align: right;
+    padding-left: 44px;
+    padding-right: 16px;
+}
+
+[dir="rtl"] .username-check {
+    right: auto;
+    left: 16px;
+}
+
 .icon-input {
     position: absolute;
     left: 16px;
@@ -1261,6 +1360,11 @@ input:focus, select:focus {
     padding: 4px 8px;
     border-radius: 8px;
     width: fit-content;
+}
+
+/* RTL Support for Verified Badge */
+[dir="rtl"] .verified-badge-text {
+    flex-direction: row-reverse;
 }
 
 .verified-badge-text .icon-verified { width: 16px; height: 16px; }
@@ -1311,6 +1415,12 @@ input:focus, select:focus {
     margin-top: 32px;
     padding-top: 24px; 
     border-top: 1px solid rgba(139, 90, 43, 0.1);
+}
+
+/* RTL Support for Form Actions */
+[dir="rtl"] .form-actions {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
 }
 
 /* Read-only field styles */
@@ -1420,6 +1530,13 @@ input:focus, select:focus {
     font-weight: 500;
     transition: all 0.3s ease;
     z-index: 100;
+}
+
+/* RTL Support for Logout Button */
+[dir="rtl"] .logout-btn {
+    right: auto;
+    left: 24px;
+    flex-direction: row-reverse;
 }
 
 .logout-btn:hover {
@@ -1552,6 +1669,14 @@ input:focus, select:focus {
         justify-content: flex-end !important;
     }
     
+    /* RTL Support for Mobile Header Buttons */
+    [dir="rtl"] .profile-popup-card .popup-header-buttons {
+        right: auto !important;
+        left: 16px !important;
+        flex-direction: row-reverse !important;
+        justify-content: flex-start !important;
+    }
+    
     .profile-popup-card .popup-header-buttons .close-btn,
     .profile-popup-card .popup-header-buttons .account-btn {
         width: 36px !important;
@@ -1607,6 +1732,13 @@ input:focus, select:focus {
         font-size: 14px;
     }
     
+    /* RTL Support for Mobile Logout Button */
+    [dir="rtl"] .logout-btn {
+        right: auto;
+        left: 16px;
+        flex-direction: row-reverse;
+    }
+    
     .logout-btn .icon {
         width: 16px;
         height: 16px;
@@ -1619,6 +1751,14 @@ input:focus, select:focus {
         height: 36px;
         font-size: 16px;
         margin-right: 16px;
+    }
+    
+    /* RTL Support for Mobile Close Button Bottom */
+    [dir="rtl"] .close-btn-bottom {
+        right: auto;
+        left: 16px;
+        margin-right: 0;
+        margin-left: 16px;
     }
     
     /* Mobile profile score section */
@@ -1759,6 +1899,12 @@ input:focus, select:focus {
     justify-content: center;
     transition: all 0.3s ease;
     z-index: 100;
+}
+
+/* RTL Support for Close Button Bottom */
+[dir="rtl"] .close-btn-bottom {
+    right: auto;
+    left: 24px;
 }
 
 .close-btn-bottom:hover { 
