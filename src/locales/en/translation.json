@@ -350,7 +350,13 @@
       "GOLD": "Gold",
       "PLATINUM": "Platinum",
       "BACKGROUND_JOBS": "Production Assets Pro",
-      "BANDS": "Bands"
+      "BANDS": "Bands",
+      "basic": "Basic Plan",
+      "pro": "Pro Plan",
+      "premium": "Premium Plan",
+      "Basic Plan": "Basic Plan",
+      "Pro Plan": "Pro Plan",
+      "Premium Plan": "Premium Plan"
     },
     "recommendedForProfessionals": "⭐ Recommended for Professionals",
     "perMonth": "/mo",
@@ -380,7 +386,19 @@
       "Band member management": "Band member management",
       "Event calendar integration": "Event calendar integration",
       "Priority booking requests": "Priority booking requests",
-      "Dedicated band support": "Dedicated band support"
+      "Dedicated band support": "Dedicated band support",
+      "Basic image generation": "Basic image generation",
+      "Standard resolution": "Standard resolution",
+      "5 generations per day": "5 generations per day",
+      "Advanced image generation": "Advanced image generation",
+      "High resolution": "High resolution",
+      "Unlimited generations": "Unlimited generations",
+      "Custom styles": "Custom styles",
+      "Premium image generation": "Premium image generation",
+      "Ultra high resolution": "Ultra high resolution",
+      "24/7 support": "24/7 support",
+      "All custom styles": "All custom styles",
+      "Commercial license": "Commercial license"
     }
   },
   "profileTab": {

@@ -477,7 +477,7 @@ const SubscriptionPlans = () => {
               key={plan.id}
               className={`plan-card ${selectedPlan?.id === plan.id ? 'selected' : ''} ${isCurrentPlan ? 'current' : ''}`}
             >
-              <h3>{t(`billing.plans.${plan.name}`, plan.name)}</h3>
+              <h3>{t(`billing.plans.${plan.name}`, plan.display_name || plan.name)}</h3>
               {plan.name === 'PLATINUM' && (
                 <div className="professional-banner">
                   <span className="banner-text">{t('billing.recommendedForProfessionals')}</span>

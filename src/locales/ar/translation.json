@@ -369,7 +369,13 @@
       "GOLD": "ذهبي",
       "PLATINUM": "بلاتيني",
       "BACKGROUND_JOBS": "أصول الإنتاج المحترفة",
-      "BANDS": "الفرق"
+      "BANDS": "الفرق",
+      "basic": "الخطة الأساسية",
+      "pro": "الخطة الاحترافية",
+      "premium": "الخطة المميزة",
+      "Basic Plan": "الخطة الأساسية",
+      "Pro Plan": "الخطة الاحترافية",
+      "Premium Plan": "الخطة المميزة"
     },
     "recommendedForProfessionals": "⭐ موصى به للمحترفين",
     "perMonth": "/شهر",
@@ -399,7 +405,19 @@
       "Band member management": "إدارة أعضاء الفرقة",
       "Event calendar integration": "تكامل تقويم الأحداث",
       "Priority booking requests": "طلبات حجز ذات أولوية",
-      "Dedicated band support": "دعم مخصص للفرق"
+      "Dedicated band support": "دعم مخصص للفرق",
+      "Basic image generation": "توليد صور أساسي",
+      "Standard resolution": "دقة قياسية",
+      "5 generations per day": "5 عمليات توليد يومياً",
+      "Advanced image generation": "توليد صور متقدم",
+      "High resolution": "دقة عالية",
+      "Unlimited generations": "عمليات توليد غير محدودة",
+      "Custom styles": "أنماط مخصصة",
+      "Premium image generation": "توليد صور مميز",
+      "Ultra high resolution": "دقة فائقة الوضوح",
+      "24/7 support": "دعم على مدار الساعة",
+      "All custom styles": "جميع الأنماط المخصصة",
+      "Commercial license": "رخصة تجارية"
     }
   },
   "profileTab": {
