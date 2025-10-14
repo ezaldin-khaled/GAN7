@@ -1,3 +1,12 @@
+// Helper function to translate options
+// Usage: getTranslatedOptions(PRIMARY_CATEGORIES, 'referenceData.primaryCategories', t)
+export const getTranslatedOptions = (options, translationKeyPrefix, t) => {
+  return options.map(option => ({
+    value: option.value, // Keep English for backend
+    label: t(`${translationKeyPrefix}.${option.value}`) // Translate for display
+  }));
+};
+
 export const PRIMARY_CATEGORIES = [
   {"value": "photographer", "label": "Photographer"},
   {"value": "cinematographer", "label": "Cinematographer"},

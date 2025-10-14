@@ -1193,5 +1193,107 @@
         "weekends": "Weekends Only"
       }
     }
+  },
+  "referenceData": {
+    "primaryCategories": {
+      "photographer": "Photographer",
+      "cinematographer": "Cinematographer",
+      "director": "Director",
+      "editor": "Video/Film Editor",
+      "animator": "Animator",
+      "graphic_designer": "Graphic Designer",
+      "makeup_artist": "Makeup Artist",
+      "costume_designer": "Costume Designer",
+      "set_designer": "Set Designer",
+      "lighting_designer": "Lighting Designer",
+      "visual_artist": "Visual Artist",
+      "composer": "Music Composer",
+      "sound_designer": "Sound Designer",
+      "other": "Other Visual Creator"
+    },
+    "experienceLevel": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "professional": "Professional",
+      "expert": "Expert"
+    },
+    "availability": {
+      "full_time": "Full Time",
+      "part_time": "Part Time",
+      "weekends": "Weekends Only",
+      "flexible": "Flexible",
+      "evenings": "Evenings Only"
+    },
+    "rateRanges": {
+      "low": "Budget Friendly",
+      "mid": "Mid-Range",
+      "high": "Premium",
+      "negotiable": "Negotiable"
+    },
+    "performerTypes": {
+      "actor": "Actor",
+      "voice_actor": "Voice Actor",
+      "singer": "Singer",
+      "dancer": "Dancer",
+      "musician": "Musician",
+      "comedian": "Comedian",
+      "host": "TV/Event Host",
+      "narrator": "Narrator",
+      "puppeteer": "Puppeteer",
+      "other": "Other Performer"
+    },
+    "hairColors": {
+      "blonde": "Blonde",
+      "brown": "Brown",
+      "black": "Black",
+      "red": "Red",
+      "gray": "Gray/Silver",
+      "other": "Other"
+    },
+    "eyeColors": {
+      "blue": "Blue",
+      "green": "Green",
+      "brown": "Brown",
+      "hazel": "Hazel",
+      "black": "Black",
+      "other": "Other"
+    },
+    "bodyTypes": {
+      "athletic": "Athletic",
+      "slim": "Slim",
+      "muscular": "Muscular",
+      "average": "Average",
+      "plus_size": "Plus Size",
+      "other": "Other"
+    },
+    "hybridTypes": {
+      "model": "Fashion/Commercial Model",
+      "stunt_performer": "Stunt Performer",
+      "body_double": "Body Double",
+      "motion_capture": "Motion Capture Artist",
+      "background_actor": "Background Actor",
+      "specialty_performer": "Specialty Performer",
+      "other": "Other Physical Performer"
+    },
+    "skinTones": {
+      "fair": "Fair",
+      "light": "Light",
+      "medium": "Medium",
+      "olive": "Olive",
+      "brown": "Brown",
+      "dark": "Dark"
+    },
+    "fitnessLevels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "elite": "Elite Athlete"
+    },
+    "riskLevels": {
+      "low": "Low Risk Only",
+      "moderate": "Moderate Risk",
+      "high": "High Risk",
+      "extreme": "Extreme Stunts"
+    }
   }
 }

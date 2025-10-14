@@ -1197,5 +1197,107 @@
         "weekends": "عطلات نهاية الأسبوع فقط"
       }
     }
+  },
+  "referenceData": {
+    "primaryCategories": {
+      "photographer": "مصور فوتوغرافي",
+      "cinematographer": "مصور سينمائي",
+      "director": "مخرج",
+      "editor": "محرر فيديو/أفلام",
+      "animator": "رسام متحرك",
+      "graphic_designer": "مصمم جرافيك",
+      "makeup_artist": "فنان مكياج",
+      "costume_designer": "مصمم أزياء",
+      "set_designer": "مصمم ديكور",
+      "lighting_designer": "مصمم إضاءة",
+      "visual_artist": "فنان بصري",
+      "composer": "ملحن موسيقي",
+      "sound_designer": "مصمم صوت",
+      "other": "مبدع بصري آخر"
+    },
+    "experienceLevel": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "professional": "محترف",
+      "expert": "خبير"
+    },
+    "availability": {
+      "full_time": "دوام كامل",
+      "part_time": "دوام جزئي",
+      "weekends": "عطلات نهاية الأسبوع فقط",
+      "flexible": "مرن",
+      "evenings": "المساء فقط"
+    },
+    "rateRanges": {
+      "low": "صديق للميزانية",
+      "mid": "متوسط المدى",
+      "high": "ممتاز",
+      "negotiable": "قابل للتفاوض"
+    },
+    "performerTypes": {
+      "actor": "ممثل",
+      "voice_actor": "ممثل صوتي",
+      "singer": "مغني",
+      "dancer": "راقص",
+      "musician": "موسيقي",
+      "comedian": "كوميدي",
+      "host": "مقدم تلفزيوني/فعاليات",
+      "narrator": "راوي",
+      "puppeteer": "محرك دمى",
+      "other": "فنان أداء آخر"
+    },
+    "hairColors": {
+      "blonde": "أشقر",
+      "brown": "بني",
+      "black": "أسود",
+      "red": "أحمر",
+      "gray": "رمادي/فضي",
+      "other": "آخر"
+    },
+    "eyeColors": {
+      "blue": "أزرق",
+      "green": "أخضر",
+      "brown": "بني",
+      "hazel": "عسلي",
+      "black": "أسود",
+      "other": "آخر"
+    },
+    "bodyTypes": {
+      "athletic": "رياضي",
+      "slim": "نحيف",
+      "muscular": "عضلي",
+      "average": "متوسط",
+      "plus_size": "حجم كبير",
+      "other": "آخر"
+    },
+    "hybridTypes": {
+      "model": "عارض أزياء/تجاري",
+      "stunt_performer": "منفذ مشاهد خطرة",
+      "body_double": "بديل جسد",
+      "motion_capture": "فنان التقاط الحركة",
+      "background_actor": "ممثل خلفية",
+      "specialty_performer": "فنان أداء متخصص",
+      "other": "فنان أداء جسدي آخر"
+    },
+    "skinTones": {
+      "fair": "فاتح جداً",
+      "light": "فاتح",
+      "medium": "متوسط",
+      "olive": "زيتوني",
+      "brown": "بني",
+      "dark": "داكن"
+    },
+    "fitnessLevels": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم",
+      "elite": "رياضي محترف"
+    },
+    "riskLevels": {
+      "low": "مخاطر منخفضة فقط",
+      "moderate": "مخاطر متوسطة",
+      "high": "مخاطر عالية",
+      "extreme": "مشاهد خطرة جداً"
+    }
   }
 } 
