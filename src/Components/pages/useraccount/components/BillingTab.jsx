@@ -479,12 +479,12 @@ const BillingTab = () => {
               className={`pricing-card ${plan.popular ? 'popular' : ''} ${plan.premium ? 'premium' : ''}`}
             >
               {plan.popular && <div className="popular-badge">MOST POPULAR</div>}
+              <h3>{plan.display_name || plan.name.charAt(0).toUpperCase() + plan.name.slice(1).toLowerCase()}</h3>
               {plan.name === 'PLATINUM' && (
                 <div className="professional-banner">
                   <span className="banner-text">⭐ Recommended for Professionals</span>
                 </div>
               )}
-              <h3>{plan.display_name || plan.name.charAt(0).toUpperCase() + plan.name.slice(1).toLowerCase()}</h3>
               <p>{plan.description}</p>
           
               <div className="price-info">
