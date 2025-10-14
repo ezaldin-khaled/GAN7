@@ -491,11 +491,11 @@ const BillingTab = () => {
                 <div className="current-price">
                   <span className="currency">US$</span>
                   <span className="amount">{plan.price}</span>
-                  <span className="period">/mo</span>
+                  <span className="period">{t('billing.perMonth')}</span>
                 </div>
                 {isCurrentPlan && (
                   <div className="current-plan-marker">
-                    <FaCheck /> Current Plan
+                    <FaCheck /> {t('billing.currentPlanButton')}
                   </div>
                 )}
               </div>
@@ -506,7 +506,7 @@ const BillingTab = () => {
                 disabled={isCurrentPlan}
               >
                 <span className="button-text">
-                  {isCurrentPlan ? 'Current Plan' : `Upgrade to ${plan.name}`}
+                  {isCurrentPlan ? t('billing.currentPlanButton') : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) })}
                 </span>
               </button>
 
@@ -514,7 +514,7 @@ const BillingTab = () => {
                 {(plan.features || getDefaultFeatures(plan.name)).map((feature, index) => (
                   <div key={index} className="feature-item">
                     <FaCheck className="feature-icon" /> 
-                    <span className="feature-text">{feature}</span>
+                    <span className="feature-text">{t(`billing.features.${feature}`, feature)}</span>
                   </div>
                 ))}
               </div>

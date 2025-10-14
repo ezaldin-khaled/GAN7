@@ -485,15 +485,15 @@ const SubscriptionPlans = () => {
               )}
               <div className="price">
                 <span className="annual-price">
-                  ${plan.price}/year
+                  ${plan.price}{t('billing.perYear')}
                 </span>
                 <span className="monthly-price">
-                  ${plan.monthly_equivalent}/month
+                  ${plan.monthly_equivalent}{t('billing.perMonthLong')}
                 </span>
               </div>
               <ul className="features">
                 {plan.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
+                  <li key={index}>{t(`billing.features.${feature}`, feature)}</li>
                 ))}
               </ul>
               <button

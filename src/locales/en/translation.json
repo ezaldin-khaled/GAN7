@@ -352,7 +352,36 @@
       "BACKGROUND_JOBS": "Production Assets Pro",
       "BANDS": "Bands"
     },
-    "recommendedForProfessionals": "⭐ Recommended for Professionals"
+    "recommendedForProfessionals": "⭐ Recommended for Professionals",
+    "perMonth": "/mo",
+    "perYear": "/year",
+    "perMonthLong": "/month",
+    "currentPlanButton": "Current Plan",
+    "upgradeTo": "Upgrade to {{plan}}",
+    "features": {
+      "3 Projects": "3 Projects",
+      "Basic AI Features": "Basic AI Features",
+      "1GB Storage": "1GB Storage",
+      "Community Support": "Community Support",
+      "10 Projects": "10 Projects",
+      "Advanced AI Features": "Advanced AI Features",
+      "5GB Storage": "5GB Storage",
+      "Priority Support": "Priority Support",
+      "Custom Branding": "Custom Branding",
+      "Unlimited Projects": "Unlimited Projects",
+      "Premium AI Features": "Premium AI Features",
+      "20GB Storage": "20GB Storage",
+      "24/7 Support": "24/7 Support",
+      "API Access": "API Access",
+      "Dedicated Account Manager": "Dedicated Account Manager",
+      "Special band profile layout": "Special band profile layout",
+      "Upload up to 5 band pictures": "Upload up to 5 band pictures",
+      "Upload up to 5 band videos": "Upload up to 5 band videos",
+      "Band member management": "Band member management",
+      "Event calendar integration": "Event calendar integration",
+      "Priority booking requests": "Priority booking requests",
+      "Dedicated band support": "Dedicated band support"
+    }
   },
   "profileTab": {
     "title": "Profile Information",

@@ -371,7 +371,36 @@
       "BACKGROUND_JOBS": "أصول الإنتاج المحترفة",
       "BANDS": "الفرق"
     },
-    "recommendedForProfessionals": "⭐ موصى به للمحترفين"
+    "recommendedForProfessionals": "⭐ موصى به للمحترفين",
+    "perMonth": "/شهر",
+    "perYear": "/سنة",
+    "perMonthLong": "/شهر",
+    "currentPlanButton": "الخطة الحالية",
+    "upgradeTo": "الترقية إلى {{plan}}",
+    "features": {
+      "3 Projects": "3 مشاريع",
+      "Basic AI Features": "ميزات الذكاء الاصطناعي الأساسية",
+      "1GB Storage": "1 جيجابايت تخزين",
+      "Community Support": "دعم المجتمع",
+      "10 Projects": "10 مشاريع",
+      "Advanced AI Features": "ميزات الذكاء الاصطناعي المتقدمة",
+      "5GB Storage": "5 جيجابايت تخزين",
+      "Priority Support": "دعم ذو أولوية",
+      "Custom Branding": "علامة تجارية مخصصة",
+      "Unlimited Projects": "مشاريع غير محدودة",
+      "Premium AI Features": "ميزات الذكاء الاصطناعي المميزة",
+      "20GB Storage": "20 جيجابايت تخزين",
+      "24/7 Support": "دعم على مدار الساعة",
+      "API Access": "الوصول إلى واجهة برمجة التطبيقات",
+      "Dedicated Account Manager": "مدير حساب مخصص",
+      "Special band profile layout": "تخطيط ملف فرقة خاص",
+      "Upload up to 5 band pictures": "رفع ما يصل إلى 5 صور للفرقة",
+      "Upload up to 5 band videos": "رفع ما يصل إلى 5 مقاطع فيديو للفرقة",
+      "Band member management": "إدارة أعضاء الفرقة",
+      "Event calendar integration": "تكامل تقويم الأحداث",
+      "Priority booking requests": "طلبات حجز ذات أولوية",
+      "Dedicated band support": "دعم مخصص للفرق"
+    }
   },
   "profileTab": {
     "title": "معلومات الملف الشخصي",
