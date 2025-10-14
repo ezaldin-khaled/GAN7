@@ -496,3 +496,20 @@
 .score-category-card:nth-child(3) { animation-delay: 0.3s; }
 .score-category-card:nth-child(4) { animation-delay: 0.4s; }
 .score-category-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* RTL Support */
+[dir="rtl"] .score-header::before,
+[dir="rtl"] .total-score-card::before,
+[dir="rtl"] .score-category-card::before,
+[dir="rtl"] .improvement-section::before {
+  left: 0;
+  right: 0;
+}
+
+[dir="rtl"] .category-percentage {
+  text-align: left;
+}
+
+[dir="rtl"] .improvement-tip:hover {
+  transform: translateX(-4px);
+}

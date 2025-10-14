@@ -2849,3 +2849,66 @@
     font-size: 0.75rem;
   }
 }
+
+/* RTL Support */
+[dir="rtl"] .groups-header::after {
+  left: auto;
+  right: 0;
+}
+
+[dir="rtl"] .band-card::before {
+  left: auto;
+  right: 0;
+}
+
+[dir="rtl"] .member-list-item svg {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
+[dir="rtl"] .success-badge,
+[dir="rtl"] .warning-badge,
+[dir="rtl"] .info-badge {
+  border-left: none;
+  border-right: 3px solid;
+}
+
+[dir="rtl"] .success-badge {
+  border-right-color: #28a745;
+}
+
+[dir="rtl"] .warning-badge {
+  border-right-color: #ffc107;
+}
+
+[dir="rtl"] .info-badge {
+  border-right-color: #2a9d8f;
+}
+
+[dir="rtl"] .error-message,
+[dir="rtl"] .success-message {
+  border-left: none;
+  border-right: 4px solid;
+}
+
+[dir="rtl"] .success-message {
+  border-right-color: #4caf50;
+}
+
+[dir="rtl"] .error-message {
+  border-right-color: #f44336;
+}
+
+[dir="rtl"] .stat-icon {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+[dir="rtl"] .join-requests-header h3 {
+  text-align: left;
+}
+
+[dir="rtl"] .modal-close {
+  right: auto;
+  left: 0;
+}

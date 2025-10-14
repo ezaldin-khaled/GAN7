@@ -973,4 +973,70 @@ select:disabled, input:disabled {
     max-width: 80px;
     max-height: 80px;
   }
+}
+
+/* RTL Support */
+[dir="rtl"] .validation-icon,
+[dir="rtl"] .check-icon,
+[dir="rtl"] .alert-icon {
+  right: auto;
+  left: 12px;
+}
+
+[dir="rtl"] .specialization-icon,
+[dir="rtl"] .icon {
+  right: auto;
+  left: 1rem;
+}
+
+[dir="rtl"] .specialization-icon + *,
+[dir="rtl"] .icon + * {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+[dir="rtl"] .member-avatar {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+[dir="rtl"] .dropdown-content,
+[dir="rtl"] .autocomplete-dropdown {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .input-with-icon {
+  padding-right: 1rem;
+  padding-left: 2.5rem;
+}
+
+[dir="rtl"] .search-results {
+  right: auto;
+  left: 0.75rem;
+}
+
+[dir="rtl"] .delete-member-btn {
+  right: auto;
+  left: 8px;
+}
+
+[dir="rtl"] .genre-tag {
+  padding-left: 0;
+  padding-right: 20px;
+}
+
+[dir="rtl"] .remove-genre {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .modal-overlay {
+  left: 0;
+  right: 0;
+}
+
+[dir="rtl"] .close-btn {
+  right: auto;
+  left: 16px;
 } 

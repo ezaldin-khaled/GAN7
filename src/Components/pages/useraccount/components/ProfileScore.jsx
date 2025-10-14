@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCrown, FaCheckCircle, FaUser, FaImages, FaCogs, FaTrophy, FaLightbulb, FaArrowUp } from 'react-icons/fa';
-import { getTranslatedTip } from '../../../../utils/improvementTipsMapper';
 import './ProfileScore.css';
 
 const ProfileScore = ({ profileScore }) => {
@@ -166,7 +165,7 @@ const ProfileScore = ({ profileScore }) => {
                 <div className="tip-icon">
                   <FaArrowUp />
                 </div>
-                <span className="tip-text">{getTranslatedTip(tip, t)}</span>
+                <span className="tip-text">{tip}</span>
               </div>
             ))}
           </div>

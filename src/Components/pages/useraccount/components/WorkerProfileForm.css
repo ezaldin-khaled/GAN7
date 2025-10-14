@@ -274,4 +274,15 @@
   .submit-btn {
     width: 100%;
   }
+}
+
+/* RTL Support */
+[dir="rtl"] .modal-overlay {
+  left: 0;
+  right: 0;
+}
+
+[dir="rtl"] .checkbox-label input[type="checkbox"]::after {
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
 } 

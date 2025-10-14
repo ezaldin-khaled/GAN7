@@ -1915,3 +1915,43 @@ select {
 }
 
 /* Dark mode support */
+
+/* RTL Support */
+[dir="rtl"] .plan-status {
+  right: auto;
+  left: 20px;
+}
+
+[dir="rtl"] .profile-container {
+  margin-right: 0;
+  margin-left: 30px;
+}
+
+[dir="rtl"] .menu-icon {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+[dir="rtl"] .section-title::after {
+  left: auto;
+  right: 0;
+}
+
+[dir="rtl"] .feature-item svg {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+[dir="rtl"] .current-tag {
+  right: auto;
+  left: 20px;
+}
+
+[dir="rtl"] .toggle-slider:before {
+  left: auto;
+  right: 4px;
+}
+
+[dir="rtl"] input:checked + .toggle-slider:before {
+  transform: translateX(-26px);
+}

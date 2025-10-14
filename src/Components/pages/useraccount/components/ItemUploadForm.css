@@ -656,3 +656,43 @@ form {
   color: #8236fc;
   font-size: 1rem;
 }
+
+/* RTL Support */
+[dir="rtl"] .modal-overlay {
+  left: 0;
+  right: 0;
+}
+
+[dir="rtl"] .close-btn {
+  right: auto;
+  left: 50%;
+}
+
+[dir="rtl"] .form-group.has-icon input {
+  padding-right: 14px;
+  padding-left: 40px;
+}
+
+[dir="rtl"] .tooltip {
+  left: auto;
+  right: 100%;
+}
+
+[dir="rtl"] .tooltip::after {
+  left: auto;
+  right: 100%;
+}
+
+[dir="rtl"] .error-message,
+[dir="rtl"] .success-message {
+  border-left: none;
+  border-right: 4px solid;
+}
+
+[dir="rtl"] .error-message {
+  border-right-color: #e53e3e;
+}
+
+[dir="rtl"] .success-message {
+  border-right-color: #38a169;
+}
