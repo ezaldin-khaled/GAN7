@@ -1,38 +1,40 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiChevronDown, FiStar, FiTrendingUp, FiClock, FiAward, FiInfo, FiHelpCircle } from 'react-icons/fi';
 
 const ProfileScoreSection = () => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [showTips, setShowTips] = useState(false);
 
     const scoreItems = [
         {
             icon: <FiStar />,
-            title: "Overall Score",
-            description: "Your overall profile strength",
+            title: t('profileScore.overallScore'),
+            description: t('profileScore.overallScoreDesc'),
             value: "85/100",
-            tip: "Complete your profile information and add more media to improve your score."
+            tip: t('profileScore.overallScoreTip')
         },
         {
             icon: <FiTrendingUp />,
-            title: "Engagement Rate",
-            description: "Based on user interactions",
+            title: t('profileScore.engagementRate'),
+            description: t('profileScore.engagementRateDesc'),
             value: "72%",
-            tip: "Post more regularly and respond to comments to increase engagement."
+            tip: t('profileScore.engagementRateTip')
         },
         {
             icon: <FiClock />,
-            title: "Activity Level",
-            description: "Your recent platform activity",
-            value: "High",
-            tip: "Maintain your current activity level to keep your score high."
+            title: t('profileScore.activityLevel'),
+            description: t('profileScore.activityLevelDesc'),
+            value: t('profileScore.high'),
+            tip: t('profileScore.activityLevelTip')
         },
         {
             icon: <FiAward />,
-            title: "Content Quality",
-            description: "Based on media quality and diversity",
-            value: "Good",
-            tip: "Add more high-quality images and videos to improve content quality."
+            title: t('profileScore.contentQuality'),
+            description: t('profileScore.contentQualityDesc'),
+            value: t('profileScore.good'),
+            tip: t('profileScore.contentQualityTip')
         }
     ];
 
@@ -40,11 +42,11 @@ const ProfileScoreSection = () => {
         <div className="profile-score-section">
             <div className="score-header">
                 <div className="score-header-left">
-                    <span className="score-title">Profile Score</span>
+                    <span className="score-title">{t('profileScore.title')}</span>
                     <button 
                         className="score-tips-btn"
                         onClick={() => setShowTips(!showTips)}
-                        title="View improvement tips"
+                        title={t('profileScore.viewTips')}
                     >
                         <FiHelpCircle className="icon" />
                     </button>

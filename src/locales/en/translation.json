@@ -329,7 +329,28 @@
       "specialization": "Specialization"
     },
     "defaultTip": "Complete this section to earn more points",
-    "improvementTips": "Improvement Tips"
+    "improvementTips": "Improvement Tips",
+    "tips": {
+      "completeProfile": "Complete your profile information to improve your score",
+      "addMoreMedia": "Add more media files to improve your profile",
+      "verifyEmail": "Verify your email address to gain more points",
+      "verifyIdentity": "Complete identity verification to unlock more features",
+      "upgradeAccount": "Upgrade your account tier for better visibility",
+      "addSpecialization": "Add your specialization details to stand out",
+      "uploadPhotos": "Upload more high-quality photos to your profile",
+      "uploadVideos": "Upload videos to showcase your skills",
+      "completeAboutSection": "Complete your 'About' section to help others know you better",
+      "addContactInfo": "Add your contact information to make it easier to connect",
+      "completeTestImages": "Upload test images to showcase your abilities",
+      "addAboutVideo": "Add an 'About Yourself' video to make your profile more engaging",
+      "fillAllFields": "Fill out all profile fields for maximum score",
+      "addProfilePicture": "Add a professional profile picture",
+      "completeLocation": "Add your location information",
+      "addSkills": "Add your skills and expertise",
+      "updateBio": "Update your bio with detailed information",
+      "addWorkExperience": "Add your work experience and portfolio",
+      "increaseVisibility": "Complete more sections to increase your profile visibility"
+    }
   },
   "billing": {
     "plansAndBilling": "Plans & Billing",
