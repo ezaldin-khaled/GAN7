@@ -344,7 +344,15 @@
     "active": "Active",
     "free": "Free",
     "freePlan": "Free Plan",
-    "basicFeatures": "Basic features for individual users"
+    "basicFeatures": "Basic features for individual users",
+    "plans": {
+      "SILVER": "Silver",
+      "GOLD": "Gold",
+      "PLATINUM": "Platinum",
+      "BACKGROUND_JOBS": "Production Assets Pro",
+      "BANDS": "Bands"
+    },
+    "recommendedForProfessionals": "⭐ Recommended for Professionals"
   },
   "profileTab": {
     "title": "Profile Information",

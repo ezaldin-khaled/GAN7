@@ -70,6 +70,7 @@ const ensureAllPlansAvailable = (apiPlans) => {
 };
 
 const SubscriptionPlans = () => {
+  const { t } = useTranslation();
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -476,10 +477,10 @@ const SubscriptionPlans = () => {
               key={plan.id}
               className={`plan-card ${selectedPlan?.id === plan.id ? 'selected' : ''} ${isCurrentPlan ? 'current' : ''}`}
             >
-              <h3>{plan.name}</h3>
+              <h3>{t(`billing.plans.${plan.name}`, plan.name)}</h3>
               {plan.name === 'PLATINUM' && (
                 <div className="professional-banner">
-                  <span className="banner-text">⭐ Recommended for Professionals</span>
+                  <span className="banner-text">{t('billing.recommendedForProfessionals')}</span>
                 </div>
               )}
               <div className="price">

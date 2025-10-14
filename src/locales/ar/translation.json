@@ -363,7 +363,15 @@
     "active": "نشط",
     "free": "مجاني",
     "freePlan": "خطة مجانية",
-    "basicFeatures": "ميزات أساسية للمستخدمين الأفراد"
+    "basicFeatures": "ميزات أساسية للمستخدمين الأفراد",
+    "plans": {
+      "SILVER": "فضي",
+      "GOLD": "ذهبي",
+      "PLATINUM": "بلاتيني",
+      "BACKGROUND_JOBS": "أصول الإنتاج المحترفة",
+      "BANDS": "الفرق"
+    },
+    "recommendedForProfessionals": "⭐ موصى به للمحترفين"
   },
   "profileTab": {
     "title": "معلومات الملف الشخصي",
