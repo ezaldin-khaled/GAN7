@@ -5,7 +5,7 @@ import axiosInstance from '../../../../api/axios'; // Import the configured axio
 import ProfileScore from './ProfileScore';
 import Loader from '../../../common/Loader';
 import './SpecializationTab.css';
-import { TALENT_SPECIALIZATION_DATA } from './talent-specialization-data';
+import { TALENT_SPECIALIZATION_DATA, getTranslatedOptions } from './talent-specialization-data';
 import { FaUpload, FaPlus, FaVideo, FaImage } from 'react-icons/fa';
 import TestImagesUpload from './TestImagesUpload';
 import './TestImagesUpload.css';
@@ -899,10 +899,10 @@ const SpecializationTab = () => {
 
   const renderVisualWorkerFields = () => (
     <>
-      {renderSelectField('primary_category', t('specialization.primaryCategory'), TALENT_SPECIALIZATION_DATA.visual_worker.primary_categories)}
-      {renderSelectField('experience_level', t('specialization.experienceLevel'), TALENT_SPECIALIZATION_DATA.visual_worker.experience_levels)}
-      {renderSelectField('availability', t('specialization.availability'), TALENT_SPECIALIZATION_DATA.visual_worker.availability_choices)}
-      {renderSelectField('rate_range', t('specialization.rateRange'), TALENT_SPECIALIZATION_DATA.visual_worker.rate_ranges)}
+      {renderSelectField('primary_category', t('specialization.primaryCategory'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.visual_worker.primary_categories, 'referenceData.primaryCategories', t))}
+      {renderSelectField('experience_level', t('specialization.experienceLevel'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.visual_worker.experience_levels, 'referenceData.experienceLevel', t))}
+      {renderSelectField('availability', t('specialization.availability'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.visual_worker.availability_choices, 'referenceData.availability', t))}
+      {renderSelectField('rate_range', t('specialization.rateRange'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.visual_worker.rate_ranges, 'referenceData.rateRanges', t))}
       {renderNumberField('years_experience', t('specialization.yearsExperience'))}
       <div className="form-group">
         <label htmlFor="portfolio_link">{t('specialization.portfolioLink')}</label>
@@ -930,23 +930,23 @@ const SpecializationTab = () => {
 
   const renderExpressiveWorkerFields = () => (
     <>
-      {renderSelectField('performer_type', t('specialization.performerType'), TALENT_SPECIALIZATION_DATA.expressive_worker.performer_types)}
-      {renderSelectField('hair_color', t('specialization.hairColor'), TALENT_SPECIALIZATION_DATA.expressive_worker.hair_colors)}
-      {renderSelectField('hair_type', t('specialization.hairType'), TALENT_SPECIALIZATION_DATA.expressive_worker.hair_types)}
-      {renderSelectField('skin_tone', t('specialization.skinTone'), TALENT_SPECIALIZATION_DATA.expressive_worker.skin_tones)}
-      {renderSelectField('eye_color', t('specialization.eyeColor'), TALENT_SPECIALIZATION_DATA.expressive_worker.eye_colors)}
-      {renderSelectField('eye_size', t('specialization.eyeSize'), TALENT_SPECIALIZATION_DATA.expressive_worker.eye_sizes)}
-      {renderSelectField('eye_pattern', t('specialization.eyePattern'), TALENT_SPECIALIZATION_DATA.expressive_worker.eye_patterns)}
-      {renderSelectField('face_shape', t('specialization.faceShape'), TALENT_SPECIALIZATION_DATA.expressive_worker.face_shapes)}
-      {renderSelectField('forehead_shape', t('specialization.foreheadShape'), TALENT_SPECIALIZATION_DATA.expressive_worker.forehead_shapes)}
-      {renderSelectField('lip_shape', t('specialization.lipShape'), TALENT_SPECIALIZATION_DATA.expressive_worker.lip_shapes)}
-      {renderSelectField('eyebrow_pattern', t('specialization.eyebrowPattern'), TALENT_SPECIALIZATION_DATA.expressive_worker.eyebrow_patterns)}
-      {renderSelectField('beard_length', t('specialization.beardLength'), TALENT_SPECIALIZATION_DATA.expressive_worker.beard_lengths)}
-      {renderSelectField('distinctive_facial_marks', t('specialization.distinctiveFacialMarks'), TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_facial_marks)}
-      {renderSelectField('distinctive_body_marks', t('specialization.distinctiveBodyMarks'), TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_body_marks)}
-      {renderSelectField('voice_type', t('specialization.voiceType'), TALENT_SPECIALIZATION_DATA.expressive_worker.voice_types)}
-      {renderSelectField('body_type', t('specialization.bodyType'), TALENT_SPECIALIZATION_DATA.expressive_worker.body_types)}
-      {renderSelectField('availability', t('specialization.availability'), TALENT_SPECIALIZATION_DATA.expressive_worker.availability_choices)}
+      {renderSelectField('performer_type', t('specialization.performerType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.performer_types, 'referenceData.performerTypes', t))}
+      {renderSelectField('hair_color', t('specialization.hairColor'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.hair_colors, 'referenceData.hairColors', t))}
+      {renderSelectField('hair_type', t('specialization.hairType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.hair_types, 'referenceData.hairTypes', t))}
+      {renderSelectField('skin_tone', t('specialization.skinTone'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.skin_tones, 'referenceData.skinTones', t))}
+      {renderSelectField('eye_color', t('specialization.eyeColor'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.eye_colors, 'referenceData.eyeColors', t))}
+      {renderSelectField('eye_size', t('specialization.eyeSize'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.eye_sizes, 'referenceData.eyeSizes', t))}
+      {renderSelectField('eye_pattern', t('specialization.eyePattern'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.eye_patterns, 'referenceData.eyePatterns', t))}
+      {renderSelectField('face_shape', t('specialization.faceShape'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.face_shapes, 'referenceData.faceShapes', t))}
+      {renderSelectField('forehead_shape', t('specialization.foreheadShape'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.forehead_shapes, 'referenceData.foreheadShapes', t))}
+      {renderSelectField('lip_shape', t('specialization.lipShape'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.lip_shapes, 'referenceData.lipShapes', t))}
+      {renderSelectField('eyebrow_pattern', t('specialization.eyebrowPattern'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.eyebrow_patterns, 'referenceData.eyebrowPatterns', t))}
+      {renderSelectField('beard_length', t('specialization.beardLength'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.beard_lengths, 'referenceData.beardLengths', t))}
+      {renderSelectField('distinctive_facial_marks', t('specialization.distinctiveFacialMarks'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_facial_marks, 'referenceData.distinctiveFacialMarks', t))}
+      {renderSelectField('distinctive_body_marks', t('specialization.distinctiveBodyMarks'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.distinctive_body_marks, 'referenceData.distinctiveBodyMarks', t))}
+      {renderSelectField('voice_type', t('specialization.voiceType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.voice_types, 'referenceData.voiceTypes', t))}
+      {renderSelectField('body_type', t('specialization.bodyType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.body_types, 'referenceData.bodyTypes', t))}
+      {renderSelectField('availability', t('specialization.availability'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.expressive_worker.availability_choices, 'referenceData.availability', t))}
       {renderNumberField('height', t('specialization.height'), 0, 0.1, 'cm')}
       {renderNumberField('weight', t('specialization.weight'), 0, 0.1, 'kg')}
       {renderNumberField('years_experience', t('specialization.yearsExperience'))}
@@ -966,25 +966,25 @@ const SpecializationTab = () => {
 
   const renderHybridWorkerFields = () => (
     <>
-      {renderSelectField('hybrid_type', t('specialization.hybridType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.hybrid_types)}
-      {renderSelectField('hair_color', t('specialization.hairColor'), TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_colors)}
-      {renderSelectField('hair_type', t('specialization.hairType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_types)}
-      {renderSelectField('eye_color', t('specialization.eyeColor'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_colors)}
-      {renderSelectField('eye_size', t('specialization.eyeSize'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_sizes)}
-      {renderSelectField('eye_pattern', t('specialization.eyePattern'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_patterns)}
-      {renderSelectField('face_shape', t('specialization.faceShape'), TALENT_SPECIALIZATION_DATA.hybrid_worker.face_shapes)}
-      {renderSelectField('forehead_shape', t('specialization.foreheadShape'), TALENT_SPECIALIZATION_DATA.hybrid_worker.forehead_shapes)}
-      {renderSelectField('lip_shape', t('specialization.lipShape'), TALENT_SPECIALIZATION_DATA.hybrid_worker.lip_shapes)}
-      {renderSelectField('eyebrow_pattern', t('specialization.eyebrowPattern'), TALENT_SPECIALIZATION_DATA.hybrid_worker.eyebrow_patterns)}
-      {renderSelectField('beard_length', t('specialization.beardLength'), TALENT_SPECIALIZATION_DATA.hybrid_worker.beard_lengths)}
-      {renderSelectField('distinctive_facial_marks', t('specialization.distinctiveFacialMarks'), TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_facial_marks)}
-      {renderSelectField('distinctive_body_marks', t('specialization.distinctiveBodyMarks'), TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_body_marks)}
-      {renderSelectField('voice_type', t('specialization.voiceType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.voice_types)}
-      {renderSelectField('skin_tone', t('specialization.skinTone'), TALENT_SPECIALIZATION_DATA.hybrid_worker.skin_tones)}
-      {renderSelectField('body_type', t('specialization.bodyType'), TALENT_SPECIALIZATION_DATA.hybrid_worker.body_types)}
-      {renderSelectField('fitness_level', t('specialization.fitnessLevel'), TALENT_SPECIALIZATION_DATA.hybrid_worker.fitness_levels)}
-      {renderSelectField('risk_levels', t('specialization.riskLevel'), TALENT_SPECIALIZATION_DATA.hybrid_worker.risk_levels)}
-      {renderSelectField('availability', t('specialization.availability'), TALENT_SPECIALIZATION_DATA.hybrid_worker.availability_choices)}
+      {renderSelectField('hybrid_type', t('specialization.hybridType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.hybrid_types, 'referenceData.hybridTypes', t))}
+      {renderSelectField('hair_color', t('specialization.hairColor'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_colors, 'referenceData.hairColors', t))}
+      {renderSelectField('hair_type', t('specialization.hairType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.hair_types, 'referenceData.hairTypes', t))}
+      {renderSelectField('eye_color', t('specialization.eyeColor'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_colors, 'referenceData.eyeColors', t))}
+      {renderSelectField('eye_size', t('specialization.eyeSize'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_sizes, 'referenceData.eyeSizes', t))}
+      {renderSelectField('eye_pattern', t('specialization.eyePattern'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.eye_patterns, 'referenceData.eyePatterns', t))}
+      {renderSelectField('face_shape', t('specialization.faceShape'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.face_shapes, 'referenceData.faceShapes', t))}
+      {renderSelectField('forehead_shape', t('specialization.foreheadShape'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.forehead_shapes, 'referenceData.foreheadShapes', t))}
+      {renderSelectField('lip_shape', t('specialization.lipShape'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.lip_shapes, 'referenceData.lipShapes', t))}
+      {renderSelectField('eyebrow_pattern', t('specialization.eyebrowPattern'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.eyebrow_patterns, 'referenceData.eyebrowPatterns', t))}
+      {renderSelectField('beard_length', t('specialization.beardLength'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.beard_lengths, 'referenceData.beardLengths', t))}
+      {renderSelectField('distinctive_facial_marks', t('specialization.distinctiveFacialMarks'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_facial_marks, 'referenceData.distinctiveFacialMarks', t))}
+      {renderSelectField('distinctive_body_marks', t('specialization.distinctiveBodyMarks'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.distinctive_body_marks, 'referenceData.distinctiveBodyMarks', t))}
+      {renderSelectField('voice_type', t('specialization.voiceType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.voice_types, 'referenceData.voiceTypes', t))}
+      {renderSelectField('skin_tone', t('specialization.skinTone'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.skin_tones, 'referenceData.skinTones', t))}
+      {renderSelectField('body_type', t('specialization.bodyType'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.body_types, 'referenceData.bodyTypes', t))}
+      {renderSelectField('fitness_level', t('specialization.fitnessLevel'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.fitness_levels, 'referenceData.fitnessLevels', t))}
+      {renderSelectField('risk_levels', t('specialization.riskLevel'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.risk_levels, 'referenceData.riskLevels', t))}
+      {renderSelectField('availability', t('specialization.availability'), getTranslatedOptions(TALENT_SPECIALIZATION_DATA.hybrid_worker.availability_choices, 'referenceData.availability', t))}
       {renderNumberField('height', t('specialization.height'), 0, 0.1, 'cm')}
       {renderNumberField('weight', t('specialization.weight'), 0, 0.1, 'kg')}
       {renderNumberField('years_experience', t('specialization.yearsExperience'))}

@@ -1,3 +1,12 @@
+// Helper function to translate options
+// Usage: getTranslatedOptions(options, translationKeyPrefix, t)
+export const getTranslatedOptions = (options, translationKeyPrefix, t) => {
+  return options.map(option => ({
+    value: option.value, // Keep English for backend
+    label: t(`${translationKeyPrefix}.${option.value}`) // Translate for display
+  }));
+};
+
 export const TALENT_SPECIALIZATION_DATA = {
   visual_worker: {
     primary_categories: [
