@@ -209,7 +209,14 @@
     "removeMedia": "إزالة الوسائط",
     "editMedia": "تعديل الوسائط",
     "viewMedia": "عرض الوسائط",
-    "noMedia": "لم يتم رفع أي ملفات وسائط بعد"
+    "noMedia": "لم يتم رفع أي ملفات وسائط بعد",
+    "title": "معرض الوسائط",
+    "uploadMedia": "رفع الوسائط",
+    "myMedia": "وسائطي",
+    "noMediaYet": "لم يتم رفع أي وسائط بعد",
+    "uploadYourFirst": "قم برفع ملف الوسائط الأول لتبدأ!",
+    "delete": "حذف",
+    "loading": "جاري تحميل الوسائط..."
   },
   "forms": {
     "required": "هذا الحقل مطلوب",
@@ -646,10 +653,10 @@
   },
   "specialization": {
     "title": "معلومات التخصص",
-    "workerType": "نوع العامل",
-    "visualWorker": "عامل بصري",
-    "expressiveWorker": "عامل تعبيري",
-    "hybridWorker": "عامل هجين",
+    "workerType": "نوع الموهبة",
+    "visualWorker": "موهبة بصرية",
+    "expressiveWorker": "موهبة تعبيرية",
+    "hybridWorker": "موهبة متعددة المهارات",
     "testImages": "صور الاختبار",
     "required": "مطلوب",
     "exactlyRequired": "مطلوب بالضبط 4 صور اختبار لفناني {{type}}.",
@@ -685,7 +692,7 @@
     "availability": "التوفر",
     "rateRange": "نطاق الأجر",
     "yearsExperience": "سنوات الخبرة",
-    "portfolioLink": "رابط المحفظة",
+    "portfolioLink": "رابط معرض الاعمال",
     "performerType": "نوع الأداء",
     "hairColor": "لون الشعر",
     "hairType": "نوع الشعر",
@@ -720,17 +727,6 @@
     "imageNumber": "صورة {{number}}",
     "uploadTestImagesDescription": "ارفع صور الاختبار الخاصة بك لعرض قدراتك. يمكنك رفع ما يصل إلى 4 صور.",
     "uploadTestImagesButton": "رفع صور الاختبار"
-  },
-  "media": {
-    "title": "معرض الوسائط",
-    "uploadMedia": "رفع الوسائط",
-    "images": "الصور",
-    "videos": "الفيديوهات",
-    "myMedia": "وسائطي",
-    "noMediaYet": "لم يتم رفع أي وسائط بعد",
-    "uploadYourFirst": "قم برفع ملف الوسائط الأول لتبدأ!",
-    "delete": "حذف",
-    "loading": "جاري تحميل الوسائط..."
   },
   "security": {
     "title": "إعدادات الأمان",
