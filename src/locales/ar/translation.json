@@ -94,7 +94,10 @@
     "november": "نوفمبر",
     "december": "ديسمبر",
     "creatingAccount": "جاري إنشاء الحساب...",
-    "createAccountButton": "إنشاء حساب"
+    "createAccountButton": "إنشاء حساب",
+    "selectCountry": "اختر بلدك",
+    "countryOfResidence": "بلد الإقامة",
+    "selectCountryOfResidence": "اختر بلد إقامتك"
   },
   "services": {
     "talent": "المواهب",

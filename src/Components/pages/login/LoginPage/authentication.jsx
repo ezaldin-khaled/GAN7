@@ -497,7 +497,7 @@ const AuthPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="country" className="form-label">Country</label>
+                  <label htmlFor="country" className="form-label">{t('auth.country')}</label>
                   <select 
                     id="country" 
                     value={registerData.country}
@@ -505,7 +505,7 @@ const AuthPage = () => {
                     required 
                     disabled={isLoading}
                   >
-                    <option value="">Select your country</option>
+                    <option value="">{t('auth.selectCountry')}</option>
                     <option value="ae">United Arab Emirates</option>
                     <option value="us">United States</option>
                     <option value="gb">United Kingdom</option>
@@ -681,7 +681,7 @@ const AuthPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="residency" className="form-label">Country of Residence</label>
+                  <label htmlFor="residency" className="form-label">{t('auth.countryOfResidence')}</label>
                   <select 
                     id="residency" 
                     value={registerData.residency}
@@ -689,7 +689,7 @@ const AuthPage = () => {
                     required 
                     disabled={isLoading}
                   >
-                    <option value="">Select your country of residence</option>
+                    <option value="">{t('auth.selectCountryOfResidence')}</option>
                     <option value="ae">United Arab Emirates</option>
                     <option value="us">United States</option>
                     <option value="gb">United Kingdom</option>
@@ -865,7 +865,7 @@ const AuthPage = () => {
                 </div>
 
                 <div className="form-group role-selection">
-                  <label className="form-label">Role</label>
+                  <label className="form-label">{t('auth.role')}</label>
                   <div className="role-options">
                     <label className="role-option">
                       <input
@@ -876,7 +876,7 @@ const AuthPage = () => {
                         onChange={_handleRoleChange}
                         disabled={isLoading}
                       />
-                      <span>Talent</span>
+                      <span>{t('auth.talent')}</span>
                     </label>
                     <label className="role-option">
                       <input
@@ -887,7 +887,7 @@ const AuthPage = () => {
                         onChange={_handleRoleChange}
                         disabled={isLoading}
                       />
-                      <span>Production Assets Pro</span>
+                      <span>{t('auth.productionAssetsPro')}</span>
                     </label>
                   </div>
                 </div>

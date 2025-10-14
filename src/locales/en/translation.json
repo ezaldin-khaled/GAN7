@@ -94,7 +94,10 @@
     "november": "November",
     "december": "December",
     "creatingAccount": "Creating account...",
-    "createAccountButton": "Create account"
+    "createAccountButton": "Create account",
+    "selectCountry": "Select your country",
+    "countryOfResidence": "Country of Residence",
+    "selectCountryOfResidence": "Select your country of residence"
   },
   "services": {
     "talent": "Talent",
