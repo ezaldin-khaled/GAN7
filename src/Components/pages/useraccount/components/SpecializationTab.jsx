@@ -1011,18 +1011,51 @@ const SpecializationTab = () => {
       <h2>{t('specialization.title')}</h2>
       <ProfileScore />
       <form onSubmit={handleSubmit} className="specialization-form">
-        <div className="form-group">
-          <label htmlFor="worker_type">{t('specialization.workerType')}</label>
-          <select
-            id="worker_type"
-            value={workerType}
-            onChange={(e) => setWorkerType(e.target.value)}
-            required
-          >
-            <option value="visual_worker">{t('specialization.visualWorker')}</option>
-            <option value="expressive_worker">{t('specialization.expressiveWorker')}</option>
-            <option value="hybrid_worker">{t('specialization.hybridWorker')}</option>
-          </select>
+        <div className="worker-type-section">
+          <label className="section-label">{t('specialization.workerType')}</label>
+          <div className="worker-type-cards">
+            <div 
+              className={`worker-type-card ${workerType === 'visual_worker' ? 'selected' : ''}`}
+              onClick={() => setWorkerType('visual_worker')}
+            >
+              <div className="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                </svg>
+              </div>
+              <h3>{t('specialization.visualWorker')}</h3>
+              <p>{t('specialization.visualWorkerDesc')}</p>
+              <div className="card-checkmark">✓</div>
+            </div>
+
+            <div 
+              className={`worker-type-card ${workerType === 'expressive_worker' ? 'selected' : ''}`}
+              onClick={() => setWorkerType('expressive_worker')}
+            >
+              <div className="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                </svg>
+              </div>
+              <h3>{t('specialization.expressiveWorker')}</h3>
+              <p>{t('specialization.expressiveWorkerDesc')}</p>
+              <div className="card-checkmark">✓</div>
+            </div>
+
+            <div 
+              className={`worker-type-card ${workerType === 'hybrid_worker' ? 'selected' : ''}`}
+              onClick={() => setWorkerType('hybrid_worker')}
+            >
+              <div className="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <h3>{t('specialization.hybridWorker')}</h3>
+              <p>{t('specialization.hybridWorkerDesc')}</p>
+              <div className="card-checkmark">✓</div>
+            </div>
+          </div>
         </div>
 
         {workerType === 'visual_worker' && renderVisualWorkerFields()}

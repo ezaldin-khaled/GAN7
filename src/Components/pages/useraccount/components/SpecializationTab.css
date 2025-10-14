@@ -41,6 +41,154 @@
   display: block;
 }
 
+/* Worker Type Cards Section */
+.worker-type-section {
+  margin-bottom: 2rem;
+}
+
+.worker-type-section .section-label {
+  display: block;
+  color: #333;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.worker-type-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.worker-type-card {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.worker-type-card:hover {
+  border-color: #8236fc;
+  box-shadow: 0 8px 20px rgba(130, 54, 252, 0.15);
+  transform: translateY(-5px);
+}
+
+.worker-type-card.selected {
+  border-color: #8236fc;
+  background: linear-gradient(135deg, #f8f5ff 0%, #ffffff 100%);
+  box-shadow: 0 8px 24px rgba(130, 54, 252, 0.25);
+}
+
+.worker-type-card .card-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #8236fc 0%, #a855f7 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.worker-type-card:hover .card-icon {
+  transform: scale(1.1);
+}
+
+.worker-type-card.selected .card-icon {
+  background: linear-gradient(135deg, #6b21a8 0%, #8236fc 100%);
+  box-shadow: 0 4px 12px rgba(130, 54, 252, 0.4);
+}
+
+.worker-type-card .card-icon svg {
+  width: 32px;
+  height: 32px;
+  color: #ffffff;
+}
+
+.worker-type-card h3 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.worker-type-card p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 0 0.5rem;
+}
+
+.worker-type-card .card-checkmark {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background: #8236fc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.worker-type-card.selected .card-checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Responsive adjustments for cards */
+@media (max-width: 768px) {
+  .worker-type-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .worker-type-card {
+    min-height: 180px;
+    padding: 1.5rem 1rem;
+  }
+  
+  .worker-type-card .card-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .worker-type-card .card-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .worker-type-card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .worker-type-card p {
+    font-size: 0.85rem;
+  }
+}
+
 .form-group input,
 .form-group select {
   padding: 0.75rem;
