@@ -8,6 +8,7 @@ import AdminLogin from './Components/pages/admin/AdminLogin';
 import AdminDashboard from './Components/pages/admin/AdminDashboard';
 import SubscriptionPlans from './Components/pages/payment/SubscriptionPlans';
 import SubscriptionSuccess from './Components/pages/payment/SubscriptionSuccess';
+import ArabicIntegrationTest from './Components/examples/ArabicIntegrationTest';
 import { AuthContext, AuthProvider } from './Components/context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import './i18n'; // Initialize i18n
@@ -167,6 +168,7 @@ function App() {
             <Route path="/account" element={<AccountRouter />} />
             <Route path="/auth-test" element={<AuthTest />} />
             <Route path="/simple-test" element={<SimpleAccountTest />} />
+            <Route path="/arabic-test" element={<ArabicIntegrationTest />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/test" element={<div>Admin Test Route Working!</div>} />
             <Route path="/route-test" element={<RouteTest />} />

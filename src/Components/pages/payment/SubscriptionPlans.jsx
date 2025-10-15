@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Elements } from '@stripe/react-stripe-js';
 import axiosInstance from '../../../api/axios';
 import { stripePromise } from '../../../config/stripe';
+import { useLanguage } from '../../../context/LanguageContext';
 import PaymentForm from './PaymentForm';
 import './SubscriptionPlans.css';
 
@@ -71,6 +72,8 @@ const ensureAllPlansAvailable = (apiPlans) => {
 
 const SubscriptionPlans = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
+  const isArabic = currentLanguage === 'ar';
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -420,7 +423,7 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subscription-plans-container">
-      <h2>{t('subscription.chooseYourPlan')}</h2>
+      <h2>{isArabic ? "اختر خطتك" : t('subscription.chooseYourPlan')}</h2>
       
       {/* Debug Panel for Development */}
       {process.env.NODE_ENV === 'development' && (
@@ -453,13 +456,25 @@ const SubscriptionPlans = () => {
 
       {currentSubscription && (
         <div className="current-subscription">
-          <h3>Current Plan: {currentSubscription.plan.name}</h3>
-          <p>Valid until: {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
+          <h3>
+            {isArabic ? "الخطة الحالية: " : "Current Plan: "}
+            {isArabic && currentSubscription.plan.name_ar ? currentSubscription.plan.name_ar : currentSubscription.plan.name}
+          </h3>
+          <p>
+            {isArabic ? "صالح حتى: " : "Valid until: "}
+            {new Date(currentSubscription.current_period_end).toLocaleDateString()}
+          </p>
           {currentSubscription.plan_end && (
-            <p>Plan ends: {new Date(currentSubscription.plan_end).toLocaleDateString()}</p>
+            <p>
+              {isArabic ? "تنتهي الخطة: " : "Plan ends: "}
+              {new Date(currentSubscription.plan_end).toLocaleDateString()}
+            </p>
           )}
           <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-            💡 You can view all available plans below and upgrade or change your subscription at any time.
+            💡 {isArabic 
+              ? "يمكنك عرض جميع الخطط المتاحة أدناه وترقية أو تغيير اشتراكك في أي وقت."
+              : "You can view all available plans below and upgrade or change your subscription at any time."
+            }
           </p>
         </div>
       )}
@@ -477,31 +492,44 @@ const SubscriptionPlans = () => {
               key={plan.id}
               className={`plan-card ${selectedPlan?.id === plan.id ? 'selected' : ''} ${isCurrentPlan ? 'current' : ''}`}
             >
-              <h3>{t(`billing.plans.${plan.name}`, plan.display_name || plan.name)}</h3>
+              <h3>
+                {isArabic && plan.name_ar ? plan.name_ar : t(`billing.plans.${plan.name}`, plan.display_name || plan.name)}
+              </h3>
               {plan.name === 'PLATINUM' && (
                 <div className="professional-banner">
-                  <span className="banner-text">{t('billing.recommendedForProfessionals')}</span>
+                  <span className="banner-text">
+                    {isArabic ? "موصى به للمحترفين" : t('billing.recommendedForProfessionals')}
+                  </span>
                 </div>
               )}
               <div className="price">
                 <span className="annual-price">
-                  ${plan.price}{t('billing.perYear')}
+                  ${plan.price}{isArabic ? " سنوياً" : t('billing.perYear')}
                 </span>
                 <span className="monthly-price">
-                  ${plan.monthly_equivalent}{t('billing.perMonthLong')}
+                  ${plan.monthly_equivalent}{isArabic ? " شهرياً" : t('billing.perMonthLong')}
                 </span>
               </div>
               <ul className="features">
-                {plan.features.map((feature, index) => (
-                  <li key={index}>{t(`billing.features.${feature}`, feature)}</li>
-                ))}
+                {plan.features.map((feature, index) => {
+                  // Use Arabic features if available and language is Arabic
+                  const featureText = isArabic && plan.features_ar && plan.features_ar[index] 
+                    ? plan.features_ar[index] 
+                    : t(`billing.features.${feature}`, feature);
+                  return <li key={index}>{featureText}</li>;
+                })}
               </ul>
               <button
                 className={`select-plan-button ${isCurrentPlan ? 'current' : ''} ${isUpgrade ? 'upgrade' : ''}`}
                 onClick={() => isUpgrade ? handleUpgradeClick(plan) : handleCheckout(plan)}
                 disabled={isCurrentPlan}
               >
-                {isCurrentPlan ? t('subscription.currentPlan') : isUpgrade ? t('subscription.upgrade') : t('subscription.subscribeNow')}
+                {isCurrentPlan 
+                  ? (isArabic ? "الخطة الحالية" : t('subscription.currentPlan'))
+                  : isUpgrade 
+                    ? (isArabic ? "ترقية" : t('subscription.upgrade'))
+                    : (isArabic ? "اشترك الآن" : t('subscription.subscribeNow'))
+                }
               </button>
             </div>
           );
@@ -512,7 +540,10 @@ const SubscriptionPlans = () => {
         <div className="payment-modal-overlay">
           <div className="payment-modal">
             <div className="payment-modal-header">
-              <h3>Upgrade to {selectedPlan.name}</h3>
+              <h3>
+                {isArabic ? "ترقية إلى " : "Upgrade to "}
+                {isArabic && selectedPlan.name_ar ? selectedPlan.name_ar : selectedPlan.name}
+              </h3>
               <button 
                 className="close-button"
                 onClick={() => setShowPaymentModal(false)}
@@ -522,8 +553,14 @@ const SubscriptionPlans = () => {
             </div>
             <div className="payment-modal-content">
               <div className="plan-summary">
-                <p>Annual Price: ${selectedPlan.price}</p>
-                <p>Monthly Equivalent: ${selectedPlan.monthly_equivalent}</p>
+                <p>
+                  {isArabic ? "السعر السنوي: $" : "Annual Price: $"}
+                  {selectedPlan.price}
+                </p>
+                <p>
+                  {isArabic ? "المعادل الشهري: $" : "Monthly Equivalent: $"}
+                  {selectedPlan.monthly_equivalent}
+                </p>
               </div>
               <Elements stripe={stripePromise}>
                 <PaymentForm
