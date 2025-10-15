@@ -37,6 +37,11 @@ const BackgroundBillingTab = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  
+  // Get user type from localStorage
+  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  const isTalent = userInfo.is_talent;
+  const isBackground = userInfo.is_background;
 
   useEffect(() => {
     fetchPlans();
@@ -45,11 +50,6 @@ const BackgroundBillingTab = () => {
 
   const fetchPlans = async () => {
     try {
-      // Get user type from localStorage
-      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      const isTalent = userInfo.is_talent;
-      const isBackground = userInfo.is_background;
-      
       console.log('🔍 Fetching all available Production Assets Pro plans...');
       console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
       

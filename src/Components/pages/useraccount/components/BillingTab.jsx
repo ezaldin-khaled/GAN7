@@ -23,6 +23,11 @@ const BillingTab = () => {
   const [error, setError] = useState('');
   const [userData, setUserData] = useState(null);
   const [userDataLoading, setUserDataLoading] = useState(true);
+  
+  // Get user type from localStorage
+  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  const isTalent = userInfo.is_talent;
+  const isBackground = userInfo.is_background;
 
   // Add polling interval for subscription updates
   useEffect(() => {
@@ -56,11 +61,6 @@ const BillingTab = () => {
 
   const fetchPlans = async () => {
     try {
-      // Get user type from localStorage
-      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      const isTalent = userInfo.is_talent;
-      const isBackground = userInfo.is_background;
-      
       console.log('Fetching plans from API...');
       
       // Use the correct API endpoint for plans with Arabic translations
