@@ -165,7 +165,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transform: none !important;
+    transform: translateY(15px) !important;
 }
 
 .profile-popup-card .popup-header-buttons .account-btn .icon {
