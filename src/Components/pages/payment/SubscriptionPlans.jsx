@@ -82,6 +82,11 @@ const SubscriptionPlans = () => {
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [debugInfo, setDebugInfo] = useState({});
+  
+  // Get user type from localStorage
+  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  const isTalent = userInfo.is_talent;
+  const isBackground = userInfo.is_background;
 
   useEffect(() => {
     console.log('🔍 SubscriptionPlans: Component mounted');
@@ -95,11 +100,6 @@ const SubscriptionPlans = () => {
 
   const fetchPlans = async () => {
     try {
-      // Get user type from localStorage
-      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      const isTalent = userInfo.is_talent;
-      const isBackground = userInfo.is_background;
-      
       console.log('🔍 SubscriptionPlans: Fetching all available plans...');
       console.log('🔍 SubscriptionPlans: User type - is_talent:', isTalent, 'is_background:', isBackground);
       console.log('🔍 SubscriptionPlans: Request headers:', {
