@@ -77,11 +77,9 @@ const BackgroundBillingTab = () => {
             is_active: plan.is_active
           }));
             
-          // Filter plans for background users - show only Background Jobs Professional
-          const filteredPlans = allPlansArray.filter(plan => 
-            plan.name.toLowerCase().includes('background jobs')
-          );
-          console.log('🔍 BackgroundBillingTab: Filtered plans for background user:', filteredPlans.map(p => p.name));
+          // Show all plans so users can upgrade/downgrade
+          const filteredPlans = allPlansArray;
+          console.log('🔍 BackgroundBillingTab: Showing all available plans for upgrade/downgrade options:', filteredPlans.map(p => p.name));
           
           console.log('🔍 BackgroundBillingTab: Converted plans array:', filteredPlans);
           setPlans(filteredPlans);

@@ -135,21 +135,9 @@ const SubscriptionPlans = () => {
             is_active: plan.is_active
           }));
             
-          // Filter plans based on user type
-          let filteredPlans = allPlansArray;
-          if (isTalent) {
-            // Talent users: Show talent plans (Premium, Platinum, Bands) - hide Background Jobs Professional
-            filteredPlans = allPlansArray.filter(plan => 
-              !plan.name.toLowerCase().includes('background jobs')
-            );
-            console.log('🔍 SubscriptionPlans: Filtered plans for talent user:', filteredPlans.map(p => p.name));
-          } else if (isBackground) {
-            // Background users: Show only Background Jobs Professional plan
-            filteredPlans = allPlansArray.filter(plan => 
-              plan.name.toLowerCase().includes('background jobs')
-            );
-            console.log('🔍 SubscriptionPlans: Filtered plans for background user:', filteredPlans.map(p => p.name));
-          }
+          // Show all plans so users can upgrade/downgrade
+          const filteredPlans = allPlansArray;
+          console.log('🔍 SubscriptionPlans: Showing all available plans for upgrade/downgrade options:', filteredPlans.map(p => p.name));
           
           console.log('🔍 SubscriptionPlans: Converted plans array:', filteredPlans);
           setPlans(filteredPlans);
