@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../../../context/LanguageContext';
 import axiosInstance from '../../../../api/axios';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import './BillingTab.css';
@@ -29,6 +30,8 @@ const ensureAllPlansAvailable = (apiPlans) => {
 
 const BackgroundBillingTab = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
+  const isArabic = currentLanguage === 'ar';
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -584,19 +587,21 @@ const BackgroundBillingTab = () => {
                 key={plan.id} 
                 className={`pricing-card ${plan.popular ? 'popular' : ''} ${plan.premium ? 'premium' : ''}`}
               >
-                {plan.popular && <div className="popular-badge">MOST POPULAR</div>}
-                <h3>{getDisplayPlanName(plan.name)}</h3>
-                <p>{plan.description}</p>
+                {plan.popular && <div className="popular-badge">{isArabic ? "الأكثر شعبية" : "MOST POPULAR"}</div>}
+                <h3>
+                  {isArabic && plan.name_ar ? plan.name_ar : getDisplayPlanName(plan.name)}
+                </h3>
+                <p>{isArabic && plan.description_ar ? plan.description_ar : plan.description}</p>
             
                 <div className="price-info">
                   <div className="current-price">
                     <span className="currency">US$</span>
                     <span className="amount">{plan.price}</span>
-                    <span className="period">/mo</span>
+                    <span className="period">{isArabic ? "شهرياً" : "/mo"}</span>
                   </div>
                   {isCurrentPlan && (
                     <div className="current-plan-marker">
-                      <FaCheck /> Current Plan
+                      <FaCheck /> {isArabic ? "الخطة الحالية" : "Current Plan"}
                     </div>
                   )}
                 </div>
@@ -607,25 +612,37 @@ const BackgroundBillingTab = () => {
                   disabled={isCurrentPlan}
                 >
                   <span className="button-text">
-                    {isCurrentPlan ? t('billing.currentPlanButton') : t('billing.upgradeTo', { plan: getDisplayPlanName(plan.name) })}
+                    {isCurrentPlan 
+                      ? (isArabic ? "الخطة الحالية" : t('billing.currentPlanButton'))
+                      : (isArabic 
+                          ? `ترقية إلى ${plan.name_ar || getDisplayPlanName(plan.name)}`
+                          : t('billing.upgradeTo', { plan: getDisplayPlanName(plan.name) })
+                        )
+                    }
                   </span>
                 </button>
 
                 <div className="features-list">
-                  {(plan.features || getDefaultFeatures(plan.name)).map((feature, index) => (
-                    <div key={index} className="feature-item">
-                      <FaCheck className="feature-icon" /> 
-                      <span className="feature-text">{feature}</span>
-                    </div>
-                  ))}
+                  {(plan.features || getDefaultFeatures(plan.name)).map((feature, index) => {
+                    // Use Arabic features if available and language is Arabic
+                    const featureText = isArabic && plan.features_ar && plan.features_ar[index] 
+                      ? plan.features_ar[index] 
+                      : feature;
+                    return (
+                      <div key={index} className="feature-item">
+                        <FaCheck className="feature-icon" /> 
+                        <span className="feature-text">{featureText}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
           })
         ) : (
           <div className="no-plans-message">
-            <p>No Production Assets Pro plans available at the moment.</p>
-            <p>Please contact support for more information.</p>
+            <p>{isArabic ? "لا توجد خطط أصول الإنتاج المتاحة في الوقت الحالي." : "No Production Assets Pro plans available at the moment."}</p>
+            <p>{isArabic ? "يرجى الاتصال بالدعم لمزيد من المعلومات." : "Please contact support for more information."}</p>
           </div>
         )}
       </div>

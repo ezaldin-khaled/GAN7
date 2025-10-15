@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
+import { useLanguage } from '../../../../context/LanguageContext';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
 
@@ -14,6 +15,8 @@ const ensureAllPlansAvailable = (apiPlans) => {
 
 const BillingTab = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
+  const isArabic = currentLanguage === 'ar';
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -478,24 +481,28 @@ const BillingTab = () => {
               key={plan.id} 
               className={`pricing-card ${plan.popular ? 'popular' : ''} ${plan.premium ? 'premium' : ''}`}
             >
-              {plan.popular && <div className="popular-badge">MOST POPULAR</div>}
-              <h3>{t(`billing.plans.${plan.name}`, plan.display_name || plan.name.charAt(0).toUpperCase() + plan.name.slice(1).toLowerCase())}</h3>
+              {plan.popular && <div className="popular-badge">{isArabic ? "الأكثر شعبية" : "MOST POPULAR"}</div>}
+              <h3>
+                {isArabic && plan.name_ar ? plan.name_ar : t(`billing.plans.${plan.name}`, plan.display_name || plan.name.charAt(0).toUpperCase() + plan.name.slice(1).toLowerCase())}
+              </h3>
               {plan.name === 'PLATINUM' && (
                 <div className="professional-banner">
-                  <span className="banner-text">{t('billing.recommendedForProfessionals')}</span>
+                  <span className="banner-text">
+                    {isArabic ? "موصى به للمحترفين" : t('billing.recommendedForProfessionals')}
+                  </span>
                 </div>
               )}
-              <p>{plan.description}</p>
+              <p>{isArabic && plan.description_ar ? plan.description_ar : plan.description}</p>
           
               <div className="price-info">
                 <div className="current-price">
                   <span className="currency">US$</span>
                   <span className="amount">{plan.price}</span>
-                  <span className="period">{t('billing.perMonth')}</span>
+                  <span className="period">{isArabic ? "شهرياً" : t('billing.perMonth')}</span>
                 </div>
                 {isCurrentPlan && (
                   <div className="current-plan-marker">
-                    <FaCheck /> {t('billing.currentPlanButton')}
+                    <FaCheck /> {isArabic ? "الخطة الحالية" : t('billing.currentPlanButton')}
                   </div>
                 )}
               </div>
@@ -506,25 +513,37 @@ const BillingTab = () => {
                 disabled={isCurrentPlan}
               >
                 <span className="button-text">
-                  {isCurrentPlan ? t('billing.currentPlanButton') : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) })}
+                  {isCurrentPlan 
+                    ? (isArabic ? "الخطة الحالية" : t('billing.currentPlanButton'))
+                    : (isArabic 
+                        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
+                        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) })
+                      )
+                  }
                 </span>
               </button>
 
               <div className="features-list">
-                {(plan.features || getDefaultFeatures(plan.name)).map((feature, index) => (
-                  <div key={index} className="feature-item">
-                    <FaCheck className="feature-icon" /> 
-                    <span className="feature-text">{t(`billing.features.${feature}`, feature)}</span>
-                  </div>
-                ))}
+                {(plan.features || getDefaultFeatures(plan.name)).map((feature, index) => {
+                  // Use Arabic features if available and language is Arabic
+                  const featureText = isArabic && plan.features_ar && plan.features_ar[index] 
+                    ? plan.features_ar[index] 
+                    : t(`billing.features.${feature}`, feature);
+                  return (
+                    <div key={index} className="feature-item">
+                      <FaCheck className="feature-icon" /> 
+                      <span className="feature-text">{featureText}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );
         })
         ) : (
           <div className="no-plans-message">
-            <p>No subscription plans available at the moment.</p>
-            <p>Please contact support for more information.</p>
+            <p>{isArabic ? "لا توجد خطط اشتراك متاحة في الوقت الحالي." : "No subscription plans available at the moment."}</p>
+            <p>{isArabic ? "يرجى الاتصال بالدعم لمزيد من المعلومات." : "Please contact support for more information."}</p>
           </div>
         )}
       </div>
