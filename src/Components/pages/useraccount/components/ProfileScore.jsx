@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../../../context/LanguageContext';
 import { FaCrown, FaCheckCircle, FaUser, FaImages, FaCogs, FaTrophy, FaLightbulb, FaArrowUp } from 'react-icons/fa';
 import './ProfileScore.css';
 
