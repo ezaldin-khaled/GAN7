@@ -480,7 +480,7 @@ const BackgroundAccountPage = () => {
   // Custom sidebar menu items for background users (no groups tab)
   const backgroundMenuItems = [
     { id: 'profile', icon: FaUser, label: 'Profile Information' },
-    { id: 'media', icon: FaImage, label: 'Item Gallery' },
+    { id: 'media', icon: FaImage, label: 'Items' },
     { id: 'billing', icon: FaCreditCard, label: 'Plans' },
     { id: 'security', icon: FaShieldAlt, label: 'Security' }
   ];

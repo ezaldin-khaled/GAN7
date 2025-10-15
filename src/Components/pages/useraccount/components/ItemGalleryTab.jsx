@@ -300,7 +300,7 @@ const ItemGalleryTab = ({ mediaFiles, handleMediaUpload, isItemGallery = false }
         `}
       </style>
       <h1 className="section-title">
-        {isItemGallery ? 'Item Gallery' : 'Media Gallery'}
+        {isItemGallery ? 'Items' : 'Media'}
         {isItemGallery && (
           <span style={{ 
             fontSize: '14px', 

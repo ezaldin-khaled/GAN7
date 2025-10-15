@@ -57,20 +57,6 @@ ul li a:hover {
     transform: translateY(-1px);
 }
 
-.gallery-link {
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    font-weight: 400;
-    letter-spacing: 0.3px;
-    color: #fff;
-    text-decoration: none;
-}
-
-.gallery-link:hover {
-    color: #ddd;
-    transform: translateY(-1px);
-}
 
 .nav-link-btn {
     background: none;

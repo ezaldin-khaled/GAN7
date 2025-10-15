@@ -222,9 +222,6 @@ function Navbar() {
           )}
         </li>
         <li>
-          <a href="/gallery" className="gallery-link">{t('navigation.gallery')}</a>
-        </li>
-        <li>
           <LanguageSwitcher />
         </li>
         {renderAuthSection()}

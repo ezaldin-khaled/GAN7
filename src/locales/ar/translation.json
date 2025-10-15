@@ -27,7 +27,6 @@
     "about": "حول",
     "services": "الخدمات",
     "contact": "اتصل بنا",
-    "gallery": "المعرض",
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
     "logout": "تسجيل الخروج",
@@ -201,7 +200,6 @@
   },
   "media": {
     "upload": "رفع",
-    "gallery": "المعرض",
     "images": "الصور",
     "videos": "الفيديوهات",
     "documents": "المستندات",
@@ -251,8 +249,6 @@
   "main": {
     "servicesSubtitle": "خدماتنا",
     "servicesTitle": "ما نقدمه",
-    "gallerySubtitle": "معرضنا",
-    "galleryTitle": "أفضل أعمالنا"
   },
   "hero": {
     "title": "هنا نكتشف المواهب",
@@ -278,35 +274,6 @@
     "submit": "إرسال الآن",
     "sending": "جاري الإرسال....",
     "success": "تم إرسال النموذج بنجاح"
-  },
-  "gallery": {
-    "seeMore": "اعرض المزيد"
-  },
-  "galleryPage": {
-    "title": "معرض الوسائط المشتركة",
-    "subtitle": "اكتشف المواهب الرائعة من خلال الوسائط المشتركة من قبل فريق الإدارة لدينا",
-    "loadingGallery": "جاري تحميل معرض الوسائط المشتركة...",
-    "sharedMedia": "وسائط مشتركة",
-    "noDescription": "لا يوجد وصف متاح",
-    "noMediaShared": "لم يتم مشاركة أي وسائط في المعرض بعد.",
-    "unexpectedDataFormat": "تم استلام تنسيق بيانات غير متوقع من الخادم.",
-    "endpointNotFound": "لم يتم العثور على نقطة نهاية الوسائط المشتركة (404). يرجى التأكد من تكوين API الخلفية بشكل صحيح.",
-    "authRequired": "مطلوب المصادقة لعرض الوسائط المشتركة. يرجى تسجيل الدخول.",
-    "noPermission": "ليس لديك إذن لعرض الوسائط المشتركة.",
-    "serverError": "خطأ في الخادم (500). قد تكون نقطة نهاية الوسائط المشتركة معطلة أو غير مطبقة بعد.",
-    "failedToLoad": "فشل تحميل الوسائط المشتركة",
-    "mediaFailedToLoad": "فشل تحميل الوسائط",
-    "sharedBy": "مشترك من قبل",
-    "unknownDate": "تاريخ غير معروف",
-    "noMediaYet": "لا توجد وسائط بعد",
-    "categories": {
-      "all": "الكل",
-      "featured": "مميز",
-      "trending": "الرائج",
-      "spotlight": "الأضواء",
-      "inspiration": "إلهام",
-      "general": "عام"
-    }
   },
   "foot": {
     "copyright": "© 2025 GAN. جميع الحقوق محفوظة",
@@ -533,12 +500,10 @@
   },
   "sidebar": {
     "profileInformation": "معلومات الملف الشخصي",
-    "mediaGallery": "معرض الوسائط",
     "plansAndBilling": "الخطط والفواتير",
     "groups": "المجموعات",
     "specializations": "التخصصات",
     "security": "الأمان",
-    "itemGallery": "معرض العناصر",
     "plans": "الخطط",
     "backToMainPage": "العودة إلى الصفحة الرئيسية",
     "logout": "تسجيل الخروج",

@@ -8,7 +8,6 @@ import About from '../About/About';
 import Contact from '../Footer/Footer';
 import Foot from '../Foot/Foot'
 import Title from '../Title/Title'
-import Gallery from '../Gallery/Gallery'
 
 const MainPage = () => {
     const { t } = useTranslation();
@@ -37,8 +36,6 @@ const MainPage = () => {
         <About id="about" /> {/* About section */}
         {/* <Title subTitle = 'Contact Us' title = 'Get in Touch'/> */}
         {/* <Contact id="footer" /> Contact section */}
-        <Title subTitle={t('main.gallerySubtitle')} title={t('main.galleryTitle')}/>
-        <Gallery id="gallery" /> {/* Gallery section */}
         <Foot/>
       </div>
 

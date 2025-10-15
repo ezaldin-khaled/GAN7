@@ -8,7 +8,6 @@ import AdminLogin from './Components/pages/admin/AdminLogin';
 import AdminDashboard from './Components/pages/admin/AdminDashboard';
 import SubscriptionPlans from './Components/pages/payment/SubscriptionPlans';
 import SubscriptionSuccess from './Components/pages/payment/SubscriptionSuccess';
-import GalleryPage from './Components/pages/GalleryPage';
 import { AuthContext, AuthProvider } from './Components/context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import './i18n'; // Initialize i18n
@@ -165,7 +164,6 @@ function App() {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/account" element={<AccountRouter />} />
             <Route path="/auth-test" element={<AuthTest />} />
             <Route path="/simple-test" element={<SimpleAccountTest />} />

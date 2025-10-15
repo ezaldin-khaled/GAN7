@@ -8,7 +8,7 @@ import axiosInstance from '../../../../api/axios';
 // Default menu items for talent users - labels will be translated
 const getDefaultMenuItems = (t) => [
   { id: 'profile', icon: FaUser, label: t('sidebar.profileInformation') },
-  { id: 'media', icon: FaImage, label: t('sidebar.mediaGallery') },
+  { id: 'media', icon: FaImage, label: t('media.title') },
   { id: 'billing', icon: FaCreditCard, label: t('sidebar.plansAndBilling') },
   { id: 'groups', icon: FaUsers, label: t('sidebar.groups') },
   { id: 'specializations', icon: FaUser, label: t('sidebar.specializations') },
@@ -18,7 +18,7 @@ const getDefaultMenuItems = (t) => [
 // Menu items for background users (no groups tab, renamed media to items)
 const getBackgroundMenuItems = (t) => [
   { id: 'profile', icon: FaUser, label: t('sidebar.profileInformation') },
-  { id: 'media', icon: FaBox, label: t('sidebar.itemGallery') },
+  { id: 'media', icon: FaBox, label: t('items.title') },
   { id: 'billing', icon: FaCreditCard, label: t('sidebar.plans') },
   { id: 'security', icon: FaShieldAlt, label: t('sidebar.security') }
 ];

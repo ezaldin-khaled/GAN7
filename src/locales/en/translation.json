@@ -482,12 +482,10 @@
   },
   "sidebar": {
     "profileInformation": "Profile Information",
-    "mediaGallery": "Media Gallery",
     "plansAndBilling": "Plans & Billing",
     "groups": "Groups",
     "specializations": "Specializations",
     "security": "Security",
-    "itemGallery": "Item Gallery",
     "plans": "Plans",
     "backToMainPage": "Back to Main Page",
     "logout": "Logout",
@@ -739,10 +737,9 @@
     "uploadTestImagesButton": "Upload Test Images"
   },
   "media": {
-    "title": "Media Gallery",
+    "title": "Media",
     "upload": "Upload",
     "uploadMedia": "Upload Media",
-    "gallery": "Gallery",
     "images": "Images",
     "videos": "Videos",
     "documents": "Documents",
@@ -767,7 +764,7 @@
     "updating": "Updating..."
   },
   "items": {
-    "title": "Item Gallery",
+    "title": "Items",
     "uploadItem": "Upload Item",
     "addNewItem": "Add New Item",
     "noItemsYet": "No items uploaded yet",

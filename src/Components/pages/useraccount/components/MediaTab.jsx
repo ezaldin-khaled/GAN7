@@ -204,7 +204,7 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
 
   return (
     <div className="content-section">
-      <h1 className="section-title">Media Gallery</h1>
+      <h1 className="section-title">{t('media.title')}</h1>
       
       {/* Terms Notice */}
       <div className="media-terms-notice" style={{ 
