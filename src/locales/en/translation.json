@@ -27,7 +27,6 @@
     "about": "About",
     "services": "Services",
     "contact": "Contact",
-    "gallery": "Gallery",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -231,9 +230,7 @@
   },
   "main": {
     "servicesSubtitle": "Our Services",
-    "servicesTitle": "What We Offer",
-    "gallerySubtitle": "Our Gallery",
-    "galleryTitle": "The Best of Our Work"
+    "servicesTitle": "What We Offer"
   },
   "hero": {
     "title": "Here we discover talents",
@@ -259,35 +256,6 @@
     "submit": "Submit now",
     "sending": "Sending....",
     "success": "Form Submitted Successfully"
-  },
-  "gallery": {
-    "seeMore": "See more"
-  },
-  "galleryPage": {
-    "title": "Shared Media Gallery",
-    "subtitle": "Discover amazing talent through media shared by our admin team",
-    "loadingGallery": "Loading shared media gallery...",
-    "sharedMedia": "Shared Media",
-    "noDescription": "No description available",
-    "noMediaShared": "No media has been shared to the gallery yet.",
-    "unexpectedDataFormat": "Received an unexpected data format from the server.",
-    "endpointNotFound": "Shared media endpoint not found (404). Please ensure the backend API is properly configured.",
-    "authRequired": "Authentication required to view shared media. Please log in.",
-    "noPermission": "You do not have permission to view shared media.",
-    "serverError": "Server error (500). The shared media endpoint may be down or not implemented yet.",
-    "failedToLoad": "Failed to load shared media",
-    "mediaFailedToLoad": "Media failed to load",
-    "sharedBy": "Shared by",
-    "unknownDate": "Unknown date",
-    "noMediaYet": "No media yet",
-    "categories": {
-      "all": "All",
-      "featured": "Featured",
-      "trending": "Trending",
-      "spotlight": "Spotlight",
-      "inspiration": "Inspiration",
-      "general": "General"
-    }
   },
   "foot": {
     "copyright": "© 2025 GAN. All rights reserved",
