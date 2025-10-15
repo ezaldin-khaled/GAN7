@@ -79,7 +79,7 @@ const BackgroundBillingTab = () => {
             
           // Filter plans for background users - show only Background Jobs Professional
           const filteredPlans = allPlansArray.filter(plan => 
-            ['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+            plan.name.toLowerCase().includes('background jobs')
           );
           console.log('🔍 BackgroundBillingTab: Filtered plans for background user:', filteredPlans.map(p => p.name));
           

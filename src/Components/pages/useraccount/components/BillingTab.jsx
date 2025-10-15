@@ -93,13 +93,13 @@ const BillingTab = () => {
           if (isTalent) {
             // Talent users: Show talent plans (Premium, Platinum, Bands) - hide Background Jobs Professional
             filteredPlans = allPlansArray.filter(plan => 
-              !['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+              !plan.name.toLowerCase().includes('background jobs')
             );
             console.log('Filtered plans for talent user:', filteredPlans.map(p => p.name));
           } else if (isBackground) {
             // Background users: Show only Background Jobs Professional plan
             filteredPlans = allPlansArray.filter(plan => 
-              ['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+              plan.name.toLowerCase().includes('background jobs')
             );
             console.log('Filtered plans for background user:', filteredPlans.map(p => p.name));
           }
