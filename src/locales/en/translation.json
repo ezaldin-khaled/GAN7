@@ -752,7 +752,8 @@
     "noMediaYet": "No media uploaded yet",
     "uploadYourFirst": "Upload your first media file to get started!",
     "delete": "Delete",
-    "loading": "Loading media..."
+    "loading": "Loading media...",
+    "termsNotice": "Notice: The media you upload may be used by the admins for commercial purposes."
   },
   "security": {
     "title": "Security Settings",

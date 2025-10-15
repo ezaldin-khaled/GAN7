@@ -221,7 +221,7 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
       }}>
         <span style={{ fontSize: '18px', flexShrink: 0 }}>⚠️</span>
         <span>
-          <strong>Notice:</strong> The media you upload may be used by the admins for commercial purposes.
+          {t('media.termsNotice')}
         </span>
       </div>
       

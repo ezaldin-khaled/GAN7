@@ -529,7 +529,7 @@ const BackgroundBillingTab = () => {
 
   return (
     <div className="content-section">
-      <h1 className="section-title">Production Assets Pro Plans</h1>
+      <h1 className="section-title">{t('billing.productionAssetsProPlans')}</h1>
       {error && <div className="error-message">{error}</div>}
       
       {/* Restricted Countries Notice */}
@@ -550,13 +550,13 @@ const BackgroundBillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon pulse" />
           <div className="plan-info">
-            <h3>Current Plan: {getDisplayPlanName(getCurrentPlan(enhancedPlans)?.name) || getCurrentPlan(enhancedPlans)?.display_name || 'Active Plan'}</h3>
+            <h3>{t('billing.currentPlan')}: {getDisplayPlanName(getCurrentPlan(enhancedPlans)?.name) || getCurrentPlan(enhancedPlans)?.display_name || t('billing.activePlan')}</h3>
             <div className="end-date">
-              <p><strong>Valid until:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
+              <p><strong>{t('billing.validUntil')}:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
             </div>
             <div className="plan-status">
               <span className="status-dot"></span>
-              Active
+              {t('billing.active')}
             </div>
           </div>
         </div>
@@ -564,11 +564,11 @@ const BackgroundBillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon" />
           <div className="plan-info">
-            <h3>Current Plan: Free</h3>
-            <p>Basic features for Production Assets Pro providers</p>
+            <h3>{t('billing.currentPlan')}: {t('billing.free')}</h3>
+            <p>{t('billing.basicFeatures')}</p>
             <div className="plan-status free">
               <span className="status-dot"></span>
-              Free Plan
+              {t('billing.freePlan')}
             </div>
           </div>
         </div>
@@ -607,7 +607,7 @@ const BackgroundBillingTab = () => {
                   disabled={isCurrentPlan}
                 >
                   <span className="button-text">
-                    {isCurrentPlan ? 'Current Plan' : `Upgrade to ${getDisplayPlanName(plan.name)}`}
+                    {isCurrentPlan ? t('billing.currentPlanButton') : t('billing.upgradeTo', { plan: getDisplayPlanName(plan.name) })}
                   </span>
                 </button>
 
@@ -633,7 +633,7 @@ const BackgroundBillingTab = () => {
       <div className="current-plan-features">
         <h3>
           <FaCrown className="section-icon" />
-          Your {getDisplayPlanName(getCurrentPlan(enhancedPlans)?.name) || getCurrentPlan(enhancedPlans)?.display_name || 'Free'} Plan Features
+          {t('billing.currentPlan')}: {getDisplayPlanName(getCurrentPlan(enhancedPlans)?.name) || getCurrentPlan(enhancedPlans)?.display_name || t('billing.free')} {t('billing.features')}
         </h3>
         <div className="features-list highlight">
           {getCurrentPlanFeatures().map((feature, index) => (

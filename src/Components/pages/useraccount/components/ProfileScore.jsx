@@ -1,10 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../context/LanguageContext';
 import { FaCrown, FaCheckCircle, FaUser, FaImages, FaCogs, FaTrophy, FaLightbulb, FaArrowUp } from 'react-icons/fa';
 import './ProfileScore.css';
 
 const ProfileScore = ({ profileScore }) => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   // Debug logging to track score values
   console.log('📊 ProfileScore component - Received profileScore:', profileScore);
   
@@ -62,6 +64,22 @@ const ProfileScore = ({ profileScore }) => {
       'specialization': t('profileScore.categories.specialization')
     };
     return categoryMap[category] || category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  // Helper function to get translated details
+  const getTranslatedDetails = () => {
+    if (currentLanguage === 'ar' && profileScore.details_ar) {
+      return profileScore.details_ar;
+    }
+    return profileScore.details || {};
+  };
+
+  // Helper function to get translated improvement tips
+  const getTranslatedImprovementTips = () => {
+    if (currentLanguage === 'ar' && profileScore.improvement_tips_ar) {
+      return profileScore.improvement_tips_ar;
+    }
+    return profileScore.improvement_tips || [];
   };
 
   return (
@@ -143,7 +161,7 @@ const ProfileScore = ({ profileScore }) => {
               </div>
               
               <div className="category-detail">
-                <p>{profileScore.details?.[category] || t('profileScore.defaultTip')}</p>
+                <p>{getTranslatedDetails()[category] || t('profileScore.defaultTip')}</p>
               </div>
             </div>
           );
@@ -151,7 +169,7 @@ const ProfileScore = ({ profileScore }) => {
       </div>
 
       {/* Improvement Tips */}
-      {profileScore.improvement_tips && profileScore.improvement_tips.length > 0 && (
+      {getTranslatedImprovementTips().length > 0 && (
         <div className="improvement-section">
           <div className="improvement-header">
             <div className="improvement-icon">
@@ -160,7 +178,7 @@ const ProfileScore = ({ profileScore }) => {
             <h3>{t('profileScore.improvementTips')}</h3>
           </div>
           <div className="improvement-tips-list">
-            {profileScore.improvement_tips.map((tip, index) => (
+            {getTranslatedImprovementTips().map((tip, index) => (
               <div key={index} className="improvement-tip">
                 <div className="tip-icon">
                   <FaArrowUp />
