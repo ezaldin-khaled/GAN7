@@ -451,6 +451,23 @@ input::placeholder {
   cursor: pointer;
 }
 
+/* RTL support for password toggle */
+[dir="rtl"] .password-toggle {
+  right: auto;
+  left: 1rem;
+}
+
+/* RTL support for password input container */
+[dir="rtl"] .password-input-container {
+  flex-direction: row-reverse;
+}
+
+/* RTL support for password input padding */
+[dir="rtl"] .password-input-container input {
+  padding-right: 1rem;
+  padding-left: 3rem;
+}
+
 /* Date of Birth container styles */
 .date-of-birth-container {
   display: flex;
@@ -489,6 +506,12 @@ input::placeholder {
 }
 
 .password-toggle:hover {
+  color: #8236fc;
+  background: rgba(130, 54, 252, 0.1);
+}
+
+/* RTL support for password toggle hover */
+[dir="rtl"] .password-toggle:hover {
   color: #8236fc;
   background: rgba(130, 54, 252, 0.1);
 }
