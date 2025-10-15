@@ -72,6 +72,10 @@ const BillingTab = () => {
         // Handle the new plans API response structure with Arabic translations
         if (response.data && response.data.results) {
           console.log('Found plans in response with Arabic translations...');
+          console.log('🔍 Raw API response data:', response.data);
+          console.log('🔍 Number of plans from API:', response.data.results.length);
+          console.log('🔍 Plan names from API:', response.data.results.map(p => p.name));
+          
           const allPlansArray = response.data.results.map((plan) => ({
             id: plan.id,
             name: plan.name,
@@ -104,7 +108,9 @@ const BillingTab = () => {
             console.log('Filtered plans for background user:', filteredPlans.map(p => p.name));
           }
           
-          console.log('Converted plans array:', filteredPlans);
+          console.log('🔍 Converted plans array:', filteredPlans);
+          console.log('🔍 Final filtered plans count:', filteredPlans.length);
+          console.log('🔍 Final filtered plan names:', filteredPlans.map(p => p.name));
           setPlans(filteredPlans);
           setLoading(false);
           return; // Exit early since we got the data
@@ -438,6 +444,7 @@ const BillingTab = () => {
   console.log('  - Current subscription:', currentSubscription);
   console.log('  - User type - isTalent:', isTalent, 'isBackground:', isBackground);
   console.log('  - Plan names:', displayPlans.map(p => p.name));
+  console.log('  - Display plans details:', displayPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
 
   return (
     <div className="content-section">
