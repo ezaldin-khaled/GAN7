@@ -111,123 +111,64 @@ const SubscriptionPlans = () => {
       console.log('🔍 SubscriptionPlans: JWT Token available:', !!token);
       console.log('🔍 SubscriptionPlans: Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
       
-      // Try multiple approaches to get all plans
-      const allPlans = new Map(); // Use Map to avoid duplicates by ID
-      
-      // Approach 1: Try with different parameter combinations
-      const parameterSets = [
-        { show_all: true, include_subscribed: true },
-        { show_all: true },
-        { include_subscribed: true },
-        { user_type: isTalent ? 'talent' : isBackground ? 'background' : undefined },
-        {} // No parameters - default behavior
-      ];
-      
-      for (const params of parameterSets) {
-        try {
-          console.log(`🔍 SubscriptionPlans: Trying with params:`, params);
-          const response = await axiosInstance.get('/api/payments/pricing/', { params });
+      // Use the new plans API with Arabic translations
+      try {
+        console.log('🔍 SubscriptionPlans: Fetching plans from plans API with Arabic translations...');
+        const response = await axiosInstance.get('/api/payments/plans/');
           
-          // Handle the correct backend response structure
-          if (response.data && response.data.subscription_plans) {
-            const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
-              id: index + 1,
-              name: key,
-              display_name: plan.name,
-              name_ar: plan.name_ar,
-              description: plan.description,
-              description_ar: plan.description_ar,
-              price: parseFloat(plan.price),
-              features: plan.features,
-              features_ar: plan.features_ar,
-              duration_months: plan.duration_months,
-              stripe_price_id: plan.stripe_price_id,
-              monthly_equivalent: plan.monthly_equivalent,
-              is_active: true
-            }));
+        // Handle the new plans API response structure with Arabic translations
+        if (response.data && response.data.results) {
+          console.log('🔍 SubscriptionPlans: Found plans in response with Arabic translations...');
+          const allPlansArray = response.data.results.map((plan) => ({
+            id: plan.id,
+            name: plan.name,
+            display_name: plan.name,
+            name_ar: plan.name_ar,
+            description: plan.description,
+            description_ar: plan.description_ar,
+            price: parseFloat(plan.price),
+            features: plan.features,
+            features_ar: plan.features_ar,
+            duration_months: plan.duration_months,
+            stripe_price_id: plan.stripe_price_id,
+            monthly_equivalent: plan.monthly_equivalent,
+            is_active: plan.is_active
+          }));
             
-            // Filter plans based on user type
-            let filteredPlans = plansArray;
-            if (isTalent) {
-              // Talent users: Hide Production Assets Pro (BACKGROUND_JOBS)
-              filteredPlans = plansArray.filter(plan => plan.name !== 'BACKGROUND_JOBS');
-              console.log('SubscriptionPlans: Filtered plans for talent user (removed BACKGROUND_JOBS):', filteredPlans.map(p => p.name));
-            } else if (isBackground) {
-              // Background users: Hide talent plans (SILVER, GOLD, PLATINUM)
-              filteredPlans = plansArray.filter(plan => 
-                !['SILVER', 'GOLD', 'PLATINUM'].includes(plan.name)
-              );
-              console.log('SubscriptionPlans: Filtered plans for background user (removed SILVER/GOLD/PLATINUM):', filteredPlans.map(p => p.name));
-            }
-            
-            filteredPlans.forEach(plan => {
-              if (plan.id) {
-                allPlans.set(plan.id, plan);
-                console.log(`✅ SubscriptionPlans: Added plan ${plan.id} (${plan.name})`);
-              }
-            });
-          } else if (response.data && Array.isArray(response.data)) {
-            // Fallback for old array format
-            response.data.forEach(plan => {
-              if (plan.id) {
-                allPlans.set(plan.id, plan);
-                console.log(`✅ SubscriptionPlans: Added plan ${plan.id} (${plan.name})`);
-              }
-            });
+          // Filter plans based on user type
+          let filteredPlans = allPlansArray;
+          if (isTalent) {
+            // Talent users: Show talent plans (Premium, Platinum, Bands) - hide Background Jobs Professional
+            filteredPlans = allPlansArray.filter(plan => 
+              !['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+            );
+            console.log('🔍 SubscriptionPlans: Filtered plans for talent user:', filteredPlans.map(p => p.name));
+          } else if (isBackground) {
+            // Background users: Show only Background Jobs Professional plan
+            filteredPlans = allPlansArray.filter(plan => 
+              ['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+            );
+            console.log('🔍 SubscriptionPlans: Filtered plans for background user:', filteredPlans.map(p => p.name));
           }
-        } catch (err) {
-          console.log(`⚠️ SubscriptionPlans: Failed with params ${JSON.stringify(params)}:`, err.message);
+          
+          console.log('🔍 SubscriptionPlans: Converted plans array:', filteredPlans);
+          setPlans(filteredPlans);
+          setLoading(false);
+          return; // Exit early since we got the data
         }
+      } catch (err) {
+        console.log('⚠️ SubscriptionPlans: Plans API call failed:', err.message);
+        setPlans([]);
+        setLoading(false);
       }
-      
-      // Convert Map to Array
-      const apiPlans = Array.from(allPlans.values());
-      console.log(`✅ SubscriptionPlans: Collected ${apiPlans.length} unique plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-      
-      // If we still don't have enough plans, add fallback plans for missing ones
-      if (apiPlans.length < 3) {
-        console.log('⚠️ SubscriptionPlans: Not enough plans from API, adding fallback plans');
-        const fallbackPlans = getFallbackPlans();
-        fallbackPlans.forEach(fallbackPlan => {
-          if (!allPlans.has(fallbackPlan.id)) {
-            allPlans.set(fallbackPlan.id, fallbackPlan);
-            console.log(`✅ SubscriptionPlans: Added fallback plan ${fallbackPlan.id} (${fallbackPlan.name})`);
-          }
-        });
-      }
-      
-      const finalPlans = Array.from(allPlans.values());
-      setPlans(finalPlans);
-      setDebugInfo(prev => ({ ...prev, plansFetched: true, plansCount: finalPlans?.length || 0 }));
-      setLoading(false);
-      console.log(`✅ SubscriptionPlans: Final plans count: ${finalPlans.length}`);
     } catch (err) {
       console.error('❌ SubscriptionPlans: Error fetching plans:', err);
       console.error('❌ SubscriptionPlans: Error response:', err.response?.data);
       console.error('❌ SubscriptionPlans: Error status:', err.response?.status);
-      console.error('❌ SubscriptionPlans: Error headers:', err.response?.headers);
-      console.error('❌ SubscriptionPlans: Error config:', err.config);
       console.error('❌ SubscriptionPlans: Error message:', err.message);
       
-      setDebugInfo(prev => ({ 
-        ...prev, 
-        plansError: true, 
-        plansErrorStatus: err.response?.status,
-        plansErrorMessage: err.message 
-      }));
-      
-      // Handle 404 error gracefully - API endpoint might not be implemented yet
-      if (err.response?.status === 404) {
-        console.log('⚠️ SubscriptionPlans: Payment plans API endpoint not available, using fallback plans');
-        const fallbackPlans = getFallbackPlans();
-        setPlans(fallbackPlans);
-        setError(''); // Clear any previous errors
-      } else {
-        setError('Failed to load subscription plans');
-        // Still provide fallback plans even on other errors
-        const fallbackPlans = getFallbackPlans();
-        setPlans(fallbackPlans);
-      }
+      setError('Failed to load subscription plans');
+      setPlans([]);
       setLoading(false);
     }
   };

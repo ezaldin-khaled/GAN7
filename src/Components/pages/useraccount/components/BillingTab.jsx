@@ -63,18 +63,18 @@ const BillingTab = () => {
       
       console.log('Fetching plans from API...');
       
-      // Use the correct API endpoint for pricing
+      // Use the correct API endpoint for plans with Arabic translations
       try {
-        console.log('Fetching plans from pricing API...');
-        const response = await axiosInstance.get('/api/payments/pricing/');
-        console.log('Pricing API response:', response.data);
+        console.log('Fetching plans from plans API with Arabic translations...');
+        const response = await axiosInstance.get('/api/payments/plans/');
+        console.log('Plans API response:', response.data);
         
-        // Handle the correct backend response structure
-        if (response.data && response.data.subscription_plans) {
-          console.log('Found subscription_plans in response, converting to array format...');
-          const allPlansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
-            id: index + 1,
-            name: key,
+        // Handle the new plans API response structure with Arabic translations
+        if (response.data && response.data.results) {
+          console.log('Found plans in response with Arabic translations...');
+          const allPlansArray = response.data.results.map((plan) => ({
+            id: plan.id,
+            name: plan.name,
             display_name: plan.name,
             name_ar: plan.name_ar,
             description: plan.description,
@@ -85,21 +85,23 @@ const BillingTab = () => {
             duration_months: plan.duration_months,
             stripe_price_id: plan.stripe_price_id,
             monthly_equivalent: plan.monthly_equivalent,
-            is_active: true
+            is_active: plan.is_active
           }));
           
           // Filter plans based on user type
           let filteredPlans = allPlansArray;
           if (isTalent) {
-            // Talent users: Hide Production Assets Pro (BACKGROUND_JOBS)
-            filteredPlans = allPlansArray.filter(plan => plan.name !== 'BACKGROUND_JOBS');
-            console.log('Filtered plans for talent user (removed BACKGROUND_JOBS):', filteredPlans.map(p => p.name));
-          } else if (isBackground) {
-            // Background users: Hide talent plans (SILVER, GOLD, PLATINUM)
+            // Talent users: Show talent plans (Premium, Platinum, Bands) - hide Background Jobs Professional
             filteredPlans = allPlansArray.filter(plan => 
-              !['SILVER', 'GOLD', 'PLATINUM'].includes(plan.name)
+              !['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
             );
-            console.log('Filtered plans for background user (removed SILVER/GOLD/PLATINUM):', filteredPlans.map(p => p.name));
+            console.log('Filtered plans for talent user:', filteredPlans.map(p => p.name));
+          } else if (isBackground) {
+            // Background users: Show only Background Jobs Professional plan
+            filteredPlans = allPlansArray.filter(plan => 
+              ['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+            );
+            console.log('Filtered plans for background user:', filteredPlans.map(p => p.name));
           }
           
           console.log('Converted plans array:', filteredPlans);

@@ -53,97 +53,53 @@ const BackgroundBillingTab = () => {
       console.log('🔍 Fetching all available Production Assets Pro plans...');
       console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
       
-      // Try multiple approaches to get all plans
-      const allPlans = new Map(); // Use Map to avoid duplicates by ID
-      
-      // Approach 1: Try with different parameter combinations
-      const parameterSets = [
-        { show_all: true, include_subscribed: true },
-        { show_all: true },
-        { include_subscribed: true },
-        { user_type: isBackground ? 'background' : isTalent ? 'talent' : undefined },
-        {} // No parameters - default behavior
-      ];
-      
-      for (const params of parameterSets) {
-        try {
-          console.log(`🔍 BackgroundBillingTab: Trying with params:`, params);
-          const response = await axiosInstance.get('/api/payments/pricing/', { params });
+      // Use the new plans API with Arabic translations
+      try {
+        console.log('🔍 BackgroundBillingTab: Fetching plans from plans API with Arabic translations...');
+        const response = await axiosInstance.get('/api/payments/plans/');
           
-          // Handle the correct backend response structure
-          if (response.data && response.data.subscription_plans) {
-            const plansArray = Object.entries(response.data.subscription_plans).map(([key, plan], index) => ({
-              id: index + 1,
-              name: key,
-              display_name: plan.name,
-              name_ar: plan.name_ar,
-              description: plan.description,
-              description_ar: plan.description_ar,
-              price: parseFloat(plan.price),
-              features: plan.features,
-              features_ar: plan.features_ar,
-              duration_months: plan.duration_months,
-              stripe_price_id: plan.stripe_price_id,
-              monthly_equivalent: plan.monthly_equivalent,
-              is_active: true
-            }));
+        // Handle the new plans API response structure with Arabic translations
+        if (response.data && response.data.results) {
+          console.log('🔍 BackgroundBillingTab: Found plans in response with Arabic translations...');
+          const allPlansArray = response.data.results.map((plan) => ({
+            id: plan.id,
+            name: plan.name,
+            display_name: plan.name,
+            name_ar: plan.name_ar,
+            description: plan.description,
+            description_ar: plan.description_ar,
+            price: parseFloat(plan.price),
+            features: plan.features,
+            features_ar: plan.features_ar,
+            duration_months: plan.duration_months,
+            stripe_price_id: plan.stripe_price_id,
+            monthly_equivalent: plan.monthly_equivalent,
+            is_active: plan.is_active
+          }));
             
-            // Filter plans based on user type
-            let filteredPlans = plansArray;
-            if (isTalent) {
-              // Talent users: Hide Production Assets Pro (BACKGROUND_JOBS)
-              filteredPlans = plansArray.filter(plan => plan.name !== 'BACKGROUND_JOBS');
-              console.log('BackgroundBillingTab: Filtered plans for talent user (removed BACKGROUND_JOBS):', filteredPlans.map(p => p.name));
-            } else if (isBackground) {
-              // Background users: Hide talent plans (SILVER, GOLD, PLATINUM)
-              filteredPlans = plansArray.filter(plan => 
-                !['SILVER', 'GOLD', 'PLATINUM'].includes(plan.name)
-              );
-              console.log('BackgroundBillingTab: Filtered plans for background user (removed SILVER/GOLD/PLATINUM):', filteredPlans.map(p => p.name));
-            }
-            
-            filteredPlans.forEach(plan => {
-              if (plan.id) {
-                allPlans.set(plan.id, plan);
-                console.log(`✅ BackgroundBillingTab: Added plan ${plan.id} (${plan.name})`);
-              }
-            });
-          } else if (response.data && Array.isArray(response.data)) {
-            // Fallback for old array format
-            response.data.forEach(plan => {
-              if (plan.id) {
-                allPlans.set(plan.id, plan);
-                console.log(`✅ BackgroundBillingTab: Added plan ${plan.id} (${plan.name})`);
-              }
-            });
-          }
-        } catch (err) {
-          console.log(`⚠️ BackgroundBillingTab: Failed with params ${JSON.stringify(params)}:`, err.message);
+          // Filter plans for background users - show only Background Jobs Professional
+          const filteredPlans = allPlansArray.filter(plan => 
+            ['Background Jobs Professional', 'Background Jobs Professional Plan'].includes(plan.name)
+          );
+          console.log('🔍 BackgroundBillingTab: Filtered plans for background user:', filteredPlans.map(p => p.name));
+          
+          console.log('🔍 BackgroundBillingTab: Converted plans array:', filteredPlans);
+          setPlans(filteredPlans);
+          setLoading(false);
+          return; // Exit early since we got the data
         }
+      } catch (err) {
+        console.log('⚠️ BackgroundBillingTab: Plans API call failed:', err.message);
+        setPlans([]);
+        setLoading(false);
       }
-      
-      // Convert Map to Array
-      const apiPlans = Array.from(allPlans.values());
-      console.log(`✅ BackgroundBillingTab: Collected ${apiPlans.length} unique plans:`, apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-      
-      // Use only API plans - no fallback plans
-      setPlans(apiPlans);
-      setLoading(false);
-      console.log(`✅ BackgroundBillingTab: Final plans count: ${apiPlans.length}`);
     } catch (err) {
       console.error('❌ Error fetching Production Assets Pro plans:', err);
       console.error('Error response:', err.response?.data);
       console.error('Error status:', err.response?.status);
       
-      // Handle 404 error gracefully - API endpoint might not be implemented yet
-      if (err.response?.status === 404) {
-        console.log('Payment plans API endpoint not available');
-        setPlans([]);
-        setError('Subscription plans are not available at the moment. Please contact support.');
-      } else {
-        setError('Failed to load subscription plans');
-        setPlans([]);
-      }
+      setError('Failed to load subscription plans');
+      setPlans([]);
       setLoading(false);
     }
   };
