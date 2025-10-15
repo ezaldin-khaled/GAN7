@@ -88,9 +88,21 @@ const BillingTab = () => {
             is_active: plan.is_active
           }));
           
-          // Show all plans so users can upgrade/downgrade
-          const filteredPlans = allPlansArray;
-          console.log('Showing all available plans for upgrade/downgrade options:', filteredPlans.map(p => p.name));
+          // Filter plans based on user type - show all relevant plans for upgrade/downgrade options
+          let filteredPlans = allPlansArray;
+          if (isTalent) {
+            // Talent users: Show all talent plans (Premium, Platinum, Bands) - hide Background Jobs Professional
+            filteredPlans = allPlansArray.filter(plan => 
+              !plan.name.toLowerCase().includes('background jobs')
+            );
+            console.log('Filtered plans for talent user (showing all talent plans for upgrade/downgrade):', filteredPlans.map(p => p.name));
+          } else if (isBackground) {
+            // Background users: Show only Background Jobs Professional plan
+            filteredPlans = allPlansArray.filter(plan => 
+              plan.name.toLowerCase().includes('background jobs')
+            );
+            console.log('Filtered plans for background user:', filteredPlans.map(p => p.name));
+          }
           
           console.log('Converted plans array:', filteredPlans);
           setPlans(filteredPlans);
@@ -417,6 +429,15 @@ const BillingTab = () => {
   const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
   
   const displayPlans = enhancedPlans;
+  
+  // Debug logging to help troubleshoot plan display issues
+  console.log('🔍 BillingTab Debug Info:');
+  console.log('  - Total plans from API:', plans.length);
+  console.log('  - Enhanced plans (after ensureSubscribedPlanAvailable):', enhancedPlans.length);
+  console.log('  - Display plans:', displayPlans.length);
+  console.log('  - Current subscription:', currentSubscription);
+  console.log('  - User type - isTalent:', isTalent, 'isBackground:', isBackground);
+  console.log('  - Plan names:', displayPlans.map(p => p.name));
 
   return (
     <div className="content-section">

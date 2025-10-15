@@ -135,9 +135,21 @@ const SubscriptionPlans = () => {
             is_active: plan.is_active
           }));
             
-          // Show all plans so users can upgrade/downgrade
-          const filteredPlans = allPlansArray;
-          console.log('🔍 SubscriptionPlans: Showing all available plans for upgrade/downgrade options:', filteredPlans.map(p => p.name));
+          // Filter plans based on user type - show all relevant plans for upgrade/downgrade options
+          let filteredPlans = allPlansArray;
+          if (isTalent) {
+            // Talent users: Show all talent plans (Premium, Platinum, Bands) - hide Background Jobs Professional
+            filteredPlans = allPlansArray.filter(plan => 
+              !plan.name.toLowerCase().includes('background jobs')
+            );
+            console.log('🔍 SubscriptionPlans: Filtered plans for talent user (showing all talent plans for upgrade/downgrade):', filteredPlans.map(p => p.name));
+          } else if (isBackground) {
+            // Background users: Show only Background Jobs Professional plan
+            filteredPlans = allPlansArray.filter(plan => 
+              plan.name.toLowerCase().includes('background jobs')
+            );
+            console.log('🔍 SubscriptionPlans: Filtered plans for background user:', filteredPlans.map(p => p.name));
+          }
           
           console.log('🔍 SubscriptionPlans: Converted plans array:', filteredPlans);
           setPlans(filteredPlans);
@@ -348,6 +360,13 @@ const SubscriptionPlans = () => {
     success,
     debugInfo
   });
+  
+  // Debug logging to help troubleshoot plan display issues
+  console.log('🔍 SubscriptionPlans Debug Info:');
+  console.log('  - Total plans:', plans.length);
+  console.log('  - Plan names:', plans.map(p => p.name));
+  console.log('  - Current subscription:', currentSubscription);
+  console.log('  - User type - isTalent:', isTalent, 'isBackground:', isBackground);
 
   if (loading) {
     console.log('🔍 SubscriptionPlans: Showing loading spinner');
