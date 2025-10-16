@@ -9,6 +9,7 @@ import { TALENT_SPECIALIZATION_DATA, getTranslatedOptions } from './talent-speci
 import { FaUpload, FaPlus, FaVideo, FaImage } from 'react-icons/fa';
 import TestImagesUpload from './TestImagesUpload';
 import './TestImagesUpload.css';
+import './TabDescriptions.css';
 
 const SpecializationTab = () => {
   const { t } = useTranslation();
@@ -1009,6 +1010,26 @@ const SpecializationTab = () => {
   return (
     <div className="specialization-tab">
       <h2>{t('specialization.title')}</h2>
+      
+      {/* Tab Description */}
+      <div className="tab-description specialization-theme">
+        <div className="description-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div className="description-content">
+          <h3>Talent Specialization & Categorization</h3>
+          <p>Define your talent type and specialization to help casting directors and clients find you. Upload your portfolio and showcase your unique skills.</p>
+          <div className="description-features">
+            <span className="feature-tag">Talent Types</span>
+            <span className="feature-tag">Portfolio Upload</span>
+            <span className="feature-tag">Skills Showcase</span>
+            <span className="feature-tag">Professional Profile</span>
+          </div>
+        </div>
+      </div>
+      
       <ProfileScore />
       <form onSubmit={handleSubmit} className="specialization-form">
         <div className="worker-type-section">

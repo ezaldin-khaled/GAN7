@@ -5,6 +5,7 @@ import { CreateBandModal, ManageBandModal } from './GroupModals';
 import axiosInstance from '../../../../api/axios';
 import './GroupsTab.css';
 import '../EnhancedTabStyles.css'; // Import the enhanced styles
+import './TabDescriptions.css';
 
 const GroupsTab = ({ userData }) => {
   const { t } = useTranslation();
@@ -1310,6 +1311,25 @@ const GroupsTab = ({ userData }) => {
   return (
     <div className="content-section">
       <h1 className="section-title">{t('groups.bands')}</h1>
+      
+      {/* Tab Description */}
+      <div className="tab-description groups-theme">
+        <div className="description-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H17c-.8 0-1.54.37-2.01.99L14 10.5V22h6zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm2 16v-7H9V9.5c0-.83.67-1.5 1.5-1.5S12 8.67 12 9.5V15h2.5v7h-7z"/>
+          </svg>
+        </div>
+        <div className="description-content">
+          <h3>Band Collaboration & Management</h3>
+          <p>Create and manage bands, collaborate with other musicians, and build your musical network. Join existing bands or create your own to showcase your talent.</p>
+          <div className="description-features">
+            <span className="feature-tag">Band Creation</span>
+            <span className="feature-tag">Member Management</span>
+            <span className="feature-tag">Collaboration</span>
+            <span className="feature-tag">Invitations</span>
+          </div>
+        </div>
+      </div>
       
       {/* Limited View for Unsubscribed Users */}
       {!hasBandSubscription && !isInBand && (

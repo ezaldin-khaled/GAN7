@@ -4,6 +4,7 @@ import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import { useLanguage } from '../../../../context/LanguageContext';
 import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
+import './TabDescriptions.css';
 
 // Removed hardcoded fallback plans - using only API data
 
@@ -444,6 +445,26 @@ const BillingTab = () => {
   return (
     <div className="content-section">
       <h1 className="section-title">{t('billing.plansAndBilling')}</h1>
+      
+      {/* Tab Description */}
+      <div className="tab-description billing-theme">
+        <div className="description-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+        </div>
+        <div className="description-content">
+          <h3>Subscription & Billing Management</h3>
+          <p>Manage your subscription plans, view billing history, and upgrade your account to unlock premium features and enhanced capabilities.</p>
+          <div className="description-features">
+            <span className="feature-tag">Subscription Plans</span>
+            <span className="feature-tag">Payment History</span>
+            <span className="feature-tag">Account Upgrade</span>
+            <span className="feature-tag">Billing Info</span>
+          </div>
+        </div>
+      </div>
+      
       {error && <div className="error-message">{error}</div>}
       
       {/* Restricted Countries Notice */}

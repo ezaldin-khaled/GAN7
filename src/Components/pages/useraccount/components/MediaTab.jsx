@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaImage, FaTrash, FaUpload } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axios';
+import './TabDescriptions.css';
 
 const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   const { t } = useTranslation();
@@ -205,6 +206,25 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
   return (
     <div className="content-section">
       <h1 className="section-title">{t('media.title')}</h1>
+      
+      {/* Tab Description */}
+      <div className="tab-description media-theme">
+        <div className="description-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+          </svg>
+        </div>
+        <div className="description-content">
+          <h3>Media & Portfolio Management</h3>
+          <p>Upload and manage your media files, portfolio images, and showcase your work. Build a compelling visual portfolio that represents your talent and skills.</p>
+          <div className="description-features">
+            <span className="feature-tag">Image Upload</span>
+            <span className="feature-tag">Video Gallery</span>
+            <span className="feature-tag">Portfolio</span>
+            <span className="feature-tag">Media Management</span>
+          </div>
+        </div>
+      </div>
       
       {/* Terms Notice */}
       <div className="media-terms-notice" style={{ 

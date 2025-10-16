@@ -1,0 +1,230 @@
+/* Tab Descriptions - Elegant Styling */
+.tab-description {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.tab-description:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+}
+
+.tab-description::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.tab-description .description-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.tab-description:hover .description-icon {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tab-description .description-icon svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.tab-description .description-content {
+  position: relative;
+  z-index: 1;
+}
+
+.tab-description h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab-description p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 20px 0;
+  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.description-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.feature-tag {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.feature-tag:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tab-description {
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .tab-description h3 {
+    font-size: 1.3rem;
+  }
+  
+  .tab-description p {
+    font-size: 0.95rem;
+  }
+  
+  .description-features {
+    gap: 6px;
+  }
+  
+  .feature-tag {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-description {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .tab-description .description-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 12px;
+  }
+  
+  .tab-description .description-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .tab-description h3 {
+    font-size: 1.2rem;
+  }
+  
+  .tab-description p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animation for tab descriptions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-description {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Different gradient themes for different tabs */
+.tab-description.profile-theme {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.tab-description.media-theme {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.tab-description.billing-theme {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.tab-description.groups-theme {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.tab-description.specialization-theme {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.tab-description.security-theme {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  color: #333;
+}
+
+.tab-description.security-theme h3 {
+  color: #333;
+}
+
+.tab-description.security-theme p {
+  color: rgba(51, 51, 51, 0.8);
+}
+
+.tab-description.security-theme .feature-tag {
+  background: rgba(51, 51, 51, 0.1);
+  color: #333;
+  border: 1px solid rgba(51, 51, 51, 0.2);
+}
+
+.tab-description.security-theme .feature-tag:hover {
+  background: rgba(51, 51, 51, 0.2);
+}
+
+/* RTL Support */
+[dir="rtl"] .tab-description {
+  text-align: right;
+}
+
+[dir="rtl"] .description-features {
+  justify-content: flex-end;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .tab-description {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .tab-description:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+}
