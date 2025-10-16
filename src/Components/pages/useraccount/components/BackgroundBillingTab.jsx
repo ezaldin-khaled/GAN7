@@ -389,6 +389,58 @@ const BackgroundBillingTab = () => {
     return null;
   };
 
+  // Determine plan hierarchy for button text logic
+  const getPlanHierarchy = (planName) => {
+    const name = planName.toLowerCase();
+    if (name.includes('platinum')) return 3; // Highest tier
+    if (name.includes('premium')) return 2; // Middle tier
+    if (name.includes('bands')) return 2; // Middle tier (same as premium)
+    return 1; // Free or basic tier
+  };
+
+  // Get appropriate button text based on current subscription and target plan
+  const getButtonText = (plan, isCurrentPlan, currentPlan) => {
+    if (isCurrentPlan) {
+      return isArabic ? "الخطة الحالية" : t('billing.currentPlanButton');
+    }
+
+    const currentPlanName = currentPlan?.name || '';
+    const targetPlanName = plan.name;
+    
+    const currentTier = getPlanHierarchy(currentPlanName);
+    const targetTier = getPlanHierarchy(targetPlanName);
+    
+    // Special handling for Premium plan button
+    if (targetPlanName.toLowerCase().includes('premium')) {
+      if (currentTier > targetTier) {
+        // User is on a higher tier (like Platinum), show "Downgrade to Premium"
+        return isArabic 
+          ? `تخفيض إلى ${plan.name_ar || plan.display_name || plan.name}`
+          : `Downgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
+      } else {
+        // User is on free or lower tier, show "Upgrade to Premium"
+        return isArabic 
+          ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
+          : `Upgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
+      }
+    }
+    
+    // Default logic for other plans
+    if (currentTier < targetTier) {
+      return isArabic 
+        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
+        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) });
+    } else if (currentTier > targetTier) {
+      return isArabic 
+        ? `تخفيض إلى ${plan.name_ar || plan.display_name || plan.name}`
+        : `Downgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
+    } else {
+      return isArabic 
+        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
+        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) });
+    }
+  };
+
   const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
 
   // Get current plan features
@@ -571,13 +623,7 @@ const BackgroundBillingTab = () => {
                   disabled={isCurrentPlan}
                 >
                   <span className="button-text">
-                    {isCurrentPlan 
-                      ? (isArabic ? "الخطة الحالية" : t('billing.currentPlanButton'))
-                      : (isArabic 
-                          ? `ترقية إلى ${plan.name_ar || getDisplayPlanName(plan.name)}`
-                          : t('billing.upgradeTo', { plan: getDisplayPlanName(plan.name) })
-                        )
-                    }
+                    {getButtonText(plan, isCurrentPlan, getCurrentPlan(enhancedPlans))}
                   </span>
                 </button>
 
