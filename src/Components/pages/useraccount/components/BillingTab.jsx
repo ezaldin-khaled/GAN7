@@ -7,6 +7,7 @@ import './BillingTab.css';
 
 // Removed hardcoded fallback plans - using only API data
 
+
 const BillingTab = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
@@ -37,7 +38,7 @@ const BillingTab = () => {
       fetchPlans(); // Also refresh plans to ensure they stay visible
     }, 30000);
     return () => clearInterval(pollInterval);
-  }, [fetchPlans, fetchCurrentSubscription]);
+  }, [fetchPlans]);
 
   // Add visibility change listener to refresh plans when user returns to tab
   useEffect(() => {
@@ -51,16 +52,11 @@ const BillingTab = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchPlans, fetchCurrentSubscription]);
+  }, [fetchPlans]);
 
   const fetchPlans = useCallback(async () => {
     try {
       console.log('Fetching plans from API...');
-      
-      // Get user type from localStorage inside the callback
-      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      const isTalent = userInfo.is_talent;
-      const isBackground = userInfo.is_background;
       
       // Use the correct API endpoint for plans with Arabic translations
       try {
@@ -131,9 +127,9 @@ const BillingTab = () => {
       setLoading(false);
       console.log('✅ Loading set to false after error');
     }
-  }, []); // Remove dependencies since we get user info inside the callback
+  }, [isTalent, isBackground]);
 
-  const fetchCurrentSubscription = useCallback(async () => {
+  const fetchCurrentSubscription = async () => {
     try {
       const response = await axiosInstance.get('/api/payments/subscriptions/');
       console.log('Subscription data:', response.data);
@@ -152,7 +148,7 @@ const BillingTab = () => {
     } catch (err) {
       console.error('Error fetching current subscription:', err);
     }
-  }, []);
+  };
 
   const fetchUserData = async () => {
     try {
@@ -277,7 +273,7 @@ const BillingTab = () => {
       // Also refresh plans to ensure they stay visible
       fetchPlans();
     }
-  }, [fetchPlans, fetchCurrentSubscription]);
+  }, [fetchPlans]);
 
   if (loading || userDataLoading) {
     return (
@@ -430,58 +426,6 @@ const BillingTab = () => {
     return null;
   };
 
-  // Determine plan hierarchy for button text logic
-  const getPlanHierarchy = (planName) => {
-    const name = planName.toLowerCase();
-    if (name.includes('platinum')) return 3; // Highest tier
-    if (name.includes('premium')) return 2; // Middle tier
-    if (name.includes('bands')) return 2; // Middle tier (same as premium)
-    return 1; // Free or basic tier
-  };
-
-  // Get appropriate button text based on current subscription and target plan
-  const getButtonText = (plan, isCurrentPlan, currentPlan) => {
-    if (isCurrentPlan) {
-      return isArabic ? "الخطة الحالية" : t('billing.currentPlanButton');
-    }
-
-    const currentPlanName = currentPlan?.name || '';
-    const targetPlanName = plan.name;
-    
-    const currentTier = getPlanHierarchy(currentPlanName);
-    const targetTier = getPlanHierarchy(targetPlanName);
-    
-    // Special handling for Premium plan button
-    if (targetPlanName.toLowerCase().includes('premium')) {
-      if (currentTier > targetTier) {
-        // User is on a higher tier (like Platinum), show "Downgrade to Premium"
-        return isArabic 
-          ? `تخفيض إلى ${plan.name_ar || plan.display_name || plan.name}`
-          : `Downgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
-      } else {
-        // User is on free or lower tier, show "Upgrade to Premium"
-        return isArabic 
-          ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
-          : `Upgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
-      }
-    }
-    
-    // Default logic for other plans
-    if (currentTier < targetTier) {
-      return isArabic 
-        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
-        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) });
-    } else if (currentTier > targetTier) {
-      return isArabic 
-        ? `تخفيض إلى ${plan.name_ar || plan.display_name || plan.name}`
-        : `Downgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
-    } else {
-      return isArabic 
-        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
-        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) });
-    }
-  };
-
   // Calculate enhanced plans directly
   const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
   
@@ -586,7 +530,13 @@ const BillingTab = () => {
                 disabled={isCurrentPlan}
               >
                 <span className="button-text">
-                  {getButtonText(plan, isCurrentPlan, getCurrentPlan(enhancedPlans))}
+                  {isCurrentPlan 
+                    ? (isArabic ? "الخطة الحالية" : t('billing.currentPlanButton'))
+                    : (isArabic 
+                        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
+                        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) })
+                      )
+                  }
                 </span>
               </button>
 

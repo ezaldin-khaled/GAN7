@@ -5,6 +5,8 @@ import axiosInstance from '../../../../api/axios';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import './BillingTab.css';
 
+
+
 const BackgroundBillingTab = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
@@ -14,22 +16,19 @@ const BackgroundBillingTab = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
-  // User type is now determined inside the fetchPlans callback
+  // Get user type from localStorage
+  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  const isTalent = userInfo.is_talent;
+  const isBackground = userInfo.is_background;
 
   useEffect(() => {
     fetchPlans();
     fetchCurrentSubscription();
-  }, [fetchPlans, fetchCurrentSubscription]);
+  }, [fetchPlans]);
 
   const fetchPlans = useCallback(async () => {
     try {
       console.log('🔍 Fetching all available Production Assets Pro plans...');
-      
-      // Get user type from localStorage inside the callback
-      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      const isTalent = userInfo.is_talent;
-      const isBackground = userInfo.is_background;
-      
       console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
       
       // Use the new plans API with Arabic translations
@@ -80,9 +79,9 @@ const BackgroundBillingTab = () => {
         setPlans([]);
       setLoading(false);
     }
-  }, []); // Remove dependencies since we get user info inside the callback
+  }, [isTalent, isBackground]);
 
-  const fetchCurrentSubscription = useCallback(async () => {
+  const fetchCurrentSubscription = async () => {
     try {
       // Try multiple endpoints for background user subscription data
       const endpoints = [
@@ -92,6 +91,7 @@ const BackgroundBillingTab = () => {
       ];
       
       let response = null;
+      
       let successfulEndpoint = null;
       
       // Try each endpoint until one succeeds
@@ -151,7 +151,7 @@ const BackgroundBillingTab = () => {
       console.error('❌ BackgroundBillingTab: Error fetching current subscription:', err);
       setCurrentSubscription(null);
     }
-  }, []);
+  };
 
   const handleSubscribe = async (plan) => {
     try {
@@ -365,58 +365,6 @@ const BackgroundBillingTab = () => {
     return null;
   };
 
-  // Determine plan hierarchy for button text logic
-  const getPlanHierarchy = (planName) => {
-    const name = planName.toLowerCase();
-    if (name.includes('platinum')) return 3; // Highest tier
-    if (name.includes('premium')) return 2; // Middle tier
-    if (name.includes('bands')) return 2; // Middle tier (same as premium)
-    return 1; // Free or basic tier
-  };
-
-  // Get appropriate button text based on current subscription and target plan
-  const getButtonText = (plan, isCurrentPlan, currentPlan) => {
-    if (isCurrentPlan) {
-      return isArabic ? "الخطة الحالية" : t('billing.currentPlanButton');
-    }
-
-    const currentPlanName = currentPlan?.name || '';
-    const targetPlanName = plan.name;
-    
-    const currentTier = getPlanHierarchy(currentPlanName);
-    const targetTier = getPlanHierarchy(targetPlanName);
-    
-    // Special handling for Premium plan button
-    if (targetPlanName.toLowerCase().includes('premium')) {
-      if (currentTier > targetTier) {
-        // User is on a higher tier (like Platinum), show "Downgrade to Premium"
-        return isArabic 
-          ? `تخفيض إلى ${plan.name_ar || plan.display_name || plan.name}`
-          : `Downgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
-      } else {
-        // User is on free or lower tier, show "Upgrade to Premium"
-        return isArabic 
-          ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
-          : `Upgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
-      }
-    }
-    
-    // Default logic for other plans
-    if (currentTier < targetTier) {
-      return isArabic 
-        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
-        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) });
-    } else if (currentTier > targetTier) {
-      return isArabic 
-        ? `تخفيض إلى ${plan.name_ar || plan.display_name || plan.name}`
-        : `Downgrade to ${t(`billing.plans.${plan.name}`, plan.name)}`;
-    } else {
-      return isArabic 
-        ? `ترقية إلى ${plan.name_ar || plan.display_name || plan.name}`
-        : t('billing.upgradeTo', { plan: t(`billing.plans.${plan.name}`, plan.name) });
-    }
-  };
-
   const enhancedPlans = ensureSubscribedPlanAvailable(plans, currentSubscription);
 
   // Get current plan features
@@ -599,7 +547,13 @@ const BackgroundBillingTab = () => {
                   disabled={isCurrentPlan}
                 >
                   <span className="button-text">
-                    {getButtonText(plan, isCurrentPlan, getCurrentPlan(enhancedPlans))}
+                    {isCurrentPlan 
+                      ? (isArabic ? "الخطة الحالية" : t('billing.currentPlanButton'))
+                      : (isArabic 
+                          ? `ترقية إلى ${plan.name_ar || getDisplayPlanName(plan.name)}`
+                          : t('billing.upgradeTo', { plan: getDisplayPlanName(plan.name) })
+                        )
+                    }
                   </span>
                 </button>
 
@@ -645,5 +599,6 @@ const BackgroundBillingTab = () => {
     </div>
   );
 };
+
 
 export default BackgroundBillingTab;
