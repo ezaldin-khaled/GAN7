@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import { useLanguage } from '../../../../context/LanguageContext';
@@ -6,12 +6,6 @@ import axiosInstance from '../../../../api/axios';
 import './BillingTab.css';
 
 // Removed hardcoded fallback plans - using only API data
-
-// Helper function to ensure all plans are available
-const ensureAllPlansAvailable = (apiPlans) => {
-  // Use only API data - no fallback plans
-  return apiPlans || [];
-};
 
 const BillingTab = () => {
   const { t } = useTranslation();
@@ -43,7 +37,7 @@ const BillingTab = () => {
       fetchPlans(); // Also refresh plans to ensure they stay visible
     }, 30000);
     return () => clearInterval(pollInterval);
-  }, []);
+  }, [fetchPlans, fetchCurrentSubscription]);
 
   // Add visibility change listener to refresh plans when user returns to tab
   useEffect(() => {
@@ -57,11 +51,16 @@ const BillingTab = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, []);
+  }, [fetchPlans, fetchCurrentSubscription]);
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       console.log('Fetching plans from API...');
+      
+      // Get user type from localStorage inside the callback
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isTalent = userInfo.is_talent;
+      const isBackground = userInfo.is_background;
       
       // Use the correct API endpoint for plans with Arabic translations
       try {
@@ -132,9 +131,9 @@ const BillingTab = () => {
       setLoading(false);
       console.log('✅ Loading set to false after error');
     }
-  };
+  }, []); // Remove dependencies since we get user info inside the callback
 
-  const fetchCurrentSubscription = async () => {
+  const fetchCurrentSubscription = useCallback(async () => {
     try {
       const response = await axiosInstance.get('/api/payments/subscriptions/');
       console.log('Subscription data:', response.data);
@@ -153,7 +152,7 @@ const BillingTab = () => {
     } catch (err) {
       console.error('Error fetching current subscription:', err);
     }
-  };
+  }, []);
 
   const fetchUserData = async () => {
     try {
@@ -278,7 +277,7 @@ const BillingTab = () => {
       // Also refresh plans to ensure they stay visible
       fetchPlans();
     }
-  }, []);
+  }, [fetchPlans, fetchCurrentSubscription]);
 
   if (loading || userDataLoading) {
     return (
@@ -620,19 +619,5 @@ const BillingTab = () => {
   );
 };
 
-const getCookie = (name) => {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-};
 
 export default BillingTab;

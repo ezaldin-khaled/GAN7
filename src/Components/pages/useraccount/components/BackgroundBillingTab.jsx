@@ -1,32 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../../context/LanguageContext';
 import axiosInstance from '../../../../api/axios';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import './BillingTab.css';
-
-// Helper function to get fallback plans for Production Assets Pro
-const getFallbackPlans = () => {
-  // Return empty array - no hardcoded plans
-  return [];
-};
-
-// Helper function to ensure all plans are available
-const ensureAllPlansAvailable = (apiPlans) => {
-  // If API returned plans, use ONLY API data (no fallback plans)
-  if (apiPlans && apiPlans.length > 0) {
-    console.log('🔍 BackgroundBillingTab: Using ONLY API plans (no fallback plans)');
-    console.log('🔍 BackgroundBillingTab: API plans:', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-    
-    // Return only API plans - no fallback plans added
-    console.log('🔍 BackgroundBillingTab: Final plans (API only):', apiPlans.map(p => ({ id: p.id, name: p.name, price: p.price })));
-    return apiPlans;
-  } else {
-    console.log('⚠️ BackgroundBillingTab: No plans from API, returning empty array');
-    return [];
-  }
-};
 
 const BackgroundBillingTab = () => {
   const { t } = useTranslation();
@@ -36,21 +13,23 @@ const BackgroundBillingTab = () => {
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   
-  // Get user type from localStorage
-  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-  const isTalent = userInfo.is_talent;
-  const isBackground = userInfo.is_background;
+  // User type is now determined inside the fetchPlans callback
 
   useEffect(() => {
     fetchPlans();
     fetchCurrentSubscription();
-  }, []);
+  }, [fetchPlans, fetchCurrentSubscription]);
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       console.log('🔍 Fetching all available Production Assets Pro plans...');
+      
+      // Get user type from localStorage inside the callback
+      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+      const isTalent = userInfo.is_talent;
+      const isBackground = userInfo.is_background;
+      
       console.log('🔍 User type - is_talent:', isTalent, 'is_background:', isBackground);
       
       // Use the new plans API with Arabic translations
@@ -101,9 +80,9 @@ const BackgroundBillingTab = () => {
         setPlans([]);
       setLoading(false);
     }
-  };
+  }, []); // Remove dependencies since we get user info inside the callback
 
-  const fetchCurrentSubscription = async () => {
+  const fetchCurrentSubscription = useCallback(async () => {
     try {
       // Try multiple endpoints for background user subscription data
       const endpoints = [
@@ -113,8 +92,6 @@ const BackgroundBillingTab = () => {
       ];
       
       let response = null;
-      let lastError = null;
-      
       let successfulEndpoint = null;
       
       // Try each endpoint until one succeeds
@@ -127,7 +104,6 @@ const BackgroundBillingTab = () => {
           break;
         } catch (err) {
           console.error(`❌ BackgroundBillingTab: Error with endpoint ${endpoint}:`, err);
-          lastError = err;
         }
       }
       
@@ -175,7 +151,7 @@ const BackgroundBillingTab = () => {
       console.error('❌ BackgroundBillingTab: Error fetching current subscription:', err);
       setCurrentSubscription(null);
     }
-  };
+  }, []);
 
   const handleSubscribe = async (plan) => {
     try {
@@ -668,21 +644,6 @@ const BackgroundBillingTab = () => {
       </div>
     </div>
   );
-};
-
-const getCookie = (name) => {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
 };
 
 export default BackgroundBillingTab;
