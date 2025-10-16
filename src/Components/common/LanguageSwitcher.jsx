@@ -14,8 +14,8 @@ const LanguageSwitcher = () => {
     <button 
       className="language-toggle-btn"
       onClick={toggleLanguage}
-      aria-label="Switch Language"
-      title={currentLanguage === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
+      aria-label={`Switch to ${currentLanguage === 'en' ? 'Arabic' : 'English'}`}
+      title={currentLanguage === 'en' ? 'التبديل إلى العربية' : 'Switch to English'}
     >
       {currentLanguage === 'en' ? 'AR' : 'EN'}
     </button>

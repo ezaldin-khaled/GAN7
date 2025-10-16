@@ -1,29 +1,39 @@
 /* Simple Language Toggle Button */
 .language-toggle-btn {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 8px 16px;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-  font-family: inherit;
+  transition: all 0.2s ease;
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .language-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .language-toggle-btn:active {
   transform: translateY(0);
+}
+
+.language-toggle-btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Mobile responsiveness */
@@ -39,16 +49,20 @@
   }
   
   nav .language-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2) !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 }
 
 /* Dark navbar specific styles */
 nav.dark-nav .language-toggle-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 nav.dark-nav .language-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25) !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
