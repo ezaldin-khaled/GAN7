@@ -270,19 +270,21 @@
     "points": "pts",
     "viewTips": "View improvement tips",
     "overallScore": "Overall Score",
-    "overallScoreDesc": "Your overall profile strength",
-    "overallScoreTip": "Complete your profile information and add more media to improve your score.",
+    "overallScoreDesc": "Your comprehensive profile strength",
+    "overallScoreTip": "Complete all profile sections to maximize your score",
     "engagementRate": "Engagement Rate",
-    "engagementRateDesc": "Based on user interactions",
-    "engagementRateTip": "Post more regularly and respond to comments to increase engagement.",
+    "engagementRateDesc": "How often users interact with your profile",
+    "engagementRateTip": "Post regularly and respond to messages to improve engagement",
     "activityLevel": "Activity Level",
-    "activityLevelDesc": "Your recent platform activity",
-    "activityLevelTip": "Maintain your current activity level to keep your score high.",
+    "activityLevelDesc": "How active you are on the platform",
+    "activityLevelTip": "Stay active by logging in regularly and updating your profile",
     "contentQuality": "Content Quality",
-    "contentQualityDesc": "Based on media quality and diversity",
-    "contentQualityTip": "Add more high-quality images and videos to improve content quality.",
+    "contentQualityDesc": "Quality of your uploaded content",
+    "contentQualityTip": "Upload high-quality images and videos to improve content score",
     "high": "High",
     "good": "Good",
+    "medium": "Medium",
+    "low": "Low",
     "levels": {
       "expert": "Expert",
       "advanced": "Advanced",
@@ -291,13 +293,39 @@
     },
     "categories": {
       "accountTier": "Account Tier",
-      "verification": "Verification",
+      "emailVerification": "Email Verification",
       "profileCompletion": "Profile Completion",
       "mediaContent": "Media Content",
-      "specialization": "Specialization"
+      "specialization": "Specialization",
+      "socialMedia": "Social Media"
+    },
+    "descriptions": {
+      "accountTier": "Points based on your subscription tier",
+      "emailVerification": "Points for verified email address",
+      "profileCompletion": "Points for completed profile information",
+      "mediaContent": "Points for uploaded portfolio items",
+      "specialization": "Points for added specializations",
+      "socialMedia": "Points for social media links"
     },
     "defaultTip": "Complete this section to earn more points",
-    "improvementTips": "Improvement Tips"
+    "improvementTips": {
+      "title": "Improvement Tips",
+      "upgradeAccount": "Upgrade to Premium (+10) or Platinum (+20) for more points",
+      "verifyEmail": "Verify your email for +25 points",
+      "completeProfile": "Complete your profile details for up to +25 points",
+      "addMedia": "Add more portfolio items for up to +20 points",
+      "addSpecialization": "Add a specialization for +10 points",
+      "addSocialMedia": "Add social media links for up to +10 points"
+    },
+    "scoring": {
+      "maxPoints": "Maximum Points",
+      "currentPoints": "Current Points",
+      "progress": "Progress",
+      "excellent": "Excellent (80-100)",
+      "good": "Good (60-79)",
+      "fair": "Fair (40-59)",
+      "needsImprovement": "Needs Improvement (0-39)"
+    }
   },
   "billing": {
     "plansAndBilling": "Plans & Billing",
