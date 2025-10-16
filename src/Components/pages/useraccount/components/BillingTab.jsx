@@ -101,11 +101,10 @@ const BillingTab = () => {
             );
             console.log('Filtered plans for talent user (showing all talent plans for upgrade/downgrade):', filteredPlans.map(p => p.name));
           } else if (isBackground) {
-            // Background users: Show only Background Jobs Professional plan
-            filteredPlans = allPlansArray.filter(plan => 
-              plan.name.toLowerCase().includes('background jobs')
-            );
-            console.log('Filtered plans for background user:', filteredPlans.map(p => p.name));
+            // Background users: Show all available plans (premium, platinum, bands) for background users
+            // Since the API doesn't have specific "background jobs" plans, show all plans
+            filteredPlans = allPlansArray;
+            console.log('Filtered plans for background user (showing all plans):', filteredPlans.map(p => p.name));
           }
           
           console.log('🔍 Converted plans array:', filteredPlans);

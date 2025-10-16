@@ -64,24 +64,22 @@ const BackgroundBillingTab = () => {
           const allPlansArray = response.data.results.map((plan) => ({
             id: plan.id,
             name: plan.name,
-            display_name: plan.name,
+              display_name: plan.name,
             name_ar: plan.name_ar,
             description: plan.description,
             description_ar: plan.description_ar,
-            price: parseFloat(plan.price),
-            features: plan.features,
+              price: parseFloat(plan.price),
+              features: plan.features,
             features_ar: plan.features_ar,
-            duration_months: plan.duration_months,
-            stripe_price_id: plan.stripe_price_id,
-            monthly_equivalent: plan.monthly_equivalent,
+              duration_months: plan.duration_months,
+              stripe_price_id: plan.stripe_price_id,
+              monthly_equivalent: plan.monthly_equivalent,
             is_active: plan.is_active
           }));
             
-          // Filter plans for background users - show only Background Jobs Professional
-          const filteredPlans = allPlansArray.filter(plan => 
-            plan.name.toLowerCase().includes('background jobs')
-          );
-          console.log('🔍 BackgroundBillingTab: Filtered plans for background user:', filteredPlans.map(p => p.name));
+          // Filter plans for background users - show all available plans since API doesn't have specific "background jobs" plans
+          const filteredPlans = allPlansArray;
+          console.log('🔍 BackgroundBillingTab: Showing all plans for background user:', filteredPlans.map(p => p.name));
           
           console.log('🔍 BackgroundBillingTab: Converted plans array:', filteredPlans);
           setPlans(filteredPlans);
@@ -98,8 +96,8 @@ const BackgroundBillingTab = () => {
       console.error('Error response:', err.response?.data);
       console.error('Error status:', err.response?.status);
       
-      setError('Failed to load subscription plans');
-      setPlans([]);
+        setError('Failed to load subscription plans');
+        setPlans([]);
       setLoading(false);
     }
   };
@@ -589,10 +587,10 @@ const BackgroundBillingTab = () => {
                       ? plan.features_ar[index] 
                       : feature;
                     return (
-                      <div key={index} className="feature-item">
-                        <FaCheck className="feature-icon" /> 
+                    <div key={index} className="feature-item">
+                      <FaCheck className="feature-icon" /> 
                         <span className="feature-text">{featureText}</span>
-                      </div>
+                    </div>
                     );
                   })}
                 </div>
