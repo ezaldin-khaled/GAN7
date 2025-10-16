@@ -69,14 +69,15 @@ const BillingTab = () => {
         const response = await axiosInstance.get('/api/payments/plans/');
         console.log('Plans API response:', response.data);
         
-        // Handle the new plans API response structure with Arabic translations
-        if (response.data && response.data.results) {
+        // Handle the plans API response structure - check for both direct array and results property
+        const plansData = response.data.results || response.data;
+        if (response.data && plansData && Array.isArray(plansData)) {
           console.log('Found plans in response with Arabic translations...');
           console.log('🔍 Raw API response data:', response.data);
-          console.log('🔍 Number of plans from API:', response.data.results.length);
-          console.log('🔍 Plan names from API:', response.data.results.map(p => p.name));
+          console.log('🔍 Number of plans from API:', plansData.length);
+          console.log('🔍 Plan names from API:', plansData.map(p => p.name));
           
-          const allPlansArray = response.data.results.map((plan) => ({
+          const allPlansArray = plansData.map((plan) => ({
             id: plan.id,
             name: plan.name,
             display_name: plan.name,
