@@ -21,11 +21,6 @@ const BackgroundBillingTab = () => {
   const isTalent = userInfo.is_talent;
   const isBackground = userInfo.is_background;
 
-  useEffect(() => {
-    fetchPlans();
-    fetchCurrentSubscription();
-  }, [fetchPlans]);
-
   const fetchPlans = useCallback(async () => {
     try {
       console.log('🔍 Fetching all available Production Assets Pro plans...');
@@ -80,6 +75,11 @@ const BackgroundBillingTab = () => {
       setLoading(false);
     }
   }, [isTalent, isBackground]);
+
+  useEffect(() => {
+    fetchPlans();
+    fetchCurrentSubscription();
+  }, [fetchPlans]);
 
   const fetchCurrentSubscription = async () => {
     try {

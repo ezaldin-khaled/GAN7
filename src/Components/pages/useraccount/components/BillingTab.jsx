@@ -24,36 +24,6 @@ const BillingTab = () => {
   const isTalent = userInfo.is_talent;
   const isBackground = userInfo.is_background;
 
-  // Add polling interval for subscription updates
-  useEffect(() => {
-    console.log('🚀 BillingTab component mounted - fetching initial data');
-    fetchPlans();
-    fetchCurrentSubscription();
-    fetchUserData();
-
-    // Set up polling for subscription updates
-    const pollInterval = setInterval(() => {
-      console.log('🔄 Polling interval - refreshing subscription and plans');
-      fetchCurrentSubscription();
-      fetchPlans(); // Also refresh plans to ensure they stay visible
-    }, 30000);
-    return () => clearInterval(pollInterval);
-  }, [fetchPlans]);
-
-  // Add visibility change listener to refresh plans when user returns to tab
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log('👁️ Page became visible - refreshing plans and subscription');
-        fetchPlans();
-        fetchCurrentSubscription();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchPlans]);
-
   const fetchPlans = useCallback(async () => {
     try {
       console.log('Fetching plans from API...');
@@ -128,6 +98,36 @@ const BillingTab = () => {
       console.log('✅ Loading set to false after error');
     }
   }, [isTalent, isBackground]);
+
+  // Add polling interval for subscription updates
+  useEffect(() => {
+    console.log('🚀 BillingTab component mounted - fetching initial data');
+    fetchPlans();
+    fetchCurrentSubscription();
+    fetchUserData();
+
+    // Set up polling for subscription updates
+    const pollInterval = setInterval(() => {
+      console.log('🔄 Polling interval - refreshing subscription and plans');
+      fetchCurrentSubscription();
+      fetchPlans(); // Also refresh plans to ensure they stay visible
+    }, 30000);
+    return () => clearInterval(pollInterval);
+  }, [fetchPlans]);
+
+  // Add visibility change listener to refresh plans when user returns to tab
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('👁️ Page became visible - refreshing plans and subscription');
+        fetchPlans();
+        fetchCurrentSubscription();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [fetchPlans]);
 
   const fetchCurrentSubscription = async () => {
     try {
