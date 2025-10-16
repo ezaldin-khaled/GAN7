@@ -1322,12 +1322,6 @@ const GroupsTab = ({ userData }) => {
         <div className="description-content">
           <h3>Band Collaboration & Management</h3>
           <p>Create and manage bands, collaborate with other musicians, and build your musical network. Join existing bands or create your own to showcase your talent.</p>
-          <div className="description-features">
-            <span className="feature-tag">Band Creation</span>
-            <span className="feature-tag">Member Management</span>
-            <span className="feature-tag">Collaboration</span>
-            <span className="feature-tag">Invitations</span>
-          </div>
         </div>
       </div>
       

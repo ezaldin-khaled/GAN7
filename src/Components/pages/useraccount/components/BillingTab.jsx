@@ -456,12 +456,6 @@ const BillingTab = () => {
         <div className="description-content">
           <h3>Subscription & Billing Management</h3>
           <p>Manage your subscription plans, view billing history, and upgrade your account to unlock premium features and enhanced capabilities.</p>
-          <div className="description-features">
-            <span className="feature-tag">Subscription Plans</span>
-            <span className="feature-tag">Payment History</span>
-            <span className="feature-tag">Account Upgrade</span>
-            <span className="feature-tag">Billing Info</span>
-          </div>
         </div>
       </div>
       

@@ -73,30 +73,6 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.description-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.feature-tag {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  cursor: default;
-}
-
-.feature-tag:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -113,14 +89,6 @@
     font-size: 0.95rem;
   }
   
-  .description-features {
-    gap: 6px;
-  }
-  
-  .feature-tag {
-    font-size: 0.8rem;
-    padding: 5px 10px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -199,23 +167,10 @@
   color: rgba(51, 51, 51, 0.8);
 }
 
-.tab-description.security-theme .feature-tag {
-  background: rgba(51, 51, 51, 0.1);
-  color: #333;
-  border: 1px solid rgba(51, 51, 51, 0.2);
-}
-
-.tab-description.security-theme .feature-tag:hover {
-  background: rgba(51, 51, 51, 0.2);
-}
 
 /* RTL Support */
 [dir="rtl"] .tab-description {
   text-align: right;
-}
-
-[dir="rtl"] .description-features {
-  justify-content: flex-end;
 }
 
 /* Dark mode support */

@@ -217,12 +217,6 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
         <div className="description-content">
           <h3>Media & Portfolio Management</h3>
           <p>Upload and manage your media files, portfolio images, and showcase your work. Build a compelling visual portfolio that represents your talent and skills.</p>
-          <div className="description-features">
-            <span className="feature-tag">Image Upload</span>
-            <span className="feature-tag">Video Gallery</span>
-            <span className="feature-tag">Portfolio</span>
-            <span className="feature-tag">Media Management</span>
-          </div>
         </div>
       </div>
       

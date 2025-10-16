@@ -1021,12 +1021,6 @@ const SpecializationTab = () => {
         <div className="description-content">
           <h3>Talent Specialization & Categorization</h3>
           <p>Define your talent type and specialization to help casting directors and clients find you. Upload your portfolio and showcase your unique skills.</p>
-          <div className="description-features">
-            <span className="feature-tag">Talent Types</span>
-            <span className="feature-tag">Portfolio Upload</span>
-            <span className="feature-tag">Skills Showcase</span>
-            <span className="feature-tag">Professional Profile</span>
-          </div>
         </div>
       </div>
       

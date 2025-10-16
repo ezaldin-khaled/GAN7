@@ -20,12 +20,6 @@ const SecurityTab = () => {
         <div className="description-content">
           <h3>Account Security & Password Management</h3>
           <p>Secure your account with strong passwords and manage your security settings. Keep your account safe and protected with our security features.</p>
-          <div className="description-features">
-            <span className="feature-tag">Password Change</span>
-            <span className="feature-tag">Security Settings</span>
-            <span className="feature-tag">Account Protection</span>
-            <span className="feature-tag">Privacy Controls</span>
-          </div>
         </div>
       </div>
       

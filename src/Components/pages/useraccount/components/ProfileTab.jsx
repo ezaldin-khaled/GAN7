@@ -189,12 +189,6 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
         <div className="description-content">
           <h3>Personal Information Management</h3>
           <p>Manage your personal details, contact information, and social media links. Keep your profile up-to-date to help others find and connect with you.</p>
-          <div className="description-features">
-            <span className="feature-tag">Personal Details</span>
-            <span className="feature-tag">Contact Info</span>
-            <span className="feature-tag">Social Media</span>
-            <span className="feature-tag">Profile Score</span>
-          </div>
         </div>
       </div>
 
