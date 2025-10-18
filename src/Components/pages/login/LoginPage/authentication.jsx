@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import './authentication.css';
-import back_img from '../assets/img/purpleq.jpg'
+// import back_img from '../assets/img/purpleq.jpg' // Temporarily unused
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../../api/axios';
 import GeometricShape from './GeometricShape';
@@ -262,6 +262,7 @@ const AuthPage = () => {
                     />
                     <span>{t('auth.talent')}</span>
                   </label>
+                  {/* Temporarily hidden - Production Assets Pro option
                   <label className="role-option">
                     <input
                       type="radio"
@@ -273,6 +274,7 @@ const AuthPage = () => {
                     />
                     <span>{t('auth.productionAssetsPro')}</span>
                   </label>
+                  */}
                 </div>
               </div>
               
@@ -878,6 +880,7 @@ const AuthPage = () => {
                       />
                       <span>{t('auth.talent')}</span>
                     </label>
+                    {/* Temporarily hidden - Production Assets Pro option
                     <label className="role-option">
                       <input
                         type="radio"
@@ -889,6 +892,7 @@ const AuthPage = () => {
                       />
                       <span>{t('auth.productionAssetsPro')}</span>
                     </label>
+                    */}
                   </div>
                 </div>
 
