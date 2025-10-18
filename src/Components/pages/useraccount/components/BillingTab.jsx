@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import { useLanguage } from '../../../../context/LanguageContext';
 import axiosInstance from '../../../../api/axios';
+import ProfileScore from '../../../ProfileScore';
 import './BillingTab.css';
 import './TabDescriptions.css';
 
@@ -19,6 +20,7 @@ const BillingTab = () => {
   const [error, setError] = useState('');
   const [userData, setUserData] = useState(null);
   const [userDataLoading, setUserDataLoading] = useState(true);
+  const [subscriptionData, setSubscriptionData] = useState(null);
   
   // Get user type from localStorage
   const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
@@ -139,12 +141,15 @@ const BillingTab = () => {
         const activeSubscriptions = response.data.filter(sub => sub.is_active);
         if (activeSubscriptions.length > 0) {
           setCurrentSubscription(activeSubscriptions[0]);
+          setSubscriptionData(activeSubscriptions[0]);
           console.log(`User has ${activeSubscriptions.length} active subscription(s)`);
         } else {
           setCurrentSubscription(response.data[0]);
+          setSubscriptionData(response.data[0]);
         }
       } else {
         setCurrentSubscription(null);
+        setSubscriptionData(null);
       }
     } catch (err) {
       console.error('Error fetching current subscription:', err);
@@ -461,6 +466,9 @@ const BillingTab = () => {
       
       {error && <div className="error-message">{error}</div>}
       
+      {/* Profile Score Section */}
+      <ProfileScore userData={userData} subscriptionData={subscriptionData} />
+
       {/* Restricted Countries Notice */}
       <div className="restricted-countries-notice">
         <div className="notice-header">

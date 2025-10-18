@@ -1586,5 +1586,65 @@
       "re": "ريونيون",
       "nz": "نيوزيلندا"
     }
+  },
+  "profileScore": {
+    "title": "درجة الملف الشخصي",
+    "overallScore": "الدرجة الإجمالية",
+    "overallScoreDesc": "قوة ملفك الشخصي الشاملة",
+    "overallScoreTip": "أكمل جميع أقسام الملف الشخصي لتحقيق أقصى درجة",
+    "engagementRate": "معدل التفاعل",
+    "engagementRateDesc": "مدى تفاعل المستخدمين مع ملفك الشخصي",
+    "engagementRateTip": "انشر بانتظام ورد على الرسائل لتحسين التفاعل",
+    "activityLevel": "مستوى النشاط",
+    "activityLevelDesc": "مدى نشاطك على المنصة",
+    "activityLevelTip": "ابق نشطاً بتسجيل الدخول بانتظام وتحديث ملفك الشخصي",
+    "contentQuality": "جودة المحتوى",
+    "contentQualityDesc": "جودة المحتوى الذي قمت برفعه",
+    "contentQualityTip": "ارفع صوراً وفيديوهات عالية الجودة لتحسين درجة المحتوى",
+    "high": "عالي",
+    "good": "جيد",
+    "medium": "متوسط",
+    "low": "منخفض",
+    "viewTips": "عرض نصائح التحسين",
+    "levels": {
+      "expert": "خبير",
+      "advanced": "متقدم",
+      "intermediate": "متوسط",
+      "beginner": "مبتدئ"
+    },
+    "categories": {
+      "accountTier": "نوع الحساب",
+      "emailVerification": "التحقق من البريد الإلكتروني",
+      "profileCompletion": "اكتمال الملف الشخصي",
+      "mediaContent": "المحتوى المرئي",
+      "specialization": "التخصص",
+      "socialMedia": "وسائل التواصل الاجتماعي"
+    },
+    "descriptions": {
+      "accountTier": "النقاط بناءً على نوع اشتراكك",
+      "emailVerification": "النقاط للبريد الإلكتروني الموثق",
+      "profileCompletion": "النقاط لمعلومات الملف الشخصي المكتملة",
+      "mediaContent": "النقاط لعناصر المحفظة المرفوعة",
+      "specialization": "النقاط للتخصصات المضافة",
+      "socialMedia": "النقاط لروابط وسائل التواصل الاجتماعي"
+    },
+    "improvementTips": {
+      "title": "نصائح التحسين",
+      "upgradeAccount": "ترقية إلى بريميوم (+10) أو بلاتينيوم (+20) للمزيد من النقاط",
+      "verifyEmail": "وثق بريدك الإلكتروني لـ +25 نقطة",
+      "completeProfile": "أكمل تفاصيل ملفك الشخصي لـ +25 نقطة",
+      "addMedia": "أضف المزيد من عناصر المحفظة لـ +20 نقطة",
+      "addSpecialization": "أضف تخصص لـ +10 نقاط",
+      "addSocialMedia": "أضف روابط وسائل التواصل الاجتماعي لـ +10 نقاط"
+    },
+    "scoring": {
+      "maxPoints": "الحد الأقصى للنقاط",
+      "currentPoints": "النقاط الحالية",
+      "progress": "التقدم",
+      "excellent": "ممتاز (80-100)",
+      "good": "جيد (60-79)",
+      "fair": "متوسط (40-59)",
+      "needsImprovement": "يحتاج تحسين (0-39)"
+    }
   }
 } 
