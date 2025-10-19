@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { FaCreditCard, FaHistory, FaCheck, FaCrown } from 'react-icons/fa';
 import { useLanguage } from '../../../../context/LanguageContext';
 import axiosInstance from '../../../../api/axios';
-import ProfileScore from '../../../ProfileScore';
 import './BillingTab.css';
 import './TabDescriptions.css';
 
@@ -18,9 +17,6 @@ const BillingTab = () => {
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [userData, setUserData] = useState(null);
-  const [userDataLoading, setUserDataLoading] = useState(true);
-  const [subscriptionData, setSubscriptionData] = useState(null);
   
   // Get user type from localStorage
   const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
@@ -107,7 +103,6 @@ const BillingTab = () => {
     console.log('🚀 BillingTab component mounted - fetching initial data');
     fetchPlans();
     fetchCurrentSubscription();
-    fetchUserData();
 
     // Set up polling for subscription updates
     const pollInterval = setInterval(() => {
@@ -156,32 +151,6 @@ const BillingTab = () => {
     }
   };
 
-  const fetchUserData = async () => {
-    try {
-      setUserDataLoading(true);
-      
-      // Get user type from localStorage to determine correct endpoint
-      const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-      const isBackground = userInfo.is_background;
-      
-      // Use correct endpoint based on user type
-      const endpoint = isBackground ? '/api/profile/background/' : '/api/profile/talent/';
-      
-      const response = await axiosInstance.get(endpoint);
-      console.log('User data received:', response.data);
-      setUserData(response.data);
-    } catch (err) {
-      console.error('Error fetching user data:', err);
-      // Set a default userData object to prevent null errors
-      setUserData({
-        account_type: 'Free',
-        name: 'User',
-        email: ''
-      });
-    } finally {
-      setUserDataLoading(false);
-    }
-  };
 
   const handleSubscribe = async (plan) => {
     try {
@@ -281,7 +250,7 @@ const BillingTab = () => {
     }
   }, [fetchPlans]);
 
-  if (loading || userDataLoading) {
+  if (loading) {
     return (
       <div className="content-section">
         <h1 className="section-title">Plans & Billing</h1>
@@ -466,8 +435,6 @@ const BillingTab = () => {
       
       {error && <div className="error-message">{error}</div>}
       
-      {/* Profile Score Section */}
-      <ProfileScore userData={userData} subscriptionData={subscriptionData} />
 
       {/* Restricted Countries Notice */}
       <div className="restricted-countries-notice">
@@ -487,7 +454,7 @@ const BillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon pulse" />
           <div className="plan-info">
-            <h3>{t('billing.currentPlan')}: {userData?.account_type || t('billing.activePlan')}</h3>
+            <h3>{t('billing.currentPlan')}: {t('billing.activePlan')}</h3>
             <div className="end-date">
               <p><strong>{t('billing.validUntil')}:</strong> {new Date(currentSubscription.current_period_end).toLocaleDateString()}</p>
             </div>
@@ -501,7 +468,7 @@ const BillingTab = () => {
         <div className="current-plan">
           <FaCrown className="plan-icon" />
           <div className="plan-info">
-            <h3>{t('billing.currentPlan')}: {userData?.account_type || t('billing.free')}</h3>
+            <h3>{t('billing.currentPlan')}: {t('billing.free')}</h3>
             <p>{t('billing.basicFeatures')}</p>
             <div className="plan-status free">
               <span className="status-dot"></span>

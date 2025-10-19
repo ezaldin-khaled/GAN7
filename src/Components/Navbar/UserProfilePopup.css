@@ -632,8 +632,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     padding: 20px;
 }
 
-/* Enhanced Profile Score Section */
-.profile-score-section {
+/* Enhanced Profile Score Section - Specific to UserProfilePopup */
+.profile-popup-card .profile-score-section {
     display: flex;
     align-items: center;
     gap: 32px;
@@ -650,7 +650,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
 }
 
 /* RTL Support for Profile Score Section */
-[dir="rtl"] .profile-score-section {
+[dir="rtl"] .profile-popup-card .profile-score-section {
     flex-direction: row-reverse;
 }
 
@@ -660,18 +660,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     50% { background-position: -200% 0; }
 }
 
-.profile-score-section:hover {
+.profile-popup-card .profile-score-section:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 40px rgba(139, 90, 43, 0.15);
     border-color: rgba(139, 90, 43, 0.25);
 }
 
-/* Score Visual Circle */
-.score-visual {
+/* Score Visual Circle - Specific to UserProfilePopup */
+.profile-popup-card .score-visual {
     flex-shrink: 0;
 }
 
-.score-circle {
+.profile-popup-card .score-circle {
     position: relative;
     width: 120px;
     height: 120px;
@@ -680,18 +680,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     justify-content: center;
 }
 
-.score-ring {
+.profile-popup-card .score-ring {
     width: 100%;
     height: 100%;
     transform: rotate(-90deg);
     transition: all 0.8s ease;
 }
 
-.score-progress {
+.profile-popup-card .score-progress {
     transition: stroke-dashoffset 1s ease-in-out;
 }
 
-.score-number {
+.profile-popup-card .score-number {
     position: absolute;
     font-size: 32px;
     font-weight: 700;
@@ -699,40 +699,40 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Score Content */
-.score-content {
+/* Score Content - Specific to UserProfilePopup */
+.profile-popup-card .score-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.score-header {
+.profile-popup-card .score-header {
     display: flex;
     align-items: baseline;
     gap: 12px;
 }
 
 /* RTL Support for Score Header */
-[dir="rtl"] .score-header {
+[dir="rtl"] .profile-popup-card .score-header {
     flex-direction: row-reverse;
 }
 
-.score-title {
+.profile-popup-card .score-title {
     font-size: 24px;
     font-weight: 700;
     color: #1a0f0a;
     margin: 0;
 }
 
-.score-subtitle {
+.profile-popup-card .score-subtitle {
     font-size: 16px;
     font-weight: 600;
     color: #8b5a2b;
     margin: 0;
 }
 
-.score-message {
+.profile-popup-card .score-message {
     color: #5c4033;
     font-size: 15px;
     line-height: 1.6;
@@ -740,7 +740,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     opacity: 0.9;
 }
 
-.improve-score-btn {
+.profile-popup-card .improve-score-btn {
     align-self: flex-start;
     background: linear-gradient(135deg, #8b5a2b, #5c4033);
     color: white;
@@ -754,7 +754,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     box-shadow: 0 4px 12px rgba(139, 90, 43, 0.2);
 }
 
-.improve-score-btn:hover {
+.profile-popup-card .improve-score-btn:hover {
     background: linear-gradient(135deg, #5c4033, #8b5a2b);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(139, 90, 43, 0.3);
@@ -1558,6 +1558,13 @@ input:focus, select:focus {
         border-radius: 16px;
         height: 95vh;
     }
+    
+    /* Ensure profile score section is properly responsive */
+    .profile-popup-card .profile-score-section {
+        margin: 0 0 16px 0;
+        padding: 20px;
+        max-width: 100%;
+    }
     .profile-popup-content {
         padding: 20px;
     }
@@ -1763,7 +1770,7 @@ input:focus, select:focus {
     }
     
     /* Mobile profile score section */
-    .profile-score-section {
+    .profile-popup-card .profile-score-section {
         flex-direction: column;
         align-items: center;
         gap: 20px;
@@ -1771,41 +1778,58 @@ input:focus, select:focus {
         max-width: 100%;
     }
     
-    .score-visual {
+    .profile-popup-card .score-visual {
         order: 1;
     }
     
-    .score-content {
+    .profile-popup-card .score-content {
         order: 2;
         text-align: center;
     }
     
-    .score-circle {
+    .profile-popup-card .score-circle {
         width: 100px;
         height: 100px;
     }
     
-    .score-number {
+    .profile-popup-card .score-number {
         font-size: 28px;
     }
     
-    .score-title {
+    .profile-popup-card .score-title {
         font-size: 20px;
     }
     
-    .score-subtitle {
+    .profile-popup-card .score-subtitle {
         font-size: 14px;
     }
     
-    .score-message {
+    .profile-popup-card .score-message {
         font-size: 14px;
         text-align: center;
     }
     
-    .improve-score-btn {
+    .profile-popup-card .improve-score-btn {
         align-self: center;
         width: 100%;
         max-width: 200px;
+    }
+    
+    /* Additional mobile optimizations for profile score */
+    .profile-popup-card .score-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .profile-popup-card .score-title {
+        font-size: 18px;
+        text-align: center;
+    }
+    
+    .profile-popup-card .score-subtitle {
+        font-size: 13px;
+        text-align: center;
     }
     
     /* Mobile score breakdown */
