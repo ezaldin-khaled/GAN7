@@ -1628,8 +1628,8 @@
       "specialization": "النقاط للتخصصات المضافة",
       "socialMedia": "النقاط لروابط وسائل التواصل الاجتماعي"
     },
-    "improvementTips": {
-      "title": "نصائح التحسين",
+    "improvementTips": "نصائح التحسين",
+    "improvementTipsDetails": {
       "upgradeAccount": "ترقية إلى بريميوم (+10) أو بلاتينيوم (+20) للمزيد من النقاط",
       "verifyEmail": "وثق بريدك الإلكتروني لـ +25 نقطة",
       "completeProfile": "أكمل تفاصيل ملفك الشخصي لـ +25 نقطة",

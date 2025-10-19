@@ -308,8 +308,8 @@
       "socialMedia": "Points for social media links"
     },
     "defaultTip": "Complete this section to earn more points",
-    "improvementTips": {
-      "title": "Improvement Tips",
+    "improvementTips": "Improvement Tips",
+    "improvementTipsDetails": {
       "upgradeAccount": "Upgrade to Premium (+10) or Platinum (+20) for more points",
       "verifyEmail": "Verify your email for +25 points",
       "completeProfile": "Complete your profile details for up to +25 points",
