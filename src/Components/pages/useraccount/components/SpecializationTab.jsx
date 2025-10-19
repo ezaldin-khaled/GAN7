@@ -1019,8 +1019,8 @@ const SpecializationTab = () => {
           </svg>
         </div>
         <div className="description-content">
-          <h3>Talent Specialization & Categorization</h3>
-          <p>Define your talent type and specialization to help casting directors and clients find you. Upload your portfolio and showcase your unique skills.</p>
+          <h3>{t('tabDescriptions.specialization.title')}</h3>
+          <p>{t('tabDescriptions.specialization.description')}</p>
         </div>
       </div>
       

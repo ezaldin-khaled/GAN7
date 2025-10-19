@@ -1614,5 +1614,31 @@
       "re": "Reunion",
       "nz": "New Zealand"
     }
+  },
+  "tabDescriptions": {
+    "profile": {
+      "title": "Personal Information Management",
+      "description": "Manage your personal details, contact information, and social media links. Keep your profile up-to-date to help others find and connect with you."
+    },
+    "media": {
+      "title": "Media & Portfolio Management",
+      "description": "Upload and manage your media files, portfolio images, and showcase your work. Build a compelling visual portfolio that represents your talent and skills."
+    },
+    "billing": {
+      "title": "Subscription & Billing Management",
+      "description": "Manage your subscription plans, view billing history, and upgrade your account to unlock premium features and enhanced capabilities."
+    },
+    "groups": {
+      "title": "Band Collaboration & Management",
+      "description": "Create and manage bands, collaborate with other musicians, and build your musical network. Join existing bands or create your own to showcase your talent."
+    },
+    "security": {
+      "title": "Account Security & Password Management",
+      "description": "Secure your account with strong passwords and manage your security settings. Keep your account safe and protected with our security features."
+    },
+    "specialization": {
+      "title": "Talent Specialization & Categorization",
+      "description": "Define your talent type and specialization to help casting directors and clients find you. Upload your portfolio and showcase your unique skills."
+    }
   }
 }

@@ -1320,8 +1320,8 @@ const GroupsTab = ({ userData }) => {
           </svg>
         </div>
         <div className="description-content">
-          <h3>Band Collaboration & Management</h3>
-          <p>Create and manage bands, collaborate with other musicians, and build your musical network. Join existing bands or create your own to showcase your talent.</p>
+          <h3>{t('tabDescriptions.groups.title')}</h3>
+          <p>{t('tabDescriptions.groups.description')}</p>
         </div>
       </div>
       

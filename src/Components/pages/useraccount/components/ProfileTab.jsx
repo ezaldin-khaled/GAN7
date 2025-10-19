@@ -187,8 +187,8 @@ const ProfileTab = ({ userData, handleInputChange, handleSaveChanges, loading: p
           </svg>
         </div>
         <div className="description-content">
-          <h3>Personal Information Management</h3>
-          <p>Manage your personal details, contact information, and social media links. Keep your profile up-to-date to help others find and connect with you.</p>
+          <h3>{t('tabDescriptions.profile.title')}</h3>
+          <p>{t('tabDescriptions.profile.description')}</p>
         </div>
       </div>
 

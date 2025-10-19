@@ -136,15 +136,12 @@ const BillingTab = () => {
         const activeSubscriptions = response.data.filter(sub => sub.is_active);
         if (activeSubscriptions.length > 0) {
           setCurrentSubscription(activeSubscriptions[0]);
-          setSubscriptionData(activeSubscriptions[0]);
           console.log(`User has ${activeSubscriptions.length} active subscription(s)`);
         } else {
           setCurrentSubscription(response.data[0]);
-          setSubscriptionData(response.data[0]);
         }
       } else {
         setCurrentSubscription(null);
-        setSubscriptionData(null);
       }
     } catch (err) {
       console.error('Error fetching current subscription:', err);
@@ -428,8 +425,8 @@ const BillingTab = () => {
           </svg>
         </div>
         <div className="description-content">
-          <h3>Subscription & Billing Management</h3>
-          <p>Manage your subscription plans, view billing history, and upgrade your account to unlock premium features and enhanced capabilities.</p>
+          <h3>{t('tabDescriptions.billing.title')}</h3>
+          <p>{t('tabDescriptions.billing.description')}</p>
         </div>
       </div>
       

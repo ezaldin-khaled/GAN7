@@ -215,8 +215,8 @@ const MediaTab = ({ mediaFiles, handleMediaUpload, handleDeleteMedia }) => {
           </svg>
         </div>
         <div className="description-content">
-          <h3>Media & Portfolio Management</h3>
-          <p>Upload and manage your media files, portfolio images, and showcase your work. Build a compelling visual portfolio that represents your talent and skills.</p>
+          <h3>{t('tabDescriptions.media.title')}</h3>
+          <p>{t('tabDescriptions.media.description')}</p>
         </div>
       </div>
       

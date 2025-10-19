@@ -18,8 +18,8 @@ const SecurityTab = () => {
           </svg>
         </div>
         <div className="description-content">
-          <h3>Account Security & Password Management</h3>
-          <p>Secure your account with strong passwords and manage your security settings. Keep your account safe and protected with our security features.</p>
+          <h3>{t('tabDescriptions.security.title')}</h3>
+          <p>{t('tabDescriptions.security.description')}</p>
         </div>
       </div>
       
