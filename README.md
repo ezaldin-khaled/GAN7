@@ -1,6 +1,6 @@
 # GAN Website
 
-A modern, responsive website for GAN (Generative Adversarial Networks) applications with advanced user profile management and authentication features.
+A modern, responsive website for talents and artist's to help them with finding an opportunity (Global Atrist Networks) applications with advanced user profile management and authentication features.
 
 ## 🚀 Features
 
